@@ -1,0 +1,11 @@
+.gradle/
+**/build/
+local.properties
+.deps/
+.venv/
+app/libs/
+app/src/main/assets/vendor/
+__pycache__/
+*.part
+*.hprof
+dist/

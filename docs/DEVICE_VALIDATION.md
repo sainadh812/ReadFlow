@@ -1,0 +1,22 @@
+# Target-device acceptance protocol
+
+Record device model, SoC, RAM, Android build, app APK SHA-256, model manifest SHA-256, voice, runtime, inference threads, player speed, audio route, battery state, thermal state and ambient conditions for every result. The primary target is a physical Samsung Galaxy S25 Ultra, ARM64, Android 15+. Emulation does not replace this test.
+
+1. Install `app-debug.apk`. Import each original fixture from `app/src/androidTest/assets/fixtures` using the Storage Access Framework. Compare extracted words/geometry for selectable, scanned, mixed, page-number-only, blank, rotated and two-column inputs. Confirm clear corrupt/password errors.
+2. Download Kokoro, Pocket and the separately listed alignment pack. Cancel/resume each download; interrupt a connection; fill storage; alter a staged byte in a debuggable test build. A partial/corrupt pack must never activate.
+3. For each TTS model, test all listed voices and import an additional real English document. Check actual local audio, active source word and tap-to-start from multiple words, including repeated words and expanded numbers. Do this with original-page overlays and Reader text.
+4. After setup, disable network/enable airplane mode and repeat reading, switching models and cached/uncached jumps. Confirm no network is required. Use a network capture during setup/reading to assess bundled SDK telemetry separately from app-authored network calls.
+5. Annotate audible word start/end boundaries for at least 50 words per engine, including pauses, punctuation, repeated labels and number expansions. Use the exact saved WAV/hash. Compare annotations with sample offsets. Report median, p95 and maximum absolute boundary errors separately for starts/ends; count alignment failures and incomplete transcripts. Do not tune thresholds on the entire evaluation set.
+6. Test play/pause, seeking, rapid repeated taps (including ten taps within a second), jumps across unprocessed pages, speed 1x/2x/2.5x and chunk transitions. Ensure no stale request starts playback. Record cached and uncached jump-to-audible latency separately.
+7. Test manual scroll/follow, 16/34sp font sizes, dark mode, TalkBack, large OS font scale, display cutouts, landscape and narrow windows. Check no obscured text or inaccessible controls. Overlay hit testing must reject blank-page taps at zoom/rotation extremes.
+8. Test notification/lock-screen controls, Bluetooth connect/disconnect, headphones unplugged, calls/audio-focus loss, pause during preparation, app background, process recreation and device rotation. Resume should preserve a stable word location without unexpected autoplay.
+9. Profile cold and warm load; OCR/page; time from play/jump to audible output; synthesis and alignment separately; exact generated audio duration; peak PSS/RSS; combined RTF; cache hit rate. Repeat with 1/2/4 inference threads. Use Perfetto, `adb shell dumpsys meminfo app.readflow`, `adb shell dumpsys thermalservice`, `adb shell dumpsys batterystats` and on-device monotonic timestamps. Do not extrapolate host timing to the phone.
+10. Perform a 30-minute continuous reading session for EACH model at 1x and 2x, recording buffering, memory, battery and thermal transitions. Test the geometric margin-skip option against pages with real body text near margins.
+
+Initial targets (not achieved measurements): warm start about 1-2 seconds, synthesis plus alignment with headroom at 2x, aspirational RTF <=0.25, peak whole-app memory 1-2 GB. Reject a result that substitutes sentence-only highlights, invented boundaries or system/cloud TTS.
+
+Sample results row (leave unknown fields blank, never zero):
+
+```csv
+device,android_build,apk_sha256,model,model_version,voice,threads,speed,route,cold_load_ms,warm_load_ms,ocr_ms,first_audible_ms,cached_jump_ms,uncached_jump_ms,synthesis_ms,alignment_ms,audio_ms,combined_rtf,peak_pss_mb,battery_30m_pct,thermal_max,start_p95_ms,end_p95_ms,alignment_failures
+```

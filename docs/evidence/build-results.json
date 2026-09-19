@@ -1,0 +1,54 @@
+{
+  "command": "./gradlew assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest --console=plain",
+  "exitCode": 0,
+  "tests": [
+    {
+      "name": "app.readflow.core.CoreTest",
+      "tests": "12",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.761",
+      "timestamp": "2026-09-19T18:36:55"
+    },
+    {
+      "name": "app.readflow.core.IntegrityTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.089",
+      "timestamp": "2026-09-19T18:36:55"
+    },
+    {
+      "name": "app.readflow.core.RealAudioTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.328",
+      "timestamp": "2026-09-19T18:36:56"
+    }
+  ],
+  "testTotal": 17,
+  "failures": 0,
+  "skipped": 0,
+  "lintErrors": 0,
+  "lintWarnings": 15,
+  "lintIssueIds": [
+    "ExportedService",
+    "GradleDependency",
+    "UsableSpace"
+  ],
+  "apk": {
+    "file": "ReadFlow-arm64-debug.apk",
+    "bytes": 130103850,
+    "sha256": "f7c40c5b1cf0005db97de319d9b3c474820ba4aec78623ed06064774e2e75163",
+    "abis": [
+      "arm64-v8a"
+    ],
+    "bundledSpeechOrAlignmentWeights": false
+  },
+  "androidRuntimeVerification": "Blocked: software emulator startup/property queries/PackageManager failed before app execution",
+  "physicalTargetVerification": "No attached device; not performed"
+}

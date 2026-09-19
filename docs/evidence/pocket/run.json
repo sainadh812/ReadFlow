@@ -1,0 +1,18 @@
+{
+  "host": "Linux-6.8.0-1066-gcp-x86_64-with-glibc2.35",
+  "processor": "x86_64",
+  "model": "pocket",
+  "sherpa": "1.13.8",
+  "ort": "1.20.1",
+  "threads": 2,
+  "text": "Reading opens a quiet space for thought. Tap any word to hear the sentence from that point.",
+  "sampleRate": 24000,
+  "sampleCount": 83979,
+  "frames": 174,
+  "coldLoadSeconds": 10.208965189987794,
+  "synthesisSeconds": 11.418802100000903,
+  "alignmentLoadAndEmissionSeconds": 3.3992111547850072,
+  "durationSeconds": 3.499125,
+  "combinedRtf": 4.234776766987721,
+  "boundaryValidation": "Not manually audited. Host emissions only; Kotlin test produces boundaries."
+}
