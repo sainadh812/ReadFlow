@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         controller = MediaController.Builder(this, SessionToken(this, ComponentName(this, ReadingService::class.java))).buildAsync().also { future ->
-            future.addListener({ runCatching { future.get() }.onFailure { vm.message.value = "Playback service connection failed" } }, ContextCompat.getMainExecutor(this))
+            future.addListener({ runCatching { future.get() }.onFailure { vm.captureIssue("PLAYBACK_SERVICE", it); vm.message.value = "Playback service connection failed" } }, ContextCompat.getMainExecutor(this))
         }
         setContent { ReadFlowUi(vm) { notifications.launch(Manifest.permission.POST_NOTIFICATIONS) } }
         if (savedInstanceState == null) handleShare(intent)

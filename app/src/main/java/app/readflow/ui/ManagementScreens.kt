@@ -73,6 +73,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable internal fun Settings(vm: ReaderViewModel, prefs: Preferences) {
+    val issues by vm.issueReports.collectAsStateWithLifecycle()
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text("Settings") }, navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.screen.value = if (vm.playback.value.document == null) "library" else "reader" } })
         LazyColumn(contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
@@ -96,6 +97,9 @@ import java.util.Locale
                 Text("Manual calibration for your audio route. Bluetooth delay varies; automatic latency measurement is not available.", style = MaterialTheme.typography.bodySmall)
             }
             item {
+                TextButton(onClick = vm::showIssues) {
+                    Icon(Icons.Default.BugReport, null); Spacer(Modifier.width(8.dp)); Text("Issue logs (${issues.size})")
+                }
                 TextButton(onClick = vm::copyPlaybackDiagnostics) {
                     Icon(Icons.Default.ContentCopy, null)
                     Spacer(Modifier.width(8.dp))

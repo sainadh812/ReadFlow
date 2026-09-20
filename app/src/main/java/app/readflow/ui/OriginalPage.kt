@@ -23,6 +23,7 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import app.readflow.core.Transform
+import app.readflow.diagnostics.documentIssueInput
 import app.readflow.playback.ReaderPlayback
 import kotlinx.coroutines.CancellationException
 
@@ -41,7 +42,10 @@ import kotlinx.coroutines.CancellationException
     LaunchedEffect(pageKey, document.localPath) {
         try { bitmap = vm.app.documents.extractor.render(document.localPath, pageIndex) }
         catch (cancel: CancellationException) { throw cancel }
-        catch (e: Exception) { error = e.message }
+        catch (e: Exception) {
+            error = e.message ?: "Page rendering failed"
+            vm.captureIssue("RENDER_PAGE", e, documentIssueInput(document, page, pageIndex = pageIndex))
+        }
     }
     DisposableEffect(pageKey) { onDispose { bitmap?.recycle(); bitmap = null } }
     val width = page?.width?.takeIf { it > 0 } ?: bitmap?.width?.toFloat() ?: 1f

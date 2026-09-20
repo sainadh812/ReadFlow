@@ -9,6 +9,9 @@ import androidx.lifecycle.viewModelScope
 import app.readflow.ReadFlowApp
 import app.readflow.core.*
 import app.readflow.data.*
+import app.readflow.diagnostics.*
+import app.readflow.ingest.ArticleImportException
+import app.readflow.models.VoicePack
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.json.Json
@@ -23,25 +26,65 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     val screen = MutableStateFlow("library")
     val message = MutableStateFlow<String?>(null)
     val importing = MutableStateFlow(false)
+    val issueReports = app.issues.reports
+    val selectedIssue = MutableStateFlow<IssueReport?>(null)
+    var pendingIssueExport: String? = null
     private val jobs = mutableMapOf<String, Job>()
     fun open(document: DocumentEntity) { app.playback.open(document); screen.value = "reader" }
-    fun import(uri: Uri) = launchImport { app.documents.import(uri) }
-    fun importUrl(url: String) = launchImport { app.documents.importUrl(url.trim()) }
-    private fun launchImport(action: suspend () -> DocumentEntity) { viewModelScope.launch {
+    fun import(uri: Uri) = launchImport("IMPORT_FILE", { withContext(Dispatchers.IO) {
+        val title = runCatching { app.contentResolver.query(uri, arrayOf(android.provider.OpenableColumns.DISPLAY_NAME), null, null, null)?.use { if (it.moveToFirst()) it.getString(0) else null } }.getOrNull()
+        IssueInput(title = title, source = issueSource(uri.toString()), mime = runCatching { app.contentResolver.getType(uri) }.getOrNull())
+    } }) { app.documents.import(uri) }
+    fun importUrl(url: String) = launchImport("IMPORT_ARTICLE", { IssueInput(source = issueSource(url.trim()), mime = "text/html") }) { app.documents.importUrl(url.trim()) }
+    private fun launchImport(stage: String, input: suspend () -> IssueInput, action: suspend () -> DocumentEntity) { viewModelScope.launch {
         importing.value = true
         try { open(action()) } catch (cancel: CancellationException) { throw cancel }
-        catch (e: Exception) { message.value = e.message ?: "Import failed" }
+        catch (e: Exception) {
+            if (e !is ArticleImportException) app.issues.record(stage, e, input())
+            message.value = e.message ?: "Import failed"
+        }
         finally { importing.value = false }
     } }
     fun update(preferences: Preferences) { viewModelScope.launch { app.preferences.set(preferences) } }
     fun download(id: String) {
         if (jobs[id]?.isActive == true) return
-        jobs[id] = viewModelScope.launch { try { app.models.install(id) } catch (cancel: CancellationException) { throw cancel } catch (e: Exception) { message.value = e.message } }
+        jobs[id] = operation("MODEL_INSTALL", IssueInput(details = mapOf("model" to id))) { app.models.install(id) }
     }
     fun cancelDownload(id: String) { jobs[id]?.cancel() }
-    fun deleteModel(id: String) { viewModelScope.launch { jobs[id]?.cancelAndJoin(); app.playback.deleteModel(id) } }
-    fun chooseModel(model: String, voice: String) { viewModelScope.launch { app.playback.changeModel(model, voice) } }
-    fun clearCache() { viewModelScope.launch { app.playback.clearCache(); message.value = "Audio cache cleared" } }
+    fun deleteModel(id: String) { operation("MODEL_DELETE", IssueInput(details = mapOf("model" to id))) { jobs[id]?.cancelAndJoin(); app.playback.deleteModel(id) } }
+    fun chooseModel(model: String, voice: String) { operation("MODEL_SWITCH", IssueInput(details = mapOf("model" to model, "voice" to voice))) { app.playback.changeModel(model, voice) } }
+    fun clearCache() { operation("CACHE_DELETE") { app.playback.clearCache(); message.value = "Audio cache cleared" } }
+    private fun operation(stage: String, input: IssueInput = IssueInput(), action: suspend () -> Unit) = viewModelScope.launch {
+        try { action() } catch (cancel: CancellationException) { throw cancel }
+        catch (error: Exception) {
+            val pack = input.details["model"]?.let { id -> app.models.packs.firstOrNull { it.id == id } }
+            val details = if (pack == null) input.details else input.details + mapOf("modelVersion" to pack.version,
+                "manifestSha256" to sha256(Json.encodeToString(VoicePack.serializer(), pack).toByteArray()),
+                "downloadPhase" to app.models.progress.value[pack.id]?.phase.orEmpty(),
+                "downloadBytes" to app.models.progress.value[pack.id]?.received.toString())
+            app.issues.record(stage, error, input.copy(details = details)); message.value = error.message ?: "Operation failed"
+        }
+    }
+    fun captureIssue(stage: String, error: Throwable, input: IssueInput = IssueInput()) {
+        viewModelScope.launch { app.issues.record(stage, error, input) }
+    }
+    fun showIssues() { screen.value = "issues"; viewModelScope.launch { app.issues.refresh() } }
+    fun readIssue(id: String) { viewModelScope.launch { selectedIssue.value = app.issues.read(id) } }
+    fun deleteIssue(id: String) { viewModelScope.launch {
+        try { app.issues.delete(id); if (selectedIssue.value?.id == id) selectedIssue.value = null }
+        catch (error: Exception) { message.value = error.message ?: "Could not delete log" }
+    } }
+    fun clearIssues() { viewModelScope.launch {
+        try { app.issues.clear(); selectedIssue.value = null }
+        catch (error: Exception) { message.value = error.message ?: "Could not delete logs" }
+    } }
+    fun exportIssue(uri: Uri, id: String) { viewModelScope.launch {
+        try {
+            withContext(Dispatchers.IO) { checkNotNull(app.contentResolver.openOutputStream(uri, "wt")) { "Cannot open export destination" }.use { app.issues.export(id, it) } }
+            message.value = "Issue log saved"
+        } catch (cancel: CancellationException) { throw cancel }
+        catch (error: Exception) { message.value = error.message ?: "Could not export issue log" }
+    } }
     fun copyPlaybackDiagnostics() { viewModelScope.launch {
         try {
             val report = app.diagnostics.report(app)
@@ -50,8 +93,10 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         } catch (cancel: CancellationException) { throw cancel }
         catch (_: Exception) { message.value = "Could not copy playback diagnostics" }
     } }
-    fun deleteDocument(document: DocumentEntity) { viewModelScope.launch {
+    fun deleteDocument(document: DocumentEntity) { operation("DOCUMENT_DELETE", documentIssueInput(document)) {
         app.playback.deleteDocument(document)
+        app.issues.deleteForDocument(document.id)
+        if (selectedIssue.value?.input?.documentId == document.id) selectedIssue.value = null
     } }
     fun page(index: Int) { playback.value.document?.let { if (index in 0 until it.pageCount) app.playback.open(it, index) } }
     fun rotateOcr() { viewModelScope.launch {
@@ -62,7 +107,8 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
             app.documents.loadPage(document, page.index, (previous + 90) % 360)
             app.cache.deleteDocument(document.id)
             app.playback.open(document, page.index)
-        } catch (e: Exception) { message.value = e.message }
+        } catch (cancel: CancellationException) { throw cancel }
+        catch (e: Exception) { app.issues.record("ROTATE_OCR", e, documentIssueInput(document, page)); message.value = e.message }
     } }
     fun bookmark(word: SourceWord) { viewModelScope.launch {
         val page = playback.value.page ?: return@launch
@@ -84,6 +130,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
                 app.preferences.values.first { it.model == previewModel && it.voice == previewVoice }
                 app.playback.start(document, 0, page.words.first().id)
             }
-        } catch (e: Exception) { message.value = e.message }
+        } catch (cancel: CancellationException) { throw cancel }
+        catch (e: Exception) { app.issues.record("PREVIEW", e, IssueInput(details = mapOf("model" to previewModel.orEmpty(), "voice" to previewVoice.orEmpty()))); message.value = e.message }
     } }
 }

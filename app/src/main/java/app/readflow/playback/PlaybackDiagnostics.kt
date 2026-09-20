@@ -27,10 +27,11 @@ data class PlaybackCheckpoint(
     val failureTypes: List<String> = emptyList(),
 )
 
-/** A single local checkpoint, never document text, URLs, paths, or exception messages. */
+/** Content-free current stage in memory; only failures persist across restarts. */
 class PlaybackDiagnostics(private val directory: File) {
     private val mutex = Mutex()
     private val file = File(directory, "playback.json")
+    private var current: PlaybackCheckpoint? = null
 
     suspend fun record(model: String, stage: PlaybackStage, error: Throwable? = null) = withContext(Dispatchers.IO) {
         mutex.withLock {
@@ -39,6 +40,8 @@ class PlaybackDiagnostics(private val directory: File) {
                 stage, System.currentTimeMillis(),
                 generateSequence(error) { it.cause }.take(4).map { it.javaClass.name }.toList(),
             )
+            current = checkpoint
+            if (stage != PlaybackStage.FAILED) return@withLock
             try {
                 if (!directory.isDirectory && !directory.mkdirs()) return@withLock
                 val partial = File(directory, "playback.part")
@@ -55,7 +58,7 @@ class PlaybackDiagnostics(private val directory: File) {
 
     suspend fun checkpoint(): PlaybackCheckpoint? = withContext(Dispatchers.IO) {
         mutex.withLock {
-            try { if (file.isFile) Json.decodeFromString<PlaybackCheckpoint>(file.readText()) else null }
+            try { current ?: if (file.isFile) Json.decodeFromString<PlaybackCheckpoint>(file.readText()).takeIf { it.stage == PlaybackStage.FAILED } else null }
             catch (_: Exception) { null }
         }
     }

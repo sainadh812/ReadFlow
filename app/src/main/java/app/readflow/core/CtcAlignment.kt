@@ -3,6 +3,10 @@ package app.readflow.core
 import kotlin.math.exp
 import kotlin.math.ln
 
+class AlignmentConfidenceException(val tokenIndex: Int, val token: String, val sourceWordIds: List<String>,
+    val confidence: Float, val threshold: Float,
+) : IllegalArgumentException("Word alignment confidence is too low; word synchronization unavailable")
+
 /** Known-transcript CTC Viterbi alignment. No transcript decoding or word-duration estimates. */
 class CtcAlignment {
     companion object {
@@ -64,7 +68,8 @@ class CtcAlignment {
         val timings = linkedMapOf<String, WordTiming>()
         text.tokens.forEachIndexed { index, token ->
             val quality = confidence[index] / count[index]
-            require(quality >= .12f) { "Word alignment confidence is too low; word synchronization unavailable" }
+            require(quality.isFinite()) { "Word alignment produced a non-finite confidence" }
+            if (quality < .12f) throw AlignmentConfidenceException(index, token.text, token.sourceIds, quality, .12f)
             // Wav2Vec2 convolution stride 320, receptive field 400 at 16 kHz.
             val start = starts[index] * 320L * sampleRate / 16000
             val end = ((ends[index] * 320L + 400) * sampleRate / 16000).coerceAtMost(sampleCount.toLong())

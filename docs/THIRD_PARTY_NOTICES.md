@@ -38,4 +38,4 @@ The exact Sherpa AAR is pinned to the upstream release SHA-256. Obtain correspon
 
 Original reading text, generated PDF/image fixtures and fixture scripts were created for this project and may be used under CC0. Fixture speech derives from the listed voice models; keep the corresponding model/voice attribution when sharing it.
 
-App code makes no analytics/content logging calls. ML Kit is a Google binary SDK; its terms and telemetry behavior must be assessed in the requested airplane-mode/network capture test. Do not interpret absence of app analytics code as a verified statement about every transitive SDK's telemetry.
+App code adds no analytics or automatic diagnostic uploads. At the user's request, 0.1.4 adds private, error-only input logging with explicit export/delete controls; logs may contain document excerpts and generated speech. See [ISSUE_LOGS.md](ISSUE_LOGS.md). ML Kit is a Google binary SDK; its terms and telemetry behavior must be assessed in the requested airplane-mode/network capture test. Do not interpret absence of app analytics code as a verified statement about every transitive SDK's telemetry.

@@ -4,7 +4,7 @@
 
 One Android app module, Kotlin/Compose/Material 3, API 35 minimum and target, ARM64 by default. API 35 is an MVP choice so the platform PDF text APIs are available, not a permanent policy. `-Pemulator=true` selects x86_64 for tests. There is no Android system-TTS fallback, cloud inference, account, or Python server.
 
-Packages separate `core`, `ingest`, `speech`, `models`, `playback`, `data`, and `ui`. `PageExtractor`, `ArticleExtractor`, `ReadingOrder`, `TextNormalizer`, `SpeechAligner`, `TtsEngine`, and `PackRepository` expose replaceable boundaries. The application owns repositories; a ViewModel owns screen state. `ReadingService` owns ExoPlayer and MediaSession; it attaches to the application playback coordinator. Coroutines and StateFlow carry work/state, not WorkManager.
+Packages separate `core`, `ingest`, `speech`, `models`, `playback`, `data`, `diagnostics`, and `ui`. `PageExtractor`, `ArticleExtractor`, `ReadingOrder`, `TextNormalizer`, `SpeechAligner`, `TtsEngine`, and `PackRepository` expose replaceable boundaries. The application owns repositories; a ViewModel owns screen state. `ReadingService` owns ExoPlayer and MediaSession; it attaches to the application playback coordinator. Coroutines and StateFlow carry work/state, not WorkManager.
 
 ## Timing milestone
 
@@ -24,7 +24,7 @@ Offsets use Kotlin/Android UTF-16 code units, half-open `[start,end)` ranges. Do
 
 PDF extraction tries `getTextContents()` independently per page. Nonempty but sparse text is insufficient. Usable native text uses exact `searchText()` bounds only when occurrence counts match the source tokens. Ambiguous substring/repeated matches fall back to OCR, never proportional boxes. Pages containing images use one full-page OCR representation to avoid native/OCR duplication. This trades some native-text accuracy for a conservative, geometry-complete result; selective region fusion is not implemented.
 
-OCR uses bundled ML Kit 16.0.1. Render scale starts at 225 DPI and caps at six million pixels. A single mutex serializes PDF and OCR resources. ML Kit tasks drain before bitmaps are recycled even on cancellation. Only the requested page and pages needed to fill the bounded audio queue are processed. No whole-book scan occurs before playback. Quarter-turn scan rotation has an invertible processed-to-page transform. Automatic deskew and user cropping are not implemented.
+OCR uses bundled ML Kit 16.0.1. Render scale starts at 225 DPI and caps at six million pixels. Extraction resources are serialized; preview rendering has a separate lock and independently opened PDF resources so display need not wait for OCR. ML Kit tasks drain before bitmaps are recycled even on cancellation. Only the requested page and pages needed to fill the bounded audio queue are processed. No whole-book scan occurs before playback. Quarter-turn scan rotation has an invertible processed-to-page transform. Automatic deskew and user cropping are not implemented.
 
 Reading order handles simple lines and a conservative clear two-column gutter. Complex layouts, tables, math, marginalia, and overlapping text are not generally supported. Margin skipping is optional, non-destructive, and geometric; cross-page repeated-header classification is not yet implemented. Potential equations are flagged and unsupported speech symbols fail with an explicit skip instruction.
 
@@ -51,6 +51,14 @@ Media3 handles audio focus, noisy-route events, foreground playback, notificatio
 The reading screen uses source offsets from Compose text layout, rejects whitespace/outside-glyph taps, and offers a paused read-from-here action. Original-page mode shares one affine mapping between drawing and inverse tap hit testing, including zoom, pan and quarter-turn rotation. Manual dragging suspends following. Screen reader labels/custom paragraph actions are supplied without a live-region narration of every highlight.
 
 No approved mockup attachment was accessible in this turn. The implementation follows the written light/blue/compact layout requirements; fidelity to the specific approved image is unverified.
+
+## Issue diagnostics
+
+`IssueLogs` is a testable, error-only store under `noBackupFilesDir/issues`. Call sites supply the actual failed sentence, prepared speech/mappings, source metadata and operation stage when available. `AlignmentConfidenceException` preserves the measured failing token posterior and existing threshold without weakening the alignment gate. The coordinator captures generated WAVs before failed cache cleanup, then rechecks the generation ID before updating UI. Media3 player errors have their own listener. Cancellation is not an issue.
+
+Successful work keeps only a memory context for best-effort uncaught Java exception capture. There is no persistent content breadcrumb stream. On reopening after a native crash/ANR/low-memory exit, available Android exit metadata can produce a report; lost input is explicitly marked unavailable. The old content-free `PlaybackDiagnostics` summary persists only failed checkpoints now.
+
+Reports use bounded JSON, optional exact WAV attachments, same-directory atomic installation, count/byte retention and warning deduplication. Export snapshots are taken under the store lock; external SAF output runs after releasing it. Export verifies the attached audio hash. Logs are private until an explicit, privacy-confirmed export; no upload client is present. User-facing storage failure does not replace the original issue. See [ISSUE_LOGS.md](ISSUE_LOGS.md) for limits, deletion semantics and coverage.
 
 ## Remaining validation
 

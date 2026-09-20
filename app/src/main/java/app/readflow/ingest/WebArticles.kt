@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.webkit.*
 import app.readflow.core.*
+import app.readflow.diagnostics.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.*
 import okhttp3.OkHttpClient
@@ -14,21 +15,34 @@ import java.util.concurrent.TimeUnit
 
 data class Article(val title: String, val page: ExtractedPage, val sanitizedHtml: String)
 interface ArticleExtractor { suspend fun import(url: String): Article }
-class ReadabilityArticles(private val context: Context) : ArticleExtractor {
+class ArticleImportException(cause: Exception) : IllegalStateException(cause.message, cause)
+class ReadabilityArticles(private val context: Context, private val issues: IssueLogs? = null) : ArticleExtractor {
     private val client = OkHttpClient.Builder().callTimeout(30, TimeUnit.SECONDS).followSslRedirects(false).build()
     override suspend fun import(url: String): Article = withContext(Dispatchers.IO) {
-        require(url.startsWith("https://")) { "Use an HTTPS article URL" }
-        val html = client.newCall(Request.Builder().url(url).header("User-Agent", "ReadFlow/0.1 (local article reader)").build()).execute().use { response ->
-            check(response.request.url.isHttps) { "Insecure webpage redirect rejected" }
-            check(response.isSuccessful) { "Article is inaccessible (HTTP ${response.code}). Sign-in and paywalled content are not supported." }
-            require(response.header("Content-Type").orEmpty().contains("html")) { "This URL does not return a webpage" }
-            response.body!!.byteStream().use { input ->
-                val bytes = input.readNBytes(4 * 1024 * 1024 + 1)
-                require(bytes.size <= 4 * 1024 * 1024) { "Webpage is too large" }
-                bytes.toString(Charsets.UTF_8)
+        var stage = "FETCH_WEBPAGE"
+        var excerpt: String? = null
+        try {
+            require(url.startsWith("https://")) { "Use an HTTPS article URL" }
+            val html = client.newCall(Request.Builder().url(url).header("User-Agent", "ReadFlow/0.1 (local article reader)").build()).execute().use { response ->
+                check(response.request.url.isHttps) { "Insecure webpage redirect rejected" }
+                check(response.isSuccessful) { "Article is inaccessible (HTTP ${response.code}). Sign-in and paywalled content are not supported." }
+                require(response.header("Content-Type").orEmpty().contains("html")) { "This URL does not return a webpage" }
+                response.body!!.byteStream().use { input ->
+                    val bytes = input.readNBytes(4 * 1024 * 1024 + 1)
+                    require(bytes.size <= 4 * 1024 * 1024) { "Webpage is too large" }
+                    bytes.toString(Charsets.UTF_8)
+                }
             }
+            stage = "PARSE_ARTICLE"
+            excerpt = Jsoup.parse(ArticleHtml.sanitize(html)).text().take(IssueLogs.TEXT_LIMIT)
+            extractHtml(html)
+        } catch (error: Exception) {
+            if (error is CancellationException && error !is TimeoutCancellationException) throw error
+            val failure = if (error is TimeoutCancellationException) java.io.IOException("Article extraction timed out", error) else error
+            issues?.record(stage, failure, IssueInput(source = issueSource(url), mime = "text/html", originalText = excerpt,
+                details = mapOf("excerptPolicy" to "First 8192 characters of sanitized visible text; no HTML scripts, cookies or request headers")))
+            throw ArticleImportException(failure)
         }
-        extractHtml(html)
     }
     internal suspend fun extractHtml(html: String): Article = withContext(Dispatchers.IO) {
         val source = Jsoup.parse(html)

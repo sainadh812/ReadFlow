@@ -4,11 +4,15 @@ A native Android reading application built with Kotlin, Compose and local speech
 
 ## Install on a phone
 
-[Download ReadFlow 0.1.3 for Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.3-prototype/ReadFlow-0.1.3-arm64-debug.apk).
+[Download ReadFlow 0.1.4 for Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.4-prototype/ReadFlow-0.1.4-arm64-debug.apk).
+
+Version 0.1.4 adds **automatic issue-only logs** for import/parsing, extraction warnings, unsupported speech text, low-confidence alignment, model operations and playback errors. Normal successful operations and user cancellations do not create reports. Logs capture bounded failing input, source-word mappings, error details, model/device versions and, when available, the exact generated audio. Nothing is uploaded automatically.
+
+After an issue, open **Settings > Issue logs**, select the report, tap **Export issue log** (save icon), and choose a destination for the ZIP. Attach that ZIP when asking for help. **Review it first: it can contain private document text, source URLs and speech audio. Do not post private logs to a public GitHub issue.** Individual/all logs can be deleted. See [issue logging and verification](docs/ISSUE_LOGS.md), including limits for native crashes and missing input.
 
 Version 0.1.3 fixes ordinary webpage punctuation and technical identifiers being rejected as equations. PDFs now open in **Original PDF** view, fitted to the screen width, with direct page controls. Preview rendering does not wait for OCR; word selection becomes available when extraction finishes. The reflowed Reader remains optional. Unsupported sentences stop preparation with an explicit **Skip sentence** action instead of blocking navigation throughout the page.
 
-Install over the existing app without uninstalling or clearing data to preserve downloaded models and documents. The 0.1.2 native speech-callback crash fix remains included. If playback fails, use **Settings > Copy playback diagnostics**. The report excludes document content and is not uploaded automatically. See the [text/PDF fix report](docs/TEXT_PDF_FIX.md) for actual checks and remaining device verification.
+Install over the existing app without uninstalling or clearing data to preserve downloaded models and documents. The 0.1.2 native speech-callback crash fix remains included. **Settings > Copy playback diagnostics** remains a separate content-free summary; use the new Issue logs export when the failing input is needed. See the [text/PDF fix report](docs/TEXT_PDF_FIX.md) for earlier checks and remaining device verification.
 
 The 0.1.1 installation fixes remain included. Open **Voice models**, then choose **Resume setup** for interrupted packs. Completed downloads are verified and reused. Word highlighting also requires the separate **Word alignment** pack. Keep ReadFlow open until setup finishes; interrupted setup can be resumed after reopening the app.
 

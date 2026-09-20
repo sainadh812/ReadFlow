@@ -6,6 +6,7 @@ import android.provider.OpenableColumns
 import androidx.room.withTransaction
 import app.readflow.core.*
 import app.readflow.ingest.*
+import app.readflow.diagnostics.*
 import app.readflow.models.fileHash
 import java.io.File
 import kotlinx.coroutines.*
@@ -14,7 +15,9 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
-class Documents(private val context: Context, val database: ReadFlowDatabase, val extractor: LocalExtraction, private val articles: ArticleExtractor) {
+class Documents(private val context: Context, val database: ReadFlowDatabase, val extractor: LocalExtraction, private val articles: ArticleExtractor,
+    private val issues: IssueLogs? = null,
+) {
     val dao = database.dao()
     private val root = File(context.noBackupFilesDir, "documents").apply { mkdirs() }
     private val extractionLock = Mutex()
@@ -57,7 +60,10 @@ class Documents(private val context: Context, val database: ReadFlowDatabase, va
         val local = File(root, "$id.html").apply { writeText(article.sanitizedHtml) }
         val document = DocumentEntity(id, hash, url, article.title, local.path, "text/html", 1)
         dao.insertDocument(document)
-        save(pipeline.process(id, 0, article.page))
+        val page = pipeline.process(id, 0, article.page)
+        save(page)
+        if (article.page.warnings.isNotEmpty()) issues?.record("ARTICLE_WARNING", input = documentIssueInput(document, page),
+            warnings = article.page.warnings, dedupeKey = stableId(document.id, article.page.warnings.joinToString()))
         document
     }
     suspend fun loadPage(document: DocumentEntity, index: Int, rotation: Int? = null): PageContent = extractionLock.withLock {
@@ -67,6 +73,10 @@ class Documents(private val context: Context, val database: ReadFlowDatabase, va
         check(document.mime != "text/html") { "Saved article content is unavailable" }
         val content = pipeline.process(document.id, index, extractor.extract(document.localPath, index, rotation ?: old?.rotation ?: 0))
         save(content, rotation ?: old?.rotation ?: 0)
+        val issueWarnings = content.warnings.filterNot { it.startsWith("OCR supplies word geometry") }
+        if (issueWarnings.isNotEmpty()) issues?.record("EXTRACTION_WARNING", input = documentIssueInput(document, content,
+            words = content.words.take(128), details = mapOf("rotation" to (rotation ?: old?.rotation ?: 0).toString())),
+            warnings = issueWarnings, dedupeKey = stableId(document.id, index, rotation ?: 0, issueWarnings.joinToString()))
         content
     }
     private suspend fun save(page: PageContent, rotation: Int = 0) {

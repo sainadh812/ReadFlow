@@ -10,13 +10,13 @@ import org.junit.rules.TemporaryFolder
 class PlaybackDiagnosticsTest {
     @get:Rule val temporary = TemporaryFolder()
 
-    @Test fun lastNativeStageSurvivesAppRestart() = runBlocking {
+    @Test fun successfulStagesStayInMemoryAndDoNotCreateLogs() = runBlocking {
         val directory = temporary.newFolder()
-        PlaybackDiagnostics(directory).record("kokoro", PlaybackStage.SYNTHESIZING)
-        val restored = PlaybackDiagnostics(directory).checkpoint()!!
-        assertEquals("kokoro", restored.model)
-        assertEquals(PlaybackStage.SYNTHESIZING, restored.stage)
-        assertTrue(restored.timestampMs > 0)
+        val diagnostics = PlaybackDiagnostics(directory)
+        diagnostics.record("kokoro", PlaybackStage.SYNTHESIZING)
+        assertEquals(PlaybackStage.SYNTHESIZING, diagnostics.checkpoint()!!.stage)
+        assertNull(PlaybackDiagnostics(directory).checkpoint())
+        assertTrue(directory.listFiles().orEmpty().isEmpty())
     }
 
     @Test fun failureReportNeverPersistsExceptionMessagesOrUnknownModelText() = runBlocking {

@@ -63,6 +63,7 @@ private val LightBlue = Color(0xFFDCEAFF)
                     "reader" -> Reader(vm, playback, prefs, requestNotifications)
                     "voices" -> Voices(vm)
                     "settings" -> Settings(vm, prefs)
+                    "issues" -> IssueLogsScreen(vm)
                     else -> Library(vm, { picker.launch(arrayOf("application/pdf", "image/*")) }, { urlDialog = true })
                 }
             }
@@ -127,6 +128,7 @@ private val LightBlue = Color(0xFFDCEAFF)
                     DropdownMenu(menu, { menu = false }) {
                         DropdownMenuItem(text = { Text("Contents and bookmarks") }, onClick = { contents = true; menu = false }, leadingIcon = { Icon(Icons.Default.List, null) })
                         DropdownMenuItem(text = { Text("Text and display") }, onClick = { vm.screen.value = "settings"; menu = false }, leadingIcon = { Icon(Icons.Default.TextFields, null) })
+                        DropdownMenuItem(text = { Text("Issue logs") }, onClick = { vm.showIssues(); menu = false }, leadingIcon = { Icon(Icons.Default.BugReport, null) })
                         if (state.document?.mime == "application/pdf" || state.document?.mime?.startsWith("image") == true)
                             DropdownMenuItem(text = { Text("Rotate scan and retry OCR") }, onClick = { vm.rotateOcr(); menu = false }, leadingIcon = { Icon(Icons.Default.RotateRight, null) })
                     }
@@ -139,6 +141,9 @@ private val LightBlue = Color(0xFFDCEAFF)
         if (state.blockedSentence != null) TextButton(onClick = { requestNotifications(); vm.app.playback.skipBlockedSentence() },
             modifier = Modifier.align(Alignment.End).padding(horizontal = 12.dp)) {
             Icon(Icons.Default.SkipNext, null); Spacer(Modifier.width(6.dp)); Text("Skip sentence")
+        }
+        if (state.error != null) TextButton(onClick = vm::showIssues, modifier = Modifier.align(Alignment.End).padding(horizontal = 12.dp)) {
+            Icon(Icons.Default.BugReport, null); Spacer(Modifier.width(6.dp)); Text("Issue logs")
         }
         if (state.document?.mime == "application/pdf" || state.document?.mime?.startsWith("image") == true) {
             SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {

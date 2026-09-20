@@ -2,7 +2,7 @@
 
 This is a native Android implementation with a built debug APK and real-audio host regression evidence. **The full core experience is not yet accepted:** both engines still need Android target execution and manually checked audible word boundaries. No phone performance, timing-error, offline, Bluetooth or 30-minute-session result is claimed.
 
-The latest patch is **0.1.3-prototype**, addressing webpage normalization failures, page-wide preparation failures, and PDF viewing. See [TEXT_PDF_FIX.md](TEXT_PDF_FIX.md). The user reports that basic Kokoro speech worked on their SM-S938B, Android 16/API 36, with 0.1.2; that is user-reported smoke evidence, not independently measured timing or both-engine acceptance. The [native callback fix](PLAYBACK_CRASH_FIX.md) and [installation fix](INSTALLATION_FIX.md) remain included. Earlier build results below describe the original 0.1.0 delivery; `evidence/build-results.json` records the latest build.
+The latest patch is **0.1.4-prototype**, adding private, automatic issue-only logs with bounded failing input and export/delete controls. The final build passed 69 JVM tests and lint (0 errors, 15 warnings); phone export and crash recovery have not been exercised. See [ISSUE_LOGS.md](ISSUE_LOGS.md). The 0.1.3 [text/PDF fixes](TEXT_PDF_FIX.md), [native callback fix](PLAYBACK_CRASH_FIX.md) and [installation fix](INSTALLATION_FIX.md) remain included. The user reports that basic Kokoro speech worked on their SM-S938B, Android 16/API 36, with 0.1.2; that is user-reported smoke evidence, not independently measured timing or both-engine acceptance. Earlier build results below describe the original 0.1.0 delivery; `evidence/build-results.json` records the latest build.
 
 ## Implemented
 
@@ -13,6 +13,7 @@ The latest patch is **0.1.3-prototype**, addressing webpage normalization failur
 - APK-pinned asset manifests with archive/file SHA-256s, exact download/installed sizes, licensed fixed voice, phonemizer/tokenizer/alignment resources, resumable downloads, retries/cancel/free-space checks, safe archive handling and atomic installation.
 - Media3 ExoPlayer/MediaSessionService, audio focus, route-unplug handling, local WAV queue, actual media-position highlighting, sample-boundary seeking, source-word persistence, generation invalidation, bounded prefetch and thermal/memory pressure reduction.
 - Room records for documents/pages/words/chunks/timings/positions/bookmarks; DataStore preferences; private managed file copies, LRU cache, exact audio hash validation, deletion and backup exclusion.
+- Issue-only reports for caught import/extraction/normalization/model/alignment/playback failures and extraction warnings. Reports retain bounded input excerpts, source mappings, actual alignment confidence failures and exact available generated WAVs, with local inspection, explicit ZIP export and deletion. Success/cancellation does not create a report; no automatic upload. Best-effort Java crash capture and next-launch Android exit metadata are implemented.
 
 ## Verified so far
 
@@ -35,6 +36,7 @@ The latest patch is **0.1.3-prototype**, addressing webpage normalization failur
 - PDF/image Original view is now the default, fitted to width with page controls. The current page preview can render while the separately serialized OCR task runs; only bounded page bitmaps are retained. This is a single-page pan/zoom viewer, not Edge's continuous multipage PDF UI. Android rendering, gesture ergonomics and extracted highlight geometry still require device checks.
 - Downloads resume manually from persisted partial bytes, not automatically in a background worker. Process death restores a word position; background session resurrection is not implemented.
 - No physical Galaxy S25 Ultra was attached. Hardware audio latency (especially Bluetooth), 1x/2x synchronization, rapid UI tap races, airplane-mode operation, focus interruptions, accessibility usability, power/thermal/memory and 30-minute sessions are unverified.
+- Issue-log export UI, retention across phone restart and Android crash/ANR history recovery are not device-verified. Native crashes/OS kills lose in-memory input; next-launch reports contain OS metadata only. Reports do not attach original PDFs/images or full webpages. Unavailable storage, early startup failure or abrupt death can prevent logging; capture is not guaranteed for every issue.
 - No approved reading-screen image was attached/accessibly located, so visual matching to that specific reference is unverified.
 
 ## Host timing evidence

@@ -13,8 +13,8 @@ android {
         applicationId = "app.readflow"
         minSdk = 35
         targetSdk = 35
-        versionCode = 4
-        versionName = "0.1.3-prototype"
+        versionCode = 5
+        versionName = "0.1.4-prototype"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk { abiFilters += if (providers.gradleProperty("emulator").orNull == "true") "x86_64" else "arm64-v8a" }
     }
