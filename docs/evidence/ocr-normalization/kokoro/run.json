@@ -1,0 +1,18 @@
+{
+  "host": "Linux-6.8.0-1066-gcp-x86_64-with-glibc2.35",
+  "processor": "x86_64",
+  "model": "kokoro",
+  "sherpa": "1.13.8",
+  "ort": "1.20.1",
+  "threads": 2,
+  "text": "You read faster than vertical bar do. We read about money. four",
+  "sampleRate": 24000,
+  "sampleCount": 90673,
+  "frames": 188,
+  "coldLoadSeconds": 4.324042395921424,
+  "synthesisSeconds": 4.79838022403419,
+  "alignmentLoadAndEmissionSeconds": 1.317743255989626,
+  "durationSeconds": 3.7780416666666667,
+  "combinedRtf": 1.618860780172395,
+  "boundaryValidation": "Not manually audited. Host emissions only; Kotlin test produces boundaries."
+}

@@ -1,5 +1,7 @@
 # ReadFlow 0.1.4: automatic issue logs
 
+This is the historical 0.1.4 delivery report. The [0.1.5 update](OCR_TEXT_FIX.md) retains this feature and adds an optional `normalization` object identifying rejected source IDs/text and attempted expansion. Old reports remain readable. Use the latest APK linked from the repository README.
+
 ## Install and send a report
 
 [Download the ARM64 debug APK](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.4-prototype/ReadFlow-0.1.4-arm64-debug.apk). Minimum Android 15/API 35. Version code 5; same package and signing certificate as 0.1.3. Install over the existing app, without clearing data or uninstalling, to retain models and documents. Actual upgrade on the Galaxy S25 Ultra remains unverified here.

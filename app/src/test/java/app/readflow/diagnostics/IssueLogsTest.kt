@@ -44,6 +44,26 @@ class IssueLogsTest {
         assertEquals(listOf("word-3"), report.alignment!!.sourceIds)
         assertEquals(2, report.alignment!!.tokenIndex)
     }
+    @Test fun normalizationFailureIdentifiesTheRejectedTokenInsideItsSentence() = runBlocking {
+        val page = DocumentPipeline().process("doc", 0, ExtractedPage(listOf(TextElement("Read x = y.", emptyList())), 0f, 0f, "test"))
+        val error = assertThrows(SpeechPreparationException::class.java) { SpeechPlanner().prepare(page.words).toList() }
+        val store = store()
+        val report = store.read(store.record("NORMALIZE_TEXT", error, IssueInput(words = page.words))!!)!!
+        val rejected = report.normalization!!
+        assertEquals("=", rejected.sourceText)
+        assertEquals("=", rejected.attemptedExpansion)
+        assertEquals(listOf(page.words.first { it.text == "=" }.id), rejected.sourceIds)
+        assertNull(report.alignment)
+        assertFalse(report.audio.included)
+    }
+    @Test fun olderIssueReportsWithoutNormalizationDetailsStillOpen() = runBlocking {
+        val root = temporary.newFolder(); val id = "11111111-1111-1111-1111-111111111111"
+        val directory = File(root, id).apply { mkdir() }
+        File(directory, "report.json").writeText("""{"schemaVersion":1,"id":"$id","timestampMs":1,"stage":"NORMALIZE_TEXT","severity":"ERROR","environment":{},"input":{},"failures":[]}""")
+        val report = store(root).read(id)!!
+        assertNull(report.normalization)
+        assertEquals("NORMALIZE_TEXT", report.stage)
+    }
     @Test fun failureAudioIsRetainedBeforeCacheCleanupAndExportedExactly() = runBlocking {
         val store = store(); val wav = temporary.newFile("chunk.wav")
         val original = ByteArray(256) { it.toByte() }; wav.writeBytes(original)

@@ -2,8 +2,11 @@ package app.readflow.core
 
 import java.util.Locale
 
+class NormalizationException(val sourceIds: List<String>, val sourceText: String, val expansion: String, reason: String) :
+    IllegalArgumentException(reason)
+
 class EnglishNormalizer : TextNormalizer {
-    companion object { const val VERSION = "english-2" }
+    companion object { const val VERSION = "english-3" }
     private val small = listOf("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen")
     private val tens = listOf("", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety")
     fun number(n: Long): String = when {
@@ -23,16 +26,19 @@ class EnglishNormalizer : TextNormalizer {
         while (i < words.size) {
             val word = words[i]
             var raw = typography(word.text)
+            var sourceText = word.text
             val ids = mutableListOf(word.id)
             val next = words.getOrNull(i + 1)
             if (raw.endsWith("-") && next != null && next.paragraphId == word.paragraphId && next.text.firstOrNull()?.isLowerCase() == true && next.sourceStart > word.sourceEnd &&
                 word.boxes.isNotEmpty() && next.boxes.isNotEmpty() && next.boxes.first().top > word.boxes.first().bottom - 2) {
-                raw = raw.dropLast(1) + typography(next.text); ids += next.id; i++
+                raw = raw.dropLast(1) + typography(next.text); sourceText += " ${next.text}"; ids += next.id; i++
             }
             val expansion = raw.trim().split(Regex("\\s+")).joinToString(" ", transform = ::expandToken)
             // The same expansion feeds synthesis and alignment, never a second guessed transcript.
-            require(!expansion.any { it.isDigit() || (it.isLetter() && it !in 'A'..'Z' && it !in 'a'..'z') }) { "This sentence needs an explicit English pronunciation." }
-            require(expansion.all { it.isLetter() || it.isWhitespace() || it in "'.,!?;:()\"-" }) { "This sentence contains an unsupported symbol or equation." }
+            if (expansion.any { it.isDigit() || (it.isLetter() && it !in 'A'..'Z' && it !in 'a'..'z') })
+                throw NormalizationException(ids.toList(), sourceText, expansion, "This sentence needs an explicit English pronunciation.")
+            if (!expansion.all { it.isLetter() || it.isWhitespace() || it in "'.,!?;:()\"-" })
+                throw NormalizationException(ids.toList(), sourceText, expansion, "This sentence contains an unsupported symbol or equation.")
             spoken += expansion
             Regex("[A-Za-z]+(?:'[A-Za-z]+)*").findAll(expansion).forEach {
                 tokens += SpokenToken(it.value.uppercase(Locale.US), ids.toList())
@@ -66,6 +72,7 @@ class EnglishNormalizer : TextNormalizer {
             '\u2022', '\u2023', '\u25e6' -> ","
             '&' -> " and "
             '/' -> " slash "
+            '|' -> " vertical bar "
             '_' -> " underscore "
             '@' -> " at "
             '\u00a9' -> " copyright "
@@ -82,11 +89,17 @@ class EnglishNormalizer : TextNormalizer {
         val bare = rest.dropLast(suffix.length)
         val number = Regex("^([£$€₹]?)([-+]?(?:\\d{1,3}(?:,\\d{3})+|\\d+))(?:\\.(\\d+))?(%|kg|km|cm|mm|mg|mL|ml|Hz)?$").matchEntire(bare)
         if (number != null && number.groupValues[2].replace(",", "").toLongOrNull()?.let { it in -999_999_999_999L..999_999_999_999L } == true) {
-            val integer = number(number.groupValues[2].replace(",", "").toLong())
+            val value = number.groupValues[2].replace(",", "").toLong()
+            val integer = if (value == 0L && number.groupValues[2].startsWith('-')) "minus zero" else number(value)
             val decimal = number.groupValues[3].let { if (it.isEmpty()) "" else " point " + it.map { c -> small[c.digitToInt()] }.joinToString(" ") }
             val currency = mapOf("$" to " dollars", "£" to " pounds", "€" to " euros", "₹" to " rupees")[number.groupValues[1]].orEmpty()
             val unit = mapOf("%" to " percent", "kg" to " kilograms", "km" to " kilometers", "cm" to " centimeters", "mm" to " millimeters", "mg" to " milligrams", "ml" to " milliliters", "mL" to " milliliters", "Hz" to " hertz")[number.groupValues[4]].orEmpty()
             return prefix + integer + decimal + currency + unit + suffix
+        }
+        // OCR may flatten a reference into "word.4". Speak it literally, without dropping it or labelling it a footnote.
+        val attachedNumeral = Regex("^([A-Za-z]+(?:['-][A-Za-z]+)*[.!?]+[\"')]*)(\\(?[0-9]+)$").matchEntire(bare)
+        if (attachedNumeral != null) {
+            return prefix + expandToken(attachedNumeral.groupValues[1]) + " " + expandToken(attachedNumeral.groupValues[2]) + suffix
         }
         val decade = Regex("(\\d{2}|\\d{4})s").matchEntire(bare)?.groupValues?.get(1)?.toInt()
         if (decade != null && decade % 10 == 0 && decade >= 20) {

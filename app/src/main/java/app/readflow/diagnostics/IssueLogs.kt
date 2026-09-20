@@ -21,11 +21,13 @@ import kotlinx.serialization.json.Json
 )
 @Serializable data class IssueFailure(val type: String, val message: String?, val stack: List<String>)
 @Serializable data class ConfidenceFailure(val tokenIndex: Int, val token: String, val sourceIds: List<String>, val confidence: Float, val threshold: Float)
+@Serializable data class NormalizationFailure(val sourceIds: List<String>, val sourceText: String, val attemptedExpansion: String)
 @Serializable data class IssueAudio(val included: Boolean, val bytes: Long = 0, val sha256: String? = null, val omission: String? = null)
 @Serializable data class IssueReport(
     val schemaVersion: Int = 1, val id: String, val timestampMs: Long, val stage: String, val severity: String,
     val environment: Map<String, String>, val input: IssueInput, val failures: List<IssueFailure>,
     val warnings: List<String> = emptyList(), val alignment: ConfidenceFailure? = null,
+    val normalization: NormalizationFailure? = null,
     val audio: IssueAudio = IssueAudio(false, omission = "No generated audio available"),
     val truncatedFields: List<String> = emptyList(), val dedupeKey: String? = null,
     val privacy: String = "Contains private input excerpts, source identifiers and possibly generated speech. Review before sharing. No automatic upload. Original PDF/image files and full webpages are not attached.",
@@ -82,6 +84,10 @@ class IssueLogs(private val root: File, private val environment: () -> Map<Strin
             val confidence = causes.filterIsInstance<AlignmentConfidenceException>().firstOrNull()?.let {
                 ConfidenceFailure(it.tokenIndex, it.token.take(128), it.sourceWordIds.take(8), it.confidence, it.threshold)
             }
+            val normalization = causes.filterIsInstance<NormalizationException>().firstOrNull()?.let {
+                NormalizationFailure(it.sourceIds.take(8), text("normalization.sourceText", it.sourceText, 256)!!,
+                    text("normalization.attemptedExpansion", it.expansion)!!)
+            }
             val attachment = when {
                 audio == null || !audio.isFile -> IssueAudio(false, omission = "No generated audio available")
                 audio.length() > AUDIO_LIMIT -> IssueAudio(false, omission = "Audio exceeds 4 MiB; no partial WAV attached")
@@ -100,7 +106,7 @@ class IssueLogs(private val root: File, private val environment: () -> Map<Strin
             val report = IssueReport(id = id, timestampMs = System.currentTimeMillis(), stage = stage.take(80),
                 severity = if (error == null) "WARNING" else "ERROR", environment = environment(), input = safeInput,
                 failures = causes.map { IssueFailure(it.javaClass.name, text("errorMessage", it.message, 2048), it.stackTrace.take(40).map { frame -> frame.toString().take(512) }) },
-                warnings = warnings.take(16).map { text("warning", it, 1024)!! }, alignment = confidence, audio = attachment,
+                warnings = warnings.take(16).map { text("warning", it, 1024)!! }, alignment = confidence, normalization = normalization, audio = attachment,
                 truncatedFields = truncated.distinct(), dedupeKey = dedupeKey?.take(128))
             val bytes = json.encodeToString(IssueReport.serializer(), report).toByteArray()
             check(bytes.size <= 512 * 1024) { "Issue report exceeds storage bound" }

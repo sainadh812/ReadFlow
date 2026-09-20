@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEPS = ROOT / ".deps"
 TEXT = "Reading opens a quiet space for thought. Tap any word to hear the sentence from that point."
 
-def run(name):
+def run(name, text=TEXT, output_root=None):
     begin = time.perf_counter()
     if name == "kokoro":
         folder = DEPS / "kokoro-en-v0_19"
@@ -39,11 +39,11 @@ def run(name):
         config.reference_audio = voice
         config.reference_sample_rate = rate
         config.num_steps = 5
-        audio = engine.generate(TEXT, config)
+        audio = engine.generate(text, config)
     else:
-        audio = engine.generate(TEXT, sid=0, speed=1.0)
+        audio = engine.generate(text, sid=0, speed=1.0)
     generated = time.perf_counter()
-    out = ROOT / "docs/evidence" / name
+    out = (output_root if output_root is not None else ROOT / "docs/evidence") / name
     out.mkdir(parents=True, exist_ok=True)
     sf.write(out / "paragraph.wav", audio.samples, audio.sample_rate, subtype="PCM_16")
     # Use the quantized audio that is actually played, not a different artifact.
@@ -61,7 +61,7 @@ def run(name):
     logits.astype("<f4").tofile(out / "logits.f32")
     finished = time.perf_counter()
     report = dict(host=platform.platform(), processor=platform.processor(), model=name, sherpa="1.13.8",
-        ort=ort.__version__, threads=2, text=TEXT, sampleRate=rate, sampleCount=len(samples), frames=len(logits),
+        ort=ort.__version__, threads=2, text=text, sampleRate=rate, sampleCount=len(samples), frames=len(logits),
         coldLoadSeconds=loaded-begin, synthesisSeconds=generated-loaded, alignmentLoadAndEmissionSeconds=finished-generated,
         durationSeconds=len(samples)/rate, combinedRtf=(finished-loaded)/(len(samples)/rate),
         boundaryValidation="Not manually audited. Host emissions only; Kotlin test produces boundaries.")
@@ -71,4 +71,7 @@ def run(name):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("model", choices=["kokoro", "pocket"])
-    run(parser.parse_args().model)
+    parser.add_argument("--text", default=TEXT, help="Normalized speech text; keep original source text for Kotlin mapping checks")
+    parser.add_argument("--output", type=Path, help="Evidence directory; defaults to docs/evidence")
+    args = parser.parse_args()
+    run(args.model, args.text, args.output)

@@ -8,8 +8,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.38",
-      "timestamp": "2026-09-20T07:06:49"
+      "time": "0.194",
+      "timestamp": "2026-09-20T07:45:40"
     },
     {
       "name": "app.readflow.core.CoreTest",
@@ -17,8 +17,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.318",
-      "timestamp": "2026-09-20T07:06:50"
+      "time": "0.22",
+      "timestamp": "2026-09-20T07:45:40"
     },
     {
       "name": "app.readflow.core.IntegrityTest",
@@ -26,17 +26,26 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.05",
-      "timestamp": "2026-09-20T07:06:50"
+      "time": "0.047",
+      "timestamp": "2026-09-20T07:45:41"
     },
     {
-      "name": "app.readflow.core.RealAudioTest",
-      "tests": "1",
+      "name": "app.readflow.core.OcrSpeechTest",
+      "tests": "7",
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.144",
-      "timestamp": "2026-09-20T07:06:50"
+      "time": "0.095",
+      "timestamp": "2026-09-20T07:45:41"
+    },
+    {
+      "name": "app.readflow.core.RealAudioTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.52",
+      "timestamp": "2026-09-20T07:45:40"
     },
     {
       "name": "app.readflow.core.SpeechPlanningTest",
@@ -44,8 +53,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.514",
-      "timestamp": "2026-09-20T07:06:50"
+      "time": "0.431",
+      "timestamp": "2026-09-20T07:45:41"
     },
     {
       "name": "app.readflow.core.WebSpeechTest",
@@ -53,17 +62,17 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.079",
-      "timestamp": "2026-09-20T07:06:51"
+      "time": "0.073",
+      "timestamp": "2026-09-20T07:45:41"
     },
     {
       "name": "app.readflow.diagnostics.IssueLogsTest",
-      "tests": "18",
+      "tests": "20",
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "1.077",
-      "timestamp": "2026-09-20T07:06:48"
+      "time": "0.906",
+      "timestamp": "2026-09-20T07:45:41"
     },
     {
       "name": "app.readflow.models.PackInstallTest",
@@ -71,8 +80,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "114.438",
-      "timestamp": "2026-09-20T07:06:51"
+      "time": "115.354",
+      "timestamp": "2026-09-20T07:45:42"
     },
     {
       "name": "app.readflow.playback.PlaybackDiagnosticsTest",
@@ -80,8 +89,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.026",
-      "timestamp": "2026-09-20T07:08:45"
+      "time": "0.029",
+      "timestamp": "2026-09-20T07:47:38"
     },
     {
       "name": "app.readflow.speech.SpeechCallbackTest",
@@ -89,11 +98,11 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.004",
-      "timestamp": "2026-09-20T07:08:45"
+      "time": "0.005",
+      "timestamp": "2026-09-20T07:47:38"
     }
   ],
-  "testTotal": 69,
+  "testTotal": 80,
   "failures": 0,
   "skipped": 0,
   "lintErrors": 0,
@@ -105,8 +114,8 @@
   ],
   "apk": {
     "file": "ReadFlow-arm64-debug.apk",
-    "bytes": 130898376,
-    "sha256": "5e6c560fa8f67c8b10e39f0d657d0668e51e319f47f1fbbf29e7d41fba539226",
+    "bytes": 130464357,
+    "sha256": "a3cfea4eac941458ebae5d8ba6f03954d8d88f68c451c16028feae566043daa8",
     "abis": [
       "arm64-v8a"
     ],

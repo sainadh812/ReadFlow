@@ -1,0 +1,18 @@
+{
+  "host": "Linux-6.8.0-1066-gcp-x86_64-with-glibc2.35",
+  "processor": "x86_64",
+  "model": "pocket",
+  "sherpa": "1.13.8",
+  "ort": "1.20.1",
+  "threads": 2,
+  "text": "You read faster than vertical bar do. We read about money. four",
+  "sampleRate": 24000,
+  "sampleCount": 102841,
+  "frames": 214,
+  "coldLoadSeconds": 2.437871916918084,
+  "synthesisSeconds": 4.756524627096951,
+  "alignmentLoadAndEmissionSeconds": 1.3623733599670231,
+  "durationSeconds": 4.285041666666666,
+  "combinedRtf": 1.4279669751318578,
+  "boundaryValidation": "Not manually audited. Host emissions only; Kotlin test produces boundaries."
+}

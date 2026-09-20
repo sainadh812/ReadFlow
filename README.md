@@ -4,7 +4,9 @@ A native Android reading application built with Kotlin, Compose and local speech
 
 ## Install on a phone
 
-[Download ReadFlow 0.1.4 for Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.4-prototype/ReadFlow-0.1.4-arm64-debug.apk).
+[Download ReadFlow 0.1.5 for Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.5-prototype/ReadFlow-0.1.5-arm64-debug.apk).
+
+Version 0.1.5 fixes two reported normalization stops: OCR tokens such as `money.4` now read literally as "money. four", and `|` reads as "vertical bar". The latter is not automatically changed to "I": it may be an OCR error, but its meaning is ambiguous. Displayed text, geometry and source-word IDs are unchanged. No reimport or model download is needed; changed speech cache entries regenerate. Normalization issue logs now identify the exact rejected token. See [OCR text fixes and actual validation](docs/OCR_TEXT_FIX.md), including a separate Pocket alignment failure found during host testing.
 
 Version 0.1.4 adds **automatic issue-only logs** for import/parsing, extraction warnings, unsupported speech text, low-confidence alignment, model operations and playback errors. Normal successful operations and user cancellations do not create reports. Logs capture bounded failing input, source-word mappings, error details, model/device versions and, when available, the exact generated audio. Nothing is uploaded automatically.
 

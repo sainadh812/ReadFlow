@@ -70,7 +70,7 @@ class SpeechPlanningTest {
     @Test fun normalizationRevisionInvalidatesAudioWithoutChangingSourceIds() {
         val words = page("Read here.").words
         val speech = EnglishNormalizer().normalize(words)
-        assertNotEquals(cacheKey("doc", speech, "model", "voice", "settings", "align", "english-1"),
+        assertNotEquals(cacheKey("doc", speech, "model", "voice", "settings", "align", "english-2"),
             cacheKey("doc", speech, "model", "voice", "settings", "align"))
         assertEquals(words.map { it.id }, speech.sourceIds)
         assertEquals(words, page("Read here.").words)

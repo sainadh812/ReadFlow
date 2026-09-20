@@ -197,7 +197,9 @@ class ReadingCoordinator(
                 var requested = wordId
                 while (index < document.pageCount && gate.current(generation)) {
                     currentIndex = index; processingPage = null; currentWords = emptyList(); currentSpeech = null; audioKey = null
+                    sampleRate = null; sampleCount = null
                     stage = "EXTRACT_PAGE"
+                    issues.activeInput = input()
                     val page = documents.loadPage(document, index)
                     val words = page.words.filter { !chosen.skipMargins || !it.marginal || it.id == requested }
                     processingPage = page; processingWords = words
@@ -210,13 +212,15 @@ class ReadingCoordinator(
                         currentCoroutineContext().ensureActive()
                         diagnostics.record(chosen.model, PlaybackStage.PREPARING_TEXT)
                         stage = "NORMALIZE_TEXT"; currentWords = emptyList(); currentSpeech = null; audioKey = null
+                        sampleRate = null; sampleCount = null
+                        issues.activeInput = input()
                         if (!chunks.hasNext()) break
                         val prepared = chunks.next()
                         val speech = prepared.speech
                         currentWords = prepared.words; currentSpeech = speech
                         val modelRevision = sha256(Json.encodeToString(VoicePack.serializer(), manifest).toByteArray())
                         val key = cacheKey(document.id, speech, modelRevision, chosen.voice, "steps=5;temperature=.7;speed=1;threads=2", CtcAlignment.VERSION)
-                        audioKey = key; sampleRate = null; sampleCount = null
+                        audioKey = key
                         issues.activeInput = input()
                         stage = "READ_AUDIO_CACHE"
                         val audio = cache.get(key) ?: run {
