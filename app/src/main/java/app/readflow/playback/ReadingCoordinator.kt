@@ -82,10 +82,12 @@ class ReadingCoordinator(
                     val adjusted = mediaMs - (settings.latencyMs * player.playbackParameters.speed).toLong()
                     val ids = activeWordIds(chunk.timings, adjusted, chunk.sampleRate)
                     val active = ids.firstOrNull()
-                    if (active != null) durableWord = active
+                    playbackResumeWord(chunk, active)?.let { durableWord = it }
                     mutable.value = mutable.value.copy(page = page, activeWordId = active, activeWordIds = ids, currentChunk = chunk,
                         playing = player.isPlaying, wantsToPlay = player.playWhenReady, positionMs = mediaMs, durationMs = chunk.durationMs,
-                        status = if (player.playbackState == Player.STATE_BUFFERING) "Buffering" else if (player.isPlaying) "Reading" else if (mutable.value.preparing) "Preparing next sentence" else "Paused")
+                        status = if (player.playbackState == Player.STATE_BUFFERING) "Buffering" else if (player.isPlaying) {
+                            if (chunk.timings.isEmpty()) "Reading · word highlighting unavailable" else "Reading"
+                        } else if (mutable.value.preparing) "Preparing next sentence" else "Paused")
                     val word = durableWord
                     if (word != null && word != savedWord) {
                         documents.dao.putPosition(ReadingPosition(page.documentId, page.index, word)); savedWord = word
@@ -204,7 +206,7 @@ class ReadingCoordinator(
                     val words = page.words.filter { !chosen.skipMargins || !it.marginal || it.id == requested }
                     processingPage = page; processingWords = words
                     if (first) mutable.value = mutable.value.copy(page = page)
-                    val chunks = planner.prepare(words, if (first) requested else null).iterator()
+                    val chunks = planner.prepare(words, if (first) requested else null, fromSelectedWord = true).iterator()
                     while (true) {
                         val output = checkNotNull(player)
                         val targetSeconds = if (memoryPressure || power.currentThermalStatus >= PowerManager.THERMAL_STATUS_MODERATE) 8 else 30
@@ -240,10 +242,15 @@ class ReadingCoordinator(
                                 mutable.value = mutable.value.copy(status = "Aligning words")
                                 diagnostics.record(chosen.model, PlaybackStage.ALIGNING)
                                 stage = "ALIGN_WORDS"
-                                val timings = aligner.align(quantized, speech)
+                                val alignment = alignForPlayback(aligner, quantized, speech)
+                                alignment.rejected?.let { rejection ->
+                                    issues.record(stage, rejection, input(), audio = cache.file(key),
+                                        warnings = listOf("Speech continues without word highlighting for this chunk."),
+                                        dedupeKey = "alignment-audio-only-$key")
+                                }
                                 currentCoroutineContext().ensureActive()
                                 AlignedAudio(key, cache.file(key).path, withContext(Dispatchers.IO) { fileHash(cache.file(key)) }, quantized.sampleRate, quantized.samples.size.toLong(),
-                                    timings, speech.sourceIds, speech, manifest.id + manifest.version, chosen.voice, CtcAlignment.VERSION).also { cache.commit(document.id, it); committed = true }
+                                    alignment.timings, speech.sourceIds, speech, manifest.id + manifest.version, chosen.voice, CtcAlignment.VERSION).also { cache.commit(document.id, it); committed = true }
                             } catch (error: Exception) {
                                 if (error !is CancellationException && gate.current(generation)) {
                                     issues.record(stage, error, input(), audio = cache.file(key))
@@ -255,7 +262,7 @@ class ReadingCoordinator(
                             }
                         }
                         if (!gate.current(generation)) return@launch
-                        if (first && requested != null) check(audio.timings.any { it.wordId == requested }) { "This selection has no validated spoken boundary. Select a spoken word." }
+                        val startMs = if (first) playbackStartMs(audio, requested) else 0L
                         diagnostics.record(chosen.model, PlaybackStage.STARTING_AUDIO)
                         stage = "QUEUE_AUDIO"
                         currentCoroutineContext().ensureActive()
@@ -264,8 +271,7 @@ class ReadingCoordinator(
                             .setMediaMetadata(MediaMetadata.Builder().setTitle(document.title).setArtist("${manifest.name} · ${manifest.voices.first { it.id == chosen.voice }.name}").build()).build()
                         output.addMediaItem(item)
                         if (first) {
-                            val target = audio.timings.firstOrNull { it.wordId == requested } ?: audio.timings.first()
-                            output.seekTo(0, (target.startSample * 1000 + audio.sampleRate - 1) / audio.sampleRate)
+                            output.seekTo(0, startMs)
                             output.prepare(); output.play(); first = false; requested = null
                         } else if (output.playbackState == Player.STATE_ENDED) {
                             val shouldPlay = output.playWhenReady

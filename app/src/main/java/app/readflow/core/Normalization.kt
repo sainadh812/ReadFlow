@@ -22,17 +22,12 @@ class EnglishNormalizer : TextNormalizer {
     override fun normalize(words: List<SourceWord>): SpeechText {
         val tokens = mutableListOf<SpokenToken>()
         val spoken = mutableListOf<String>()
-        var i = 0
-        while (i < words.size) {
-            val word = words[i]
+        for (group in sourceGroups(words)) {
+            val word = group.first()
             var raw = typography(word.text)
-            var sourceText = word.text
-            val ids = mutableListOf(word.id)
-            val next = words.getOrNull(i + 1)
-            if (raw.endsWith("-") && next != null && next.paragraphId == word.paragraphId && next.text.firstOrNull()?.isLowerCase() == true && next.sourceStart > word.sourceEnd &&
-                word.boxes.isNotEmpty() && next.boxes.isNotEmpty() && next.boxes.first().top > word.boxes.first().bottom - 2) {
-                raw = raw.dropLast(1) + typography(next.text); sourceText += " ${next.text}"; ids += next.id; i++
-            }
+            val sourceText = group.joinToString(" ") { it.text }
+            val ids = group.map { it.id }
+            if (group.size == 2) raw = raw.dropLast(1) + typography(group[1].text)
             val expansion = raw.trim().split(Regex("\\s+")).joinToString(" ", transform = ::expandToken)
             // The same expansion feeds synthesis and alignment, never a second guessed transcript.
             if (expansion.any { it.isDigit() || (it.isLetter() && it !in 'A'..'Z' && it !in 'a'..'z') })
@@ -43,10 +38,28 @@ class EnglishNormalizer : TextNormalizer {
             Regex("[A-Za-z]+(?:'[A-Za-z]+)*").findAll(expansion).forEach {
                 tokens += SpokenToken(it.value.uppercase(Locale.US), ids.toList())
             }
-            i++
         }
         require(tokens.isNotEmpty()) { "No spoken words in this sentence." }
         return SpeechText(spoken.filter { it.isNotEmpty() }.joinToString(" ").replace(Regex("\\s+([,.;:!?)])"), "$1"), tokens, words.map { it.id })
+    }
+
+    // Keep the same pair consumption for normalization, source-word selection and chunking.
+    // This only examines typography/geometry; unsupported earlier words are not expanded.
+    internal fun sourceGroups(words: List<SourceWord>): List<List<SourceWord>> {
+        val groups = mutableListOf<List<SourceWord>>()
+        var i = 0
+        while (i < words.size) {
+            val word = words[i]
+            val next = words.getOrNull(i + 1)
+            val joins = typography(word.text).endsWith("-") && next != null &&
+                next.paragraphId == word.paragraphId && next.text.firstOrNull()?.isLowerCase() == true &&
+                next.sourceStart > word.sourceEnd && word.boxes.isNotEmpty() && next.boxes.isNotEmpty() &&
+                next.boxes.first().top > word.boxes.first().bottom - 2
+            val count = if (joins) 2 else 1
+            groups += words.subList(i, i + count)
+            i += count
+        }
+        return groups
     }
 
     private fun typography(text: String): String = buildString {

@@ -8,8 +8,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,23 +19,21 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
 import app.readflow.core.Transform
 import app.readflow.diagnostics.documentIssueInput
 import app.readflow.playback.ReaderPlayback
 import kotlinx.coroutines.CancellationException
 
-@Composable internal fun OriginalPage(vm: ReaderViewModel, state: ReaderPlayback, modifier: Modifier, follow: Boolean, manual: () -> Unit) {
+@Composable internal fun OriginalPage(vm: ReaderViewModel, state: ReaderPlayback, modifier: Modifier, follow: Boolean,
+    rotation: Int, fitWidth: Boolean, manual: () -> Unit) {
     val page = state.page
     val document = state.document ?: return
     val pageIndex = page?.index ?: state.viewPageIndex
     val pageKey = document.id to pageIndex
     var bitmap by remember(pageKey) { mutableStateOf<Bitmap?>(null) }
     var error by remember(pageKey) { mutableStateOf<String?>(null) }
-    var zoom by remember(pageKey) { mutableFloatStateOf(1f) }
-    var pan by remember(pageKey) { mutableStateOf(Offset.Zero) }
-    var rotation by remember(pageKey) { mutableIntStateOf(0) }
-    var fitWidth by remember(pageKey) { mutableStateOf(true) }
+    var zoom by remember(pageKey, rotation, fitWidth) { mutableFloatStateOf(1f) }
+    var pan by remember(pageKey, rotation, fitWidth) { mutableStateOf(Offset.Zero) }
     var size by remember { mutableStateOf(IntSize.Zero) }
     LaunchedEffect(pageKey, document.localPath) {
         try { bitmap = vm.app.documents.extractor.render(document.localPath, pageIndex) }
@@ -65,15 +61,15 @@ import kotlinx.coroutines.CancellationException
     val currentTransform by rememberUpdatedState(transform)
     val currentBaseOffset by rememberUpdatedState(Offset(offsetX - pan.x, offsetY - pan.y))
     val currentState by rememberUpdatedState(state)
-    LaunchedEffect(state.activeWordId, follow) {
+    LaunchedEffect(state.activeWordId, follow, size, rotation, fitWidth) {
         if (follow) page?.words?.firstOrNull { it.id == state.activeWordId }?.boxes?.firstOrNull()?.let { box ->
             val point = transform.map((box.left + box.right) / 2, (box.top + box.bottom) / 2)
             if (point.second !in 40f..(size.height - 50f)) pan += Offset(0f, size.height / 2f - point.second)
         }
     }
-    Box(modifier.padding(8.dp).clipToBounds()) {
+    Box(modifier.clipToBounds()) {
         Canvas(Modifier.fillMaxSize().onSizeChanged { size = it }
-            .pointerInput(pageKey) { detectTransformGestures { centroid, delta, factor, _ ->
+            .pointerInput(pageKey, rotation, fitWidth) { detectTransformGestures { centroid, delta, factor, _ ->
                 manual()
                 val next = (zoom * factor).coerceIn(1f, 6f)
                 val ratio = next / zoom
@@ -108,9 +104,5 @@ import kotlinx.coroutines.CancellationException
             }
         }
         if (bitmap == null) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { if (error == null) CircularProgressIndicator() else Text(error.orEmpty()) }
-        Row(Modifier.align(Alignment.TopEnd)) {
-            Tool(Icons.Default.RotateRight, "Rotate page view") { rotation = (rotation + 90) % 360; zoom = 1f; pan = Offset.Zero }
-            Tool(Icons.Default.FitScreen, if (fitWidth) "Fit whole page" else "Fit page width") { fitWidth = !fitWidth; zoom = 1f; pan = Offset.Zero }
-        }
     }
 }

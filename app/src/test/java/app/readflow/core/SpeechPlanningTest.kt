@@ -6,6 +6,10 @@ import org.junit.Test
 class SpeechPlanningTest {
     private fun page(text: String) = DocumentPipeline().process("planning-fixture", 0,
         ExtractedPage(listOf(TextElement(text, emptyList())), 0f, 0f, "Saved article"))
+    private fun lineWords(vararg text: String) = DocumentPipeline().process("hyphen-planning", 0,
+        ExtractedPage(text.mapIndexed { index, word ->
+            TextElement(word, listOf(Box(10f, index * 30f, 80f, index * 30f + 20)), 0, index)
+        }, 200f, 300f, "fixture")).words
 
     @Test fun laterEquationDoesNotPreventEarlierSentencePreparation() {
         val words = page("Read this first. Next x = y. Read this later.").words
@@ -53,6 +57,66 @@ class SpeechPlanningTest {
         val chunks = SpeechPlanner().prepare(words, requested.id).toList()
         assertTrue(chunks.first().words.contains(requested))
         assertEquals(words.last(), chunks.last().words.last())
+    }
+    @Test fun playbackJumpSynthesizesExactlyFromTheSelectedWordWithoutEarlierText() {
+        val words = page("Read read again. Then continue.").words
+        val requested = words[1]
+        val chunks = SpeechPlanner().prepare(words, requested.id, fromSelectedWord = true).toList()
+        assertEquals("read again.", chunks.first().speech.text)
+        assertEquals(words.drop(1), chunks.flatMap { it.words })
+        assertEquals(requested.id, chunks.first().speech.tokens.first().sourceIds.first())
+        assertFalse(chunks.any { words.first().id in it.speech.sourceIds })
+    }
+    @Test fun exactPlaybackJumpBypassesUnsupportedEarlierTextInTheSameSentence() {
+        val words = page("x = y then read here.").words
+        val requested = words.first { it.text == "read" }
+        val chunks = SpeechPlanner().prepare(words, requested.id, fromSelectedWord = true).toList()
+        assertEquals("read here.", chunks.single().speech.text)
+    }
+    @Test fun exactPlaybackJumpStillChunksExpandedTextWithoutDroppingTheTail() {
+        val words = page((1..80).joinToString(" ") { "999999999999" } + ".").words
+        val chunks = SpeechPlanner().prepare(words, words[40].id, fromSelectedWord = true).toList()
+        assertTrue(chunks.all { it.speech.text.length <= 220 })
+        assertEquals(words.drop(40), chunks.flatMap { it.words })
+    }
+    @Test fun playbackJumpToSecondHyphenFragmentKeepsTheWholeSpokenWord() {
+        val words = lineWords("co-", "operate", "later.")
+        val requested = words[1]
+        val chunks = SpeechPlanner().prepare(words, requested.id, fromSelectedWord = true).toList()
+        assertEquals("cooperate later.", chunks.single().speech.text)
+        assertEquals(words, chunks.flatMap { it.words })
+        assertEquals(words.take(2).map { it.id }, chunks.first().speech.tokens.first().sourceIds)
+        assertTrue(requested.id in chunks.first().speech.tokens.first().sourceIds)
+    }
+    @Test fun selectionUsesTheSameHyphenPairConsumptionAsNormalization() {
+        val words = lineWords("co-", "op-", "erate")
+        val speech = EnglishNormalizer().normalize(words)
+        assertEquals(words.take(2).map { it.id }, speech.tokens.first().sourceIds)
+        assertEquals(listOf(words[2].id), speech.tokens.last().sourceIds)
+        val chunks = SpeechPlanner().prepare(words, words[2].id, fromSelectedWord = true).toList()
+        assertEquals("erate", chunks.single().speech.text)
+        assertEquals(words.takeLast(1), chunks.single().words)
+    }
+    @Test fun rawAndExpandedChunkLimitsDoNotSplitJoinedSourceWords() {
+        val short = lineWords("co-", "operate", "later")
+        val shortChunks = SpeechPlanner(maxCharacters = 10).prepare(short, short[1].id, fromSelectedWord = true).toList()
+        assertEquals(listOf("cooperate", "later"), shortChunks.map { it.speech.text })
+        assertEquals(short.take(2).map { it.id }, shortChunks.first().speech.tokens.first().sourceIds)
+
+        val expanded = lineWords("Read", "co-", "operate", "12345", "12345")
+        val expandedChunks = SpeechPlanner(maxCharacters = 50).prepare(expanded).toList()
+        assertTrue(expandedChunks.all { it.speech.text.length <= 50 })
+        assertEquals(expanded, expandedChunks.flatMap { it.words })
+        val joined = expandedChunks.flatMap { it.speech.tokens }.single { it.text == "COOPERATE" }
+        assertEquals(expanded.subList(1, 3).map { it.id }, joined.sourceIds)
+    }
+    @Test fun anOversizedJoinedWordFailsWithoutTruncatingItsFragments() {
+        val words = lineWords("co-", "operate")
+        val error = assertThrows(SpeechPreparationException::class.java) {
+            SpeechPlanner(maxCharacters = 8).prepare(words, words[1].id, fromSelectedWord = true).toList()
+        }
+        assertEquals(words, error.sentence)
+        assertTrue(error.message!!.contains("not truncated"))
     }
     @Test fun skipUsesFailedSentenceNotCurrentlyPlayingSentence() {
         val words = page("Read first. Then x = y. Read last.").words

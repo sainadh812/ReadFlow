@@ -8,8 +8,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.48",
-      "timestamp": "2026-09-20T08:11:52"
+      "time": "0.788",
+      "timestamp": "2026-09-20T10:53:41"
     },
     {
       "name": "app.readflow.core.CoreTest",
@@ -17,8 +17,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.256",
-      "timestamp": "2026-09-20T08:11:53"
+      "time": "0.373",
+      "timestamp": "2026-09-20T10:53:41"
     },
     {
       "name": "app.readflow.core.IntegrityTest",
@@ -26,8 +26,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.055",
-      "timestamp": "2026-09-20T08:11:53"
+      "time": "0.11",
+      "timestamp": "2026-09-20T10:53:42"
     },
     {
       "name": "app.readflow.core.OcrSpeechTest",
@@ -35,8 +35,17 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.165",
-      "timestamp": "2026-09-20T08:11:53"
+      "time": "0.167",
+      "timestamp": "2026-09-20T10:53:42"
+    },
+    {
+      "name": "app.readflow.core.PlaybackAlignmentTest",
+      "tests": "6",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.716",
+      "timestamp": "2026-09-20T10:53:42"
     },
     {
       "name": "app.readflow.core.RealAudioTest",
@@ -44,17 +53,17 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.218",
-      "timestamp": "2026-09-20T08:11:53"
+      "time": "0.261",
+      "timestamp": "2026-09-20T10:53:43"
     },
     {
       "name": "app.readflow.core.SpeechPlanningTest",
-      "tests": "9",
+      "tests": "16",
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.582",
-      "timestamp": "2026-09-20T08:11:54"
+      "time": "0.803",
+      "timestamp": "2026-09-20T10:53:43"
     },
     {
       "name": "app.readflow.core.WebSpeechTest",
@@ -62,8 +71,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.037",
-      "timestamp": "2026-09-20T08:11:54"
+      "time": "0.073",
+      "timestamp": "2026-09-20T10:53:44"
     },
     {
       "name": "app.readflow.diagnostics.GitHubDiagnosticsTest",
@@ -71,8 +80,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.363",
-      "timestamp": "2026-09-20T08:11:54"
+      "time": "0.447",
+      "timestamp": "2026-09-20T10:53:44"
     },
     {
       "name": "app.readflow.diagnostics.IssueLogsTest",
@@ -80,8 +89,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.692",
-      "timestamp": "2026-09-20T08:11:55"
+      "time": "1.015",
+      "timestamp": "2026-09-20T10:53:44"
     },
     {
       "name": "app.readflow.models.PackInstallTest",
@@ -89,8 +98,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "115.773",
-      "timestamp": "2026-09-20T08:11:55"
+      "time": "140.605",
+      "timestamp": "2026-09-20T10:53:45"
     },
     {
       "name": "app.readflow.playback.PlaybackDiagnosticsTest",
@@ -98,8 +107,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.032",
-      "timestamp": "2026-09-20T08:13:51"
+      "time": "0.027",
+      "timestamp": "2026-09-20T10:56:06"
     },
     {
       "name": "app.readflow.speech.SpeechCallbackTest",
@@ -107,11 +116,11 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.005",
-      "timestamp": "2026-09-20T08:13:51"
+      "time": "0.004",
+      "timestamp": "2026-09-20T10:56:06"
     }
   ],
-  "testTotal": 98,
+  "testTotal": 111,
   "failures": 0,
   "skipped": 0,
   "lintErrors": 0,
@@ -123,8 +132,8 @@
   ],
   "apk": {
     "file": "ReadFlow-arm64-debug.apk",
-    "bytes": 130779464,
-    "sha256": "71217aff3b1ca30b6468e5d5ce333346a42302534ec258a9a6015fcbfb9e6248",
+    "bytes": 130628197,
+    "sha256": "e6068b1f833fbc232c1c624cc7ad9073734af986e966499131c78112d245c884",
     "abis": [
       "arm64-v8a"
     ],
