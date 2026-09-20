@@ -8,8 +8,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.761",
-      "timestamp": "2026-09-19T18:36:55"
+      "time": "0.361",
+      "timestamp": "2026-09-20T03:17:15"
     },
     {
       "name": "app.readflow.core.IntegrityTest",
@@ -17,8 +17,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.089",
-      "timestamp": "2026-09-19T18:36:55"
+      "time": "0.054",
+      "timestamp": "2026-09-20T03:17:15"
     },
     {
       "name": "app.readflow.core.RealAudioTest",
@@ -26,11 +26,20 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.328",
-      "timestamp": "2026-09-19T18:36:56"
+      "time": "0.15",
+      "timestamp": "2026-09-20T03:17:15"
+    },
+    {
+      "name": "app.readflow.models.PackInstallTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "121.426",
+      "timestamp": "2026-09-20T03:17:15"
     }
   ],
-  "testTotal": 17,
+  "testTotal": 26,
   "failures": 0,
   "skipped": 0,
   "lintErrors": 0,
@@ -42,8 +51,8 @@
   ],
   "apk": {
     "file": "ReadFlow-arm64-debug.apk",
-    "bytes": 130103850,
-    "sha256": "f7c40c5b1cf0005db97de319d9b3c474820ba4aec78623ed06064774e2e75163",
+    "bytes": 130120234,
+    "sha256": "e006540909ff7c490505008c1e94236e27dca3bc8624f10ac5c6edfbb770f700",
     "abis": [
       "arm64-v8a"
     ],

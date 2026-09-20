@@ -2,6 +2,8 @@
 
 This is a native Android implementation with a built debug APK and real-audio host regression evidence. **The full core experience is not yet accepted:** both engines still need Android target execution and manually checked audible word boundaries. No phone performance, timing-error, offline, Bluetooth or 30-minute-session result is claimed.
 
+The latest patch is **0.1.1-prototype**, addressing reported stalls after model download. See [INSTALLATION_FIX.md](INSTALLATION_FIX.md) for recovery instructions and patch verification. Earlier build results below describe the original 0.1.0 delivery; `evidence/build-results.json` records the latest build.
+
 ## Implemented
 
 - Native Kotlin/Compose/Material 3 application: library, SAF import, pasted/shared HTTPS article import, reflowed reader, original PDF/image overlays, search, page/bookmark navigation, font size, dark mode, model manager and compact playback controls.
@@ -62,7 +64,7 @@ The x86_64 app/test APKs compiled. The connected test command failed **twice bef
 
 The instrumentation suites compile and are supplied for a working API 35+ device: local PDF/OCR/web/Room tests plus an opt-in real-model JNI/alignment/ExoPlayer seek test. Run the latter with `-Pandroid.testInstrumentationRunnerArguments.models=true`. See `DEVICE_VALIDATION.md` for the physical-device protocol.
 
-## Final build results
+## Original 0.1.0 build results
 
 Executed in `/home/archgen_guest_1/ReadFlow` on 2026-09-19:
 

@@ -2,6 +2,14 @@
 
 A native Android reading application built with Kotlin, Compose and local speech synthesis. This is an **experimental implementation, not a completed/validated product**. Both real TTS engines and transcript-constrained word alignment work in host smoke tests. Physical Galaxy S25 Ultra acceptance and manually audited audio boundaries remain required. See [status](docs/STATUS.md).
 
+## Install on a phone
+
+[Download the Android 15+ ARM64 APK](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.1-prototype/ReadFlow-arm64-debug.apk).
+
+Version 0.1.1 fixes inefficient model unpacking and adds visible installation/checksum progress. Install it over 0.1.0 without uninstalling or clearing app data to preserve downloaded models and documents. Open **Voice models**, then choose **Resume setup** for interrupted packs. Completed downloads are verified and reused. Word highlighting also requires the separate **Word alignment** pack. Keep ReadFlow open until setup finishes; interrupted setup can be resumed after reopening the app.
+
+See the [installation fix and verification report](docs/INSTALLATION_FIX.md). APKs are attached to GitHub Releases because they exceed GitHub's normal Git file-size limit.
+
 ## Build
 
 Use JDK 17 and Android SDK platform 35 / build-tools 34.0.0. Minimum Android 15/API 35 is an MVP scope choice, not a permanent requirement. Default APK is ARM64 only. Build tools and dependencies are explicitly pinned in Gradle; Sherpa/Readability bootstrap assets have SHA-256 locks.

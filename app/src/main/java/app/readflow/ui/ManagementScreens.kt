@@ -43,8 +43,12 @@ import java.util.Locale
                     if (status?.busy == true) {
                         if (status.total > 0) LinearProgressIndicator(progress = { (status.received.toFloat() / status.total).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
                         else LinearProgressIndicator(Modifier.fillMaxWidth().padding(vertical = 8.dp))
-                        TextButton(onClick = { vm.cancelDownload(pack.id) }) { Icon(Icons.Default.Close, null); Text("Cancel download") }
-                    } else if (!installed) Button(onClick = { vm.download(pack.id) }) { Icon(Icons.Default.Download, null); Spacer(Modifier.width(6.dp)); Text("Download") }
+                        if (status.total > 0) Text(
+                            String.format(Locale.US, "%d%% · %.1f / %.1f MB", (status.received * 100 / status.total).coerceIn(0, 100), status.received / 1_000_000.0, status.total / 1_000_000.0),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        TextButton(onClick = { vm.cancelDownload(pack.id) }) { Icon(Icons.Default.Close, null); Text("Cancel setup") }
+                    } else if (!installed) Button(onClick = { vm.download(pack.id) }) { Icon(Icons.Default.Download, null); Spacer(Modifier.width(6.dp)); Text(if (status?.canResume == true) "Resume setup" else "Download") }
                     else {
                         pack.voices.forEach { voice ->
                             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -91,7 +95,7 @@ import java.util.Locale
                 Slider(prefs.latencyMs.toFloat(), { vm.update(prefs.copy(latencyMs = (it / 10).toInt() * 10)) }, valueRange = 0f..500f, steps = 49, modifier = Modifier.semantics { contentDescription = "Highlight audio output delay" })
                 Text("Manual calibration for your audio route. Bluetooth delay varies; automatic latency measurement is not available.", style = MaterialTheme.typography.bodySmall)
             }
-            item { Text("ReadFlow 0.1 · Android 15+\nDocument processing and speech stay on this device.", style = MaterialTheme.typography.bodySmall) }
+            item { Text("ReadFlow ${app.readflow.BuildConfig.VERSION_NAME} · Android 15+\nDocument processing and speech stay on this device.", style = MaterialTheme.typography.bodySmall) }
         }
     }
 }
