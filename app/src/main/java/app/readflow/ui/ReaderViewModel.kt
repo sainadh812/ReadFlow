@@ -1,6 +1,8 @@
 package app.readflow.ui
 
 import android.app.Application
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,6 +42,14 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     fun deleteModel(id: String) { viewModelScope.launch { jobs[id]?.cancelAndJoin(); app.playback.deleteModel(id) } }
     fun chooseModel(model: String, voice: String) { viewModelScope.launch { app.playback.changeModel(model, voice) } }
     fun clearCache() { viewModelScope.launch { app.playback.clearCache(); message.value = "Audio cache cleared" } }
+    fun copyPlaybackDiagnostics() { viewModelScope.launch {
+        try {
+            val report = app.diagnostics.report(app)
+            app.getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("ReadFlow diagnostics", report))
+            message.value = "Playback diagnostics copied"
+        } catch (cancel: CancellationException) { throw cancel }
+        catch (_: Exception) { message.value = "Could not copy playback diagnostics" }
+    } }
     fun deleteDocument(document: DocumentEntity) { viewModelScope.launch {
         app.playback.deleteDocument(document)
     } }

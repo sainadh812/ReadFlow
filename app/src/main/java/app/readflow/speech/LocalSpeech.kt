@@ -41,7 +41,7 @@ class SherpaEngine(private val packDirectory: (String) -> File, private val voic
                     vocabJson = path("vocab.json"), tokenScoresJson = path("token_scores.json")), numThreads = 2, debug = false)
                 else -> error("Unknown model")
             }
-            native = OfflineTts(config = OfflineTtsConfig(model = model, maxNumSentences = 1))
+            native = speechNativeCall { OfflineTts(config = OfflineTtsConfig(model = model, maxNumSentences = 1)) }
             active = pack; this@SherpaEngine.voice = voice; root = dir
         }
     }
@@ -50,11 +50,13 @@ class SherpaEngine(private val packDirectory: (String) -> File, private val voic
             check(isCurrent()) { "Superseded speech request" }
             val engine = checkNotNull(native) { "No model loaded" }
             val config = if (active == "pocket") {
-                val wave = WaveReader.readWave(File(root, "voices/$voice.wav").absolutePath)
+                val wave = speechNativeCall { WaveReader.readWave(File(root, "voices/$voice.wav").absolutePath) }
                 GenerationConfig(referenceAudio = wave.samples, referenceSampleRate = wave.sampleRate, numSteps = 5,
                     extra = mapOf("temperature" to "0.7", "chunk_size" to "15"))
             } else GenerationConfig(sid = voice.toInt(), speed = 1f)
-            val generated = engine.generateWithConfigAndCallback(text, config) { if (isCurrent()) 1 else 0 }
+            val generated = speechNativeCall {
+                engine.generateWithConfigAndCallback(text, config, SherpaAudioCallback(isCurrent))
+            }
             check(isCurrent()) { "Superseded speech request" }
             check(generated.samples.isNotEmpty()) { "The speech model returned no audio" }
             PcmAudio(generated.samples, generated.sampleRate)

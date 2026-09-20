@@ -29,6 +29,7 @@ class GenerationGate {
 class ReadingCoordinator(
     private val documents: Documents, private val models: ModelStore, private val cache: AudioCache,
     private val preferences: PreferenceStore, private val power: PowerManager,
+    private val diagnostics: PlaybackDiagnostics,
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val gate = GenerationGate()
@@ -134,6 +135,7 @@ class ReadingCoordinator(
                 // A cancelled native call owns its resources until it returns. New work waits here.
                 old?.join()
                 checkNotNull(player) { "Playback service is not connected" }
+                diagnostics.record(chosen.model, PlaybackStage.VERIFYING_MODELS)
                 models.verifyInstalled(chosen.model); models.verifyInstalled("alignment")
                 val manifest = models.packs.first { it.id == chosen.model }
                 var index = pageIndex
@@ -155,10 +157,15 @@ class ReadingCoordinator(
                         val audio = cache.get(key) ?: run {
                             var committed = false
                             try {
-                                mutable.value = mutable.value.copy(preparing = true, status = "Synthesizing and aligning")
+                                mutable.value = mutable.value.copy(preparing = true, status = "Loading ${manifest.name}")
+                                diagnostics.record(chosen.model, PlaybackStage.LOADING_MODEL)
                                 engine.load(chosen.model, chosen.voice)
+                                mutable.value = mutable.value.copy(status = "Generating speech")
+                                diagnostics.record(chosen.model, PlaybackStage.SYNTHESIZING)
                                 val generated = engine.synthesize(speech.text) { gate.current(generation) }
                                 val quantized = cache.writePcm(key, generated)
+                                mutable.value = mutable.value.copy(status = "Aligning words")
+                                diagnostics.record(chosen.model, PlaybackStage.ALIGNING)
                                 val timings = aligner.align(quantized, speech)
                                 currentCoroutineContext().ensureActive()
                                 AlignedAudio(key, cache.file(key).path, withContext(Dispatchers.IO) { fileHash(cache.file(key)) }, quantized.sampleRate, quantized.samples.size.toLong(),
@@ -169,6 +176,8 @@ class ReadingCoordinator(
                         }
                         if (!gate.current(generation)) return@launch
                         if (first && requested != null) check(audio.timings.any { it.wordId == requested }) { "This selection has no validated spoken boundary. Select a spoken word." }
+                        diagnostics.record(chosen.model, PlaybackStage.STARTING_AUDIO)
+                        currentCoroutineContext().ensureActive()
                         queued[key] = page to audio
                         val item = MediaItem.Builder().setMediaId(key).setUri(Uri.fromFile(java.io.File(audio.audioPath)))
                             .setMediaMetadata(MediaMetadata.Builder().setTitle(document.title).setArtist("${manifest.name} · ${manifest.voices.first { it.id == chosen.voice }.name}").build()).build()
@@ -182,6 +191,7 @@ class ReadingCoordinator(
                             output.seekToNextMediaItem(); output.prepare(); output.playWhenReady = shouldPlay
                         }
                         mutable.value = mutable.value.copy(preparing = false)
+                        diagnostics.record(chosen.model, PlaybackStage.AUDIO_READY)
                         while (output.currentMediaItemIndex > 1) {
                             val removed = output.getMediaItemAt(0).mediaId
                             output.removeMediaItem(0); queued.remove(removed)
@@ -193,7 +203,10 @@ class ReadingCoordinator(
                 if (first) mutable.value = mutable.value.copy(preparing = false, status = "No readable text")
             } catch (cancel: CancellationException) { throw cancel }
             catch (error: Exception) {
-                if (gate.current(generation)) mutable.value = mutable.value.copy(preparing = false, status = error.message ?: "Speech unavailable", error = error.message ?: "Speech unavailable", activeWordId = null)
+                if (gate.current(generation)) {
+                    diagnostics.record(chosen.model, PlaybackStage.FAILED, error)
+                    mutable.value = mutable.value.copy(preparing = false, status = error.message ?: "Speech unavailable", error = error.message ?: "Speech unavailable", activeWordId = null)
+                }
             }
         }
     }

@@ -95,6 +95,13 @@ import java.util.Locale
                 Slider(prefs.latencyMs.toFloat(), { vm.update(prefs.copy(latencyMs = (it / 10).toInt() * 10)) }, valueRange = 0f..500f, steps = 49, modifier = Modifier.semantics { contentDescription = "Highlight audio output delay" })
                 Text("Manual calibration for your audio route. Bluetooth delay varies; automatic latency measurement is not available.", style = MaterialTheme.typography.bodySmall)
             }
+            item {
+                TextButton(onClick = vm::copyPlaybackDiagnostics) {
+                    Icon(Icons.Default.ContentCopy, null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Copy playback diagnostics")
+                }
+            }
             item { Text("ReadFlow ${app.readflow.BuildConfig.VERSION_NAME} · Android 15+\nDocument processing and speech stay on this device.", style = MaterialTheme.typography.bodySmall) }
         }
     }

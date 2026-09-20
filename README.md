@@ -4,11 +4,13 @@ A native Android reading application built with Kotlin, Compose and local speech
 
 ## Install on a phone
 
-[Download the Android 15+ ARM64 APK](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.1-prototype/ReadFlow-arm64-debug.apk).
+[Download the Android 15+ ARM64 APK](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.2-prototype/ReadFlow-arm64-debug.apk).
 
-Version 0.1.1 fixes inefficient model unpacking and adds visible installation/checksum progress. Install it over 0.1.0 without uninstalling or clearing app data to preserve downloaded models and documents. Open **Voice models**, then choose **Resume setup** for interrupted packs. Completed downloads are verified and reused. Word highlighting also requires the separate **Word alignment** pack. Keep ReadFlow open until setup finishes; interrupted setup can be resumed after reopening the app.
+Version 0.1.2 fixes a reproduced native speech-callback compatibility bug that can crash playback. Install it over the existing app without uninstalling or clearing app data to preserve downloaded models and documents. If playback still fails, reopen ReadFlow and use **Settings > Copy playback diagnostics**. The report includes device/runtime details, the last playback stage, and Android process-exit reasons; it excludes document content and is not uploaded automatically.
 
-See the [installation fix and verification report](docs/INSTALLATION_FIX.md). APKs are attached to GitHub Releases because they exceed GitHub's normal Git file-size limit.
+The 0.1.1 installation fixes remain included. Open **Voice models**, then choose **Resume setup** for interrupted packs. Completed downloads are verified and reused. Word highlighting also requires the separate **Word alignment** pack. Keep ReadFlow open until setup finishes; interrupted setup can be resumed after reopening the app.
+
+See the [playback crash fix](docs/PLAYBACK_CRASH_FIX.md) and [installation fix](docs/INSTALLATION_FIX.md) reports. APKs are attached to GitHub Releases because they exceed GitHub's normal Git file-size limit.
 
 ## Build
 

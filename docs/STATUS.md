@@ -2,7 +2,7 @@
 
 This is a native Android implementation with a built debug APK and real-audio host regression evidence. **The full core experience is not yet accepted:** both engines still need Android target execution and manually checked audible word boundaries. No phone performance, timing-error, offline, Bluetooth or 30-minute-session result is claimed.
 
-The latest patch is **0.1.1-prototype**, addressing reported stalls after model download. See [INSTALLATION_FIX.md](INSTALLATION_FIX.md) for recovery instructions and patch verification. Earlier build results below describe the original 0.1.0 delivery; `evidence/build-results.json` records the latest build.
+The latest patch is **0.1.2-prototype**, fixing a reproduced native callback mismatch after a Kokoro playback crash was reported on a Galaxy S25 Ultra. See [PLAYBACK_CRASH_FIX.md](PLAYBACK_CRASH_FIX.md) for evidence and remaining device checks. The earlier [installation fix](INSTALLATION_FIX.md) remains included. Earlier build results below describe the original 0.1.0 delivery; `evidence/build-results.json` records the latest build.
 
 ## Implemented
 
