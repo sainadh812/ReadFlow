@@ -1,5 +1,5 @@
 {
-  "command": "./gradlew assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest --console=plain",
+  "command": "./gradlew assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest --offline --console=plain",
   "exitCode": 0,
   "tests": [
     {
@@ -8,8 +8,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.788",
-      "timestamp": "2026-09-20T10:53:41"
+      "time": "0.664",
+      "timestamp": "2026-09-20T13:49:21"
     },
     {
       "name": "app.readflow.core.CoreTest",
@@ -17,8 +17,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.373",
-      "timestamp": "2026-09-20T10:53:41"
+      "time": "0.421",
+      "timestamp": "2026-09-20T13:49:22"
     },
     {
       "name": "app.readflow.core.IntegrityTest",
@@ -26,8 +26,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.11",
-      "timestamp": "2026-09-20T10:53:42"
+      "time": "0.106",
+      "timestamp": "2026-09-20T13:49:22"
     },
     {
       "name": "app.readflow.core.OcrSpeechTest",
@@ -35,8 +35,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.167",
-      "timestamp": "2026-09-20T10:53:42"
+      "time": "0.157",
+      "timestamp": "2026-09-20T13:49:23"
     },
     {
       "name": "app.readflow.core.PlaybackAlignmentTest",
@@ -44,8 +44,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.716",
-      "timestamp": "2026-09-20T10:53:42"
+      "time": "0.669",
+      "timestamp": "2026-09-20T13:49:23"
     },
     {
       "name": "app.readflow.core.RealAudioTest",
@@ -53,8 +53,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.261",
-      "timestamp": "2026-09-20T10:53:43"
+      "time": "0.241",
+      "timestamp": "2026-09-20T13:49:23"
     },
     {
       "name": "app.readflow.core.SpeechPlanningTest",
@@ -62,8 +62,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.803",
-      "timestamp": "2026-09-20T10:53:43"
+      "time": "0.603",
+      "timestamp": "2026-09-20T13:49:24"
     },
     {
       "name": "app.readflow.core.WebSpeechTest",
@@ -71,8 +71,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.073",
-      "timestamp": "2026-09-20T10:53:44"
+      "time": "0.075",
+      "timestamp": "2026-09-20T13:49:24"
     },
     {
       "name": "app.readflow.diagnostics.GitHubDiagnosticsTest",
@@ -80,8 +80,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.447",
-      "timestamp": "2026-09-20T10:53:44"
+      "time": "0.418",
+      "timestamp": "2026-09-20T13:49:24"
     },
     {
       "name": "app.readflow.diagnostics.IssueLogsTest",
@@ -89,8 +89,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "1.015",
-      "timestamp": "2026-09-20T10:53:44"
+      "time": "0.997",
+      "timestamp": "2026-09-20T13:49:25"
     },
     {
       "name": "app.readflow.models.PackInstallTest",
@@ -98,8 +98,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "140.605",
-      "timestamp": "2026-09-20T10:53:45"
+      "time": "118.175",
+      "timestamp": "2026-09-20T13:49:26"
     },
     {
       "name": "app.readflow.playback.PlaybackDiagnosticsTest",
@@ -108,7 +108,7 @@
       "errors": "0",
       "skipped": "0",
       "time": "0.027",
-      "timestamp": "2026-09-20T10:56:06"
+      "timestamp": "2026-09-20T13:51:24"
     },
     {
       "name": "app.readflow.speech.SpeechCallbackTest",
@@ -117,7 +117,7 @@
       "errors": "0",
       "skipped": "0",
       "time": "0.004",
-      "timestamp": "2026-09-20T10:56:06"
+      "timestamp": "2026-09-20T13:51:24"
     }
   ],
   "testTotal": 111,
@@ -132,13 +132,18 @@
   ],
   "apk": {
     "file": "ReadFlow-arm64-debug.apk",
-    "bytes": 130628197,
-    "sha256": "e6068b1f833fbc232c1c624cc7ad9073734af986e966499131c78112d245c884",
+    "bytes": 131160644,
+    "sha256": "e01f0deeab8fd3eb4a881e80e501be2318bf53b179911e0d512b7287737859f0",
     "abis": [
       "arm64-v8a"
     ],
     "bundledSpeechOrAlignmentWeights": false
   },
-  "androidRuntimeVerification": "Blocked: software emulator startup/property queries/PackageManager failed before app execution",
-  "physicalTargetVerification": "No attached device; not performed"
+  "androidRuntimeVerification": "Not run: adb devices -l listed no attached devices. Earlier software-emulator startup failed before app execution.",
+  "physicalTargetVerification": "No attached device; not performed",
+  "finalLayoutCommand": "./gradlew assembleDebug lintDebug assembleDebugAndroidTest --offline --console=plain",
+  "pythonDiagnosticReaderTests": {
+    "tests": 2,
+    "failures": 0
+  }
 }
