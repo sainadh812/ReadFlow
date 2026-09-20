@@ -1,6 +1,6 @@
 # ReadFlow 0.1.4: automatic issue logs
 
-This is the historical 0.1.4 delivery report. The [0.1.5 update](OCR_TEXT_FIX.md) retains this feature and adds an optional `normalization` object identifying rejected source IDs/text and attempted expansion. Old reports remain readable. Use the latest APK linked from the repository README.
+This is the historical 0.1.4 delivery report. The [0.1.5 update](OCR_TEXT_FIX.md) adds rejected-token context; [0.1.6](GITHUB_DIAGNOSTICS.md) adds combined history export and explicit GitHub sends. Old reports remain readable. Use the latest APK linked from the repository README. The no-upload-client description below applies to the original 0.1.4 implementation; 0.1.6 allows only user-confirmed diagnostic uploads.
 
 ## Install and send a report
 

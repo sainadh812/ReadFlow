@@ -4,13 +4,17 @@ A native Android reading application built with Kotlin, Compose and local speech
 
 ## Install on a phone
 
-[Download ReadFlow 0.1.5 for Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.5-prototype/ReadFlow-0.1.5-arm64-debug.apk).
+[Download ReadFlow 0.1.6 for Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.6-prototype/ReadFlow-0.1.6-arm64-debug.apk).
+
+Version 0.1.6 adds a **combined error-history export** and **Send new errors** to GitHub. Reports append as batches to one ongoing diagnostics issue; repeated events are grouped and previously sent IDs are skipped. Public repositories receive sanitized metadata only. Optional failing-input excerpts require a private repository and confirmation on every send. Set up a repository-scoped token on the phone under **Settings > Issue logs > GitHub settings**. No token is bundled in the APK. See [setup and verification](docs/GITHUB_DIAGNOSTICS.md).
 
 Version 0.1.5 fixes two reported normalization stops: OCR tokens such as `money.4` now read literally as "money. four", and `|` reads as "vertical bar". The latter is not automatically changed to "I": it may be an OCR error, but its meaning is ambiguous. Displayed text, geometry and source-word IDs are unchanged. No reimport or model download is needed; changed speech cache entries regenerate. Normalization issue logs now identify the exact rejected token. See [OCR text fixes and actual validation](docs/OCR_TEXT_FIX.md), including a separate Pocket alignment failure found during host testing.
 
 Version 0.1.4 adds **automatic issue-only logs** for import/parsing, extraction warnings, unsupported speech text, low-confidence alignment, model operations and playback errors. Normal successful operations and user cancellations do not create reports. Logs capture bounded failing input, source-word mappings, error details, model/device versions and, when available, the exact generated audio. Nothing is uploaded automatically.
 
 After an issue, open **Settings > Issue logs**, select the report, tap **Export issue log** (save icon), and choose a destination for the ZIP. Attach that ZIP when asking for help. **Review it first: it can contain private document text, source URLs and speech audio. Do not post private logs to a public GitHub issue.** Individual/all logs can be deleted. See [issue logging and verification](docs/ISSUE_LOGS.md), including limits for native crashes and missing input.
+
+The history screen's save icon exports all retained events into one `issues.jsonl` inside a ZIP, without audio. Individual exports still support audio. Local retention remains bounded to 20 reports/24 MiB; this is not an unlimited lifetime archive. Uploaded GitHub history remains until you delete it on GitHub. Uploads do not start an unattended coding agent; ask the agent to review the diagnostics issue when ready.
 
 Version 0.1.3 fixes ordinary webpage punctuation and technical identifiers being rejected as equations. PDFs now open in **Original PDF** view, fitted to the screen width, with direct page controls. Preview rendering does not wait for OCR; word selection becomes available when extraction finishes. The reflowed Reader remains optional. Unsupported sentences stop preparation with an explicit **Skip sentence** action instead of blocking navigation throughout the page.
 

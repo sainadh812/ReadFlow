@@ -20,6 +20,8 @@ class ReadFlowApp : Application() {
     val cache by lazy { AudioCache(this, database) }
     val diagnostics by lazy { PlaybackDiagnostics(File(noBackupFilesDir, "diagnostics")) }
     val issues by lazy { IssueLogs(File(noBackupFilesDir, "issues"), ::issueEnvironment) }
+    val githubSettings by lazy { GitHubSettings(this) }
+    val githubDiagnostics by lazy { GitHubDiagnostics(GitHubRestApi()) }
     val playback by lazy { ReadingCoordinator(documents, models, cache, preferences, getSystemService(PowerManager::class.java), diagnostics, issues) }
     override fun onCreate() {
         super.onCreate()

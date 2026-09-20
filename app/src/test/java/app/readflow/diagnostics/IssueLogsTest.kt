@@ -86,6 +86,22 @@ class IssueLogsTest {
         assertFalse(store.read(id)!!.audio.included)
         assertTrue(store.read(id)!!.audio.omission!!.contains("4 MiB"))
     }
+    @Test fun combinedHistoryIsOneChronologicalJsonlFileWithNoAudio() = runBlocking {
+        val store = store(); val wav = temporary.newFile("history-audio.wav").apply { writeBytes(byteArrayOf(1, 2, 3)) }
+        val first = store.record("PARSE", IllegalStateException("first"), input(), audio = wav)!!
+        val second = store.record("ALIGN", IllegalStateException("second"), input())!!
+        val output = ByteArrayOutputStream(); store.exportHistory(output)
+        ZipInputStream(output.toByteArray().inputStream()).use { zip ->
+            assertEquals("issues.jsonl", zip.nextEntry.name)
+            val entries = zip.readBytes().toString(Charsets.UTF_8).lineSequence().filter { it.isNotBlank() }.map { Json.decodeFromString<IssueReport>(it) }.toList()
+            assertEquals(setOf(first, second), entries.map { it.id }.toSet())
+            assertTrue(entries.zipWithNext().all { (a, b) -> a.timestampMs <= b.timestampMs })
+            assertTrue(entries.none { it.audio.included })
+            assertEquals(input(), entries.first().input)
+            assertNull(zip.nextEntry)
+        }
+        assertTrue(store.read(first)!!.audio.included)
+    }
     @Test fun textLimitsPreserveUtf16AndDeclareTruncation() = runBlocking {
         val text = "a".repeat(IssueLogs.TEXT_LIMIT - 1) + "\uD83D\uDE00more"
         val store = store(); val id = store.record("PARSE", IllegalArgumentException("test"), IssueInput(originalText = text))!!

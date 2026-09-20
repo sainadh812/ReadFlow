@@ -29,6 +29,9 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     val issueReports = app.issues.reports
     val selectedIssue = MutableStateFlow<IssueReport?>(null)
     var pendingIssueExport: String? = null
+    val githubConfiguration = app.githubSettings.configuration
+    val sendingIssues = MutableStateFlow(false)
+    val githubIssueUrl = MutableStateFlow<String?>(null)
     private val jobs = mutableMapOf<String, Job>()
     fun open(document: DocumentEntity) { app.playback.open(document); screen.value = "reader" }
     fun import(uri: Uri) = launchImport("IMPORT_FILE", { withContext(Dispatchers.IO) {
@@ -80,11 +83,35 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     } }
     fun exportIssue(uri: Uri, id: String) { viewModelScope.launch {
         try {
-            withContext(Dispatchers.IO) { checkNotNull(app.contentResolver.openOutputStream(uri, "wt")) { "Cannot open export destination" }.use { app.issues.export(id, it) } }
+            withContext(Dispatchers.IO) { checkNotNull(app.contentResolver.openOutputStream(uri, "wt")) { "Cannot open export destination" }.use {
+                if (id == "history") app.issues.exportHistory(it) else app.issues.export(id, it)
+            } }
             message.value = "Issue log saved"
         } catch (cancel: CancellationException) { throw cancel }
         catch (error: Exception) { message.value = error.message ?: "Could not export issue log" }
     } }
+    fun saveGitHub(destination: GitHubDestination, token: String, onSaved: () -> Unit) { viewModelScope.launch {
+        try { check(!sendingIssues.value); app.githubSettings.save(destination, token); onSaved(); message.value = "GitHub settings saved" }
+        catch (cancel: CancellationException) { throw cancel }
+        catch (error: Exception) { message.value = error.message ?: "GitHub settings could not be saved" }
+    } }
+    fun forgetGitHubToken() { viewModelScope.launch { app.githubSettings.forgetToken(); message.value = "GitHub token removed from this phone" } }
+    fun sendIssues() {
+        if (sendingIssues.value) return
+        sendingIssues.value = true
+        viewModelScope.launch {
+            try {
+                val config = githubConfiguration.value
+                val result = app.githubDiagnostics.send(config.destination, app.githubSettings.token(), config.installationId, app.issues.snapshot()) {
+                    app.githubSettings.saveIssue(config.destination.repository, it)
+                }
+                githubIssueUrl.value = result.url
+                message.value = if (result.uploadedReports == 0) "No new errors to send" else "${result.uploadedReports} error events appended to GitHub"
+            } catch (cancel: CancellationException) { throw cancel }
+            catch (error: Exception) { message.value = error.message ?: "Could not send errors to GitHub" }
+            finally { sendingIssues.value = false }
+        }
+    }
     fun copyPlaybackDiagnostics() { viewModelScope.launch {
         try {
             val report = app.diagnostics.report(app)

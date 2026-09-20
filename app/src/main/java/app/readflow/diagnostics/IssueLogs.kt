@@ -122,6 +122,21 @@ class IssueLogs(private val root: File, private val environment: () -> Map<Strin
         }
     }
     suspend fun read(id: String): IssueReport? = withContext(Dispatchers.IO) { synchronized(lock) { readReport(id) } }
+    suspend fun snapshot(): List<IssueReport> = withContext(Dispatchers.IO) { synchronized(lock) { readAll().sortedBy { it.timestampMs } } }
+    suspend fun exportHistory(output: OutputStream) = withContext(Dispatchers.IO) {
+        val history = snapshot()
+        check(history.isNotEmpty()) { "No issue history to export" }
+        // One chronological JSONL journal; audio remains available through individual exports.
+        ZipOutputStream(output).use { zip ->
+            zip.putNextEntry(ZipEntry("issues.jsonl"))
+            val compact = Json { encodeDefaults = true }
+            history.forEach { report ->
+                val entry = report.copy(audio = IssueAudio(false, omission = "Combined history excludes audio; use individual issue export"))
+                zip.write((compact.encodeToString(IssueReport.serializer(), entry) + "\n").toByteArray())
+            }
+            zip.closeEntry()
+        }
+    }
     suspend fun export(id: String, output: OutputStream) = withContext(Dispatchers.IO) {
         // Release the store lock before writing to a possibly slow user-selected provider.
         val snapshot = synchronized(lock) {
