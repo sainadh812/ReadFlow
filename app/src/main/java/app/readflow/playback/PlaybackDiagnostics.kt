@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 @Serializable
-enum class PlaybackStage { VERIFYING_MODELS, LOADING_MODEL, SYNTHESIZING, ALIGNING, STARTING_AUDIO, AUDIO_READY, FAILED }
+enum class PlaybackStage { VERIFYING_MODELS, PREPARING_TEXT, LOADING_MODEL, SYNTHESIZING, ALIGNING, STARTING_AUDIO, AUDIO_READY, FAILED }
 
 @Serializable
 data class PlaybackCheckpoint(

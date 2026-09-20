@@ -4,9 +4,11 @@ A native Android reading application built with Kotlin, Compose and local speech
 
 ## Install on a phone
 
-[Download the Android 15+ ARM64 APK](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.2-prototype/ReadFlow-arm64-debug.apk).
+[Download ReadFlow 0.1.3 for Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.3-prototype/ReadFlow-0.1.3-arm64-debug.apk).
 
-Version 0.1.2 fixes a reproduced native speech-callback compatibility bug that can crash playback. Install it over the existing app without uninstalling or clearing app data to preserve downloaded models and documents. If playback still fails, reopen ReadFlow and use **Settings > Copy playback diagnostics**. The report includes device/runtime details, the last playback stage, and Android process-exit reasons; it excludes document content and is not uploaded automatically.
+Version 0.1.3 fixes ordinary webpage punctuation and technical identifiers being rejected as equations. PDFs now open in **Original PDF** view, fitted to the screen width, with direct page controls. Preview rendering does not wait for OCR; word selection becomes available when extraction finishes. The reflowed Reader remains optional. Unsupported sentences stop preparation with an explicit **Skip sentence** action instead of blocking navigation throughout the page.
+
+Install over the existing app without uninstalling or clearing data to preserve downloaded models and documents. The 0.1.2 native speech-callback crash fix remains included. If playback fails, use **Settings > Copy playback diagnostics**. The report excludes document content and is not uploaded automatically. See the [text/PDF fix report](docs/TEXT_PDF_FIX.md) for actual checks and remaining device verification.
 
 The 0.1.1 installation fixes remain included. Open **Voice models**, then choose **Resume setup** for interrupted packs. Completed downloads are verified and reused. Word highlighting also requires the separate **Word alignment** pack. Keep ReadFlow open until setup finishes; interrupted setup can be resumed after reopening the app.
 

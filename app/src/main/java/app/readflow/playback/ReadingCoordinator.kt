@@ -19,7 +19,10 @@ data class ReaderPlayback(
     val error: String? = null,
     val activeWordIds: Set<String> = emptySet(),
     val wantsToPlay: Boolean = false,
+    val blockedSentence: BlockedSentence? = null,
+    val viewPageIndex: Int = 0,
 )
+data class BlockedSentence(val pageIndex: Int, val wordId: String, val resume: SpeechTarget?)
 class GenerationGate {
     private val counter = AtomicLong()
     fun next() = counter.incrementAndGet()
@@ -37,7 +40,7 @@ class ReadingCoordinator(
     val state = mutable.asStateFlow()
     private val engine = SherpaEngine(models::directory) { id -> models.packs.first { it.id == id }.voices }
     private val aligner = OnnxForcedAligner { java.io.File(models.directory("alignment"), "model.onnx") }
-    private val normalizer = EnglishNormalizer()
+    private val planner = SpeechPlanner()
     private var work: Job? = null
     private var observer: Job? = null
     private var player: Player? = null
@@ -79,11 +82,13 @@ class ReadingCoordinator(
     fun detach() { observer?.cancel(); player = null; stop() }
     fun open(document: DocumentEntity, pageIndex: Int? = null) {
         val generation = invalidate()
-        mutable.value = ReaderPlayback(document = document, preparing = true, status = "Extracting page")
+        mutable.value = ReaderPlayback(document = document, preparing = true, status = "Extracting page", viewPageIndex = pageIndex ?: 0)
         work = scope.launch {
             try {
                 val position = documents.dao.position(document.id)
-                val page = documents.loadPage(document, pageIndex ?: position?.page ?: 0)
+                val requestedPage = pageIndex ?: position?.page ?: 0
+                mutable.value = mutable.value.copy(viewPageIndex = requestedPage)
+                val page = documents.loadPage(document, requestedPage)
                 if (!gate.current(generation)) return@launch
                 durableWord = position?.wordId?.takeIf { id -> page.words.any { it.id == id } }
                 mutable.value = ReaderPlayback(document, page, selectedWordId = durableWord, status = if (page.words.isEmpty()) "No readable text on this page" else "Paused")
@@ -95,7 +100,7 @@ class ReadingCoordinator(
         val generation = gate.next()
         work?.cancel()
         player?.pause(); player?.stop(); player?.clearMediaItems(); queued.clear()
-        mutable.value = mutable.value.copy(activeWordId = null, activeWordIds = emptySet(), currentChunk = null, playing = false, wantsToPlay = false, positionMs = 0, durationMs = 0)
+        mutable.value = mutable.value.copy(activeWordId = null, activeWordIds = emptySet(), currentChunk = null, playing = false, wantsToPlay = false, positionMs = 0, durationMs = 0, blockedSentence = null)
         return generation
     }
     fun stop() { invalidate(); mutable.value = mutable.value.copy(preparing = false, status = "Paused") }
@@ -113,8 +118,10 @@ class ReadingCoordinator(
     fun seek(milliseconds: Long) { player?.let { it.seekTo(milliseconds.coerceIn(0, state.value.durationMs)) } }
     fun skip(seconds: Int) { player?.let { seek(it.currentPosition + seconds * 1000L) } }
     fun sentence(direction: Int) {
+        if (direction > 0 && state.value.blockedSentence != null && !state.value.playing) { skipBlockedSentence(); return }
         val current = state.value; val page = current.page ?: return
-        val word = page.words.firstOrNull { it.id == current.activeWordId || it.id == durableWord }
+        val wordId = current.activeWordId ?: current.selectedWordId ?: durableWord
+        val word = page.words.firstOrNull { it.id == wordId }
         val sentences = page.words.groupBy { it.sentenceId }.values.toList()
         val index = sentences.indexOfFirst { line -> line.any { it.id == word?.id } }.coerceAtLeast(0)
         val target = sentences.getOrNull(index + direction)?.firstOrNull()
@@ -124,13 +131,25 @@ class ReadingCoordinator(
             if (next in 0 until document.pageCount) start(document, next)
         }
     }
-    fun start(document: DocumentEntity = checkNotNull(state.value.document), pageIndex: Int = state.value.page?.index ?: 0, wordId: String? = null) {
+    fun skipBlockedSentence() {
+        val blocked = state.value.blockedSentence ?: return
+        val document = state.value.document ?: return
+        val target = blocked.resume
+        if (target != null) start(document, target.pageIndex, target.wordId)
+        else {
+            stop()
+            mutable.value = mutable.value.copy(error = null, selectedWordId = null, status = "End of document")
+        }
+    }
+    fun start(document: DocumentEntity = checkNotNull(state.value.document), pageIndex: Int = state.value.page?.index ?: state.value.viewPageIndex, wordId: String? = null) {
         val old = work
         val generation = invalidate()
-        mutable.value = mutable.value.copy(document = document, preparing = true, status = "Preparing speech", selectedWordId = null, error = null)
+        mutable.value = mutable.value.copy(document = document, preparing = true, status = "Preparing speech", selectedWordId = null, error = null, viewPageIndex = pageIndex)
         val chosen = settings
         durableWord = wordId
         work = scope.launch {
+            var processingPage: PageContent? = null
+            var processingWords: List<SourceWord> = emptyList()
             try {
                 // A cancelled native call owns its resources until it returns. New work waits here.
                 old?.join()
@@ -144,14 +163,17 @@ class ReadingCoordinator(
                 while (index < document.pageCount && gate.current(generation)) {
                     val page = documents.loadPage(document, index)
                     val words = page.words.filter { !chosen.skipMargins || !it.marginal || it.id == requested }
-                    val chunks = normalizedChunks(words)
-                    val start = if (first && requested != null) chunks.indexOfFirst { group -> group.any { it.id == requested } }.coerceAtLeast(0) else 0
-                    for (group in chunks.drop(start)) {
+                    processingPage = page; processingWords = words
+                    if (first) mutable.value = mutable.value.copy(page = page)
+                    val chunks = planner.prepare(words, if (first) requested else null).iterator()
+                    while (true) {
                         val output = checkNotNull(player)
                         val targetSeconds = if (memoryPressure || power.currentThermalStatus >= PowerManager.THERMAL_STATUS_MODERATE) 8 else 30
                         while (remainingAudioMs(output) > targetSeconds * 1000 && gate.current(generation)) delay(200)
                         currentCoroutineContext().ensureActive()
-                        val speech = normalizer.normalize(group)
+                        diagnostics.record(chosen.model, PlaybackStage.PREPARING_TEXT)
+                        if (!chunks.hasNext()) break
+                        val speech = chunks.next().speech
                         val modelRevision = sha256(Json.encodeToString(VoicePack.serializer(), manifest).toByteArray())
                         val key = cacheKey(document.id, speech, modelRevision, chosen.voice, "steps=5;temperature=.7;speed=1;threads=2", CtcAlignment.VERSION)
                         val audio = cache.get(key) ?: run {
@@ -205,19 +227,17 @@ class ReadingCoordinator(
             catch (error: Exception) {
                 if (gate.current(generation)) {
                     diagnostics.record(chosen.model, PlaybackStage.FAILED, error)
-                    mutable.value = mutable.value.copy(preparing = false, status = error.message ?: "Speech unavailable", error = error.message ?: "Speech unavailable", activeWordId = null)
+                    val page = processingPage
+                    val blocked = if (error is SpeechPreparationException && page != null) {
+                        val failedWord = error.sentence.first().id
+                        BlockedSentence(page.index, failedWord, afterSentence(processingWords, failedWord, page.index, document.pageCount))
+                    } else null
+                    val message = error.message ?: "Speech unavailable"
+                    mutable.value = mutable.value.copy(preparing = false, status = message, error = message, blockedSentence = blocked,
+                        selectedWordId = if (queued.isEmpty()) blocked?.wordId else mutable.value.selectedWordId)
                 }
             }
         }
-    }
-    private fun normalizedChunks(words: List<SourceWord>): List<List<SourceWord>> {
-        fun split(group: List<SourceWord>): List<List<SourceWord>> {
-            if (normalizer.normalize(group).text.length <= 220) return listOf(group)
-            check(group.size > 1) { "This token exceeds the speech model limit; it was not truncated" }
-            val middle = group.size / 2
-            return split(group.take(middle)) + split(group.drop(middle))
-        }
-        return chunkWords(words).flatMap(::split)
     }
     private fun remainingAudioMs(player: Player): Long = (player.currentMediaItemIndex until player.mediaItemCount).sumOf {
         queued[player.getMediaItemAt(it).mediaId]?.second?.durationMs ?: 0

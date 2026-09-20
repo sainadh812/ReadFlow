@@ -110,13 +110,14 @@ private val LightBlue = Color(0xFFDCEAFF)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable private fun Reader(vm: ReaderViewModel, state: ReaderPlayback, prefs: Preferences, requestNotifications: () -> Unit) {
-    var original by remember { mutableStateOf(false) }
+    var original by remember(state.document?.id) { mutableStateOf(state.document?.mime == "application/pdf" || state.document?.mime?.startsWith("image/") == true) }
     var contents by remember { mutableStateOf(false) }
     var searching by remember { mutableStateOf(false) }
     var menu by remember { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     var follow by remember { mutableStateOf(true) }
     val page = state.page
+    val pageIndex = page?.index ?: state.viewPageIndex
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text(state.document?.title ?: "Reader", maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleMedium) },
             navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Library") { vm.screen.value = "library" } },
@@ -133,7 +134,11 @@ private val LightBlue = Color(0xFFDCEAFF)
             })
         Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(state.error ?: state.status, Modifier.weight(1f), color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary, style = MaterialTheme.typography.labelMedium, maxLines = 3, overflow = TextOverflow.Ellipsis)
-            TextButton(onClick = { contents = true }) { Text("${(page?.index ?: 0) + 1} / ${state.document?.pageCount ?: 1}") }
+            TextButton(onClick = { contents = true }) { Text("${pageIndex + 1} / ${state.document?.pageCount ?: 1}") }
+        }
+        if (state.blockedSentence != null) TextButton(onClick = { requestNotifications(); vm.app.playback.skipBlockedSentence() },
+            modifier = Modifier.align(Alignment.End).padding(horizontal = 12.dp)) {
+            Icon(Icons.Default.SkipNext, null); Spacer(Modifier.width(6.dp)); Text("Skip sentence")
         }
         if (state.document?.mime == "application/pdf" || state.document?.mime?.startsWith("image") == true) {
             SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
@@ -143,9 +148,15 @@ private val LightBlue = Color(0xFFDCEAFF)
         }
         if (searching) OutlinedTextField(query, { query = it }, label = { Text("Find on page") }, trailingIcon = { Tool(Icons.Default.Close, "Close search") { query = ""; searching = false } }, singleLine = true, modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp))
         if (page != null && page.warnings.isNotEmpty()) Text(page.warnings.joinToString(" "), Modifier.padding(horizontal = 20.dp, vertical = 6.dp), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        if (page == null) Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) { if (state.preparing) CircularProgressIndicator() }
-        else if (original) OriginalPage(vm, state, Modifier.weight(1f).fillMaxWidth(), follow) { follow = false }
+        if (original) OriginalPage(vm, state, Modifier.weight(1f).fillMaxWidth(), follow) { follow = false }
+        else if (page == null) Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) { if (state.preparing) CircularProgressIndicator() }
         else ReaderText(page, state, prefs, query, follow, { follow = false }, { vm.app.playback.select(it) }, { vm.bookmark(it) }, Modifier.weight(1f))
+        if ((state.document?.pageCount ?: 0) > 1) Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            IconButton(onClick = { vm.page(pageIndex - 1) }, enabled = pageIndex > 0) { Icon(Icons.Default.ChevronLeft, "Previous page") }
+            TextButton(onClick = { contents = true }) { Text("Page ${pageIndex + 1}") }
+            IconButton(onClick = { vm.page(pageIndex + 1) }, enabled = pageIndex + 1 < (state.document?.pageCount ?: 1)) { Icon(Icons.Default.ChevronRight, "Next page") }
+        }
         if (!follow) TextButton(onClick = { follow = true }, modifier = Modifier.align(Alignment.End)) { Icon(Icons.Default.MyLocation, null); Spacer(Modifier.width(6.dp)); Text("Follow reading") }
         val selected = page?.words?.firstOrNull { it.id == state.selectedWordId }
         if (selected != null && !state.playing) {
@@ -160,11 +171,18 @@ private val LightBlue = Color(0xFFDCEAFF)
     }
     if (contents && state.document != null) {
         val bookmarks by vm.app.documents.dao.bookmarks(state.document.id).collectAsStateWithLifecycle(emptyList())
+        var goToPage by remember { mutableStateOf((pageIndex + 1).toString()) }
+        val targetPage = goToPage.toIntOrNull()?.takeIf { it in 1..state.document.pageCount }
         AlertDialog(onDismissRequest = { contents = false }, title = { Text("Contents") },
-            text = { LazyColumn(Modifier.heightIn(max = 400.dp)) {
+            text = { Column {
+                OutlinedTextField(goToPage, { goToPage = it.filter(Char::isDigit).take(5) }, label = { Text("Page") },
+                    singleLine = true, keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
+                    suffix = { Text("/ ${state.document.pageCount}") })
+                LazyColumn(Modifier.heightIn(max = 300.dp)) {
                 items(bookmarks) { bookmark -> TextButton(onClick = { contents = false; vm.app.playback.start(state.document, bookmark.page, bookmark.wordId) }) { Icon(Icons.Default.Bookmark, null); Text("${bookmark.label} · Page ${bookmark.page + 1}") } }
                 items(state.document.pageCount) { index -> ListItem(headlineContent = { Text("Page ${index + 1}") }, modifier = Modifier.clickable { contents = false; vm.page(index) }) }
-            } }, confirmButton = { TextButton(onClick = { contents = false }) { Text("Close") } })
+            } } }, confirmButton = { TextButton(onClick = { targetPage?.let { contents = false; vm.page(it - 1) } }, enabled = targetPage != null) { Text("Go") } },
+            dismissButton = { TextButton(onClick = { contents = false }) { Text("Close") } })
     }
 }
 

@@ -3,6 +3,7 @@ package app.readflow.core
 import java.util.Locale
 
 class EnglishNormalizer : TextNormalizer {
+    companion object { const val VERSION = "english-2" }
     private val small = listOf("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen")
     private val tens = listOf("", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety")
     fun number(n: Long): String = when {
@@ -21,34 +22,103 @@ class EnglishNormalizer : TextNormalizer {
         var i = 0
         while (i < words.size) {
             val word = words[i]
-            var raw = word.text.replace('“', '"').replace('”', '"').replace('–', '-').replace('—', '-').replace("…", "...")
+            var raw = typography(word.text)
             val ids = mutableListOf(word.id)
             val next = words.getOrNull(i + 1)
             if (raw.endsWith("-") && next != null && next.paragraphId == word.paragraphId && next.text.firstOrNull()?.isLowerCase() == true && next.sourceStart > word.sourceEnd &&
                 word.boxes.isNotEmpty() && next.boxes.isNotEmpty() && next.boxes.first().top > word.boxes.first().bottom - 2) {
-                raw = raw.dropLast(1) + next.text; ids += next.id; i++
+                raw = raw.dropLast(1) + typography(next.text); ids += next.id; i++
             }
-            val suffix = raw.takeLastWhile { it in ",.;:!?" }
-            val bare = raw.dropLast(suffix.length)
-            val number = Regex("^([£$€₹]?)([-+]?\\d[\\d,]*)(?:\\.(\\d+))?(%|kg|km|cm|mm|mg|mL|ml|Hz)?$").matchEntire(bare)
-            val expansion = if (number != null && number.groupValues[2].replace(",", "").toLongOrNull()?.let { it in -999_999_999_999L..999_999_999_999L } == true) {
-                val integer = number(number.groupValues[2].replace(",", "").toLong())
-                val decimal = number.groupValues[3].let { if (it.isEmpty()) "" else " point " + it.map { c -> small[c.digitToInt()] }.joinToString(" ") }
-                val currency = mapOf("$" to " dollars", "£" to " pounds", "€" to " euros", "₹" to " rupees")[number.groupValues[1]].orEmpty()
-                val unit = mapOf("%" to " percent", "kg" to " kilograms", "km" to " kilometers", "cm" to " centimeters", "mm" to " millimeters", "mg" to " milligrams", "ml" to " milliliters", "mL" to " milliliters", "Hz" to " hertz")[number.groupValues[4]].orEmpty()
-                integer + decimal + currency + unit + suffix
-            } else mapOf("Dr." to "Doctor", "Mr." to "Mister", "Mrs." to "Missus", "Ms." to "Miz", "e.g." to "for example", "i.e." to "that is",
-                "kg" to "kilograms", "km" to "kilometers", "cm" to "centimeters", "mg" to "milligrams")[raw] ?: raw
+            val expansion = raw.trim().split(Regex("\\s+")).joinToString(" ", transform = ::expandToken)
+            // The same expansion feeds synthesis and alignment, never a second guessed transcript.
+            require(!expansion.any { it.isDigit() || (it.isLetter() && it !in 'A'..'Z' && it !in 'a'..'z') }) { "This sentence needs an explicit English pronunciation." }
+            require(expansion.all { it.isLetter() || it.isWhitespace() || it in "'.,!?;:()\"-" }) { "This sentence contains an unsupported symbol or equation." }
             spoken += expansion
-            val spokenWords = Regex("[A-Za-z]+(?:['’][A-Za-z]+)*").findAll(expansion)
-            spokenWords.forEach { tokens += SpokenToken(it.value.replace('’', '\'').uppercase(Locale.US), ids.toList()) }
-            // Fail closed for unsupported scripts/symbols rather than align a different transcript.
-            require(!expansion.any { it.isDigit() || (it.isLetter() && it !in 'A'..'Z' && it !in 'a'..'z') }) { "This sentence contains text that needs an explicit English pronunciation." }
-            require(expansion.all { it.isLetter() || it.isWhitespace() || it in "'’.,!?;:()\"-" }) { "Unsupported symbol or equation: skip this sentence or page." }
+            Regex("[A-Za-z]+(?:'[A-Za-z]+)*").findAll(expansion).forEach {
+                tokens += SpokenToken(it.value.uppercase(Locale.US), ids.toList())
+            }
             i++
         }
-        require(tokens.isNotEmpty()) { "No spoken words in this selection" }
-        return SpeechText(spoken.joinToString(" "), tokens, words.map { it.id })
+        require(tokens.isNotEmpty()) { "No spoken words in this sentence." }
+        return SpeechText(spoken.filter { it.isNotEmpty() }.joinToString(" ").replace(Regex("\\s+([,.;:!?)])"), "$1"), tokens, words.map { it.id })
+    }
+
+    private fun typography(text: String): String = buildString {
+        // Read reference-like markers literally; never assume that a superscript is an exponent or footnote.
+        val prepared = Regex("(?<=[.!?\"'\u2019\u201d])([\u2070\u00b9\u00b2\u00b3\u2074-\u2079]+)").replace(text) { match ->
+            " superscript " + match.value.map { small["\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079".indexOf(it)] }.joinToString(" ")
+        }
+        for (character in prepared) append(when (character) {
+            '\u2018', '\u2019' -> "'"
+            '\u201c', '\u201d', '\u00ab', '\u00bb' -> "\""
+            '\u2010', '\u2011', '\u2013', '\u2014' -> "-"
+            '\u2026' -> "..."
+            '[' -> "("
+            ']' -> ")"
+            '\u00ad', '\ufeff' -> ""
+            '\uf0c1' -> "" // Sphinx heading-link icon retained in older saved articles.
+            '\ufb00' -> "ff"
+            '\ufb01' -> "fi"
+            '\ufb02' -> "fl"
+            '\ufb03' -> "ffi"
+            '\ufb04' -> "ffl"
+            '\u200b' -> " "
+            '\u2022', '\u2023', '\u25e6' -> ","
+            '&' -> " and "
+            '/' -> " slash "
+            '_' -> " underscore "
+            '@' -> " at "
+            '\u00a9' -> " copyright "
+            '\u00ae' -> " registered trademark "
+            '\u2122' -> " trademark "
+            else -> if (character.isWhitespace()) " " else character.toString()
+        })
+    }
+
+    private fun expandToken(raw: String): String {
+        val prefix = raw.takeWhile { it in "\"'(" }
+        val rest = raw.drop(prefix.length)
+        val suffix = rest.takeLastWhile { it in ",.;:!?\"')" }
+        val bare = rest.dropLast(suffix.length)
+        val number = Regex("^([£$€₹]?)([-+]?(?:\\d{1,3}(?:,\\d{3})+|\\d+))(?:\\.(\\d+))?(%|kg|km|cm|mm|mg|mL|ml|Hz)?$").matchEntire(bare)
+        if (number != null && number.groupValues[2].replace(",", "").toLongOrNull()?.let { it in -999_999_999_999L..999_999_999_999L } == true) {
+            val integer = number(number.groupValues[2].replace(",", "").toLong())
+            val decimal = number.groupValues[3].let { if (it.isEmpty()) "" else " point " + it.map { c -> small[c.digitToInt()] }.joinToString(" ") }
+            val currency = mapOf("$" to " dollars", "£" to " pounds", "€" to " euros", "₹" to " rupees")[number.groupValues[1]].orEmpty()
+            val unit = mapOf("%" to " percent", "kg" to " kilograms", "km" to " kilometers", "cm" to " centimeters", "mm" to " millimeters", "mg" to " milligrams", "ml" to " milliliters", "mL" to " milliliters", "Hz" to " hertz")[number.groupValues[4]].orEmpty()
+            return prefix + integer + decimal + currency + unit + suffix
+        }
+        val decade = Regex("(\\d{2}|\\d{4})s").matchEntire(bare)?.groupValues?.get(1)?.toInt()
+        if (decade != null && decade % 10 == 0 && decade >= 20) {
+            val plural = if (decade % 100 == 0) number(decade.toLong()) + "s"
+                else (if (decade >= 100) number((decade / 100).toLong()) + " " else "") + number((decade % 100).toLong()).dropLast(1) + "ies"
+            return prefix + plural + suffix
+        }
+        val ordinal = Regex("(\\d+)(st|nd|rd|th)").matchEntire(bare)
+        if (ordinal != null) {
+            val value = ordinal.groupValues[1].toLongOrNull()
+            if (value != null && value <= 999_999_999_999L) {
+                val cardinal = number(value)
+                val last = cardinal.substringAfterLast(' ')
+                val ending = mapOf("one" to "first", "two" to "second", "three" to "third", "five" to "fifth",
+                    "eight" to "eighth", "nine" to "ninth", "twelve" to "twelfth")[last]
+                    ?: if (last.endsWith("y")) last.dropLast(1) + "ieth" else last + "th"
+                return prefix + cardinal.dropLast(last.length) + ending + suffix
+            }
+        }
+        if (Regex("(?:[A-Za-z]+-\\d[\\d,]*s?|\\d[\\d,]*-[A-Za-z]+(?:-[A-Za-z]+)*)").matches(bare)) {
+            return prefix + bare.split('-').joinToString("-", transform = ::expandToken) + suffix
+        }
+        // Spell numeric parts of identifiers/compounds literally, without interpreting an expression.
+        if (bare.any { it.isDigit() } && bare.any { it.isLetter() } && Regex("[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*").matches(bare)) {
+            val expanded = Regex("[A-Za-z]+|[0-9]+").findAll(bare).map { part ->
+                if (part.value.first().isDigit()) part.value.toLongOrNull()?.takeIf { it <= 999_999_999_999L }?.let(::number) ?: part.value
+                else part.value
+            }.joinToString(" ")
+            return prefix + expanded + suffix
+        }
+        return mapOf("Dr." to "Doctor", "Mr." to "Mister", "Mrs." to "Missus", "Ms." to "Miz", "e.g." to "for example", "i.e." to "that is",
+            "kg" to "kilograms", "km" to "kilometers", "cm" to "centimeters", "mg" to "milligrams")[raw] ?: raw
     }
 }
 
@@ -67,8 +137,9 @@ fun chunkWords(words: List<SourceWord>, maxCharacters: Int = 220): List<List<Sou
     return result
 }
 
-fun cacheKey(documentId: String, speech: SpeechText, model: String, voice: String, settings: String, alignment: String) =
-    sha256(listOf(documentId, PIPELINE_VERSION, speech.text, speech.sourceIds.joinToString(","), model, voice, settings, alignment).joinToString("\u0000").toByteArray())
+fun cacheKey(documentId: String, speech: SpeechText, model: String, voice: String, settings: String, alignment: String,
+    normalizationVersion: String = EnglishNormalizer.VERSION) =
+    sha256(listOf(documentId, PIPELINE_VERSION, normalizationVersion, speech.text, speech.sourceIds.joinToString(","), model, voice, settings, alignment).joinToString("\u0000").toByteArray())
 
 fun activeWord(timings: List<WordTiming>, positionMs: Long, sampleRate: Int): WordTiming? {
     val sample = positionMs.coerceAtLeast(0) * sampleRate / 1000

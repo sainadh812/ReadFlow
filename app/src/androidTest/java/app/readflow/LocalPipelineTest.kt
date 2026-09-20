@@ -42,11 +42,33 @@ class LocalPipelineTest {
         assertEquals(1, reopened.dao().position(doc.id)?.page)
         reopened.dao().deleteDocument(doc.id); reopened.close()
     }
+    @Test fun originalPdfRendersWithoutFirstExtractingItsText() = runBlocking {
+        val extractor = LocalExtraction()
+        val bitmap = extractor.render(fixture("selectable.pdf").path, 0)
+        try {
+            assertTrue(bitmap.width > 600)
+            var ink = 0
+            for (y in 0 until bitmap.height step 3) for (x in 0 until bitmap.width step 3) {
+                if (bitmap.getPixel(x, y) and 0x00ffffff != 0x00ffffff) ink++
+            }
+            assertTrue("PDF preview must contain rendered text", ink > 20)
+        } finally { bitmap.recycle() }
+    }
     @Test fun savedWebpageUsesSandboxedReadabilityAndDropsScripts() = runBlocking {
         val html = instrumentation.context.assets.open("fixtures/article.html").bufferedReader().use { it.readText() }
         val article = ReadabilityArticles(context).extractHtml(html)
         assertFalse(article.sanitizedHtml.contains("<script"))
         assertFalse(article.sanitizedHtml.contains("<iframe"))
         assertTrue(article.page.elements.any { it.text.contains("quiet space") })
+    }
+    @Test fun savedWebpagePunctuationPreparesSpeechWithSourceMappings() = runBlocking {
+        val html = instrumentation.context.assets.open("fixtures/web-punctuation.html").bufferedReader().use { it.readText() }
+        val article = ReadabilityArticles(context).extractHtml(html)
+        val page = DocumentPipeline().process("web-punctuation", 0, article.page)
+        val chunks = SpeechPlanner().prepare(page.words).toList()
+        assertTrue(chunks.isNotEmpty())
+        assertTrue(chunks.any { it.speech.text.contains("Research and development") })
+        assertEquals(page.words.map { it.id }, chunks.flatMap { it.speech.sourceIds })
+        assertTrue(page.reading.contains("Research & development"))
     }
 }

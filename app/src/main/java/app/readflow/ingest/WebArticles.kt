@@ -9,7 +9,6 @@ import kotlinx.serialization.json.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.jsoup.Jsoup
-import org.jsoup.safety.Safelist
 import java.io.ByteArrayInputStream
 import java.util.concurrent.TimeUnit
 
@@ -33,8 +32,7 @@ class ReadabilityArticles(private val context: Context) : ArticleExtractor {
     }
     internal suspend fun extractHtml(html: String): Article = withContext(Dispatchers.IO) {
         val source = Jsoup.parse(html)
-        source.select("script,style,iframe,object,embed,form,link,meta,svg,math,noscript").remove()
-        val clean = Jsoup.clean(source.outerHtml(), Safelist().addTags("html", "head", "title", "body", "article", "main", "section", "div", "p", "h1", "h2", "h3", "h4", "blockquote", "ul", "ol", "li", "strong", "em", "b", "i", "br", "table", "thead", "tbody", "tr", "td", "th").addAttributes("*", "class", "id"))
+        val clean = ArticleHtml.sanitize(html)
         val result = extractSandboxed(clean)
         val content = Jsoup.parse(result.getValue("content").jsonPrimitive.content)
         val hasTables = content.select("table").isNotEmpty()

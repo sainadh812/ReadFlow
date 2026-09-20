@@ -16,6 +16,8 @@ import kotlin.math.*
 
 class LocalExtraction : PageExtractor {
     private val resourceLock = Mutex()
+    // Rendering owns a separate renderer and can proceed while the single OCR task is running.
+    private val renderLock = Mutex()
     private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
     suspend fun pageCount(path: String): Int = withContext(Dispatchers.IO) {
         resourceLock.withLock { openPdf(path).use { it.pageCount } }
@@ -96,19 +98,26 @@ class LocalExtraction : PageExtractor {
             return ExtractedPage(elements, width, height, "Latin OCR", warnings, transform)
         } finally { if (rotated !== bitmap) rotated.recycle() }
     }
-    suspend fun render(path: String, index: Int, targetWidth: Int = 1400): Bitmap = withContext(Dispatchers.IO) {
-        resourceLock.withLock {
-            if (!path.endsWith(".pdf")) return@withLock ImageDecoder.decodeBitmap(ImageDecoder.createSource(File(path))) { d, info, _ ->
-                val ratio = minOf(1f, targetWidth.toFloat() / info.size.width)
-                d.setTargetSize((info.size.width * ratio).toInt(), (info.size.height * ratio).toInt()); d.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-            }
-            openPdf(path).use { renderer -> renderer.openPage(index).use { page ->
-                val scale = minOf(targetWidth.toFloat() / page.width, sqrt(3_000_000f / (page.width.toFloat() * page.height)))
-                Bitmap.createBitmap((page.width * scale).toInt(), (page.height * scale).toInt(), Bitmap.Config.ARGB_8888).also {
-                    it.eraseColor(Color.WHITE)
-                    page.render(it, null, Matrix().apply { setScale(scale, scale) }, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
-                }
+    suspend fun render(path: String, index: Int, targetWidth: Int = 1400): Bitmap {
+        var owned: Bitmap? = null
+        try {
+            return withContext(Dispatchers.IO) { renderLock.withLock {
+                if (!path.endsWith(".pdf")) return@withLock ImageDecoder.decodeBitmap(ImageDecoder.createSource(File(path))) { d, info, _ ->
+                    val ratio = minOf(1f, targetWidth.toFloat() / info.size.width)
+                    d.setTargetSize((info.size.width * ratio).toInt().coerceAtLeast(1), (info.size.height * ratio).toInt().coerceAtLeast(1)); d.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                }.also { owned = it }
+                openPdf(path).use { renderer -> renderer.openPage(index).use { page ->
+                    val scale = minOf(targetWidth.toFloat() / page.width, sqrt(3_000_000f / (page.width.toFloat() * page.height)))
+                    Bitmap.createBitmap((page.width * scale).toInt().coerceAtLeast(1), (page.height * scale).toInt().coerceAtLeast(1), Bitmap.Config.ARGB_8888).also {
+                        owned = it
+                        it.eraseColor(Color.WHITE)
+                        page.render(it, null, Matrix().apply { setScale(scale, scale) }, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+                    }
+                } }
             } }
+        } catch (error: Throwable) {
+            owned?.recycle()
+            throw error
         }
     }
 }
