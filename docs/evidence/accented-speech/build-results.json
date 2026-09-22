@@ -1,0 +1,28 @@
+{
+  "command": "./gradlew assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest --offline --console=plain",
+  "exitCode": 0,
+  "finalBuildDuration": "2m 34s",
+  "unitTests": {
+    "tests": 143,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lintErrors": 0,
+  "lintWarnings": 3,
+  "instrumentation": "APK compiled; tests not executed: no attached Android device",
+  "targetDevice": "S25 Ultra accuracy, latency, memory and listening checks not performed",
+  "apk": {
+    "file": "dist/ReadFlow-0.1.8-arm64-debug.apk",
+    "versionName": "0.1.8-prototype",
+    "versionCode": 9,
+    "bytes": 130964492,
+    "sha256": "f2d30d82cc9ee1aa2e400fb1f5ca7d3fae23f1dd59079cb27d7df60510ba81c8",
+    "abis": [
+      "arm64-v8a"
+    ],
+    "signatureVerified": true,
+    "matchesPreviousCertificate": true,
+    "certificateSha256": "f7313f98e9414c166f3fb2d2a9329ba1bb5dd9d76b068254522d20d1f8b109f9"
+  }
+}

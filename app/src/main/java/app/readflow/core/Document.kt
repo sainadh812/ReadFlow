@@ -3,6 +3,7 @@ package app.readflow.core
 import java.security.MessageDigest
 import java.text.BreakIterator
 import java.util.Locale
+import java.util.IdentityHashMap
 import kotlinx.serialization.Serializable
 
 const val PIPELINE_VERSION = "readflow-1"
@@ -88,9 +89,28 @@ class GeometricReadingOrder : ReadingOrder {
 }
 
 class DocumentPipeline(private val ordering: ReadingOrder = GeometricReadingOrder()) {
+    private fun orderedElements(extracted: ExtractedPage): List<TextElement> {
+        if (extracted.transform == Transform()) return ordering.order(extracted.elements, extracted.width)
+        val pageToImage = extracted.transform.inverse()
+        // Reading follows the upright OCR image, while highlights remain in the
+        // original page. Use full page bounds: sparse text cannot define the gutter.
+        val imageBounds = pageToImage.map(Box(0f, 0f, extracted.width, extracted.height))
+        val originals = IdentityHashMap<TextElement, TextElement>()
+        val inImage = extracted.elements.map { element ->
+            element.copy(boxes = element.boxes.map { box ->
+                val mapped = pageToImage.map(box)
+                Box(mapped.left - imageBounds.left, mapped.top - imageBounds.top,
+                    mapped.right - imageBounds.left, mapped.bottom - imageBounds.top)
+            }).also { originals[it] = element }
+        }
+        // A ReadingOrder permutes the supplied elements. Identity, rather than
+        // equality, preserves separate occurrences with identical text/geometry.
+        return ordering.order(inImage, imageBounds.width).map { originals.getValue(it) }
+    }
+
     fun process(documentId: String, page: Int, extracted: ExtractedPage): PageContent {
         val pageId = stableId(documentId, PIPELINE_VERSION, page)
-        val ordered = ordering.order(extracted.elements, extracted.width)
+        val ordered = orderedElements(extracted)
         val original = StringBuilder()
         val reading = StringBuilder()
         val words = mutableListOf<SourceWord>()

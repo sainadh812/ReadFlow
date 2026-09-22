@@ -16,6 +16,10 @@ class RealAudioTest {
         val root = File("../docs/evidence/ocr-normalization")
         verify(root, File(root, "input.txt").readText().trim(), listOf("kokoro"))
     }
+    @Test fun bothModelsAlignAccentedNamesToTheUnchangedSourceWords() {
+        val root = File("../docs/evidence/accented-speech")
+        verify(root, File(root, "input.txt").readText().trim())
+    }
     @Test fun recordedPocketOcrFixtureStillRejectsItsLowConfidenceFirstWord() {
         val root = File("../docs/evidence/ocr-normalization")
         val failure = assertThrows(AlignmentConfidenceException::class.java) {

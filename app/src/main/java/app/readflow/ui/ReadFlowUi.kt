@@ -111,6 +111,7 @@ private val LightBlue = Color(0xFFDCEAFF)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable private fun Reader(vm: ReaderViewModel, state: ReaderPlayback, prefs: Preferences, requestNotifications: () -> Unit) {
     KeepReaderScreenAwake()
+    val refreshingText by vm.refreshingText.collectAsStateWithLifecycle()
     val hasOriginal = state.document?.mime == "application/pdf" || state.document?.mime?.startsWith("image/") == true
     var original by remember(state.document?.id) { mutableStateOf(hasOriginal) }
     var contents by remember { mutableStateOf(false) }
@@ -127,7 +128,7 @@ private val LightBlue = Color(0xFFDCEAFF)
     var fitWidth by remember(state.document?.id, pageIndex) { mutableStateOf(true) }
     val selected = page?.words?.firstOrNull { it.id == state.selectedWordId }
     val clipboard = LocalClipboardManager.current
-    val status = state.error ?: state.status
+    val status = if (refreshingText) "Updating text recognition…" else state.error ?: state.status
     BackHandler(pageOnly) { pageOnly = false }
     // Reveal recovery controls if playback stops on an error while the chrome is hidden.
     LaunchedEffect(state.error, state.blockedSentence) {
@@ -176,7 +177,10 @@ private val LightBlue = Color(0xFFDCEAFF)
                         DropdownMenuItem(text = { Text("Text and display") }, onClick = { vm.screen.value = "settings"; menu = false }, leadingIcon = { Icon(Icons.Default.TextFields, null) })
                         DropdownMenuItem(text = { Text("Reading details") }, onClick = { details = true; menu = false }, leadingIcon = { Icon(Icons.Default.Info, null) })
                         DropdownMenuItem(text = { Text("Issue logs") }, onClick = { vm.showIssues(); menu = false }, leadingIcon = { Icon(Icons.Default.BugReport, null) })
-                        if (hasOriginal) DropdownMenuItem(text = { Text("Rotate scan and retry OCR") }, onClick = { vm.rotateOcr(); menu = false }, leadingIcon = { Icon(Icons.Default.RotateRight, null) })
+                        if (hasOriginal) {
+                            DropdownMenuItem(text = { Text("Retry text recognition") }, onClick = { vm.retryOcr(); menu = false }, enabled = !refreshingText && !state.preparing, leadingIcon = { Icon(Icons.Default.Refresh, null) })
+                            DropdownMenuItem(text = { Text("Rotate scan and retry OCR") }, onClick = { vm.rotateOcr(); menu = false }, enabled = !refreshingText && !state.preparing, leadingIcon = { Icon(Icons.Default.RotateRight, null) })
+                        }
                     }
                 }
             }
@@ -221,7 +225,7 @@ private val LightBlue = Color(0xFFDCEAFF)
                     singleLine = true, keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
                     suffix = { Text("/ ${state.document.pageCount}") })
                 LazyColumn(Modifier.heightIn(max = 300.dp)) {
-                    items(bookmarks) { bookmark -> TextButton(onClick = { contents = false; requestNotifications(); vm.app.playback.start(state.document, bookmark.page, bookmark.wordId) }) { Icon(Icons.Default.Bookmark, null); Text("${bookmark.label} · Page ${bookmark.page + 1}") } }
+                    items(bookmarks) { bookmark -> TextButton(onClick = { contents = false; requestNotifications(); vm.readBookmark(bookmark) }) { Icon(Icons.Default.Bookmark, null); Text("${bookmark.label} · Page ${bookmark.page + 1}") } }
                     items(state.document.pageCount) { index -> ListItem(headlineContent = { Text("Page ${index + 1}") }, modifier = Modifier.clickable { contents = false; vm.page(index) }) }
                 }
             } }, confirmButton = { TextButton(onClick = { targetPage?.let { contents = false; vm.page(it - 1) } }, enabled = targetPage != null) { Text("Go") } },

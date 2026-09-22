@@ -6,7 +6,7 @@ class NormalizationException(val sourceIds: List<String>, val sourceText: String
     IllegalArgumentException(reason)
 
 class EnglishNormalizer : TextNormalizer {
-    companion object { const val VERSION = "english-3" }
+    companion object { const val VERSION = "english-4" }
     private val small = listOf("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen")
     private val tens = listOf("", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety")
     fun number(n: Long): String = when {
@@ -28,7 +28,7 @@ class EnglishNormalizer : TextNormalizer {
             val sourceText = group.joinToString(" ") { it.text }
             val ids = group.map { it.id }
             if (group.size == 2) raw = raw.dropLast(1) + typography(group[1].text)
-            val expansion = raw.trim().split(Regex("\\s+")).joinToString(" ", transform = ::expandToken)
+            val expansion = LatinPronunciation.forSpeech(raw).trim().split(Regex("\\s+")).joinToString(" ", transform = ::expandToken)
             // The same expansion feeds synthesis and alignment, never a second guessed transcript.
             if (expansion.any { it.isDigit() || (it.isLetter() && it !in 'A'..'Z' && it !in 'a'..'z') })
                 throw NormalizationException(ids.toList(), sourceText, expansion, "This sentence needs an explicit English pronunciation.")

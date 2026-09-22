@@ -4,6 +4,8 @@ A native Android reading application built with Kotlin, Compose and local speech
 
 ## Install on a phone
 
+The **0.1.8 source update** fixes accented Latin speech, including `Milanković’s` and `Köppen`, while retaining the original spelling and word highlighting. OCR now uses more source detail, conservative automatic straightening and bounded retries for uncertain lines. For an already saved page, choose **Reader menu > Retry text recognition**; speech corrections apply without reimporting. No new model download is needed. See [behavior and validation](docs/ACCENTS_AND_OCR.md). The latest published download remains linked below; the new APK is built locally.
+
 The **0.1.7 source update** adds playback recovery when word alignment is unreliable, prevents idle dimming in the visible reader, and gives the PDF more room by removing the horizontal seek slider and moving secondary controls into menus. The reader has three main playback buttons; selected-word playback, sentence skipping and follow controls no longer cover the page. Tap the expand icon to hide both control rows, then use the restore icon or Android Back to bring them back. See [diagnosis, behavior and validation](docs/READER_RECOVERY_FIX.md) and the [latest uploaded logs](docs/READER_LATEST_LOGS.md). Build the APK with the instructions below; the latest published download remains linked here until a release is published.
 
 [Download ReadFlow 0.1.6 for Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.6-prototype/ReadFlow-0.1.6-arm64-debug.apk).

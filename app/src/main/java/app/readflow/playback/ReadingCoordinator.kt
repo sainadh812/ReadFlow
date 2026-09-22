@@ -126,7 +126,12 @@ class ReadingCoordinator(
         mutable.value = mutable.value.copy(activeWordId = null, activeWordIds = emptySet(), currentChunk = null, playing = false, wantsToPlay = false, positionMs = 0, durationMs = 0, blockedSentence = null)
         return generation
     }
-    fun stop() { invalidate(); mutable.value = mutable.value.copy(preparing = false, status = "Paused") }
+    fun stop(): Long {
+        val generation = invalidate()
+        mutable.value = mutable.value.copy(preparing = false, status = "Paused")
+        return generation
+    }
+    fun isCurrentRequest(generation: Long) = gate.current(generation)
     fun select(wordId: String) {
         if (player?.playWhenReady == true || state.value.preparing) start(wordId = wordId)
         else mutable.value = mutable.value.copy(selectedWordId = wordId)
@@ -203,6 +208,15 @@ class ReadingCoordinator(
                     stage = "EXTRACT_PAGE"
                     issues.activeInput = input()
                     val page = documents.loadPage(document, index)
+                    if (!gate.current(generation)) return@launch
+                    if (first && requested != null && page.words.none { it.id == requested }) {
+                        // A selected word can become obsolete while a concurrent OCR retry
+                        // finishes. Show the refreshed page instead of failing speech planning.
+                        durableWord = null
+                        mutable.value = ReaderPlayback(document = document, page = page, viewPageIndex = index,
+                            status = "Text has changed. Select a word to read.")
+                        return@launch
+                    }
                     val words = page.words.filter { !chosen.skipMargins || !it.marginal || it.id == requested }
                     processingPage = page; processingWords = words
                     if (first) mutable.value = mutable.value.copy(page = page)
