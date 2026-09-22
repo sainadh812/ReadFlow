@@ -77,6 +77,20 @@ import java.util.Locale
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text("Settings") }, navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.screen.value = if (vm.playback.value.document == null) "library" else "reader" } })
         LazyColumn(contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
+            item {
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Swipe to turn PDF pages", Modifier.weight(1f))
+                        Switch(prefs.swipePages, { vm.update(prefs.copy(swipePages = it)) }, Modifier.semantics { contentDescription = "Swipe to turn PDF pages" })
+                    }
+                    Text("At normal zoom, swipe sideways to change page. Pinch to zoom; drag to move within the page.", style = MaterialTheme.typography.bodySmall)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Swipe right for next page", Modifier.weight(1f))
+                        Switch(prefs.swipeRightAdvances, { vm.update(prefs.copy(swipeRightAdvances = it)) }, Modifier.semantics { contentDescription = "Swipe right for next page" }, enabled = prefs.swipePages)
+                    }
+                    Text(if (prefs.swipeRightAdvances) "Right: next page · Left: previous page" else "Left: next page · Right: previous page", style = MaterialTheme.typography.bodySmall)
+                }
+            }
             item { Row(verticalAlignment = Alignment.CenterVertically) { Text("Dark mode", Modifier.weight(1f)); Switch(prefs.dark, { vm.update(prefs.copy(dark = it)) }, Modifier.semantics { contentDescription = "Dark mode" }) } }
             item {
                 Text("Reader font size · ${prefs.fontSize}")

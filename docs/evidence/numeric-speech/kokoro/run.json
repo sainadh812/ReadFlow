@@ -1,0 +1,18 @@
+{
+  "host": "Linux-6.8.0-1066-gcp-x86_64-with-glibc2.35",
+  "processor": "x86_64",
+  "model": "kokoro",
+  "sherpa": "1.13.8",
+  "ort": "1.20.1",
+  "threads": 2,
+  "text": "twenty to twenty four; nine point three million dollars; inflation, sixteen. nineteen ninety nine: Apple's iMac; two thousand three: one hundred twenty gigs; two thousand six: two hundred fifty gigs.",
+  "sampleRate": 24000,
+  "sampleCount": 258522,
+  "frames": 538,
+  "coldLoadSeconds": 5.3117246041074395,
+  "synthesisSeconds": 16.371480168076232,
+  "alignmentLoadAndEmissionSeconds": 4.588914312887937,
+  "durationSeconds": 10.77175,
+  "combinedRtf": 1.9458671507381964,
+  "boundaryValidation": "Not manually audited. Host emissions only; Kotlin test produces boundaries."
+}

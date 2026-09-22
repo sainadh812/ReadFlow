@@ -5,11 +5,9 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,25 +17,26 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChanged
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
 import app.readflow.core.Transform
 import app.readflow.diagnostics.documentIssueInput
 import app.readflow.playback.ReaderPlayback
 import kotlinx.coroutines.CancellationException
+import kotlin.math.abs
 
-@Composable internal fun OriginalPage(vm: ReaderViewModel, state: ReaderPlayback, modifier: Modifier, follow: Boolean, manual: () -> Unit) {
+@Composable internal fun OriginalPage(vm: ReaderViewModel, state: ReaderPlayback, modifier: Modifier, follow: Boolean,
+    rotation: Int, fitWidth: Boolean, swipePages: Boolean, rightAdvances: Boolean, manual: () -> Unit) {
     val page = state.page
     val document = state.document ?: return
     val pageIndex = page?.index ?: state.viewPageIndex
     val pageKey = document.id to pageIndex
     var bitmap by remember(pageKey) { mutableStateOf<Bitmap?>(null) }
     var error by remember(pageKey) { mutableStateOf<String?>(null) }
-    var zoom by remember(pageKey) { mutableFloatStateOf(1f) }
-    var pan by remember(pageKey) { mutableStateOf(Offset.Zero) }
-    var rotation by remember(pageKey) { mutableIntStateOf(0) }
-    var fitWidth by remember(pageKey) { mutableStateOf(true) }
+    var zoom by remember(pageKey, rotation, fitWidth) { mutableFloatStateOf(1f) }
+    var pan by remember(pageKey, rotation, fitWidth) { mutableStateOf(Offset.Zero) }
     var size by remember { mutableStateOf(IntSize.Zero) }
     LaunchedEffect(pageKey, document.localPath) {
         try { bitmap = vm.app.documents.extractor.render(document.localPath, pageIndex) }
@@ -51,11 +50,12 @@ import kotlinx.coroutines.CancellationException
     val width = page?.width?.takeIf { it > 0 } ?: bitmap?.width?.toFloat() ?: 1f
     val height = page?.height?.takeIf { it > 0 } ?: bitmap?.height?.toFloat() ?: 1f
     val swapped = rotation % 180 != 0
-    val fit = (if (fitWidth) size.width / (if (swapped) height else width)
-        else minOf(size.width / (if (swapped) height else width), size.height / (if (swapped) width else height))).coerceAtLeast(.001f)
-    val scale = fit * zoom
-    val offsetX = (size.width - (if (swapped) height else width) * fit) / 2 + pan.x
-    val offsetY = ((size.height - (if (swapped) width else height) * fit) / 2).coerceAtLeast(0f) + pan.y
+    val viewport = PageViewport(if (swapped) height else width, if (swapped) width else height,
+        size.width.toFloat(), size.height.toFloat(), fitWidth)
+    val scale = viewport.fit * zoom
+    val boundedPan = viewport.constrain(pan, zoom)
+    val offsetX = viewport.base.x + boundedPan.x
+    val offsetY = viewport.base.y + boundedPan.y
     val transform = when (rotation) {
         90 -> Transform(0f, scale, -scale, 0f, offsetX + height * scale, offsetY)
         180 -> Transform(-scale, 0f, 0f, -scale, offsetX + width * scale, offsetY + height * scale)
@@ -63,23 +63,56 @@ import kotlinx.coroutines.CancellationException
         else -> Transform(scale, 0f, 0f, scale, offsetX, offsetY)
     }
     val currentTransform by rememberUpdatedState(transform)
-    val currentBaseOffset by rememberUpdatedState(Offset(offsetX - pan.x, offsetY - pan.y))
+    val currentViewport by rememberUpdatedState(viewport)
+    val onManual by rememberUpdatedState(manual)
+    LaunchedEffect(viewport) { pan = viewport.constrain(pan, zoom) }
     val currentState by rememberUpdatedState(state)
-    LaunchedEffect(state.activeWordId, follow) {
+    LaunchedEffect(state.activeWordId, follow, size, rotation, fitWidth) {
         if (follow) page?.words?.firstOrNull { it.id == state.activeWordId }?.boxes?.firstOrNull()?.let { box ->
             val point = transform.map((box.left + box.right) / 2, (box.top + box.bottom) / 2)
-            if (point.second !in 40f..(size.height - 50f)) pan += Offset(0f, size.height / 2f - point.second)
+            if (point.second !in 40f..(size.height - 50f)) pan = viewport.constrain(boundedPan + Offset(0f, size.height / 2f - point.second), zoom)
         }
     }
-    Box(modifier.padding(8.dp).clipToBounds()) {
+    Box(modifier.clipToBounds().background(MaterialTheme.colorScheme.surfaceContainerHighest)) {
         Canvas(Modifier.fillMaxSize().onSizeChanged { size = it }
-            .pointerInput(pageKey) { detectTransformGestures { centroid, delta, factor, _ ->
-                manual()
-                val next = (zoom * factor).coerceIn(1f, 6f)
-                val ratio = next / zoom
-                pan = (pan + currentBaseOffset - centroid) * ratio + centroid - currentBaseOffset + delta
-                zoom = next
-            } }
+            .pointerInput(pageKey, rotation, fitWidth, swipePages, rightAdvances, size) {
+                val threshold = maxOf(64.dp.toPx(), minOf(size.width * .18f, 120.dp.toPx()))
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false)
+                    var travel = Offset.Zero
+                    var accumulatedZoom = 1f
+                    var dragging = false
+                    var multiTouch = false
+                    var cancelled = false
+                    val initialZoom = zoom
+                    do {
+                        val event = awaitPointerEvent()
+                        cancelled = event.changes.any { it.isConsumed }
+                        if (!cancelled) {
+                            multiTouch = multiTouch || event.changes.count { it.pressed || it.previousPressed } > 1
+                            val delta = event.calculatePan()
+                            val factor = event.calculateZoom()
+                            travel += delta
+                            accumulatedZoom *= factor
+                            if (!dragging) {
+                                val zoomMotion = abs(1 - accumulatedZoom) * event.calculateCentroidSize(useCurrent = false)
+                                dragging = travel.getDistance() > viewConfiguration.touchSlop || zoomMotion > viewConfiguration.touchSlop
+                                if (dragging) onManual()
+                            }
+                            if (dragging && event.changes.any { it.pressed && it.previousPressed }) {
+                                val next = (zoom * factor).coerceIn(1f, 6f)
+                                pan = currentViewport.zoomPan(pan, zoom, next, event.calculateCentroid(useCurrent = false), delta)
+                                zoom = next
+                                event.changes.forEach { if (it.positionChanged()) it.consume() }
+                            }
+                        }
+                    } while (!cancelled && event.changes.any { it.pressed })
+                    if (!cancelled && dragging) {
+                        val delta = swipePageDelta(travel, threshold, multiTouch, maxOf(initialZoom, zoom), swipePages, rightAdvances)
+                        if (delta != 0) vm.page(pageIndex + delta)
+                    }
+                }
+            }
             .pointerInput(pageKey) { detectTapGestures(onTap = { point ->
                 val mapped = currentTransform.inverse().map(point.x, point.y)
                 currentState.page?.words?.firstOrNull { word -> word.boxes.any { it.contains(mapped.first, mapped.second) } }?.let { vm.app.playback.select(it.id) }
@@ -108,9 +141,5 @@ import kotlinx.coroutines.CancellationException
             }
         }
         if (bitmap == null) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { if (error == null) CircularProgressIndicator() else Text(error.orEmpty()) }
-        Row(Modifier.align(Alignment.TopEnd)) {
-            Tool(Icons.Default.RotateRight, "Rotate page view") { rotation = (rotation + 90) % 360; zoom = 1f; pan = Offset.Zero }
-            Tool(Icons.Default.FitScreen, if (fitWidth) "Fit whole page" else "Fit page width") { fitWidth = !fitWidth; zoom = 1f; pan = Offset.Zero }
-        }
     }
 }

@@ -26,6 +26,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     val screen = MutableStateFlow("library")
     val message = MutableStateFlow<String?>(null)
     val importing = MutableStateFlow(false)
+    val refreshingText = MutableStateFlow(false)
     val issueReports = app.issues.reports
     val selectedIssue = MutableStateFlow<IssueReport?>(null)
     var pendingIssueExport: String? = null
@@ -126,17 +127,53 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         if (selectedIssue.value?.input?.documentId == document.id) selectedIssue.value = null
     } }
     fun page(index: Int) { playback.value.document?.let { if (index in 0 until it.pageCount) app.playback.open(it, index) } }
-    fun rotateOcr() { viewModelScope.launch {
-        val state = playback.value; val document = state.document ?: return@launch; val page = state.page ?: return@launch
-        app.playback.stop()
-        try {
-            val previous = app.documents.dao.page(document.id, page.index)?.rotation ?: 0
-            app.documents.loadPage(document, page.index, (previous + 90) % 360)
-            app.cache.deleteDocument(document.id)
-            app.playback.open(document, page.index)
-        } catch (cancel: CancellationException) { throw cancel }
-        catch (e: Exception) { app.issues.record("ROTATE_OCR", e, documentIssueInput(document, page)); message.value = e.message }
-    } }
+    fun retryOcr() = refreshOcr(rotate = false)
+    fun rotateOcr() = refreshOcr(rotate = true)
+    private fun refreshOcr(rotate: Boolean) {
+        if (refreshingText.value) return
+        val state = playback.value; val document = state.document ?: return
+        val page = state.page
+        val index = page?.index ?: state.viewPageIndex
+        if (index !in 0 until document.pageCount) return
+        refreshingText.value = true
+        viewModelScope.launch {
+            val request = app.playback.stop()
+            try {
+                val previous = app.documents.dao.page(document.id, index)?.rotation ?: 0
+                app.documents.loadPage(document, index, if (rotate) (previous + 90) % 360 else previous)
+                // Audio keys include the spoken text and source IDs. Changed recognition misses
+                // naturally; deleting the document cache could race playback on another page.
+                val current = playback.value
+                if (app.playback.isCurrentRequest(request) && current.document?.id == document.id &&
+                    (current.page?.index ?: current.viewPageIndex) == index) {
+                    app.playback.open(document, index)
+                    message.value = "Text recognition updated"
+                }
+            } catch (cancel: CancellationException) { throw cancel }
+            catch (e: Exception) { app.issues.record(if (rotate) "ROTATE_OCR" else "RETRY_OCR", e, documentIssueInput(document, page, pageIndex = index)); message.value = e.message }
+            finally { refreshingText.value = false }
+        }
+    }
+    fun readBookmark(bookmark: BookmarkEntity) {
+        val document = playback.value.document?.takeIf { it.id == bookmark.documentId } ?: return
+        val request = app.playback.stop()
+        viewModelScope.launch {
+            try {
+                val page = app.documents.loadPage(document, bookmark.page)
+                if (!app.playback.isCurrentRequest(request)) return@launch
+                if (page.words.any { it.id == bookmark.wordId && it.text == bookmark.label }) {
+                    app.playback.start(document, bookmark.page, bookmark.wordId)
+                } else {
+                    app.playback.open(document, bookmark.page)
+                    message.value = "Text has changed. Select a word on the bookmarked page."
+                }
+            } catch (cancel: CancellationException) { throw cancel }
+            catch (error: Exception) {
+                app.issues.record("OPEN_BOOKMARK", error, documentIssueInput(document, pageIndex = bookmark.page))
+                message.value = error.message
+            }
+        }
+    }
     fun bookmark(word: SourceWord) { viewModelScope.launch {
         val page = playback.value.page ?: return@launch
         app.documents.dao.bookmark(BookmarkEntity(page.documentId, word.id, page.index, word.text))

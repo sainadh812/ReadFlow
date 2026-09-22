@@ -1,0 +1,14 @@
+{
+  "voice": "en-us",
+  "engine": "bundled espeak in Sherpa 1.13.8 host library",
+  "phonemes": {
+    "Milanković's": "mˌɪlɐŋkˈɑːvɪkz",
+    "Milankovic's": "mˌɪlɐŋkˈɑːvɪkz",
+    "Milankovitch's": "mɪlˈæŋkəvˌɪtʃɪz",
+    "Köppen": "kˈɜːpən",
+    "Koeppen": "kˈoʊpən",
+    "Keppen": "kˈɛpən",
+    "Koppen": "kˈɑːpən"
+  },
+  "auditoryReview": false
+}

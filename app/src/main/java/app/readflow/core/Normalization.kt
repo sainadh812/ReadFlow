@@ -6,7 +6,7 @@ class NormalizationException(val sourceIds: List<String>, val sourceText: String
     IllegalArgumentException(reason)
 
 class EnglishNormalizer : TextNormalizer {
-    companion object { const val VERSION = "english-3" }
+    companion object { const val VERSION = "english-5" }
     private val small = listOf("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen")
     private val tens = listOf("", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety")
     fun number(n: Long): String = when {
@@ -22,40 +22,99 @@ class EnglishNormalizer : TextNormalizer {
     override fun normalize(words: List<SourceWord>): SpeechText {
         val tokens = mutableListOf<SpokenToken>()
         val spoken = mutableListOf<String>()
-        var i = 0
-        while (i < words.size) {
-            val word = words[i]
-            var raw = typography(word.text)
-            var sourceText = word.text
-            val ids = mutableListOf(word.id)
-            val next = words.getOrNull(i + 1)
-            if (raw.endsWith("-") && next != null && next.paragraphId == word.paragraphId && next.text.firstOrNull()?.isLowerCase() == true && next.sourceStart > word.sourceEnd &&
-                word.boxes.isNotEmpty() && next.boxes.isNotEmpty() && next.boxes.first().top > word.boxes.first().bottom - 2) {
-                raw = raw.dropLast(1) + typography(next.text); sourceText += " ${next.text}"; ids += next.id; i++
+        for (group in sourceGroups(words)) {
+            for ((raw, owners) in speechParts(group)) {
+                val sourceText = owners.joinToString(" ") { it.text }
+                val ids = owners.map { it.id }
+                val expansion = LatinPronunciation.forSpeech(raw).trim().split(Regex("\\s+")).joinToString(" ", transform = ::expandToken)
+                // The same expansion feeds synthesis and alignment, never a second guessed transcript.
+                if (expansion.any { it.isDigit() || (it.isLetter() && it !in 'A'..'Z' && it !in 'a'..'z') })
+                    throw NormalizationException(ids, sourceText, expansion, "This sentence needs an explicit English pronunciation.")
+                if (!expansion.all { it.isLetter() || it.isWhitespace() || it in "'.,!?;:()\"-" })
+                    throw NormalizationException(ids, sourceText, expansion, "This sentence contains an unsupported symbol or equation.")
+                spoken += expansion
+                Regex("[A-Za-z]+(?:'[A-Za-z]+)*").findAll(expansion).forEach {
+                    tokens += SpokenToken(it.value.uppercase(Locale.US), ids)
+                }
             }
-            val expansion = raw.trim().split(Regex("\\s+")).joinToString(" ", transform = ::expandToken)
-            // The same expansion feeds synthesis and alignment, never a second guessed transcript.
-            if (expansion.any { it.isDigit() || (it.isLetter() && it !in 'A'..'Z' && it !in 'a'..'z') })
-                throw NormalizationException(ids.toList(), sourceText, expansion, "This sentence needs an explicit English pronunciation.")
-            if (!expansion.all { it.isLetter() || it.isWhitespace() || it in "'.,!?;:()\"-" })
-                throw NormalizationException(ids.toList(), sourceText, expansion, "This sentence contains an unsupported symbol or equation.")
-            spoken += expansion
-            Regex("[A-Za-z]+(?:'[A-Za-z]+)*").findAll(expansion).forEach {
-                tokens += SpokenToken(it.value.uppercase(Locale.US), ids.toList())
-            }
-            i++
         }
         require(tokens.isNotEmpty()) { "No spoken words in this sentence." }
         return SpeechText(spoken.filter { it.isNotEmpty() }.joinToString(" ").replace(Regex("\\s+([,.;:!?)])"), "$1"), tokens, words.map { it.id })
     }
 
+    private fun speechParts(group: List<SourceWord>): List<Pair<String, List<SourceWord>>> {
+        val raw = typography(group[0].text)
+        if (group.size == 1) return listOf(raw to group)
+        if (timelineMeasurement(group[0], group[1])) {
+            val match = timelineNumber.matchEntire(raw)!!
+            // Keep the unit's own highlight and tap target, even though its context classifies the dash.
+            return listOf((year(match.groupValues[1]) + ": " + expandToken(match.groupValues[2])) to group.take(1),
+                typography(group[1].text) to group.drop(1))
+        }
+        return listOf((if (currencyScale(group[0], group[1])) scaledCurrency(raw, typography(group[1].text))
+            else raw.dropLast(1) + typography(group[1].text)) to group)
+    }
+
+    internal fun selectedGroup(group: List<SourceWord>, requestedWordId: String?): List<SourceWord> =
+        if (group.size == 2 && group[1].id == requestedWordId && timelineMeasurement(group[0], group[1])) group.drop(1) else group
+
+    // Keep phrases indivisible for normalization, source-word selection and chunking.
+    // This only examines typography/geometry; unsupported earlier words are not expanded.
+    internal fun sourceGroups(words: List<SourceWord>): List<List<SourceWord>> {
+        val groups = mutableListOf<List<SourceWord>>()
+        var i = 0
+        while (i < words.size) {
+            val word = words[i]
+            val next = words.getOrNull(i + 1)
+            val joins = typography(word.text).endsWith("-") && next != null &&
+                next.paragraphId == word.paragraphId && next.text.firstOrNull()?.isLowerCase() == true &&
+                next.sourceStart > word.sourceEnd && word.boxes.isNotEmpty() && next.boxes.isNotEmpty() &&
+                next.boxes.first().top > word.boxes.first().bottom - 2
+            val count = if (joins || (next != null && next.paragraphId == word.paragraphId &&
+                next.sentenceId == word.sentenceId && (currencyScale(word, next) || timelineMeasurement(word, next)))) 2 else 1
+            groups += words.subList(i, i + count)
+            i += count
+        }
+        return groups
+    }
+
+    private val currencyAmount = Regex("^[£$€₹][-+]?(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\\.[0-9]+)?$")
+    private val scaleWord = Regex("""^(thousand|million|billion)([,.;:!?"')]*?)$""", RegexOption.IGNORE_CASE)
+    private val timelineNumber = Regex("^((?:1[0-9]{3}|2[01][0-9]{2}))-([0-9]{1,3}(?:\\.[0-9]+)?)$")
+    private val storageUnit = Regex("^(gigs|gigabytes?|megabytes?|terabytes?|GB|MB|TB)[,.;:!?]*$", RegexOption.IGNORE_CASE)
+
+    private fun currencyScale(first: SourceWord, second: SourceWord) =
+        currencyAmount.matches(typography(first.text).trimStart('\"', '\'', '(')) && scaleWord.matches(typography(second.text))
+
+    private fun timelineMeasurement(first: SourceWord, second: SourceWord) =
+        timelineNumber.matches(typography(first.text)) && storageUnit.matches(typography(second.text))
+
+    private fun currencyName(symbol: String, singular: Boolean = false): String =
+        mapOf("$" to "dollar", "£" to "pound", "€" to "euro", "₹" to "rupee")[symbol]
+            ?.let { " " + it + if (singular) "" else "s" }.orEmpty()
+
+    private fun scaledCurrency(amount: String, scale: String): String {
+        val prefix = amount.takeWhile { it in "\"'(" }
+        val bare = amount.drop(prefix.length)
+        val magnitude = scaleWord.matchEntire(scale)!!
+        return prefix + expandToken(bare.drop(1)) + " " + magnitude.groupValues[1].lowercase(Locale.US) +
+            currencyName(bare.take(1)) + magnitude.groupValues[2]
+    }
+
+    private fun year(raw: String): String {
+        val value = raw.toLong()
+        return if (value in 1100..1999 && value % 100 != 0L)
+            number(value / 100) + " " + (if (value % 100 < 10) "oh " else "") + number(value % 100)
+        else number(value)
+    }
+
     private fun typography(text: String): String = buildString {
         // Read reference-like markers literally; never assume that a superscript is an exponent or footnote.
-        val prepared = Regex("(?<=[.!?\"'\u2019\u201d])([\u2070\u00b9\u00b2\u00b3\u2074-\u2079]+)").replace(text) { match ->
+        val prepared = Regex("(?<=[,.!?\"'\u2019\u201d])([\u2070\u00b9\u00b2\u00b3\u2074-\u2079]+)").replace(text) { match ->
             " superscript " + match.value.map { small["\u2070\u00b9\u00b2\u00b3\u2074\u2075\u2076\u2077\u2078\u2079".indexOf(it)] }.joinToString(" ")
         }
         for (character in prepared) append(when (character) {
-            '\u2018', '\u2019' -> "'"
+            '\u2018', '\u2019', '\u02bc' -> "'"
             '\u201c', '\u201d', '\u00ab', '\u00bb' -> "\""
             '\u2010', '\u2011', '\u2013', '\u2014' -> "-"
             '\u2026' -> "..."
@@ -92,14 +151,26 @@ class EnglishNormalizer : TextNormalizer {
             val value = number.groupValues[2].replace(",", "").toLong()
             val integer = if (value == 0L && number.groupValues[2].startsWith('-')) "minus zero" else number(value)
             val decimal = number.groupValues[3].let { if (it.isEmpty()) "" else " point " + it.map { c -> small[c.digitToInt()] }.joinToString(" ") }
-            val currency = mapOf("$" to " dollars", "£" to " pounds", "€" to " euros", "₹" to " rupees")[number.groupValues[1]].orEmpty()
+            val singular = kotlin.math.abs(value) == 1L && number.groupValues[3].all { it == '0' }
+            val currency = currencyName(number.groupValues[1], singular)
             val unit = mapOf("%" to " percent", "kg" to " kilograms", "km" to " kilometers", "cm" to " centimeters", "mm" to " millimeters", "mg" to " milligrams", "ml" to " milliliters", "mL" to " milliliters", "Hz" to " hertz")[number.groupValues[4]].orEmpty()
             return prefix + integer + decimal + currency + unit + suffix
         }
         // OCR may flatten a reference into "word.4". Speak it literally, without dropping it or labelling it a footnote.
-        val attachedNumeral = Regex("^([A-Za-z]+(?:['-][A-Za-z]+)*[.!?]+[\"')]*)(\\(?[0-9]+)$").matchEntire(bare)
+        val attachedNumeral = Regex("^([A-Za-z]+(?:['-][A-Za-z]+)*[,.!?]+[\"')]*)(\\(?[0-9]+)$").matchEntire(bare)
         if (attachedNumeral != null) {
             return prefix + expandToken(attachedNumeral.groupValues[1]) + " " + expandToken(attachedNumeral.groupValues[2]) + suffix
+        }
+        // A year attached to a named entry is a timeline label, not a numeric compound.
+        val timeline = Regex("^((?:1[0-9]{3}|2[01][0-9]{2}))-([A-Z][A-Za-z]*(?:['-][A-Za-z]+)*)$").matchEntire(bare)
+        if (timeline != null) return prefix + year(timeline.groupValues[1]) + ": " + timeline.groupValues[2] + suffix
+        // Compact ascending numerals denote a range. Descending/ambiguous pairs are read literally.
+        val range = Regex("^([0-9]{1,12}(?:\\.[0-9]+)?)-([0-9]{1,12}(?:\\.[0-9]+)?)$").matchEntire(bare)
+        if (range != null) {
+            val left = range.groupValues[1]
+            val right = range.groupValues[2]
+            val separator = if (left.toBigDecimal() <= right.toBigDecimal()) " to " else " dash "
+            return prefix + expandToken(left) + separator + expandToken(right) + suffix
         }
         val decade = Regex("(\\d{2}|\\d{4})s").matchEntire(bare)?.groupValues?.get(1)?.toInt()
         if (decade != null && decade % 10 == 0 && decade >= 20) {
