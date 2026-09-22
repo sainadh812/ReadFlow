@@ -30,7 +30,8 @@ class SpeechPlanner(private val normalizer: TextNormalizer = EnglishNormalizer()
                 // Begin with the selected spoken word, retaining both fragments of a joined word.
                 // Without alignment, sample zero still starts at the actual selected text.
                 val sourceGroups = sourceGrouper.sourceGroups(sentence)
-                val selected = if (seeking && fromSelectedWord) sourceGroups.dropWhile { group -> group.none { it.id == requestedWordId } } else sourceGroups
+                val selected = if (seeking && fromSelectedWord) sourceGroups.dropWhile { group -> group.none { it.id == requestedWordId } }
+                    .mapIndexed { index, group -> if (index == 0) sourceGrouper.selectedGroup(group, requestedWordId) else group } else sourceGroups
                 for (group in chunkGroups(selected)) {
                     for (prepared in split(group)) {
                         if (seeking && prepared.words.none { it.id == requestedWordId }) continue

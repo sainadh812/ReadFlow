@@ -144,8 +144,14 @@ private val LightBlue = Color(0xFFDCEAFF)
                     Text(status, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelSmall,
                         color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
                 }
+                if (original && (state.document?.pageCount ?: 1) > 1) {
+                    IconButton(onClick = { vm.page(pageIndex - 1) }, enabled = pageIndex > 0) { Icon(Icons.Default.ChevronLeft, "Previous page") }
+                }
                 TextButton(onClick = { contents = true }, modifier = Modifier.semantics { contentDescription = "Page ${pageIndex + 1} of ${state.document?.pageCount ?: 1}. Contents and bookmarks" }) {
                     Text("${pageIndex + 1} / ${state.document?.pageCount ?: 1}", maxLines = 1)
+                }
+                if (original && (state.document?.pageCount ?: 1) > 1) {
+                    IconButton(onClick = { vm.page(pageIndex + 1) }, enabled = pageIndex + 1 < (state.document?.pageCount ?: 1)) { Icon(Icons.Default.ChevronRight, "Next page") }
                 }
                 Tool(Icons.Default.Fullscreen, "Hide controls for more page space") { searching = false; pageOnly = true }
                 Box {
@@ -165,6 +171,7 @@ private val LightBlue = Color(0xFFDCEAFF)
                             DropdownMenuItem(text = { Text(if (original) "Show reader text" else "Show original page") }, onClick = { original = !original; if (original) searching = false; menu = false }, leadingIcon = { Icon(if (original) Icons.Default.TextFields else Icons.Default.Description, null) })
                             if (original) {
                                 DropdownMenuItem(text = { Text(if (fitWidth) "Fit whole page" else "Fit page width") }, onClick = { fitWidth = !fitWidth; menu = false }, leadingIcon = { Icon(Icons.Default.FitScreen, null) })
+                                DropdownMenuItem(text = { Text(if (prefs.swipePages) "Page swipes: on" else "Page swipes: off") }, onClick = { vm.update(prefs.copy(swipePages = !prefs.swipePages)); menu = false })
                                 DropdownMenuItem(text = { Text("Rotate page view") }, onClick = { rotation = (rotation + 90) % 360; menu = false }, leadingIcon = { Icon(Icons.Default.RotateRight, null) })
                             }
                         }
@@ -187,7 +194,7 @@ private val LightBlue = Color(0xFFDCEAFF)
         }
         if (searching) OutlinedTextField(query, { query = it }, label = { Text("Find on page") }, trailingIcon = { Tool(Icons.Default.Close, "Close search") { query = ""; searching = false } }, singleLine = true, modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp))
         Box(Modifier.weight(1f).fillMaxWidth()) {
-            if (original) OriginalPage(vm, state, Modifier.fillMaxSize(), follow, rotation, fitWidth) { follow = false }
+            if (original) OriginalPage(vm, state, Modifier.fillMaxSize(), follow, rotation, fitWidth, prefs.swipePages, prefs.swipeRightAdvances) { follow = false }
             else if (page == null) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { if (state.preparing) CircularProgressIndicator() }
             else ReaderText(page, state, prefs, query, follow, { follow = false }, { vm.app.playback.select(it) }, { vm.bookmark(it) }, Modifier.fillMaxSize())
             if (pageOnly) Surface(Modifier.align(Alignment.TopEnd).padding(4.dp), shape = MaterialTheme.shapes.large, tonalElevation = 1.dp) {

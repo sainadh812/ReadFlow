@@ -17,24 +17,26 @@ class PlaybackAlignmentTest {
         "key", "audio.wav", "sha", 24000, 48000, timings, speech.sourceIds, speech, "kokoro", "0", CtcAlignment.VERSION)
 
     @Test fun recordedRejectedAudioRemainsPlayableWithoutInventedHighlighting() = runTest {
-        val root = File("../docs/evidence/ocr-normalization")
-        val meta = Json.parseToJsonElement(File(root, "pocket/run.json").readText()).jsonObject
-        val speech = speech(File(root, "input.txt").readText().trim())
-        val bytes = ByteBuffer.wrap(File(root, "pocket/logits.f32").readBytes()).order(ByteOrder.LITTLE_ENDIAN)
-        val logits = Array(meta.getValue("frames").jsonPrimitive.int) { FloatArray(32) { bytes.float } }
-        val rate = meta.getValue("sampleRate").jsonPrimitive.int
-        val count = meta.getValue("sampleCount").jsonPrimitive.int
-        val aligner = object : SpeechAligner {
-            override suspend fun align(audio: PcmAudio, text: SpeechText) = CtcAlignment().align(logits, text, rate, count)
+        for ((fixture, expectedToken) in listOf("ocr-normalization" to "YOU", "numeric-speech" to "FIFTY")) {
+            val root = File("../docs/evidence/$fixture")
+            val meta = Json.parseToJsonElement(File(root, "pocket/run.json").readText()).jsonObject
+            val speech = speech(File(root, "input.txt").readText().trim())
+            val bytes = ByteBuffer.wrap(File(root, "pocket/logits.f32").readBytes()).order(ByteOrder.LITTLE_ENDIAN)
+            val logits = Array(meta.getValue("frames").jsonPrimitive.int) { FloatArray(32) { bytes.float } }
+            val rate = meta.getValue("sampleRate").jsonPrimitive.int
+            val count = meta.getValue("sampleCount").jsonPrimitive.int
+            val aligner = object : SpeechAligner {
+                override suspend fun align(audio: PcmAudio, text: SpeechText) = CtcAlignment().align(logits, text, rate, count)
+            }
+            val result = alignForPlayback(aligner, PcmAudio(FloatArray(count), rate), speech)
+            assertEquals(expectedToken, result.rejected!!.token)
+            assertTrue(result.rejected.confidence < result.rejected.threshold)
+            assertTrue(result.timings.isEmpty())
+            val playable = chunk(speech, result.timings)
+            assertEquals(0L, playbackStartMs(playable, speech.tokens.first().sourceIds.first()))
+            assertTrue(activeWordIds(playable.timings, 500, playable.sampleRate).isEmpty())
+            assertEquals(speech.tokens.first().sourceIds.first(), playbackResumeWord(playable, null))
         }
-        val result = alignForPlayback(aligner, PcmAudio(FloatArray(count), rate), speech)
-        assertEquals("YOU", result.rejected!!.token)
-        assertTrue(result.rejected.confidence < result.rejected.threshold)
-        assertTrue(result.timings.isEmpty())
-        val playable = chunk(speech, result.timings)
-        assertEquals(0L, playbackStartMs(playable, speech.tokens.first().sourceIds.first()))
-        assertTrue(activeWordIds(playable.timings, 500, playable.sampleRate).isEmpty())
-        assertEquals(speech.tokens.first().sourceIds.first(), playbackResumeWord(playable, null))
     }
 
     @Test fun acceptedBoundariesAndSampleRoundingArePreserved() = runTest {

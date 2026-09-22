@@ -20,6 +20,19 @@ class RealAudioTest {
         val root = File("../docs/evidence/accented-speech")
         verify(root, File(root, "input.txt").readText().trim())
     }
+    @Test fun kokoroAlignsNumericRangesReferencesCurrencyAndTimelines() {
+        val root = File("../docs/evidence/numeric-speech")
+        verify(root, File(root, "input.txt").readText().trim(), listOf("kokoro"))
+    }
+    @Test fun pocketNumericFixtureRetainsItsConfidenceGate() {
+        val root = File("../docs/evidence/numeric-speech")
+        val failure = assertThrows(AlignmentConfidenceException::class.java) {
+            verify(root, File(root, "input.txt").readText().trim(), listOf("pocket"))
+        }
+        assertEquals("FIFTY", failure.token)
+        assertEquals(28, failure.tokenIndex)
+        assertTrue(failure.confidence < failure.threshold)
+    }
     @Test fun recordedPocketOcrFixtureStillRejectsItsLowConfidenceFirstWord() {
         val root = File("../docs/evidence/ocr-normalization")
         val failure = assertThrows(AlignmentConfidenceException::class.java) {
@@ -52,7 +65,12 @@ class RealAudioTest {
                 throw error
             }
             assertEquals(page.words.size, timings.size)
-            assertTrue(timings.zipWithNext().all { (a, b) -> a.startSample < b.startSample && a.endSample <= b.startSample })
+            assertTrue(timings.zipWithNext().all { (a, b) ->
+                val aTokens = speech.tokens.indices.filter { a.wordId in speech.tokens[it].sourceIds }
+                val bTokens = speech.tokens.indices.filter { b.wordId in speech.tokens[it].sourceIds }
+                if (aTokens == bTokens) a.startSample == b.startSample && a.endSample == b.endSample
+                else a.startSample < b.startSample && a.endSample <= b.startSample
+            })
             File(dir, "timings.json").writeText(Json.encodeToString(kotlinx.serialization.builtins.ListSerializer(WordTiming.serializer()), timings))
             File(dir, "source.json").writeText(Json.encodeToString(PageContent.serializer(), page))
             if (sourceText != null) {
@@ -74,7 +92,7 @@ class RealAudioTest {
             }
             for (word in timings) {
                 val milliseconds = (word.startSample * 1000 + meta.getValue("sampleRate").jsonPrimitive.int - 1) / meta.getValue("sampleRate").jsonPrimitive.int
-                assertEquals(word.wordId, activeWord(timings, milliseconds, meta.getValue("sampleRate").jsonPrimitive.int)?.wordId)
+                assertTrue(word.wordId in activeWordIds(timings, milliseconds, meta.getValue("sampleRate").jsonPrimitive.int))
             }
         }
     }
