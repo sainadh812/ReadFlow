@@ -1,13 +1,13 @@
 package app.readflow
 
 import android.app.Application
-import android.content.ComponentCallbacks2
 import android.os.PowerManager
 import app.readflow.data.*
 import app.readflow.ingest.*
 import app.readflow.models.ModelStore
 import app.readflow.playback.ReadingCoordinator
 import app.readflow.playback.PlaybackDiagnostics
+import app.readflow.playback.isMemoryPressureLevel
 import app.readflow.diagnostics.*
 import kotlinx.coroutines.*
 import java.io.File
@@ -24,7 +24,8 @@ class ReadFlowApp : Application() {
     val issues by lazy { IssueLogs(File(noBackupFilesDir, "issues"), ::issueEnvironment) }
     val githubSettings by lazy { GitHubSettings(this) }
     val githubDiagnostics by lazy { GitHubDiagnostics(GitHubRestApi()) }
-    val playback by lazy { ReadingCoordinator(documents, models, cache, preferences, getSystemService(PowerManager::class.java), diagnostics, issues) }
+    private val playbackInstance = lazy { ReadingCoordinator(documents, models, cache, preferences, getSystemService(PowerManager::class.java), diagnostics, issues) }
+    val playback by playbackInstance
     override fun onCreate() {
         super.onCreate()
         val previous = Thread.getDefaultUncaughtExceptionHandler()
@@ -37,5 +38,8 @@ class ReadFlowApp : Application() {
             recoverProcessIssues(this@ReadFlowApp, issues)
         }
     }
-    override fun onTrimMemory(level: Int) { super.onTrimMemory(level); if (level >= ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW) playback.pressure() }
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        if (isMemoryPressureLevel(level) && playbackInstance.isInitialized()) playback.pressure()
+    }
 }

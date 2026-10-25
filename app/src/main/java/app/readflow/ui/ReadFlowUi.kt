@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.MenuBook
@@ -30,12 +31,14 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.readflow.core.*
 import app.readflow.data.Preferences
+import app.readflow.data.DocumentEntity
 import app.readflow.playback.ReaderPlayback
 import java.util.Locale
 
@@ -81,30 +84,69 @@ private val LightBlue = Color(0xFFDCEAFF)
 @Composable private fun Library(vm: ReaderViewModel, import: () -> Unit, url: () -> Unit) {
     val documents by vm.library.collectAsStateWithLifecycle()
     val importing by vm.importing.collectAsStateWithLifecycle()
+    var deleting by remember { mutableStateOf<DocumentEntity?>(null) }
     Column(Modifier.fillMaxSize()) {
-        TopAppBar(title = { Text("ReadFlow") }, actions = {
+        TopAppBar(title = { Text("ReadFlow", fontWeight = FontWeight.SemiBold) }, actions = {
             Tool(Icons.Default.RecordVoiceOver, "Voice models") { vm.screen.value = "voices" }
             Tool(Icons.Default.Settings, "Settings") { vm.screen.value = "settings" }
         })
-        Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Button(onClick = import, enabled = !importing) { Icon(Icons.Default.Add, null); Spacer(Modifier.width(6.dp)); Text("Import file") }
-            OutlinedButton(onClick = url, enabled = !importing) { Icon(Icons.Default.Link, null); Spacer(Modifier.width(6.dp)); Text("Webpage") }
+        Column(Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
+            Text("Your library", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
+            Spacer(Modifier.height(4.dp))
+            Text(if (documents.isEmpty()) "Bring a book, PDF or article." else "${documents.size} ${if (documents.size == 1) "document" else "documents"} ready to open",
+                style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        if (importing) { LinearProgressIndicator(Modifier.fillMaxWidth()); Text("Importing", Modifier.padding(20.dp)) }
-        if (documents.isEmpty()) Column(Modifier.weight(1f).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            Icon(Icons.AutoMirrored.Filled.MenuBook, null, Modifier.size(56.dp), tint = MaterialTheme.colorScheme.primary)
-            Spacer(Modifier.height(16.dp)); Text("Your library is empty", style = MaterialTheme.typography.titleLarge)
-            TextButton(onClick = { vm.sample() }) { Text("Open sample document") }
-        } else LazyColumn(Modifier.weight(1f)) {
-            items(documents, key = { it.id }) { doc ->
-                ListItem(headlineContent = { Text(doc.title, maxLines = 2, overflow = TextOverflow.Ellipsis) },
-                    supportingContent = { Text("${doc.pageCount} ${if (doc.pageCount == 1) "page" else "pages"} · ${if (doc.mime == "application/pdf") "PDF" else if (doc.mime.startsWith("image")) "Image" else "Article"}") },
-                    leadingContent = { Icon(if (doc.mime == "application/pdf") Icons.Default.PictureAsPdf else Icons.Default.Description, null) },
-                    trailingContent = { Tool(Icons.Default.DeleteOutline, "Delete ${doc.title}") { vm.deleteDocument(doc) } },
-                    modifier = Modifier.clickable { vm.open(doc) })
-                HorizontalDivider(Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant)
+        Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Button(onClick = import, enabled = !importing, modifier = Modifier.weight(1f).heightIn(min = 48.dp), contentPadding = PaddingValues(horizontal = 12.dp)) {
+                Icon(Icons.Default.Add, null, Modifier.size(20.dp)); Spacer(Modifier.width(6.dp)); Text("Import file")
+            }
+            OutlinedButton(onClick = url, enabled = !importing, modifier = Modifier.weight(1f).heightIn(min = 48.dp), contentPadding = PaddingValues(horizontal = 12.dp)) {
+                Icon(Icons.Default.Link, null, Modifier.size(20.dp)); Spacer(Modifier.width(6.dp)); Text("Webpage")
             }
         }
+        if (importing) {
+            LinearProgressIndicator(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp))
+            Text("Adding to your library…", Modifier.padding(horizontal = 20.dp), style = MaterialTheme.typography.bodySmall)
+        }
+        if (documents.isEmpty()) Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            Surface(shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.primaryContainer) {
+                Icon(Icons.AutoMirrored.Filled.MenuBook, null, Modifier.padding(24.dp).size(48.dp), tint = MaterialTheme.colorScheme.onPrimaryContainer)
+            }
+            Spacer(Modifier.height(24.dp))
+            Text("A little more time to read", style = MaterialTheme.typography.titleLarge)
+            Spacer(Modifier.height(8.dp))
+            Text("Import a document, then listen and follow along.", style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+            Spacer(Modifier.height(16.dp))
+            TextButton(onClick = { vm.sample() }, enabled = !importing) { Text("Try a sample") }
+        } else LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            items(documents, key = { it.id }) { doc ->
+                Card(onClick = { vm.open(doc) }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = .65f))) {
+                    Row(Modifier.fillMaxWidth().padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Surface(Modifier.size(width = 48.dp, height = 64.dp), color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(10.dp)) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(if (doc.mime == "application/pdf") Icons.Default.PictureAsPdf else if (doc.mime.startsWith("image")) Icons.Default.Image else Icons.Default.Article,
+                                    null, tint = MaterialTheme.colorScheme.onPrimaryContainer)
+                            }
+                        }
+                        Column(Modifier.weight(1f).padding(start = 14.dp, end = 4.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text(doc.title, maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
+                            Text("${if (doc.mime == "application/pdf") "PDF" else if (doc.mime.startsWith("image")) "Image" else "Article"} · ${doc.pageCount} ${if (doc.pageCount == 1) "page" else "pages"}",
+                                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        Tool(Icons.Default.DeleteOutline, "Delete ${doc.title}") { deleting = doc }
+                    }
+                }
+            }
+        }
+    }
+    deleting?.let { document ->
+        AlertDialog(onDismissRequest = { deleting = null }, title = { Text("Remove from library?") },
+            text = { Text("Remove “${document.title}” and its saved reading data from ReadFlow? Your original file stays on your device.") },
+            confirmButton = { TextButton(onClick = { deleting = null; vm.deleteDocument(document) }) { Text("Remove", color = MaterialTheme.colorScheme.error) } },
+            dismissButton = { TextButton(onClick = { deleting = null }) { Text("Keep") } })
     }
 }
 
@@ -136,23 +178,17 @@ private val LightBlue = Color(0xFFDCEAFF)
         if (state.error != null || state.blockedSentence != null) pageOnly = false
     }
     Column(Modifier.fillMaxSize()) {
-        // Keep persistent chrome to two compact rows so the document gets the remaining height.
+        // Keep navigation in the header and listening controls in one dock; the page owns the remaining height.
         if (!pageOnly) Surface {
             Row(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                 Tool(Icons.AutoMirrored.Filled.ArrowBack, "Library") { vm.screen.value = "library" }
-                Column(Modifier.weight(1f).heightIn(min = 48.dp).clickable(onClickLabel = "Reading details") { details = true }.padding(vertical = 6.dp), verticalArrangement = Arrangement.Center) {
-                    Text(state.document?.title ?: "Reader", maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleSmall)
-                    Text(status, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.labelSmall,
-                        color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-                if (original && (state.document?.pageCount ?: 1) > 1) {
-                    IconButton(onClick = { vm.page(pageIndex - 1) }, enabled = pageIndex > 0) { Icon(Icons.Default.ChevronLeft, "Previous page") }
-                }
-                TextButton(onClick = { contents = true }, modifier = Modifier.semantics { contentDescription = "Page ${pageIndex + 1} of ${state.document?.pageCount ?: 1}. Contents and bookmarks" }) {
-                    Text("${pageIndex + 1} / ${state.document?.pageCount ?: 1}", maxLines = 1)
-                }
-                if (original && (state.document?.pageCount ?: 1) > 1) {
-                    IconButton(onClick = { vm.page(pageIndex + 1) }, enabled = pageIndex + 1 < (state.document?.pageCount ?: 1)) { Icon(Icons.Default.ChevronRight, "Next page") }
+                Column(Modifier.weight(1f).heightIn(min = 48.dp).clickable(onClickLabel = "Contents and bookmarks") { contents = true }.padding(vertical = 6.dp), verticalArrangement = Arrangement.Center) {
+                    Text(state.document?.title ?: "Reader", maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Page ${pageIndex + 1} of ${state.document?.pageCount ?: 1}", maxLines = 1, overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.weight(1f, fill = false))
+                        Icon(Icons.Default.ExpandMore, null, Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
                 }
                 Tool(Icons.Default.Fullscreen, "Hide controls for more page space") { searching = false; pageOnly = true }
                 Box {
@@ -204,12 +240,21 @@ private val LightBlue = Color(0xFFDCEAFF)
             if (pageOnly) Surface(Modifier.align(Alignment.TopEnd).padding(4.dp), shape = MaterialTheme.shapes.large, tonalElevation = 1.dp) {
                 Tool(Icons.Default.FullscreenExit, "Show reader controls") { pageOnly = false }
             }
+            if (!follow && !pageOnly) FilledTonalButton(onClick = { follow = true }, modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 12.dp), contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
+                Icon(Icons.Default.MyLocation, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text("Follow reading")
+            }
         }
-        if (!pageOnly) PlaybackPanel(vm, state, requestNotifications, follow) { follow = true }
+        if (!pageOnly) PlaybackPanel(vm, state, requestNotifications, prefs.speed, { speeds = true }, hasOriginal, original,
+            { original = !original; if (original) searching = false }, selected, status,
+            showDetails = { details = true }, copySelection = { selected?.let { clipboard.setText(AnnotatedString(it.text)) } })
     }
     if (details) AlertDialog(onDismissRequest = { details = false }, title = { Text("Reading details") }, text = {
         Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(status, color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
+            if (state.bufferedListeningMs > 0) {
+                Text("Prepared audio: ${formatTime(state.bufferedListeningMs)} at your current speed")
+                Text("${state.bufferedSentences} complete ${if (state.bufferedSentences == 1) "sentence" else "sentences"} ahead")
+            }
             page?.let { Text("Text source: ${it.extraction}") }
             if (state.durationMs > 0) Text("Audio: ${formatTime(state.positionMs)} / ${formatTime(state.durationMs)}")
             page?.warnings?.forEach { Text(it) }
@@ -302,31 +347,91 @@ private val LightBlue = Color(0xFFDCEAFF)
 }
 
 @Composable private fun PlaybackPanel(vm: ReaderViewModel, state: ReaderPlayback, notifications: () -> Unit,
-    follow: Boolean, resumeFollowing: () -> Unit) {
-    val selected = state.selectedWordId != null && !state.wantsToPlay
-    Surface(tonalElevation = 1.dp) {
-        Row(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 4.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
-            Tool(Icons.Default.SkipPrevious, "Previous sentence") { vm.app.playback.sentence(-1) }
-            FilledIconButton(onClick = {
-                notifications()
-                if (selected) vm.app.playback.start(wordId = state.selectedWordId) else vm.app.playback.toggle()
-            }, modifier = Modifier.size(48.dp).semantics {
-                contentDescription = when {
-                    state.preparing && state.currentChunk == null -> "Cancel preparation"
-                    state.wantsToPlay -> "Pause"
-                    selected -> "Read from selected word"
-                    else -> "Play"
+    speed: Float, changeSpeed: () -> Unit, hasOriginal: Boolean, original: Boolean, toggleOriginal: () -> Unit,
+    selectedWord: SourceWord?, status: String, showDetails: () -> Unit, copySelection: () -> Unit) {
+    val selected = selectedWord != null && !state.wantsToPlay && !state.preparing
+    val preparingPlayback = state.fillingBuffer || (state.preparing && state.currentChunk == null)
+    val ready = "${state.bufferedSentences} ${if (state.bufferedSentences == 1) "sentence" else "sentences"} ready"
+    val playbackStatus = when {
+        state.error != null && (state.playing || state.wantsToPlay) -> "Issue ahead · Tap for details"
+        state.error != null -> "Reading stopped · Tap for details"
+        status != state.status -> status
+        state.fillingBuffer && state.bufferedSentences < state.bufferTargetSentences -> "Preparing audio · ${state.bufferedSentences} of ${state.bufferTargetSentences} ahead"
+        state.fillingBuffer -> "Preparing audio · ${formatTime(state.bufferedListeningMs)} ready"
+        state.playing && state.bufferedSentences > 0 -> "Playing · $ready"
+        state.playing && state.preparing -> "Playing · Preparing next sentence"
+        state.playing -> "Playing"
+        state.preparing -> "Preparing audio…"
+        state.bufferedSentences > 0 -> "Paused · $ready"
+        else -> status
+    }
+    Surface(color = MaterialTheme.colorScheme.surface, tonalElevation = 2.dp, shadowElevation = 8.dp) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
+            if (selected) Surface(color = MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(12.dp), modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = { notifications(); vm.app.playback.start(wordId = selectedWord?.id) }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp)) {
+                        Icon(Icons.Default.PlayArrow, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSecondaryContainer)
+                        Spacer(Modifier.width(6.dp))
+                        Text("Read from “${selectedWord?.text}”", maxLines = 1, overflow = TextOverflow.Ellipsis, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                    }
+                    Tool(Icons.Default.ContentCopy, "Copy selected word", copySelection)
                 }
-            }, enabled = state.page?.words?.isNotEmpty() == true) {
-                if (state.preparing && state.currentChunk == null) CircularProgressIndicator(Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary, strokeWidth = 2.dp)
-                else Icon(if (state.wantsToPlay) Icons.Default.Pause else Icons.Default.PlayArrow, null, Modifier.size(30.dp))
             }
-            Tool(Icons.Default.SkipNext, if (state.blockedSentence != null) "Skip blocked sentence" else "Next sentence") {
-                if (state.blockedSentence != null) { notifications(); vm.app.playback.skipBlockedSentence() }
-                else vm.app.playback.sentence(1)
+            Row(Modifier.fillMaxWidth().heightIn(min = 68.dp), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+                DockAction("${String.format(Locale.US, "%.2f", speed).trimEnd('0').trimEnd('.')}×", Icons.Default.Speed, "Playback speed", changeSpeed, Modifier.weight(1f))
+                IconButton(onClick = { vm.app.playback.sentence(-1) }, enabled = state.page?.words?.isNotEmpty() == true, modifier = Modifier.size(48.dp)) {
+                    Icon(Icons.Default.SkipPrevious, "Previous sentence", Modifier.size(28.dp))
+                }
+                FilledIconButton(onClick = {
+                    if (!state.wantsToPlay && !state.preparing) notifications()
+                    if (selected) vm.app.playback.start(wordId = selectedWord?.id) else vm.app.playback.toggle()
+                }, modifier = Modifier.size(64.dp).semantics {
+                    contentDescription = when {
+                        preparingPlayback -> "Cancel preparation"
+                        state.wantsToPlay -> "Pause"
+                        selected -> "Read from selected word"
+                        else -> "Play"
+                    }
+                }, enabled = state.page?.words?.isNotEmpty() == true || state.preparing || state.wantsToPlay) {
+                    Box(contentAlignment = Alignment.Center) {
+                        if (preparingPlayback) CircularProgressIndicator(Modifier.size(52.dp), color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .65f), strokeWidth = 2.dp)
+                        Icon(when {
+                            preparingPlayback -> Icons.Default.Close
+                            state.wantsToPlay -> Icons.Default.Pause
+                            else -> Icons.Default.PlayArrow
+                        }, null, Modifier.size(34.dp))
+                    }
+                }
+                IconButton(onClick = {
+                    if (state.blockedSentence != null) { notifications(); vm.app.playback.skipBlockedSentence() }
+                    else vm.app.playback.sentence(1)
+                }, enabled = state.page?.words?.isNotEmpty() == true || state.blockedSentence != null, modifier = Modifier.size(48.dp)) {
+                    Icon(Icons.Default.SkipNext, if (state.blockedSentence != null) "Skip blocked sentence" else "Next sentence", Modifier.size(28.dp))
+                }
+                if (hasOriginal) DockAction(if (original) "Text" else "Original", if (original) Icons.Default.TextFields else Icons.Default.Description,
+                    if (original) "Show reader text" else "Show original page", toggleOriginal, Modifier.weight(1f))
+                else Spacer(Modifier.weight(1f))
             }
-            if (!follow) Tool(Icons.Default.MyLocation, "Follow reading", resumeFollowing)
+            Row(Modifier.fillMaxWidth().heightIn(min = 28.dp).clickable(onClickLabel = "Reading details", onClick = showDetails).padding(horizontal = 8.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                Icon(when {
+                    state.error != null -> Icons.Default.ErrorOutline
+                    state.bufferedSentences > 0 && !state.fillingBuffer -> Icons.Default.CheckCircle
+                    else -> Icons.Default.Headphones
+                }, null, Modifier.size(14.dp), tint = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(Modifier.width(6.dp))
+                Text(playbackStatus, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                    color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+    }
+}
+
+@Composable private fun DockAction(text: String, icon: ImageVector, description: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    TextButton(onClick = onClick, modifier = modifier.heightIn(min = 56.dp).semantics { contentDescription = description }, contentPadding = PaddingValues(horizontal = 2.dp, vertical = 4.dp)) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Icon(icon, null, Modifier.size(20.dp))
+            Text(text, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }

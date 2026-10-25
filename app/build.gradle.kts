@@ -15,8 +15,8 @@ android {
         applicationId = "app.readflow"
         minSdk = 35
         targetSdk = 35
-        versionCode = 11
-        versionName = "0.1.10-prototype"
+        versionCode = 12
+        versionName = "0.1.11-prototype"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild { cmake { arguments += listOf("-DANDROID_STL=c++_static", "-DCMAKE_BUILD_TYPE=Release") } }
         ndk { abiFilters += if (providers.gradleProperty("emulator").orNull == "true") "x86_64" else "arm64-v8a" }

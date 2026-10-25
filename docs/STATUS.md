@@ -95,3 +95,17 @@ python3 scripts/build_manifests.py
 - Delivered APK: `dist/ReadFlow-arm64-debug.apk`. Source archive: `dist/ReadFlow-source.zip`. Build/run instructions, trusted manifests, original fixtures, setup scripts and license notices are included in the source archive; weights/downloaded third-party trees are excluded.
 
 Core acceptance remains **incomplete**: runtime/device/auditory checks and the implementation limitations listed above remain open. A successful build and host regression cannot establish the complete requested on-device experience.
+
+## 0.1.11 speech reserve and reader controls — 2026-10-25
+
+The audio queue now targets four complete future sentences and 30 seconds at the current listening speed, with bounded startup/recovery and queue size. UI-hidden callbacks no longer shrink the reserve. A genuine memory trim expires after 60 seconds. External pause/stop cancels pending playback; rewind preserves the requested position while releasing held recovery audio. The reader exposes larger playback controls, speed, Original/Text, and prepared-audio status; the library has clearer document cards.
+
+Validation on the final source:
+
+- `./gradlew testDebugUnitTest assembleDebug lintDebug assembleDebugAndroidTest --console=plain`: successful in 1m 36s.
+- **218 JVM tests, 0 failures/errors/skips**, including 18 reserve-policy tests, 6 new performance-diagnostic tests, and 5 MediaSession forwarding tests. Tests cover split-sentence counts, speed, startup/EOF/caps, memory expiry/UI-hidden exclusion, bounded/private metrics, external no-op pause and seek delegation. The full coordinator/native player lifecycle is not simulated by these unit tests.
+- Lint: **0 errors, 16 warnings** (dependency/target versions, exported media service and space checks). Application and instrumentation APKs compile. No Android device is attached; instrumentation and visual/device playback checks were not executed.
+- Package `app.readflow`, version `0.1.11-prototype`, versionCode **12**, API 35+, ARM64. Signing certificate SHA-256 matches 0.1.10: `f7313f98e9414c166f3fb2d2a9329ba1bb5dd9d76b068254522d20d1f8b109f9`. Install-over compatibility is established by identity/version/certificate inspection, not a physical upgrade test.
+- APK `ReadFlow-0.1.11-arm64-debug.apk`: **136,045,360 bytes**, SHA-256 `6f97bdd53b05639cb53b98afe66047e69bbec228635168f4ad5a0997b95530d7`. Previous native libraries remain present, including TeleOCR.
+
+Required phone checks: foreground/background reading at 1× and 2×, short/long sentence transitions, next-page ML Kit/TeleOCR extraction, startup/recovery pause and rewind from app/notification/headset, final EOF, and large-font/light/dark UI. Copy playback diagnostics now exposes measured preparation times and underrun counts. No S25 speedup, uninterrupted-playback guarantee, GPU/NPU acceleration, or voice-quality change is claimed.

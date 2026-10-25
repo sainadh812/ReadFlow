@@ -2,6 +2,7 @@ package app.readflow.playback
 
 import android.net.Uri
 import android.os.PowerManager
+import android.os.SystemClock
 import androidx.media3.common.*
 import app.readflow.core.*
 import app.readflow.data.*
@@ -22,6 +23,10 @@ data class ReaderPlayback(
     val wantsToPlay: Boolean = false,
     val blockedSentence: BlockedSentence? = null,
     val viewPageIndex: Int = 0,
+    val bufferedSentences: Int = 0,
+    val bufferedListeningMs: Long = 0,
+    val fillingBuffer: Boolean = false,
+    val bufferTargetSentences: Int = 4,
 )
 data class BlockedSentence(val pageIndex: Int, val wordId: String, val resume: SpeechTarget?)
 class GenerationGate {
@@ -47,17 +52,33 @@ class ReadingCoordinator(
     private var observer: Job? = null
     private var player: Player? = null
     private var playerListener: Player.Listener? = null
-    private val queued = linkedMapOf<String, Pair<PageContent, AlignedAudio>>()
+    private data class QueuedSpeech(val page: PageContent, val audio: AlignedAudio,
+        val sentenceId: String, val completesSentence: Boolean)
+    private val queued = linkedMapOf<String, QueuedSpeech>()
     private var durableWord: String? = null
     private var settings = Preferences()
-    private var memoryPressure = false
+    private val memoryPressure = MemoryPressureWindow()
+    private val reservePolicy = AudioReservePolicy()
+    private var startupPending = false
+    private var firstReadyAtMs: Long? = null
+    private var producerFinished = true
+    private var recoveringReserve = false
+    private val pendingMediaItems = mutableListOf<MediaItem>()
 
     init { scope.launch { preferences.values.collect { settings = it; player?.setPlaybackSpeed(it.speed) } } }
-    fun pressure() { memoryPressure = true }
+    fun pressure() { memoryPressure.notePressure(SystemClock.elapsedRealtime()) }
     fun attach(player: Player) {
         playerListener?.let { this.player?.removeListener(it) }
         this.player = player
         playerListener = object : Player.Listener {
+            override fun onPositionDiscontinuity(oldPosition: Player.PositionInfo, newPosition: Player.PositionInfo, reason: Int) {
+                if (reason == Player.DISCONTINUITY_REASON_SEEK && recoveringReserve) releaseRecoveryForSeek(player)
+            }
+            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                // During recovery the ended player retains play intent. Audio-focus loss or
+                // a direct pause must cancel the pending automatic restart as well.
+                if (!playWhenReady && startupPending && recoveringReserve) stop()
+            }
             override fun onPlayerError(error: PlaybackException) {
                 val current = state.value
                 val document = current.document
@@ -67,14 +88,25 @@ class ReadingCoordinator(
                     details = mapOf("playerErrorCode" to error.errorCodeName, "positionMs" to player.currentPosition.toString(),
                         "model" to chunk?.model.orEmpty(), "voice" to chunk?.voice.orEmpty(), "sampleRate" to chunk?.sampleRate.toString())) } ?: IssueInput()
                 scope.launch { issues.record("MEDIA_PLAYBACK", error, input, audio = chunk?.audioPath?.let { java.io.File(it) }) }
-                mutable.value = current.copy(preparing = false, playing = false, error = error.message ?: "Audio playback failed")
+                startupPending = false; producerFinished = true; gate.next(); work?.cancel()
+                recoveringReserve = false; pendingMediaItems.clear()
+                player.pause()
+                mutable.value = current.copy(preparing = false, fillingBuffer = false, playing = false,
+                    wantsToPlay = false, error = error.message ?: "Audio playback failed")
             }
         }.also(player::addListener)
         player.setPlaybackSpeed(settings.speed)
         observer?.cancel()
         observer = scope.launch {
             var savedWord: String? = null
+            var reserveUpdatedAt = 0L
             while (isActive) {
+                val now = SystemClock.elapsedRealtime()
+                if (now - reserveUpdatedAt >= 200) {
+                    updateReserve(player); reserveUpdatedAt = now
+                }
+                val wantsPlayback = startupPending || (player.playWhenReady &&
+                    !(producerFinished && player.playbackState == Player.STATE_ENDED))
                 val data = queued[player.currentMediaItem?.mediaId]
                 if (data != null) {
                     val (page, chunk) = data
@@ -84,15 +116,21 @@ class ReadingCoordinator(
                     val active = ids.firstOrNull()
                     playbackResumeWord(chunk, active)?.let { durableWord = it }
                     mutable.value = mutable.value.copy(page = page, activeWordId = active, activeWordIds = ids, currentChunk = chunk,
-                        playing = player.isPlaying, wantsToPlay = player.playWhenReady, positionMs = mediaMs, durationMs = chunk.durationMs,
-                        status = if (player.playbackState == Player.STATE_BUFFERING) "Buffering" else if (player.isPlaying) {
-                            if (chunk.timings.isEmpty()) "Reading · word highlighting unavailable" else "Reading"
-                        } else if (mutable.value.preparing) "Preparing next sentence" else "Paused")
+                        playing = player.isPlaying, wantsToPlay = wantsPlayback, positionMs = mediaMs, durationMs = chunk.durationMs,
+                        status = when {
+                            mutable.value.error != null -> mutable.value.error!!
+                            startupPending -> "Preparing audio ahead"
+                            player.playbackState == Player.STATE_BUFFERING -> "Buffering"
+                            player.isPlaying -> if (chunk.timings.isEmpty()) "Reading · word highlighting unavailable" else "Reading"
+                            player.playWhenReady && !producerFinished && player.playbackState == Player.STATE_ENDED -> "Preparing next sentence"
+                            producerFinished && player.playbackState == Player.STATE_ENDED -> "End of document"
+                            else -> "Paused"
+                        })
                     val word = durableWord
                     if (word != null && word != savedWord) {
                         documents.dao.putPosition(ReadingPosition(page.documentId, page.index, word)); savedWord = word
                     }
-                } else mutable.value = mutable.value.copy(playing = player.isPlaying)
+                } else mutable.value = mutable.value.copy(playing = player.isPlaying, wantsToPlay = wantsPlayback)
                 // This only samples the player clock; it never advances a synthetic speech clock.
                 delay(33)
             }
@@ -121,9 +159,13 @@ class ReadingCoordinator(
     private fun invalidate(): Long {
         val generation = gate.next()
         work?.cancel()
+        startupPending = false; firstReadyAtMs = null; producerFinished = true; recoveringReserve = false
+        pendingMediaItems.clear()
         issues.activeInput = IssueInput()
         player?.pause(); player?.stop(); player?.clearMediaItems(); queued.clear()
-        mutable.value = mutable.value.copy(activeWordId = null, activeWordIds = emptySet(), currentChunk = null, playing = false, wantsToPlay = false, positionMs = 0, durationMs = 0, blockedSentence = null)
+        mutable.value = mutable.value.copy(activeWordId = null, activeWordIds = emptySet(), currentChunk = null, playing = false,
+            wantsToPlay = false, positionMs = 0, durationMs = 0, blockedSentence = null,
+            bufferedSentences = 0, bufferedListeningMs = 0, fillingBuffer = false)
         return generation
     }
     fun stop(): Long {
@@ -133,17 +175,37 @@ class ReadingCoordinator(
     }
     fun isCurrentRequest(generation: Long) = gate.current(generation)
     fun select(wordId: String) {
-        if (player?.playWhenReady == true || state.value.preparing) start(wordId = wordId)
+        if (player?.playWhenReady == true || startupPending) start(wordId = wordId)
         else mutable.value = mutable.value.copy(selectedWordId = wordId)
+    }
+    // MediaSession uses these commands too: pausing an already-paused player during
+    // the initial reserve must cancel its scheduled start, even without a Player event.
+    fun pauseFromControls() {
+        if (startupPending || (state.value.preparing && player?.mediaItemCount == 0)) stop()
+        else player?.pause()
+    }
+    fun playFromControls() {
+        val output = player ?: return
+        // MediaSession's play action seeks to the default position first when ended.
+        if (recoveringReserve && output.playbackState != Player.STATE_ENDED) releaseRecoveryForSeek(output)
+        if (startupPending) { updateReserve(output); return }
+        if (output.mediaItemCount > 0) {
+            if (output.playbackState == Player.STATE_ENDED && producerFinished) output.seekToDefaultPosition()
+            output.play()
+        }
+        else if (state.value.document != null) start(wordId = state.value.selectedWordId ?: durableWord)
     }
     fun toggle() {
         val player = player ?: return
-        if (state.value.preparing && player.mediaItemCount == 0) { stop(); return }
+        if (startupPending || (state.value.preparing && player.mediaItemCount == 0)) { stop(); return }
         if (player.playWhenReady && player.playbackState != Player.STATE_ENDED) player.pause()
-        else if (player.mediaItemCount > 0) player.play()
+        else if (player.mediaItemCount > 0) playFromControls()
         else start(wordId = mutable.value.selectedWordId ?: durableWord)
     }
-    fun seek(milliseconds: Long) { player?.let { it.seekTo(milliseconds.coerceIn(0, state.value.durationMs)) } }
+    fun seek(milliseconds: Long) { player?.let {
+        if (recoveringReserve) releaseRecoveryForSeek(it)
+        it.seekTo(milliseconds.coerceIn(0, state.value.durationMs))
+    } }
     fun skip(seconds: Int) { player?.let { seek(it.currentPosition + seconds * 1000L) } }
     fun sentence(direction: Int) {
         if (direction > 0 && state.value.blockedSentence != null && !state.value.playing) { skipBlockedSentence(); return }
@@ -172,7 +234,9 @@ class ReadingCoordinator(
     fun start(document: DocumentEntity = checkNotNull(state.value.document), pageIndex: Int = state.value.page?.index ?: state.value.viewPageIndex, wordId: String? = null) {
         val old = work
         val generation = invalidate()
-        mutable.value = mutable.value.copy(document = document, preparing = true, status = "Preparing speech", selectedWordId = null, error = null, viewPageIndex = pageIndex)
+        startupPending = true; producerFinished = false
+        mutable.value = mutable.value.copy(document = document, preparing = true, fillingBuffer = true, wantsToPlay = true,
+            status = "Preparing speech", selectedWordId = null, error = null, viewPageIndex = pageIndex)
         val chosen = settings
         durableWord = wordId
         work = scope.launch {
@@ -199,6 +263,8 @@ class ReadingCoordinator(
                 models.verifyInstalled(chosen.model); models.verifyInstalled("alignment")
                 val manifest = models.packs.first { it.id == chosen.model }
                 modelVersion = manifest.version
+                val modelRevision = sha256(Json.encodeToString(VoicePack.serializer(), manifest).toByteArray())
+                var chunksSinceTrim = 0
                 var index = pageIndex
                 var first = true
                 var requested = wordId
@@ -213,6 +279,7 @@ class ReadingCoordinator(
                         // A selected word can become obsolete while a concurrent OCR retry
                         // finishes. Show the refreshed page instead of failing speech planning.
                         durableWord = null
+                        startupPending = false
                         mutable.value = ReaderPlayback(document = document, page = page, viewPageIndex = index,
                             status = "Text has changed. Select a word to read.")
                         return@launch
@@ -223,23 +290,28 @@ class ReadingCoordinator(
                     val chunks = planner.prepare(words, if (first) requested else null, fromSelectedWord = true).iterator()
                     while (true) {
                         val output = checkNotNull(player)
-                        val targetSeconds = if (memoryPressure || power.currentThermalStatus >= PowerManager.THERMAL_STATUS_MODERATE) 8 else 30
-                        while (remainingAudioMs(output) > targetSeconds * 1000 && gate.current(generation)) delay(200)
                         currentCoroutineContext().ensureActive()
                         diagnostics.record(chosen.model, PlaybackStage.PREPARING_TEXT)
                         stage = "NORMALIZE_TEXT"; currentWords = emptyList(); currentSpeech = null; audioKey = null
                         sampleRate = null; sampleCount = null
                         issues.activeInput = input()
                         if (!chunks.hasNext()) break
+                        // Check page exhaustion before waiting: next-page extraction can run while
+                        // the last page's reserve is still full. Audio preparation remains bounded.
+                        while (!reservePolicy.shouldPrepareMore(reserve(output), constrained()) && gate.current(generation)) delay(100)
+                        currentCoroutineContext().ensureActive()
                         val prepared = chunks.next()
                         val speech = prepared.speech
                         currentWords = prepared.words; currentSpeech = speech
-                        val modelRevision = sha256(Json.encodeToString(VoicePack.serializer(), manifest).toByteArray())
                         val key = cacheKey(document.id, speech, modelRevision, chosen.voice, "steps=5;temperature=.7;speed=1;threads=2", CtcAlignment.VERSION)
                         audioKey = key
                         issues.activeInput = input()
                         stage = "READ_AUDIO_CACHE"
-                        val audio = cache.get(key) ?: run {
+                        val preparationStarted = SystemClock.elapsedRealtime()
+                        var synthesisMs = 0L
+                        var alignmentMs = 0L
+                        val cached = cache.get(key)
+                        val audio = cached ?: run {
                             var committed = false
                             try {
                                 mutable.value = mutable.value.copy(preparing = true, status = "Loading ${manifest.name}")
@@ -249,14 +321,18 @@ class ReadingCoordinator(
                                 mutable.value = mutable.value.copy(status = "Generating speech")
                                 diagnostics.record(chosen.model, PlaybackStage.SYNTHESIZING)
                                 stage = "SYNTHESIZE"
+                                val synthesisStarted = SystemClock.elapsedRealtime()
                                 val generated = engine.synthesize(speech.text) { gate.current(generation) }
+                                synthesisMs = SystemClock.elapsedRealtime() - synthesisStarted
                                 sampleRate = generated.sampleRate; sampleCount = generated.samples.size
                                 stage = "WRITE_AUDIO"
                                 val quantized = cache.writePcm(key, generated)
                                 mutable.value = mutable.value.copy(status = "Aligning words")
                                 diagnostics.record(chosen.model, PlaybackStage.ALIGNING)
                                 stage = "ALIGN_WORDS"
+                                val alignmentStarted = SystemClock.elapsedRealtime()
                                 val alignment = alignForPlayback(aligner, quantized, speech)
+                                alignmentMs = SystemClock.elapsedRealtime() - alignmentStarted
                                 alignment.rejected?.let { rejection ->
                                     issues.record(stage, rejection, input(), audio = cache.file(key),
                                         warnings = listOf("Speech continues without word highlighting for this chunk."),
@@ -276,32 +352,51 @@ class ReadingCoordinator(
                             }
                         }
                         if (!gate.current(generation)) return@launch
+                        diagnostics.recordPreparation(cached != null, synthesisMs, alignmentMs,
+                            SystemClock.elapsedRealtime() - preparationStarted, audio.durationMs)
                         val startMs = if (first) playbackStartMs(audio, requested) else 0L
                         diagnostics.record(chosen.model, PlaybackStage.STARTING_AUDIO)
                         stage = "QUEUE_AUDIO"
                         currentCoroutineContext().ensureActive()
-                        queued[key] = page to audio
+                        val sentenceId = prepared.words.first().sentenceId
+                        queued[key] = QueuedSpeech(page, audio, "${page.id}:$sentenceId",
+                            prepared.words.last().id == words.last { it.sentenceId == sentenceId }.id)
                         val item = MediaItem.Builder().setMediaId(key).setUri(Uri.fromFile(java.io.File(audio.audioPath)))
                             .setMediaMetadata(MediaMetadata.Builder().setTitle(document.title).setArtist("${manifest.name} · ${manifest.voices.first { it.id == chosen.voice }.name}").build()).build()
-                        output.addMediaItem(item)
+                        val advancePausedEnd = !startupPending && !output.playWhenReady && output.playbackState == Player.STATE_ENDED
+                        // Catch depletion before publishing the new item, even between observer ticks.
+                        updateReserve(output)
+                        if (recoveringReserve) {
+                            pendingMediaItems += item
+                            if (firstReadyAtMs == null) firstReadyAtMs = SystemClock.elapsedRealtime()
+                        } else output.addMediaItem(item)
                         if (first) {
                             output.seekTo(0, startMs)
-                            output.prepare(); output.play(); first = false; requested = null
-                        } else if (output.playbackState == Player.STATE_ENDED) {
-                            val shouldPlay = output.playWhenReady
-                            output.seekToNextMediaItem(); output.prepare(); output.playWhenReady = shouldPlay
+                            firstReadyAtMs = SystemClock.elapsedRealtime()
+                            first = false; requested = null
+                        } else if (advancePausedEnd) {
+                            output.seekToNextMediaItem(); output.prepare()
                         }
-                        mutable.value = mutable.value.copy(preparing = false)
+                        updateReserve(output)
+                        mutable.value = mutable.value.copy(preparing = startupPending)
                         diagnostics.record(chosen.model, PlaybackStage.AUDIO_READY)
                         while (output.currentMediaItemIndex > 1) {
                             val removed = output.getMediaItemAt(0).mediaId
                             output.removeMediaItem(0); queued.remove(removed)
                         }
-                        cache.trim(chosen.cacheMb * 1024L * 1024L, queued.keys.toSet())
+                        // Avoid a database-wide scan and directory walk after every sentence.
+                        if (++chunksSinceTrim >= 8) {
+                            cache.trim(chosen.cacheMb * 1024L * 1024L, queued.keys.toSet())
+                            chunksSinceTrim = 0
+                        }
                     }
                     index++
                 }
-                if (first) mutable.value = mutable.value.copy(preparing = false, status = "No readable text")
+                if (first) {
+                    startupPending = false
+                    mutable.value = mutable.value.copy(preparing = false, fillingBuffer = false, wantsToPlay = false, status = "No readable text")
+                }
+                cache.trim(chosen.cacheMb * 1024L * 1024L, queued.keys.toSet())
             } catch (cancel: CancellationException) { throw cancel }
             catch (error: Exception) {
                 if (gate.current(generation)) {
@@ -319,13 +414,69 @@ class ReadingCoordinator(
                         selectedWordId = if (queued.isEmpty()) blocked?.wordId else mutable.value.selectedWordId)
                 }
             } finally {
-                if (gate.current(generation)) issues.activeInput = IssueInput()
+                if (gate.current(generation)) {
+                    producerFinished = true
+                    // A short document, or an error further ahead, must not strand valid audio.
+                    player?.let(::updateReserve)
+                    if (queued.isEmpty() || (recoveringReserve && pendingMediaItems.isEmpty())) {
+                        startupPending = false
+                        recoveringReserve = false
+                        player?.pause()
+                        mutable.value = mutable.value.copy(preparing = false, fillingBuffer = false, wantsToPlay = false)
+                    }
+                    issues.activeInput = IssueInput()
+                }
             }
         }
     }
-    private fun remainingAudioMs(player: Player): Long = (player.currentMediaItemIndex until player.mediaItemCount).sumOf {
-        queued[player.getMediaItemAt(it).mediaId]?.second?.durationMs ?: 0
-    } - player.currentPosition
+    private fun constrained(): Boolean = memoryPressure.isActive(SystemClock.elapsedRealtime()) ||
+        power.currentThermalStatus >= PowerManager.THERMAL_STATUS_MODERATE
+
+    private fun reserve(player: Player): AudioReserve {
+        val ids = if (recoveringReserve) pendingMediaItems.map { it.mediaId }
+            else (player.currentMediaItemIndex.coerceAtLeast(0) until player.mediaItemCount).map { player.getMediaItemAt(it).mediaId }
+        return audioReserve(ids.mapNotNull { id ->
+            queued[id]?.let {
+                PreparedAudioSegment(it.sentenceId, it.audio.durationMs, it.completesSentence)
+            }
+        }, when {
+            recoveringReserve -> 0
+            player.playbackState == Player.STATE_ENDED -> Long.MAX_VALUE
+            else -> player.currentPosition
+        }, player.playbackParameters.speed)
+    }
+
+    private fun updateReserve(player: Player) {
+        if (!startupPending && !producerFinished && player.playWhenReady &&
+            player.playbackState == Player.STATE_ENDED && player.currentMediaItemIndex == player.mediaItemCount - 1) {
+            startupPending = true; recoveringReserve = true; firstReadyAtMs = null
+            diagnostics.recordUnderrun()
+        }
+        val reserve = reserve(player)
+        if (startupPending && reservePolicy.canStart(reserve, firstReadyAtMs, SystemClock.elapsedRealtime(), producerFinished, constrained())) {
+            startupPending = false
+            if (recoveringReserve) {
+                val nextIndex = player.mediaItemCount
+                player.addMediaItems(pendingMediaItems.toList())
+                pendingMediaItems.clear(); recoveringReserve = false
+                player.seekTo(nextIndex, 0)
+            }
+            player.prepare(); player.play()
+            mutable.value = mutable.value.copy(preparing = false)
+        }
+        diagnostics.recordBuffer(reserve.queuedChunkCount, reserve.remainingListeningMs)
+        mutable.value = mutable.value.copy(bufferedSentences = reserve.futureSentenceCount,
+            bufferedListeningMs = reserve.remainingListeningMs, fillingBuffer = startupPending)
+    }
+
+    private fun releaseRecoveryForSeek(player: Player) {
+        // Rewinding while waiting is a user-directed position change. Keep prepared audio,
+        // but never let the pending recovery start jump over the user's chosen position.
+        recoveringReserve = false; startupPending = false; firstReadyAtMs = null
+        if (pendingMediaItems.isNotEmpty()) player.addMediaItems(pendingMediaItems.toList())
+        pendingMediaItems.clear()
+        mutable.value = mutable.value.copy(fillingBuffer = false)
+    }
     suspend fun changeModel(model: String, voice: String) {
         val old = work; val generation = invalidate()
         mutable.value = mutable.value.copy(preparing = false, status = "Paused")

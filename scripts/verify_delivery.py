@@ -27,7 +27,7 @@ result = dict(command="./gradlew assembleDebug testDebugUnitTest lintDebug assem
     lintWarnings=sum(i.attrib["severity"] == "Warning" for i in issues),
     lintIssueIds=sorted({i.attrib["id"] for i in issues}),
     apk=dict(file=apk.name, bytes=apk.stat().st_size, sha256=hashlib.sha256(apk.read_bytes()).hexdigest(), abis=abis, bundledSpeechOrAlignmentWeights=False),
-    androidRuntimeVerification="Blocked: software emulator startup/property queries/PackageManager failed before app execution",
+    androidRuntimeVerification="Not performed for this build: no attached Android runtime; instrumentation APK compiled only",
     physicalTargetVerification="No attached device; not performed")
 assert result["testTotal"] > 0 and result["failures"] == 0 and result["skipped"] == 0 and result["lintErrors"] == 0
 (ROOT / "docs/evidence/build-results.json").write_text(json.dumps(result, indent=2) + "\n")
