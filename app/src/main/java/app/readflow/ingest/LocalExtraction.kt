@@ -24,6 +24,8 @@ class LocalExtraction : PageExtractor {
     // Rendering owns a separate renderer and can proceed while the single OCR task is running.
     private val renderLock = Mutex()
     private val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+    /** Call only once this extractor is no longer needed; drain borrowed bitmaps first. */
+    suspend fun close() = resourceLock.withLock { recognizer.close() }
     suspend fun pageCount(path: String): Int = withContext(Dispatchers.IO) {
         resourceLock.withLock { openPdf(path).use { it.pageCount } }
     }

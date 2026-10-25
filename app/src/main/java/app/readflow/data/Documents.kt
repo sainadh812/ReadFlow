@@ -2,12 +2,14 @@ package app.readflow.data
 
 import android.content.Context
 import android.net.Uri
+import android.os.SystemClock
 import android.provider.OpenableColumns
 import androidx.room.withTransaction
 import app.readflow.core.*
 import app.readflow.ingest.*
 import app.readflow.diagnostics.*
 import app.readflow.models.fileHash
+import app.readflow.playback.PlaybackDiagnostics
 import java.io.File
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
@@ -20,6 +22,8 @@ class Documents(private val context: Context, val database: ReadFlowDatabase, va
     private val issues: IssueLogs? = null,
     private val preferences: PreferenceStore? = null,
     private val teleOcr: TeleOcrEngine? = null,
+    private val diagnostics: PlaybackDiagnostics? = null,
+    private val benchmarkActive: () -> Boolean = { false },
 ) {
     val dao = database.dao()
     private val root = File(context.noBackupFilesDir, "documents").apply { mkdirs() }
@@ -70,9 +74,14 @@ class Documents(private val context: Context, val database: ReadFlowDatabase, va
         document
     }
     suspend fun loadPage(document: DocumentEntity, index: Int, rotation: Int? = null): PageContent = extractionLock.withLock {
+        check(!benchmarkActive()) { "Finish or cancel the benchmark before opening a page" }
         require(index in 0 until document.pageCount)
         val old = dao.page(document.id, index)
-        if (rotation == null && old != null) return@withLock Json.decodeFromString(old.content)
+        if (rotation == null && old != null) {
+            val page = Json.decodeFromString<PageContent>(old.content)
+            diagnostics?.recordExtraction(extractionEngine(page.extraction), page.reading.codePointCount(0, page.reading.length), 0, cached = true)
+            return@withLock page
+        }
         check(document.mime != "text/html") { "Saved article content is unavailable" }
         // Keep saved pages until the user requests recognition again. Upgrading or
         // changing effort must not silently rewrite bookmarks in an existing book.
@@ -83,14 +92,26 @@ class Documents(private val context: Context, val database: ReadFlowDatabase, va
                 checkNotNull(teleOcr) { "TeleOCR is unavailable in this build" }.recognize(bitmap, effort, words)
             }
         } else null
-        val content = pipeline.process(document.id, index, extractor.extract(document.localPath, index,
-            rotation ?: old?.rotation ?: 0, quality, enhancement))
+        val started = SystemClock.elapsedRealtime()
+        val extracted = extractor.extract(document.localPath, index, rotation ?: old?.rotation ?: 0, quality, enhancement)
+        val elapsed = SystemClock.elapsedRealtime() - started
+        val content = pipeline.process(document.id, index, extracted)
+        diagnostics?.recordExtraction(extractionEngine(content.extraction), content.reading.codePointCount(0, content.reading.length), elapsed)
         save(content, rotation ?: old?.rotation ?: 0)
         val issueWarnings = content.warnings.filterNot { it.startsWith("OCR supplies word geometry") }
         if (issueWarnings.isNotEmpty()) issues?.record("EXTRACTION_WARNING", input = documentIssueInput(document, content,
             words = content.words.take(128), details = mapOf("rotation" to (rotation ?: old?.rotation ?: 0).toString())),
             warnings = issueWarnings, dedupeKey = stableId(document.id, index, rotation ?: 0, issueWarnings.joinToString()))
         content
+    }
+    suspend fun awaitExtractionIdle() = extractionLock.withLock { }
+
+    private fun extractionEngine(method: String): String = when {
+        method.startsWith("Embedded PDF") -> "Embedded PDF"
+        method.contains("TeleOCR fallback") -> "ML Kit fallback"
+        method.contains("TeleOCR") -> "TeleOCR"
+        method.contains("Latin OCR") -> "ML Kit"
+        else -> "Other extraction"
     }
     private suspend fun save(page: PageContent, rotation: Int = 0) {
         database.withTransaction {

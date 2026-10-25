@@ -42,8 +42,8 @@ import app.readflow.data.DocumentEntity
 import app.readflow.playback.ReaderPlayback
 import java.util.Locale
 
-private val Blue = Color(0xFF1554D1)
-private val LightBlue = Color(0xFFDCEAFF)
+private val Accent = Color(0xFF126D63)
+private val SelectionBackground = Color(0xFFD4EEE6)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable fun ReadFlowUi(vm: ReaderViewModel, requestNotifications: () -> Unit) {
@@ -54,17 +54,39 @@ private val LightBlue = Color(0xFFDCEAFF)
     val snackbar = remember { SnackbarHostState() }
     var urlDialog by remember { mutableStateOf(false) }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> if (uri != null) vm.import(uri) }
-    BackHandler(screen != "library") { vm.screen.value = if (screen == "reader" || playback.document == null) "library" else "reader" }
+    BackHandler(screen != "library") {
+        if (screen == "benchmark") vm.leaveBenchmark()
+        else vm.screen.value = if (screen == "reader" || playback.document == null) "library" else "reader"
+    }
     LaunchedEffect(message) { message?.let { snackbar.showSnackbar(it); vm.message.value = null } }
-    MaterialTheme(colorScheme = if (prefs.dark) darkColorScheme(primary = Color(0xFFAEC6FF), secondary = Color(0xFF77D3BC), surface = Color(0xFF15171B), background = Color(0xFF111317))
-        else lightColorScheme(primary = Blue, secondary = Color(0xFF16745C), surface = Color.White, background = Color(0xFFF8F9FC)),
-        typography = Typography(bodyLarge = androidx.compose.ui.text.TextStyle(fontSize = 18.sp, lineHeight = 28.sp, letterSpacing = 0.sp))) {
+    MaterialTheme(colorScheme = if (prefs.dark) darkColorScheme(
+        primary = Color(0xFF88D5C5), onPrimary = Color(0xFF00382F), primaryContainer = Color(0xFF164D43), onPrimaryContainer = Color(0xFFC4F4E4),
+        secondary = Color(0xFFB6CDC3), secondaryContainer = Color(0xFF2F4941), onSecondaryContainer = Color(0xFFD2E9DD),
+        surface = Color(0xFF171D1B), onSurface = Color(0xFFE2E9E3), surfaceVariant = Color(0xFF35413C), onSurfaceVariant = Color(0xFFB8C8BF),
+        background = Color(0xFF101614), onBackground = Color(0xFFE2E9E3), outlineVariant = Color(0xFF35413C),
+        surfaceContainerLowest = Color(0xFF0B110F), surfaceContainerLow = Color(0xFF171D1B), surfaceContainer = Color(0xFF1B2420),
+        surfaceContainerHigh = Color(0xFF25302A), surfaceContainerHighest = Color(0xFF303C35))
+        else lightColorScheme(
+            primary = Accent, onPrimary = Color.White, primaryContainer = Color(0xFFD9EFE7), onPrimaryContainer = Color(0xFF124C40),
+            secondary = Color(0xFF526C60), secondaryContainer = Color(0xFFE4EEE5), onSecondaryContainer = Color(0xFF284D3C),
+            surface = Color(0xFFFFFEFA), onSurface = Color(0xFF192B25), surfaceVariant = Color(0xFFE7ECE4), onSurfaceVariant = Color(0xFF57675F),
+            background = Color(0xFFF3F5EF), onBackground = Color(0xFF192B25), outlineVariant = Color(0xFFD8E1D7),
+            surfaceContainerLowest = Color(0xFFFFFFFF), surfaceContainerLow = Color(0xFFF6F7F1), surfaceContainer = Color(0xFFEFF2E9),
+            surfaceContainerHigh = Color(0xFFE9EDE4), surfaceContainerHighest = Color(0xFFE2E8DE)),
+        typography = Typography(
+            headlineMedium = TextStyle(fontFamily = FontFamily.Serif, fontSize = 30.sp, lineHeight = 36.sp, letterSpacing = (-.5).sp),
+            headlineSmall = TextStyle(fontSize = 25.sp, lineHeight = 32.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-.4).sp),
+            titleLarge = TextStyle(fontSize = 21.sp, lineHeight = 28.sp, fontWeight = FontWeight.SemiBold),
+            bodyLarge = TextStyle(fontSize = 18.sp, lineHeight = 28.sp, letterSpacing = 0.sp)),
+        shapes = Shapes(small = RoundedCornerShape(12.dp), medium = RoundedCornerShape(18.dp), large = RoundedCornerShape(24.dp))) {
         Scaffold(snackbarHost = { SnackbarHost(snackbar) }) { insets ->
             Box(Modifier.fillMaxSize().padding(insets)) {
                 when (screen) {
                     "reader" -> Reader(vm, playback, prefs, requestNotifications)
                     "voices" -> Voices(vm)
                     "settings" -> Settings(vm, prefs)
+                    "ocr" -> OcrSettingsScreen(vm, prefs)
+                    "benchmark" -> BenchmarkScreen(vm, prefs)
                     "issues" -> IssueLogsScreen(vm)
                     else -> Library(vm, { picker.launch(arrayOf("application/pdf", "image/*")) }, { urlDialog = true })
                 }
@@ -91,7 +113,16 @@ private val LightBlue = Color(0xFFDCEAFF)
             Tool(Icons.Default.Settings, "Settings") { vm.screen.value = "settings" }
         })
         Column(Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
-            Text("Your library", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text("Your library", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.weight(1f))
+                Surface(color = MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(50)) {
+                    Row(Modifier.padding(horizontal = 10.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.OfflineBolt, null, Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSecondaryContainer)
+                        Spacer(Modifier.width(4.dp))
+                        Text("On device", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                    }
+                }
+            }
             Spacer(Modifier.height(4.dp))
             Text(if (documents.isEmpty()) "Bring a book, PDF or article." else "${documents.size} ${if (documents.size == 1) "document" else "documents"} ready to open",
                 style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -221,7 +252,10 @@ private val LightBlue = Color(0xFFDCEAFF)
                         DropdownMenuItem(text = { Text("Forward ten seconds") }, onClick = { vm.app.playback.skip(10); menu = false }, leadingIcon = { Icon(Icons.Default.Forward10, null) })
                         DropdownMenuItem(text = { Text("Voice models") }, onClick = { vm.screen.value = "voices"; menu = false }, leadingIcon = { Icon(Icons.Default.RecordVoiceOver, null) })
                         DropdownMenuItem(text = { Text(if (follow) "Stop following reading" else "Follow reading") }, onClick = { follow = !follow; menu = false }, leadingIcon = { Icon(Icons.Default.MyLocation, null) })
-                        DropdownMenuItem(text = { Text("Text and display") }, onClick = { vm.screen.value = "settings"; menu = false }, leadingIcon = { Icon(Icons.Default.TextFields, null) })
+                        DropdownMenuItem(text = { Text(if (prefs.showPerformance) "Hide performance" else "Show performance") }, onClick = { vm.update(prefs.copy(showPerformance = !prefs.showPerformance)); menu = false }, leadingIcon = { Icon(Icons.Default.Speed, null) })
+                        DropdownMenuItem(text = { Text("Text recognition · ${if (prefs.ocrEngine == "teleocr") "TeleOCR" else "ML Kit"}") }, onClick = { vm.screen.value = "ocr"; menu = false }, leadingIcon = { Icon(Icons.Default.DocumentScanner, null) })
+                        DropdownMenuItem(text = { Text("Phone testbench") }, onClick = { vm.screen.value = "benchmark"; menu = false }, leadingIcon = { Icon(Icons.Default.Science, null) })
+                        DropdownMenuItem(text = { Text("Settings and appearance") }, onClick = { vm.screen.value = "settings"; menu = false }, leadingIcon = { Icon(Icons.Default.Tune, null) })
                         DropdownMenuItem(text = { Text("Reading details") }, onClick = { details = true; menu = false }, leadingIcon = { Icon(Icons.Default.Info, null) })
                         DropdownMenuItem(text = { Text("Issue logs") }, onClick = { vm.showIssues(); menu = false }, leadingIcon = { Icon(Icons.Default.BugReport, null) })
                         if (hasOriginal) {
@@ -244,6 +278,7 @@ private val LightBlue = Color(0xFFDCEAFF)
                 Icon(Icons.Default.MyLocation, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text("Follow reading")
             }
         }
+        if (!pageOnly && prefs.showPerformance) PerformancePanel(vm, prefs)
         if (!pageOnly) PlaybackPanel(vm, state, requestNotifications, prefs.speed, { speeds = true }, hasOriginal, original,
             { original = !original; if (original) searching = false }, selected, status,
             showDetails = { details = true }, copySelection = { selected?.let { clipboard.setText(AnnotatedString(it.text)) } })
@@ -324,10 +359,10 @@ private val LightBlue = Color(0xFFDCEAFF)
                 append(page.reading.substring(paragraph.start, paragraph.end))
                 words.forEach { word ->
                     val start = word.start - paragraph.start; val end = word.end - paragraph.start
-                    if (word.sentenceId == active?.sentenceId) addStyle(SpanStyle(background = if (prefs.dark) Color(0xFF243D60) else LightBlue), start, end)
+                    if (word.sentenceId == active?.sentenceId) addStyle(SpanStyle(background = if (prefs.dark) Color(0xFF254D43) else SelectionBackground), start, end)
                     if (query.isNotBlank() && word.text.contains(query, true)) addStyle(SpanStyle(background = Color(0xFFFFDB75), color = Color(0xFF202020)), start, end)
-                    if (word.id in state.activeWordIds) addStyle(SpanStyle(background = Blue, color = Color.White), start, end)
-                    else if (word.id == state.selectedWordId) addStyle(SpanStyle(background = if (prefs.dark) Color(0xFF324564) else LightBlue), start, end)
+                    if (word.id in state.activeWordIds) addStyle(SpanStyle(background = Accent, color = Color.White), start, end)
+                    else if (word.id == state.selectedWordId) addStyle(SpanStyle(background = if (prefs.dark) Color(0xFF355B4D) else SelectionBackground), start, end)
                 }
             }
             fun hit(position: androidx.compose.ui.geometry.Offset): SourceWord? {
@@ -365,7 +400,7 @@ private val LightBlue = Color(0xFFDCEAFF)
         state.bufferedSentences > 0 -> "Paused · $ready"
         else -> status
     }
-    Surface(color = MaterialTheme.colorScheme.surface, tonalElevation = 2.dp, shadowElevation = 8.dp) {
+    Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp), tonalElevation = 1.dp, shadowElevation = 6.dp) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
             if (selected) Surface(color = MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(12.dp), modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {

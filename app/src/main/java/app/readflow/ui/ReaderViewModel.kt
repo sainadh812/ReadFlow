@@ -10,12 +10,14 @@ import app.readflow.ReadFlowApp
 import app.readflow.core.*
 import app.readflow.data.*
 import app.readflow.diagnostics.*
+import app.readflow.benchmark.BenchmarkOptions
 import app.readflow.ingest.ArticleImportException
 import app.readflow.models.VoicePack
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.json.Json
 import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 
 class ReaderViewModel(application: Application) : AndroidViewModel(application) {
     val app = application as ReadFlowApp
@@ -26,6 +28,10 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     val ocrDownloads = app.ocrModels.progress
     val ocrProgress = app.teleOcr.progress
     val ocrLastRun = app.teleOcr.lastRun
+    val performance = app.diagnostics.performance
+    val ocrPerformance = app.diagnostics.extractionPerformance
+    val benchmark = app.benchmarks.state
+    val benchmarkBusy = app.benchmarks.busy
     val screen = MutableStateFlow("library")
     val message = MutableStateFlow<String?>(null)
     val importing = MutableStateFlow(false)
@@ -39,13 +45,21 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     private val jobs = mutableMapOf<String, Job>()
     private var ocrDownload: Job? = null
     private var ocrRefresh: Job? = null
-    fun open(document: DocumentEntity) { ocrRefresh?.cancel(); app.playback.open(document); screen.value = "reader" }
+    private val activeOperations = ConcurrentHashMap.newKeySet<Job>()
+    private fun benchmarkBlocksWork(): Boolean = app.benchmarks.busy.value.also {
+        if (it) message.value = "Finish or cancel the phone benchmark first"
+    }
+    fun open(document: DocumentEntity) {
+        if (benchmarkBlocksWork()) return
+        ocrRefresh?.cancel(); app.playback.open(document); screen.value = "reader"
+    }
     fun import(uri: Uri) = launchImport("IMPORT_FILE", { withContext(Dispatchers.IO) {
         val title = runCatching { app.contentResolver.query(uri, arrayOf(android.provider.OpenableColumns.DISPLAY_NAME), null, null, null)?.use { if (it.moveToFirst()) it.getString(0) else null } }.getOrNull()
         IssueInput(title = title, source = issueSource(uri.toString()), mime = runCatching { app.contentResolver.getType(uri) }.getOrNull())
     } }) { app.documents.import(uri) }
     fun importUrl(url: String) = launchImport("IMPORT_ARTICLE", { IssueInput(source = issueSource(url.trim()), mime = "text/html") }) { app.documents.importUrl(url.trim()) }
     private fun launchImport(stage: String, input: suspend () -> IssueInput, action: suspend () -> DocumentEntity) { viewModelScope.launch {
+        if (benchmarkBlocksWork()) return@launch
         importing.value = true
         try { open(action()) } catch (cancel: CancellationException) { throw cancel }
         catch (e: Exception) {
@@ -55,6 +69,40 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         finally { importing.value = false }
     } }
     fun update(preferences: Preferences) { viewModelScope.launch { app.preferences.set(preferences) } }
+    fun chooseOcrEngine(engine: String) {
+        if (benchmarkBlocksWork()) return
+        if (engine !in setOf("mlkit", "teleocr")) return
+        if (engine == "teleocr" && !app.ocrModels.installed("teleocr")) {
+            message.value = "Download TeleOCR before selecting it"; return
+        }
+        app.playback.stop()
+        operation("OCR_MODEL_SWITCH") {
+            ocrRefresh?.cancelAndJoin()
+            app.preferences.set(app.preferences.values.first().copy(ocrEngine = engine))
+            message.value = "${if (engine == "mlkit") "ML Kit" else "TeleOCR"} selected · apply to the current page to update saved text"
+        }
+    }
+    fun startBenchmark(options: BenchmarkOptions) {
+        if (app.benchmarks.busy.value) return
+        if (importing.value || activeOperations.any { it.isActive } ||
+            downloads.value.values.any { it.busy } || ocrDownloads.value.values.any { it.busy }) {
+            message.value = "Let imports and model setup finish before benchmarking"; return
+        }
+        ocrRefresh?.cancel()
+        try {
+            app.benchmarks.start(options)
+            screen.value = "benchmark"
+        } catch (error: IllegalArgumentException) { message.value = error.message }
+    }
+    fun cancelBenchmark() = app.benchmarks.cancel()
+    fun leaveBenchmark() { app.benchmarks.cancel(); screen.value = "settings" }
+    fun copyBenchmarkResults() {
+        try {
+            app.getSystemService(ClipboardManager::class.java).setPrimaryClip(
+                ClipData.newPlainText("ReadFlow phone benchmark", app.benchmarks.report()))
+            message.value = "Benchmark results copied"
+        } catch (_: Exception) { message.value = "Could not copy benchmark results" }
+    }
     fun downloadTeleOcr() {
         if (ocrDownload?.isActive == true) return
         ocrDownload = operation("OCR_MODEL_INSTALL") { app.ocrModels.install("teleocr") }
@@ -76,7 +124,9 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     fun deleteModel(id: String) { operation("MODEL_DELETE", IssueInput(details = mapOf("model" to id))) { jobs[id]?.cancelAndJoin(); app.playback.deleteModel(id) } }
     fun chooseModel(model: String, voice: String) { operation("MODEL_SWITCH", IssueInput(details = mapOf("model" to model, "voice" to voice))) { app.playback.changeModel(model, voice) } }
     fun clearCache() { operation("CACHE_DELETE") { app.playback.clearCache(); message.value = "Audio cache cleared" } }
-    private fun operation(stage: String, input: IssueInput = IssueInput(), action: suspend () -> Unit) = viewModelScope.launch {
+    private fun operation(stage: String, input: IssueInput = IssueInput(), action: suspend () -> Unit): Job {
+        val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
+        if (benchmarkBlocksWork()) return@launch
         try { action() } catch (cancel: CancellationException) { throw cancel }
         catch (error: Exception) {
             val pack = input.details["model"]?.let { id -> app.models.packs.firstOrNull { it.id == id } }
@@ -86,6 +136,11 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
                 "downloadBytes" to app.models.progress.value[pack.id]?.received.toString())
             app.issues.record(stage, error, input.copy(details = details)); message.value = error.message ?: "Operation failed"
         }
+        }
+        activeOperations += job
+        job.invokeOnCompletion { activeOperations -= job }
+        job.start()
+        return job
     }
     fun captureIssue(stage: String, error: Throwable, input: IssueInput = IssueInput()) {
         viewModelScope.launch { app.issues.record(stage, error, input) }
@@ -145,10 +200,14 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         app.issues.deleteForDocument(document.id)
         if (selectedIssue.value?.input?.documentId == document.id) selectedIssue.value = null
     } }
-    fun page(index: Int) { playback.value.document?.let { if (index in 0 until it.pageCount) { ocrRefresh?.cancel(); app.playback.open(it, index) } } }
+    fun page(index: Int) {
+        if (benchmarkBlocksWork()) return
+        playback.value.document?.let { if (index in 0 until it.pageCount) { ocrRefresh?.cancel(); app.playback.open(it, index) } }
+    }
     fun retryOcr() = refreshOcr(rotate = false)
     fun rotateOcr() = refreshOcr(rotate = true)
     private fun refreshOcr(rotate: Boolean) {
+        if (benchmarkBlocksWork()) return
         if (refreshingText.value) return
         val state = playback.value; val document = state.document ?: return
         val page = state.page
@@ -174,6 +233,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
     fun readBookmark(bookmark: BookmarkEntity) {
+        if (benchmarkBlocksWork()) return
         val document = playback.value.document?.takeIf { it.id == bookmark.documentId } ?: return
         val request = app.playback.stop()
         viewModelScope.launch {
@@ -199,6 +259,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         message.value = "Bookmark saved"
     } }
     fun sample(previewModel: String? = null, previewVoice: String? = null) { viewModelScope.launch {
+        if (benchmarkBlocksWork()) return@launch
         try {
             if (previewModel != null) app.playback.changeModel(previewModel, checkNotNull(previewVoice))
             val text = app.assets.open("fixtures/reading.txt").bufferedReader().use { it.readText() }.trim()

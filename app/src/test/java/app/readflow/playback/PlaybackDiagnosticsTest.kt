@@ -3,6 +3,9 @@ package app.readflow.playback
 import java.io.File
 import java.util.concurrent.CountDownLatch
 import kotlin.concurrent.thread
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Rule
@@ -53,6 +56,10 @@ class PlaybackDiagnosticsTest {
         assertNull(summary.meanAlignmentMs)
         assertNull(summary.preparationP95Ms)
         assertNull(summary.generatedPreparationToAudioRatio)
+        assertNull(summary.synthesisCharactersPerMinute)
+        assertNull(summary.generatedAudioSecondsPerPreparationSecond)
+        assertNull(summary.canKeepUp(1f))
+        assertNull(diagnostics.extractionPerformance.value)
         assertNull(summary.readyChunks)
         assertTrue(diagnostics.performanceReport().contains("No completed preparation measurements"))
     }
@@ -147,5 +154,153 @@ class PlaybackDiagnosticsTest {
         assertNull(summary.generatedPreparationToAudioRatio)
         assertEquals(0, summary.readyChunks)
         assertEquals(0L, summary.bufferedListeningMs)
+    }
+
+    @Test fun characterThroughputUsesTotalCharactersAndSynthesisTimeAndExcludesCache() {
+        val diagnostics = PlaybackDiagnostics(temporary.newFolder())
+        diagnostics.recordPreparation(false, 1_000, 200, 2_000, 4_000, characters = 100)
+        diagnostics.recordPreparation(false, 3_000, 400, 3_500, 7_000, characters = 200)
+        diagnostics.recordPreparation(true, 1, 0, 1, 90_000, characters = 50_000)
+
+        val summary = diagnostics.performance.value
+        assertEquals(4_500.0, summary.synthesisCharactersPerMinute!!, 0.001)
+        assertEquals(2, summary.synthesisCharacterSamples)
+        assertEquals(2, summary.generatedPreparationSamples)
+        assertEquals(2, summary.generatedPreparations)
+        // Preparation includes model loading and alignment; synthesis throughput does not.
+        assertEquals(2.0, summary.generatedAudioSecondsPerPreparationSecond!!, 0.001)
+        assertEquals(1.0, summary.throughputHeadroom(2f)!!, 0.001)
+        assertEquals(true, summary.canKeepUp(2f))
+        assertEquals(false, summary.canKeepUp(3f))
+        assertNull(summary.throughputHeadroom(0f))
+        assertNull(summary.throughputHeadroom(Float.NaN))
+        assertNull(summary.throughputHeadroom(Float.POSITIVE_INFINITY))
+    }
+
+    @Test fun cacheOnlyAndUnmeasurableSamplesDoNotClaimFastModelPerformance() {
+        val diagnostics = PlaybackDiagnostics(temporary.newFolder())
+        diagnostics.recordPreparation(true, 1, 0, 1, 60_000, characters = 5_000)
+        assertNull(diagnostics.performance.value.synthesisCharactersPerMinute)
+        assertNull(diagnostics.performance.value.generatedAudioSecondsPerPreparationSecond)
+        diagnostics.recordPreparation(false, 0, -1, 0, 60_000, characters = 5_000)
+        diagnostics.recordPreparation(false, -1, 1, -1, 60_000, characters = 5_000)
+        assertNull(diagnostics.performance.value.synthesisCharactersPerMinute)
+        assertNull(diagnostics.performance.value.generatedAudioSecondsPerPreparationSecond)
+
+        diagnostics.recordPreparation(false, 100, 100, 300, 0, characters = 0)
+        assertNull(diagnostics.performance.value.synthesisCharactersPerMinute)
+        assertNull(diagnostics.performance.value.generatedPreparationToAudioRatio)
+        assertEquals(0, diagnostics.performance.value.generatedPreparationSamples)
+    }
+
+    @Test fun eachReadingSessionResetsWindowIncludingSameModelAndDifferentVoices() {
+        val diagnostics = PlaybackDiagnostics(temporary.newFolder())
+        diagnostics.beginSession("kokoro", "0")
+        diagnostics.recordPreparation(false, 1_000, 200, 1_500, 10_000, 100)
+        diagnostics.recordBuffer(4, 15_000)
+        diagnostics.recordUnderrun()
+        diagnostics.beginSession("kokoro", "0")
+        assertEquals(0L, diagnostics.performance.value.totalPreparations)
+        assertEquals(0L, diagnostics.performance.value.totalUnderruns)
+        assertNull(diagnostics.performance.value.bufferedListeningMs)
+        assertNull(diagnostics.performance.value.synthesisCharactersPerMinute)
+
+        diagnostics.recordPreparation(false, 1_000, 200, 1_500, 10_000, 100)
+        diagnostics.beginSession("pocket", "alba")
+        val summary = diagnostics.performance.value
+        assertEquals("pocket", summary.model)
+        assertEquals("alba", summary.voice)
+        assertEquals(0, summary.recentPreparations)
+        assertNull(summary.meanSynthesisMs)
+        diagnostics.recordPreparation(false, 4_000, 100, 5_000, 5_000, 40)
+        assertEquals(600.0, diagnostics.performance.value.synthesisCharactersPerMinute!!, 0.001)
+    }
+
+    @Test fun preparationBufferAndUnderrunChangesAreObservable() = runBlocking {
+        val diagnostics = PlaybackDiagnostics(temporary.newFolder())
+        val observed = mutableListOf<PlaybackPerformanceSummary>()
+        val collection = launch(Dispatchers.Unconfined) { diagnostics.performance.collect { observed += it } }
+        try {
+            diagnostics.beginSession("kokoro", "0")
+            diagnostics.recordPreparation(false, 100, 20, 200, 1_000, 10)
+            diagnostics.recordBuffer(5, 15_000)
+            diagnostics.recordUnderrun()
+            assertTrue(observed.any { it.model == "kokoro" && it.recentPreparations == 0 })
+            assertTrue(observed.any { it.recentPreparations == 1 && it.readyChunks == null })
+            assertTrue(observed.any { it.readyChunks == 5 && it.totalUnderruns == 0L })
+            assertEquals(1L, observed.last().totalUnderruns)
+            assertSame(diagnostics.performance.value, diagnostics.performanceSummary())
+        } finally {
+            collection.cancel()
+        }
+    }
+
+    @Test fun frequentBufferUpdatesPreservePreparationWindowAndRates() {
+        val diagnostics = PlaybackDiagnostics(temporary.newFolder())
+        for (duration in 1L..64L) {
+            diagnostics.recordPreparation(false, duration, 1, duration + 1, duration * 10, duration.toInt())
+        }
+        val prepared = diagnostics.performance.value
+        repeat(1_000) { diagnostics.recordBuffer(5, it.toLong()) }
+        assertEquals(prepared.copy(readyChunks = 5, bufferedListeningMs = 999), diagnostics.performance.value)
+    }
+
+    @Test fun extractionMeasurementLabelsActualEngineAndExcludesCachedRates() {
+        val diagnostics = PlaybackDiagnostics(temporary.newFolder())
+        diagnostics.recordExtraction("ML Kit", 1_200, 1, cached = true)
+        assertEquals("ML Kit", diagnostics.extractionPerformance.value!!.engine)
+        assertNull(diagnostics.extractionPerformance.value!!.charactersPerMinute)
+        diagnostics.recordExtraction("TeleOCR", 1_200, 2_000)
+        val measured = diagnostics.extractionPerformance.value!!
+        assertEquals("TeleOCR", measured.engine)
+        assertEquals(36_000.0, measured.charactersPerMinute!!, 0.001)
+        diagnostics.recordExtraction("Embedded PDF", 1_200, 0)
+        assertNull(diagnostics.extractionPerformance.value!!.charactersPerMinute)
+        diagnostics.recordExtraction("ML Kit", -1, -1)
+        assertEquals(0, diagnostics.extractionPerformance.value!!.characters)
+        assertEquals(0L, diagnostics.extractionPerformance.value!!.elapsedMs)
+        assertNull(diagnostics.extractionPerformance.value!!.charactersPerMinute)
+    }
+
+    @Test fun cachedPageOpeningAndPlaybackDoNotEraseTheLatestMeasuredOcrRun() {
+        val diagnostics = PlaybackDiagnostics(temporary.newFolder())
+        diagnostics.recordExtraction("TeleOCR", 1_200, 2_000)
+        val measured = diagnostics.extractionPerformance.value
+        // Retry OCR reopens the saved page; pressing Play reads that cached page again.
+        diagnostics.recordExtraction("TeleOCR", 1_200, 0, cached = true)
+        diagnostics.recordExtraction("TeleOCR", 1_200, 0, cached = true)
+        assertSame(measured, diagnostics.extractionPerformance.value)
+        assertEquals(36_000.0, diagnostics.extractionPerformance.value!!.charactersPerMinute!!, 0.001)
+
+        // Another cache hit must not claim a fresh measurement for that page's engine.
+        diagnostics.recordExtraction("ML Kit", 500, 0, cached = true)
+        assertSame(measured, diagnostics.extractionPerformance.value)
+        diagnostics.recordExtraction("ML Kit", 600, 1_000)
+        assertEquals("ML Kit", diagnostics.extractionPerformance.value!!.engine)
+        assertEquals(600, diagnostics.extractionPerformance.value!!.characters)
+    }
+
+    @Test fun sessionAndExtractionReportsCannotContainUnrecognizedInputText() {
+        val directory = temporary.newFolder()
+        val diagnostics = PlaybackDiagnostics(directory)
+        val privateText = "Private document sentence https://private.example/report"
+        diagnostics.beginSession(privateText, privateText)
+        diagnostics.recordExtraction(privateText, 10, 1_000)
+        val report = diagnostics.performanceReport()
+        assertTrue(report.contains("Speech model: unknown; voice: unknown"))
+        assertTrue(report.contains("Other extraction"))
+        assertFalse(report.contains(privateText))
+        assertTrue(directory.listFiles().orEmpty().isEmpty())
+    }
+
+    @Test fun fallbackCannotAttributeFailedTeleOcrTimeToMlKitThroughput() {
+        val diagnostics = PlaybackDiagnostics(temporary.newFolder())
+        diagnostics.recordExtraction("ML Kit fallback", 1_200, 60_000)
+        val measured = diagnostics.extractionPerformance.value!!
+        assertEquals("ML Kit fallback", measured.engine)
+        assertEquals(1_200, measured.characters)
+        assertEquals(60_000L, measured.elapsedMs)
+        assertFalse(measured.cached)
+        assertNull(measured.charactersPerMinute)
     }
 }

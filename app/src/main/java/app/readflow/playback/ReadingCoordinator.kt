@@ -40,6 +40,7 @@ class ReadingCoordinator(
     private val preferences: PreferenceStore, private val power: PowerManager,
     private val diagnostics: PlaybackDiagnostics,
     private val issues: IssueLogs,
+    private val benchmarkActive: () -> Boolean = { false },
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val gate = GenerationGate()
@@ -138,6 +139,7 @@ class ReadingCoordinator(
     }
     fun detach() { observer?.cancel(); playerListener?.let { player?.removeListener(it) }; playerListener = null; player = null; stop() }
     fun open(document: DocumentEntity, pageIndex: Int? = null) {
+        if (benchmarkActive()) return
         val generation = invalidate()
         mutable.value = ReaderPlayback(document = document, preparing = true, status = "Extracting page", viewPageIndex = pageIndex ?: 0)
         work = scope.launch {
@@ -185,6 +187,7 @@ class ReadingCoordinator(
         else player?.pause()
     }
     fun playFromControls() {
+        if (benchmarkActive()) return
         val output = player ?: return
         // MediaSession's play action seeks to the default position first when ended.
         if (recoveringReserve && output.playbackState != Player.STATE_ENDED) releaseRecoveryForSeek(output)
@@ -196,6 +199,7 @@ class ReadingCoordinator(
         else if (state.value.document != null) start(wordId = state.value.selectedWordId ?: durableWord)
     }
     fun toggle() {
+        if (benchmarkActive()) return
         val player = player ?: return
         if (startupPending || (state.value.preparing && player.mediaItemCount == 0)) { stop(); return }
         if (player.playWhenReady && player.playbackState != Player.STATE_ENDED) player.pause()
@@ -232,6 +236,7 @@ class ReadingCoordinator(
         }
     }
     fun start(document: DocumentEntity = checkNotNull(state.value.document), pageIndex: Int = state.value.page?.index ?: state.value.viewPageIndex, wordId: String? = null) {
+        if (benchmarkActive()) return
         val old = work
         val generation = invalidate()
         startupPending = true; producerFinished = false
@@ -258,6 +263,7 @@ class ReadingCoordinator(
             try {
                 // A cancelled native call owns its resources until it returns. New work waits here.
                 old?.join()
+                diagnostics.beginSession(chosen.model, chosen.voice)
                 checkNotNull(player) { "Playback service is not connected" }
                 diagnostics.record(chosen.model, PlaybackStage.VERIFYING_MODELS)
                 models.verifyInstalled(chosen.model); models.verifyInstalled("alignment")
@@ -353,7 +359,8 @@ class ReadingCoordinator(
                         }
                         if (!gate.current(generation)) return@launch
                         diagnostics.recordPreparation(cached != null, synthesisMs, alignmentMs,
-                            SystemClock.elapsedRealtime() - preparationStarted, audio.durationMs)
+                            SystemClock.elapsedRealtime() - preparationStarted, audio.durationMs,
+                            characters = speech.text.codePointCount(0, speech.text.length))
                         val startMs = if (first) playbackStartMs(audio, requested) else 0L
                         diagnostics.record(chosen.model, PlaybackStage.STARTING_AUDIO)
                         stage = "QUEUE_AUDIO"
@@ -478,6 +485,7 @@ class ReadingCoordinator(
         mutable.value = mutable.value.copy(fillingBuffer = false)
     }
     suspend fun changeModel(model: String, voice: String) {
+        check(!benchmarkActive()) { "Finish or cancel the benchmark before changing a model" }
         val old = work; val generation = invalidate()
         mutable.value = mutable.value.copy(preparing = false, status = "Paused")
         old?.join(); engine.unload(); aligner.close()
@@ -486,7 +494,14 @@ class ReadingCoordinator(
             preferences.set(settings)
         }
     }
-    suspend fun deleteModel(id: String) { val old = work; stop(); old?.join(); engine.unload(); aligner.close(); models.delete(id) }
+    suspend fun deleteModel(id: String) {
+        check(!benchmarkActive()) { "Finish or cancel the benchmark before removing a model" }
+        val old = work; stop(); old?.join(); engine.unload(); aligner.close(); models.delete(id)
+    }
+    suspend fun releaseForBenchmark() {
+        val old = work
+        stop(); old?.join(); engine.unload(); aligner.close()
+    }
     suspend fun clearCache() { val old = work; stop(); old?.join(); cache.clear() }
     suspend fun deleteDocument(document: DocumentEntity) {
         val old = work; stop(); old?.join()

@@ -28,7 +28,7 @@ PDF extraction tries `getTextContents()` independently per page. Nonempty but sp
 
 OCR uses bundled ML Kit 16.0.1. Render scale starts at 300 DPI and caps at ten million pixels. A conservative automatic deskew trial and up to six confidence/geometry-gated line retries improve difficult inputs; retry bitmaps are limited to two million pixels. Extraction resources are serialized; preview rendering has a separate lock and independently opened PDF resources so display need not wait for OCR. ML Kit tasks drain before bitmaps are recycled even on cancellation. Only the requested page and pages needed to fill the bounded audio queue are processed. No whole-book scan occurs before playback. Scaling, arbitrary deskew, focused crops and quarter-turn rotation retain reversible processed-to-page mappings. Original source image dimensions are preserved. User cropping is not implemented. See [accented speech and OCR refinement](ACCENTS_AND_OCR.md) for validation limits.
 
-Reading order handles simple lines and a conservative clear two-column gutter. Complex layouts, tables, math, marginalia, and overlapping text are not generally supported. Margin skipping is optional, non-destructive, and geometric; cross-page repeated-header classification is not yet implemented. Potential equations are flagged and unsupported speech symbols fail with an explicit skip instruction.
+Reading order handles simple lines, a conservative clear two-column gutter, and simple table rows. Complex layouts, arbitrary financial-table structures, math, marginalia and overlapping text are not generally supported. Margin skipping is optional, non-destructive, and geometric; cross-page repeated-header classification is not yet implemented. Potential equations are flagged and unsupported speech symbols fail with an explicit skip instruction.
 
 ## Web extraction boundary
 
@@ -59,6 +59,14 @@ The reading screen uses source offsets from Compose text layout, rejects whitesp
 The 0.1.11 reader places page count/contents beneath the title, with a larger central playback button, directly accessible speed and Original/Text controls, and a compact prepared-audio status. Startup/recovery shows a visible cancel action. Selected-word reading/copy and return-to-follow appear contextually. Fullscreen still hides the header/footer. The library uses document cards and confirms removal. Buffer measurements refresh at 200 ms; word highlighting still follows the actual player clock at 33 ms.
 
 No approved mockup attachment was accessible in this turn. The implementation follows the written light/blue/compact layout requirements; fidelity to the specific approved image is unverified.
+
+## Performance display and phone testbench
+
+From 0.1.12, a persisted preference controls the optional reader performance card. `PlaybackDiagnostics` exposes bounded in-memory measurements as StateFlow, aggregated on completed preparation rather than each buffer update. The visible card samples at 2 Hz. Rates use normalized Unicode character counts and exclude cached audio; listening-speed headroom compares freshly prepared audio duration with total preparation time. Extraction is measured separately and identifies native PDF text, ML Kit, TeleOCR and fallback. The latest measured extraction survives subsequent cache reads.
+
+The application-owned `BenchmarkCoordinator` reserves an exclusive gate synchronously before launching, stops and drains reading and pending extraction, then invokes `BenchmarkRunner`. New reading, extraction and model mutations are blocked until native cleanup completes. Cancellation before dispatch still enters cleanup; leaving/backgrounding cancels, while configuration changes retain the run. Results restore asynchronously without overwriting a newly started run. Fixed original fixtures exercise real normalization, Sherpa synthesis, PCM16 WAV writing, forced alignment and selected OCR engines sequentially. TeleOCR fallback is marked failed rather than scored as TeleOCR. Synthetic OCR error rate and table-token order are separate from throughput.
+
+One size-bounded private report survives restart, including partial results; temporary WAV/PNG files are deleted. Reports contain device/configuration/timing metrics, no imported document excerpts, and are only shared by explicit copy. Phase-boundary PSS/thermal/battery-temperature samples do not establish peak memory or CPU temperature. Speech is generated without audible playback. See [definitions and limitations](PERFORMANCE_AND_BENCHMARK.md).
 
 ## Issue diagnostics
 

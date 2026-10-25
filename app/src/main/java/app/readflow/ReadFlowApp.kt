@@ -9,12 +9,15 @@ import app.readflow.playback.ReadingCoordinator
 import app.readflow.playback.PlaybackDiagnostics
 import app.readflow.playback.isMemoryPressureLevel
 import app.readflow.diagnostics.*
+import app.readflow.benchmark.*
+import app.readflow.performance.BenchmarkCoordinator
 import kotlinx.coroutines.*
 import java.io.File
 
 class ReadFlowApp : Application() {
     val database by lazy { ReadFlowDatabase.open(this) }
-    val documents by lazy { Documents(this, database, LocalExtraction(), ReadabilityArticles(this, issues), issues, preferences, teleOcr) }
+    val documents: Documents by lazy { Documents(this, database, LocalExtraction(), ReadabilityArticles(this, issues), issues, preferences, teleOcr,
+        diagnostics, { benchmarks.busy.value }) }
     val preferences by lazy { PreferenceStore(this) }
     val models by lazy { ModelStore(this) }
     val ocrModels by lazy { ModelStore(this, "ocr-model-manifests.json", "-ocr") }
@@ -24,8 +27,13 @@ class ReadFlowApp : Application() {
     val issues by lazy { IssueLogs(File(noBackupFilesDir, "issues"), ::issueEnvironment) }
     val githubSettings by lazy { GitHubSettings(this) }
     val githubDiagnostics by lazy { GitHubDiagnostics(GitHubRestApi()) }
-    private val playbackInstance = lazy { ReadingCoordinator(documents, models, cache, preferences, getSystemService(PowerManager::class.java), diagnostics, issues) }
-    val playback by playbackInstance
+    private val playbackInstance: Lazy<ReadingCoordinator> = lazy { ReadingCoordinator(documents, models, cache, preferences, getSystemService(PowerManager::class.java), diagnostics, issues,
+        benchmarkActive = { benchmarks.busy.value }) }
+    val playback: ReadingCoordinator by playbackInstance
+    val benchmarks: BenchmarkCoordinator by lazy { BenchmarkCoordinator(CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate),
+        BenchmarkStore(File(noBackupFilesDir, "benchmark")),
+        prepare = { playback.releaseForBenchmark(); documents.awaitExtractionIdle() },
+        execute = { options, update -> BenchmarkRunner(this, models, ocrModels, teleOcr).run(options, update) }) }
     override fun onCreate() {
         super.onCreate()
         val previous = Thread.getDefaultUncaughtExceptionHandler()

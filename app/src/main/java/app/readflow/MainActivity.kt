@@ -32,6 +32,12 @@ class MainActivity : ComponentActivity() {
         if (savedInstanceState == null) handleShare(intent)
     }
     override fun onNewIntent(intent: Intent) { super.onNewIntent(intent); setIntent(intent); handleShare(intent) }
+    override fun onStop() {
+        super.onStop()
+        // Benchmarks are foreground tools, not unattended background model workloads.
+        // Configuration changes retain the app-owned run and its cancellation gate.
+        if (!isChangingConfigurations) vm.cancelBenchmark()
+    }
     private fun handleShare(intent: Intent) {
         if (intent.action != Intent.ACTION_SEND) return
         val uri = intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
