@@ -14,9 +14,11 @@ import java.io.File
 
 class ReadFlowApp : Application() {
     val database by lazy { ReadFlowDatabase.open(this) }
-    val documents by lazy { Documents(this, database, LocalExtraction(), ReadabilityArticles(this, issues), issues) }
+    val documents by lazy { Documents(this, database, LocalExtraction(), ReadabilityArticles(this, issues), issues, preferences, teleOcr) }
     val preferences by lazy { PreferenceStore(this) }
     val models by lazy { ModelStore(this) }
+    val ocrModels by lazy { ModelStore(this, "ocr-model-manifests.json", "-ocr") }
+    val teleOcr by lazy { TeleOcrEngine(this, ocrModels) }
     val cache by lazy { AudioCache(this, database) }
     val diagnostics by lazy { PlaybackDiagnostics(File(noBackupFilesDir, "diagnostics")) }
     val issues by lazy { IssueLogs(File(noBackupFilesDir, "issues"), ::issueEnvironment) }

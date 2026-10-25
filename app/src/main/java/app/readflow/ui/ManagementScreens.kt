@@ -77,6 +77,7 @@ import java.util.Locale
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text("Settings") }, navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.screen.value = if (vm.playback.value.document == null) "library" else "reader" } })
         LazyColumn(contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
+            item { OcrSettingsPanel(vm, prefs) }
             item {
                 Column {
                     Row(verticalAlignment = Alignment.CenterVertically) {

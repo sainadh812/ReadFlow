@@ -1,0 +1,2 @@
+# Unified patches contain significant one-space context lines.
+scripts/patches/*.patch -whitespace

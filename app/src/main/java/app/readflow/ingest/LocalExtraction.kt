@@ -16,6 +16,9 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.tasks.await
 import kotlin.math.*
 
+/** The bitmap is borrowed until this call returns; elements use its upright pixel coordinates. */
+typealias OcrEnhancement = suspend (Bitmap, OcrQuality, List<TextElement>) -> ExtractedPage?
+
 class LocalExtraction : PageExtractor {
     private val resourceLock = Mutex()
     // Rendering owns a separate renderer and can proceed while the single OCR task is running.
@@ -28,9 +31,13 @@ class LocalExtraction : PageExtractor {
         val fd = ParcelFileDescriptor.open(File(path), ParcelFileDescriptor.MODE_READ_ONLY)
         try { return PdfRenderer(fd) } catch (error: Exception) { fd.close(); throw error }
     }
-    override suspend fun extract(path: String, page: Int, rotation: Int): ExtractedPage = withContext(Dispatchers.IO) {
+    override suspend fun extract(path: String, page: Int, rotation: Int): ExtractedPage =
+        extract(path, page, rotation, OcrQuality.BALANCED)
+
+    suspend fun extract(path: String, page: Int, rotation: Int = 0, quality: OcrQuality,
+        enhancement: OcrEnhancement? = null): ExtractedPage = withContext(Dispatchers.IO) {
         resourceLock.withLock {
-            if (!path.endsWith(".pdf")) return@withLock extractImage(path, rotation)
+            if (!path.endsWith(".pdf")) return@withLock extractImage(path, rotation, quality, enhancement)
             openPdf(path).use { renderer -> renderer.openPage(page).use { pdf ->
                 val native = pdf.textContents
                 val nativeText = native.joinToString("\n") { it.text }
@@ -51,31 +58,35 @@ class LocalExtraction : PageExtractor {
                         return@withLock ExtractedPage(elements, pdf.width.toFloat(), pdf.height.toFloat(), "Embedded PDF text")
                     }
                 }
-                val scale = minOf(300f / 72f, sqrt(OcrRefinement.MAX_SOURCE_PIXELS.toFloat() / (pdf.width.toFloat() * pdf.height)))
-                val bitmap = Bitmap.createBitmap(maxOf(1, (pdf.width * scale).roundToInt()), maxOf(1, (pdf.height * scale).roundToInt()), Bitmap.Config.ARGB_8888)
+                val canvas = OcrRefinement.pdfCanvas(pdf.width, pdf.height, quality)
+                val bitmap = Bitmap.createBitmap(canvas.width, canvas.height, Bitmap.Config.ARGB_8888)
                 try {
                     bitmap.eraseColor(Color.WHITE)
-                    pdf.render(bitmap, null, Matrix().apply { setScale(scale, scale) }, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
-                    val result = recognize(bitmap, rotation, Transform(1 / scale, 0f, 0f, 1 / scale), pdf.width.toFloat(), pdf.height.toFloat())
+                    pdf.render(bitmap, null, canvas.sourceToCanvas.androidMatrix(), PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+                    val result = recognize(bitmap, rotation, canvas.sourceToCanvas.inverse(),
+                        pdf.width.toFloat(), pdf.height.toFloat(), quality, enhancement)
                     result.copy(method = if (hasImages && usable) "Mixed page: ${result.method}" else result.method,
                         warnings = result.warnings + if (usable) listOf("OCR supplies word geometry on this page; check recognition against the original.") else emptyList())
                 } finally { bitmap.recycle() }
             } }
         }
     }
-    private suspend fun extractImage(path: String, rotation: Int): ExtractedPage {
+    private suspend fun extractImage(path: String, rotation: Int, quality: OcrQuality,
+        enhancement: OcrEnhancement?): ExtractedPage {
         var sourceWidth = 0
         var sourceHeight = 0
         val bitmap = ImageDecoder.decodeBitmap(ImageDecoder.createSource(File(path))) { decoder, info, _ ->
             sourceWidth = info.size.width
             sourceHeight = info.size.height
-            val scale = OcrRefinement.fitScale(sourceWidth, sourceHeight)
+            val scale = OcrRefinement.fitScale(sourceWidth, sourceHeight, quality.maxSourcePixels)
             decoder.setTargetSize((sourceWidth * scale).toInt().coerceAtLeast(1), (sourceHeight * scale).toInt().coerceAtLeast(1))
             decoder.setTargetColorSpace(ColorSpace.get(ColorSpace.Named.SRGB))
             decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
         }
         val toPage = Transform(sourceWidth.toFloat() / bitmap.width, 0f, 0f, sourceHeight.toFloat() / bitmap.height)
-        return try { recognize(bitmap, rotation, toPage, sourceWidth.toFloat(), sourceHeight.toFloat()) } finally { bitmap.recycle() }
+        return try {
+            recognize(bitmap, rotation, toPage, sourceWidth.toFloat(), sourceHeight.toFloat(), quality, enhancement)
+        } finally { bitmap.recycle() }
     }
 
     private fun Transform.androidMatrix() = Matrix().apply {
@@ -114,21 +125,22 @@ class LocalExtraction : PageExtractor {
         }
     }
 
-    private suspend fun recognize(bitmap: Bitmap, rotation: Int, bitmapToPage: Transform, width: Float, height: Float): ExtractedPage {
+    private suspend fun recognize(bitmap: Bitmap, rotation: Int, bitmapToPage: Transform, width: Float, height: Float,
+        quality: OcrQuality, enhancement: OcrEnhancement?): ExtractedPage {
         var working = bitmap
         var workingToBitmap = Transform()
         val warnings = mutableListOf<String>()
         try {
             if ((rotation % 360 + 360) % 360 != 0) {
-                val plan = OcrRefinement.rotatedCanvas(bitmap.width, bitmap.height, rotation.toFloat())
+                val plan = OcrRefinement.rotatedCanvas(bitmap.width, bitmap.height, rotation.toFloat(), quality.maxRotatedPixels)
                 working = rotateBitmap(bitmap, plan)
                 workingToBitmap = plan.sourceToCanvas.inverse()
             }
             var lines = runOcr(working)
             var deskewed = false
-            val angle = OcrRefinement.deskewAngle(lines)
+            val angle = if (quality.automaticDeskew) OcrRefinement.deskewAngle(lines) else null
             if (angle != null) {
-                val plan = OcrRefinement.rotatedCanvas(working.width, working.height, angle)
+                val plan = OcrRefinement.rotatedCanvas(working.width, working.height, angle, quality.maxRotatedPixels)
                 val corrected = rotateBitmap(working, plan)
                 var adopted = false
                 try {
@@ -148,7 +160,7 @@ class LocalExtraction : PageExtractor {
             }
             val refined = lines.toMutableList()
             var improved = 0
-            for (index in OcrRefinement.retryIndices(lines)) {
+            for (index in OcrRefinement.retryIndices(lines, quality.lineRetries, quality.retryConfidence)) {
                 currentCoroutineContext().ensureActive()
                 val line = lines[index]
                 val crop = OcrRefinement.cropBounds(line, working.width, working.height)
@@ -184,6 +196,30 @@ class LocalExtraction : PageExtractor {
                 } finally { cropped.recycle() }
             }
             val transform = OcrRefinement.compose(bitmapToPage, workingToBitmap)
+            if (enhancement != null) {
+                currentCoroutineContext().ensureActive()
+                val uprightElements = refined.flatMap { line -> line.words.map { word ->
+                    TextElement(word.text, listOf(word.box), line.block, line.line)
+                } }
+                val candidate = enhancement(working, quality, uprightElements)
+                currentCoroutineContext().ensureActive()
+                if (candidate != null) {
+                    val mappedElements = candidate.elements.map { element ->
+                        element.copy(boxes = element.boxes.mapNotNull { source ->
+                            val mapped = transform.map(source)
+                            val box = Box(mapped.left.coerceIn(0f, width), mapped.top.coerceIn(0f, height),
+                                mapped.right.coerceIn(0f, width), mapped.bottom.coerceIn(0f, height))
+                            box.takeIf { it.width > 0f && it.height > 0f }
+                        })
+                    }
+                    return candidate.copy(elements = mappedElements, width = width, height = height,
+                        warnings = (warnings + candidate.warnings).distinct(), transform = transform,
+                        tables = candidate.tables.map { table -> table.copy(box = transform.map(table.box).let { mapped ->
+                            Box(mapped.left.coerceIn(0f, width), mapped.top.coerceIn(0f, height),
+                                mapped.right.coerceIn(0f, width), mapped.bottom.coerceIn(0f, height))
+                        }) })
+                }
+            }
             val elements = refined.flatMap { line -> line.words.mapNotNull { word ->
                 val mapped = word.mapped(transform).box
                 val box = Box(mapped.left.coerceIn(0f, width), mapped.top.coerceIn(0f, height),
@@ -197,6 +233,7 @@ class LocalExtraction : PageExtractor {
             }
             val method = buildString {
                 append("Latin OCR")
+                if (quality != OcrQuality.BALANCED) append("; ${quality.id} processing")
                 if (deskewed) append("; straightened")
                 if (improved > 0) append("; focused retries")
             }

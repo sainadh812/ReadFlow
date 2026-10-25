@@ -49,8 +49,20 @@ internal object OcrRefinement {
     )
 
     fun fitScale(width: Int, height: Int, maxPixels: Int = MAX_SOURCE_PIXELS): Float {
+        require(width > 0 && height > 0 && maxPixels > 0)
+        return minOf(1.0, sqrt(maxPixels.toDouble() / (width.toDouble() * height)),
+            maxPixels.toDouble() / maxOf(width, height)).toFloat()
+    }
+
+    fun pdfCanvas(width: Int, height: Int, quality: OcrQuality): OcrCanvas {
         require(width > 0 && height > 0)
-        return minOf(1.0, sqrt(maxPixels.toDouble() / (width.toDouble() * height))).toFloat()
+        val scale = minOf(quality.pdfDpi / 72.0,
+            sqrt(quality.maxSourcePixels.toDouble() / (width.toDouble() * height)),
+            quality.maxSourcePixels.toDouble() / maxOf(width, height)).toFloat()
+        // Flooring keeps allocation within the selected pixel budget. Use the same
+        // render transform in reverse so highlights stay in original PDF points.
+        return OcrCanvas((width * scale).toInt().coerceAtLeast(1), (height * scale).toInt().coerceAtLeast(1),
+            Transform(scale, 0f, 0f, scale))
     }
 
     fun rotatedCanvas(width: Int, height: Int, degrees: Float, maxPixels: Int = MAX_ROTATED_PIXELS): OcrCanvas {
@@ -87,16 +99,21 @@ internal object OcrRefinement {
         word.text.count { it == '\uFFFD' || it == '|' || (it.isISOControl() && !it.isWhitespace()) }
     }
 
-    fun retryPriority(line: OcrLine): Float {
+    fun retryPriority(line: OcrLine, confidenceThreshold: Float = .82f): Float {
         val minimum = line.words.mapNotNull { it.confidence }.minOrNull()
         val heights = line.words.filter { it.text.any(Char::isLetterOrDigit) }.map { it.box.height }.sorted()
         val small = heights.isNotEmpty() && heights[heights.size / 2] < 20f
-        return (if (minimum != null && minimum < .82f) 2f + 1f - minimum else 0f) +
+        return (if (minimum != null && minimum < confidenceThreshold) 2f + 1f - minimum else 0f) +
             (if (small) 1f else 0f) + suspectCharacters(line.words) * 2f
     }
 
-    fun retryIndices(lines: List<OcrLine>): List<Int> = lines.indices.filter { retryPriority(lines[it]) > 0f }
-        .sortedByDescending { retryPriority(lines[it]) }.take(MAX_LINE_RETRIES)
+    fun retryIndices(lines: List<OcrLine>, maxRetries: Int = MAX_LINE_RETRIES,
+        confidenceThreshold: Float = .82f): List<Int> {
+        require(maxRetries >= 0)
+        if (maxRetries == 0) return emptyList()
+        return lines.indices.filter { retryPriority(lines[it], confidenceThreshold) > 0f }
+            .sortedByDescending { retryPriority(lines[it], confidenceThreshold) }.take(maxRetries)
+    }
 
     fun cropBounds(line: OcrLine, width: Int, height: Int): Box {
         val box = line.box

@@ -1,0 +1,1 @@
+<fcel>Year<fcel>Capacity<fcel>Price<nl><fcel>1999<fcel>6 gigs<fcel>$1,200<nl><fcel>2003<fcel>120 gigs<fcel>$950<nl><fcel>2006<fcel>250 gigs<fcel>$800<nl>

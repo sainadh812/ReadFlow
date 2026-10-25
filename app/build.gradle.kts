@@ -9,13 +9,16 @@ android {
     namespace = "app.readflow"
     compileSdk = 35
     buildToolsVersion = "34.0.0"
+    ndkVersion = "27.2.12479018"
+    externalNativeBuild { cmake { path = file("src/main/cpp/CMakeLists.txt"); version = "3.22.1" } }
     defaultConfig {
         applicationId = "app.readflow"
         minSdk = 35
         targetSdk = 35
-        versionCode = 10
-        versionName = "0.1.9-prototype"
+        versionCode = 11
+        versionName = "0.1.10-prototype"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild { cmake { arguments += listOf("-DANDROID_STL=c++_static", "-DCMAKE_BUILD_TYPE=Release") } }
         ndk { abiFilters += if (providers.gradleProperty("emulator").orNull == "true") "x86_64" else "arm64-v8a" }
     }
     buildFeatures { compose = true; buildConfig = true }

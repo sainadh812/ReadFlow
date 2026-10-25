@@ -23,6 +23,9 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     val library = app.documents.dao.library().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val preferences = app.preferences.values.stateIn(viewModelScope, SharingStarted.Eagerly, Preferences())
     val downloads = app.models.progress
+    val ocrDownloads = app.ocrModels.progress
+    val ocrProgress = app.teleOcr.progress
+    val ocrLastRun = app.teleOcr.lastRun
     val screen = MutableStateFlow("library")
     val message = MutableStateFlow<String?>(null)
     val importing = MutableStateFlow(false)
@@ -34,7 +37,9 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     val sendingIssues = MutableStateFlow(false)
     val githubIssueUrl = MutableStateFlow<String?>(null)
     private val jobs = mutableMapOf<String, Job>()
-    fun open(document: DocumentEntity) { app.playback.open(document); screen.value = "reader" }
+    private var ocrDownload: Job? = null
+    private var ocrRefresh: Job? = null
+    fun open(document: DocumentEntity) { ocrRefresh?.cancel(); app.playback.open(document); screen.value = "reader" }
     fun import(uri: Uri) = launchImport("IMPORT_FILE", { withContext(Dispatchers.IO) {
         val title = runCatching { app.contentResolver.query(uri, arrayOf(android.provider.OpenableColumns.DISPLAY_NAME), null, null, null)?.use { if (it.moveToFirst()) it.getString(0) else null } }.getOrNull()
         IssueInput(title = title, source = issueSource(uri.toString()), mime = runCatching { app.contentResolver.getType(uri) }.getOrNull())
@@ -50,6 +55,19 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         finally { importing.value = false }
     } }
     fun update(preferences: Preferences) { viewModelScope.launch { app.preferences.set(preferences) } }
+    fun downloadTeleOcr() {
+        if (ocrDownload?.isActive == true) return
+        ocrDownload = operation("OCR_MODEL_INSTALL") { app.ocrModels.install("teleocr") }
+    }
+    fun cancelTeleOcrDownload() { ocrDownload?.cancel() }
+    fun deleteTeleOcr() { operation("OCR_MODEL_DELETE") {
+        ocrDownload?.cancelAndJoin()
+        cancelOcr()
+        app.preferences.set(app.preferences.values.first().copy(ocrEngine = "mlkit"))
+        app.teleOcr.deleteModels()
+        message.value = "TeleOCR removed; ML Kit is selected"
+    } }
+    fun cancelOcr() { ocrRefresh?.cancel(); app.playback.stop() }
     fun download(id: String) {
         if (jobs[id]?.isActive == true) return
         jobs[id] = operation("MODEL_INSTALL", IssueInput(details = mapOf("model" to id))) { app.models.install(id) }
@@ -122,11 +140,12 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         catch (_: Exception) { message.value = "Could not copy playback diagnostics" }
     } }
     fun deleteDocument(document: DocumentEntity) { operation("DOCUMENT_DELETE", documentIssueInput(document)) {
+        ocrRefresh?.cancelAndJoin()
         app.playback.deleteDocument(document)
         app.issues.deleteForDocument(document.id)
         if (selectedIssue.value?.input?.documentId == document.id) selectedIssue.value = null
     } }
-    fun page(index: Int) { playback.value.document?.let { if (index in 0 until it.pageCount) app.playback.open(it, index) } }
+    fun page(index: Int) { playback.value.document?.let { if (index in 0 until it.pageCount) { ocrRefresh?.cancel(); app.playback.open(it, index) } } }
     fun retryOcr() = refreshOcr(rotate = false)
     fun rotateOcr() = refreshOcr(rotate = true)
     private fun refreshOcr(rotate: Boolean) {
@@ -136,7 +155,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         val index = page?.index ?: state.viewPageIndex
         if (index !in 0 until document.pageCount) return
         refreshingText.value = true
-        viewModelScope.launch {
+        ocrRefresh = viewModelScope.launch {
             val request = app.playback.stop()
             try {
                 val previous = app.documents.dao.page(document.id, index)?.rotation ?: 0

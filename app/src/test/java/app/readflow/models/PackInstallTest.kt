@@ -98,6 +98,46 @@ class PackInstallTest {
         assertArrayEquals(data, File(store.directory("test"), "model.onnx").readBytes())
     }
 
+    @Test fun rawGgufAndProjectorResumeOfflineAndBothRequireVerifiedChecksums() = runBlocking {
+        val model = Random(90).nextBytes(200_000)
+        val projector = Random(91).nextBytes(80_000)
+        val id = "teleocr-fixture"
+        val modelFile = PackFile("teleocr-q4.gguf", model.size.toLong(), sha256(model))
+        val projectorFile = PackFile("mmproj-f16.gguf", projector.size.toLong(), sha256(projector),
+            "https://invalid.example/mmproj-f16.gguf")
+        val pack = pack(model, model, id).copy(archiveRoot = "", files = listOf(modelFile),
+            extras = listOf(projectorFile), installedBytes = (model.size + projector.size).toLong())
+        val root = temporary.newFolder()
+        val downloads = temporary.newFolder()
+        File(downloads, "$id.part").writeBytes(model)
+        File(downloads, "$id-${projectorFile.path}.part").writeBytes(projector)
+        File(root, ".$id.installing").mkdirs()
+        File(root, ".$id.installing/interrupted").writeText("partial")
+
+        val store = ModelStore(listOf(pack), root, downloads)
+        assertTrue(store.progress.value.getValue(id).canResume)
+        store.install(id)
+        assertTrue(store.installed(id))
+        assertArrayEquals(model, File(store.directory(id), modelFile.path).readBytes())
+        assertArrayEquals(projector, File(store.directory(id), projectorFile.path).readBytes())
+        assertFalse(File(store.directory(id), "model.onnx").exists())
+        assertFalse(File(root, ".$id.installing").exists())
+        assertFalse(File(downloads, "$id.part").exists())
+        assertFalse(File(downloads, "$id-${projectorFile.path}.part").exists())
+        ModelStore(listOf(pack), root, downloads).verifyInstalled(id)
+
+        // A surviving marker and matching length must not let a damaged projector
+        // through when the app process starts again.
+        val corruptProjector = projector.copyOf().apply { this[0] = (this[0].toInt() xor 1).toByte() }
+        File(store.directory(id), projectorFile.path).writeBytes(corruptProjector)
+        try {
+            ModelStore(listOf(pack), root, downloads).verifyInstalled(id)
+            fail("A corrupted projector must not be loaded")
+        } catch (error: IllegalStateException) {
+            assertTrue(error.message.orEmpty().contains(projectorFile.path))
+        }
+    }
+
     @Test fun corruptExtractedFileIsNeverActivatedAndCanBeRetried() = runBlocking {
         val data = "model data".toByteArray()
         val bytes = archive(listOf("fixture/model.onnx" to data))

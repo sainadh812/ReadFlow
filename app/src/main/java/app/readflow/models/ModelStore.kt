@@ -60,9 +60,9 @@ class ModelStore internal constructor(
     private val root: File,
     private val downloadRoot: File,
 ) : PackRepository {
-    constructor(context: Context) : this(
-        Json.decodeFromString(context.assets.open("model-manifests.json").bufferedReader().use { it.readText() }),
-        File(context.noBackupFilesDir, "models"), File(context.noBackupFilesDir, "downloads"),
+    constructor(context: Context, manifestAsset: String = "model-manifests.json", storageSuffix: String = "") : this(
+        Json.decodeFromString(context.assets.open(manifestAsset).bufferedReader().use { it.readText() }),
+        File(context.noBackupFilesDir, "models$storageSuffix"), File(context.noBackupFilesDir, "downloads$storageSuffix"),
     )
     private val mutex = Mutex()
     private val verifiedThisProcess = mutableSetOf<String>()
@@ -128,13 +128,15 @@ class ModelStore internal constructor(
             val archive = download(id, pack.url, File(downloadRoot, "$id.part"), pack.sha256, pack.downloadBytes, "Downloading model")
             check(staging.mkdirs()) { "Cannot create installation directory" }
             if (pack.archiveRoot.isBlank()) {
-                copyPackAsset(archive, File(staging, "model.onnx"), reporter(id, "Installing model", pack.downloadBytes))
+                val target = pack.files.single()
+                check(target.bytes == pack.downloadBytes && target.sha256 == pack.sha256) { "Invalid single-file model manifest" }
+                copyPackAsset(archive, safeChild(staging, target.path), reporter(id, "Installing model", pack.downloadBytes))
             } else {
                 extractPack(archive.inputStream(), staging, pack, reporter(id, "Unpacking model", pack.downloadBytes))
             }
             for (extra in pack.extras) {
                 val asset = download(id, extra.url, extraDownload(id, extra), extra.sha256, extra.bytes,
-                    if (extra.path.startsWith("voices/")) "Downloading voice" else "Downloading alignment assets")
+                    if (extra.path.startsWith("voices/")) "Downloading voice" else "Downloading supporting assets")
                 val target = safeChild(staging, extra.path)
                 copyPackAsset(asset, target, reporter(id, "Installing ${extra.path.substringAfterLast('/')}", extra.bytes))
             }

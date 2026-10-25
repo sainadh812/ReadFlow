@@ -10,6 +10,7 @@ import app.readflow.diagnostics.*
 import app.readflow.models.fileHash
 import java.io.File
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.builtins.ListSerializer
@@ -17,6 +18,8 @@ import kotlinx.serialization.json.Json
 
 class Documents(private val context: Context, val database: ReadFlowDatabase, val extractor: LocalExtraction, private val articles: ArticleExtractor,
     private val issues: IssueLogs? = null,
+    private val preferences: PreferenceStore? = null,
+    private val teleOcr: TeleOcrEngine? = null,
 ) {
     val dao = database.dao()
     private val root = File(context.noBackupFilesDir, "documents").apply { mkdirs() }
@@ -71,7 +74,17 @@ class Documents(private val context: Context, val database: ReadFlowDatabase, va
         val old = dao.page(document.id, index)
         if (rotation == null && old != null) return@withLock Json.decodeFromString(old.content)
         check(document.mime != "text/html") { "Saved article content is unavailable" }
-        val content = pipeline.process(document.id, index, extractor.extract(document.localPath, index, rotation ?: old?.rotation ?: 0))
+        // Keep saved pages until the user requests recognition again. Upgrading or
+        // changing effort must not silently rewrite bookmarks in an existing book.
+        val settings = preferences?.values?.first() ?: Preferences()
+        val quality = OcrQuality.fromId(settings.ocrQuality)
+        val enhancement: OcrEnhancement? = if (settings.ocrEngine == "teleocr") {
+            { bitmap, effort, words ->
+                checkNotNull(teleOcr) { "TeleOCR is unavailable in this build" }.recognize(bitmap, effort, words)
+            }
+        } else null
+        val content = pipeline.process(document.id, index, extractor.extract(document.localPath, index,
+            rotation ?: old?.rotation ?: 0, quality, enhancement))
         save(content, rotation ?: old?.rotation ?: 0)
         val issueWarnings = content.warnings.filterNot { it.startsWith("OCR supplies word geometry") }
         if (issueWarnings.isNotEmpty()) issues?.record("EXTRACTION_WARNING", input = documentIssueInput(document, content,

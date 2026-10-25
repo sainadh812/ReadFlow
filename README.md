@@ -4,7 +4,9 @@ A native Android reading application built with Kotlin, Compose and local speech
 
 ## Install on a phone
 
-**[Download ReadFlow 0.1.9 APK — Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.9-prototype/ReadFlow-0.1.9-arm64-debug.apk).** Install over the existing app to retain documents and model downloads.
+**[Download ReadFlow 0.1.10 APK — Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.10-prototype/ReadFlow-0.1.10-arm64-debug.apk).** Install over 0.1.9 without uninstalling to retain documents, settings and model downloads.
+
+Version **0.1.10** adds **Settings > Text recognition** with Low/Fast, Medium/Balanced and High/Accuracy effort, plus an optional **TeleOCR** engine running locally. TeleOCR requires a separate **1.394 GB** verified model download and is experimental: phone speed/accuracy are not yet measured. Choose the model after downloading, then **Apply to current page** to refresh a saved page. Original-page word highlights are retained where ML Kit supplies matching word geometry; other recognized words remain available in text view. Tables read row by row. See [OCR setup and validation](docs/OCR_MODELS_AND_PRESETS.md).
 
 Version **0.1.9** fixes attached comma references, compact number ranges, currency magnitudes and the reported year/storage entries. The PDF page stays fitted within bounded scrolling and zooming. Swipe **right for next page**, **left for previous page** at normal zoom; reverse or disable this in **Settings**. Previous/next buttons sit beside the page counter. See [behavior and validation](docs/NUMBERS_AND_PAGE_SWIPES.md).
 
@@ -33,7 +35,7 @@ See the [playback crash fix](docs/PLAYBACK_CRASH_FIX.md) and [installation fix](
 
 ## Build
 
-Use JDK 17 and Android SDK platform 35 / build-tools 34.0.0. Minimum Android 15/API 35 is an MVP scope choice, not a permanent requirement. Default APK is ARM64 only. Build tools and dependencies are explicitly pinned in Gradle; Sherpa/Readability bootstrap assets have SHA-256 locks.
+Use JDK 17, Android SDK platform 35 / build-tools 34.0.0, NDK 27.2.12479018 and CMake 3.22.1+. Minimum Android 15/API 35 is an MVP scope choice, not a permanent requirement. Default APK is ARM64 only. Build tools and dependencies are explicitly pinned in Gradle; Sherpa/Readability bootstrap assets have SHA-256 locks. The bootstrap script prepares a pinned, patched llama.cpp checkout for the local TeleOCR JNI runtime.
 
 ```bash
 cd ReadFlow
@@ -44,7 +46,7 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb shell am start -n app.readflow/.MainActivity
 ```
 
-`bootstrap.sh` needs curl, sha256sum and Python 3.10+ only as build/download tools. **The installed app has no Python dependency or server.** A checked-in Gradle wrapper downloads the pinned Gradle 8.11.1 distribution with checksum verification. Models are not required to compile the application.
+`bootstrap.sh` needs git, curl, sha256sum and Python 3.10+ only as build/download tools. **The installed app has no Python dependency or server.** A checked-in Gradle wrapper downloads the pinned Gradle 8.11.1 distribution with checksum verification. Models are not required to compile the application.
 
 ## Run
 

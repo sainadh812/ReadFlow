@@ -112,6 +112,7 @@ private val LightBlue = Color(0xFFDCEAFF)
 @Composable private fun Reader(vm: ReaderViewModel, state: ReaderPlayback, prefs: Preferences, requestNotifications: () -> Unit) {
     KeepReaderScreenAwake()
     val refreshingText by vm.refreshingText.collectAsStateWithLifecycle()
+    val ocrProgress by vm.ocrProgress.collectAsStateWithLifecycle()
     val hasOriginal = state.document?.mime == "application/pdf" || state.document?.mime?.startsWith("image/") == true
     var original by remember(state.document?.id) { mutableStateOf(hasOriginal) }
     var contents by remember { mutableStateOf(false) }
@@ -128,7 +129,7 @@ private val LightBlue = Color(0xFFDCEAFF)
     var fitWidth by remember(state.document?.id, pageIndex) { mutableStateOf(true) }
     val selected = page?.words?.firstOrNull { it.id == state.selectedWordId }
     val clipboard = LocalClipboardManager.current
-    val status = if (refreshingText) "Updating text recognition…" else state.error ?: state.status
+    val status = ocrProgress ?: if (refreshingText) "Updating text recognition…" else state.error ?: state.status
     BackHandler(pageOnly) { pageOnly = false }
     // Reveal recovery controls if playback stops on an error while the chrome is hidden.
     LaunchedEffect(state.error, state.blockedSentence) {
@@ -157,6 +158,9 @@ private val LightBlue = Color(0xFFDCEAFF)
                 Box {
                     Tool(Icons.Default.MoreVert, "Reader menu") { menu = true }
                     DropdownMenu(menu, { menu = false }) {
+                        if (ocrProgress != null || refreshingText) {
+                            DropdownMenuItem(text = { Text("Cancel text recognition") }, onClick = { vm.cancelOcr(); menu = false }, leadingIcon = { Icon(Icons.Default.Close, null) })
+                        }
                         if (selected != null && !state.wantsToPlay) {
                             DropdownMenuItem(text = { Text("Read from selected word") }, onClick = { menu = false; requestNotifications(); vm.app.playback.start(wordId = selected.id) }, leadingIcon = { Icon(Icons.Default.PlayArrow, null) })
                             DropdownMenuItem(text = { Text("Copy selected word") }, onClick = { clipboard.setText(AnnotatedString(selected.text)); menu = false }, leadingIcon = { Icon(Icons.Default.ContentCopy, null) })
@@ -206,6 +210,7 @@ private val LightBlue = Color(0xFFDCEAFF)
     if (details) AlertDialog(onDismissRequest = { details = false }, title = { Text("Reading details") }, text = {
         Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(status, color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
+            page?.let { Text("Text source: ${it.extraction}") }
             if (state.durationMs > 0) Text("Audio: ${formatTime(state.positionMs)} / ${formatTime(state.durationMs)}")
             page?.warnings?.forEach { Text(it) }
             if (state.error != null) TextButton(onClick = { details = false; vm.showIssues() }) { Text("Open issue logs") }

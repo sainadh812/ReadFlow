@@ -39,11 +39,14 @@ fun stableId(vararg parts: Any): String = sha256(parts.joinToString("\u0000").to
 @Serializable data class LayoutLine(val index: Int, val text: String, val boxes: List<Box>)
 @Serializable data class LayoutBlock(val index: Int, val lines: List<LayoutLine>)
 @Serializable data class Paragraph(val id: String, val order: Int, val original: String, val start: Int, val end: Int, val heading: Boolean = false)
+@Serializable data class RecognizedCell(val text: String, val row: Int, val column: Int, val rowSpan: Int = 1, val columnSpan: Int = 1, val header: Boolean = false)
+@Serializable data class RecognizedTable(val box: Box, val rows: Int, val columns: Int, val cells: List<RecognizedCell>)
 @Serializable data class PageContent(
     val id: String, val documentId: String, val index: Int, val original: String, val reading: String,
     val words: List<SourceWord>, val paragraphs: List<Paragraph>, val width: Float, val height: Float,
     val extraction: String, val warnings: List<String> = emptyList(), val imageToPage: Transform = Transform(),
     val layout: List<LayoutBlock> = emptyList(),
+    val tables: List<RecognizedTable> = emptyList(),
 )
 @Serializable data class SpokenToken(val text: String, val sourceIds: List<String>)
 @Serializable data class Voice(val id: String, val name: String)
@@ -56,7 +59,7 @@ fun stableId(vararg parts: Any): String = sha256(parts.joinToString("\u0000").to
 ) { val durationMs get() = sampleCount * 1000 / sampleRate }
 data class PcmAudio(val samples: FloatArray, val sampleRate: Int)
 data class TextElement(val text: String, val boxes: List<Box>, val block: Int = 0, val line: Int = 0, val heading: Boolean = false)
-data class ExtractedPage(val elements: List<TextElement>, val width: Float, val height: Float, val method: String, val warnings: List<String> = emptyList(), val transform: Transform = Transform())
+data class ExtractedPage(val elements: List<TextElement>, val width: Float, val height: Float, val method: String, val warnings: List<String> = emptyList(), val transform: Transform = Transform(), val preserveOrder: Boolean = false, val tables: List<RecognizedTable> = emptyList())
 
 interface PageExtractor { suspend fun extract(path: String, page: Int, rotation: Int = 0): ExtractedPage }
 interface ReadingOrder { fun order(elements: List<TextElement>, width: Float): List<TextElement> }
@@ -90,6 +93,7 @@ class GeometricReadingOrder : ReadingOrder {
 
 class DocumentPipeline(private val ordering: ReadingOrder = GeometricReadingOrder()) {
     private fun orderedElements(extracted: ExtractedPage): List<TextElement> {
+        if (extracted.preserveOrder) return extracted.elements
         if (extracted.transform == Transform()) return ordering.order(extracted.elements, extracted.width)
         val pageToImage = extracted.transform.inverse()
         // Reading follows the upright OCR image, while highlights remain in the
@@ -154,6 +158,6 @@ class DocumentPipeline(private val ordering: ReadingOrder = GeometricReadingOrde
         }
         return PageContent(pageId, documentId, page, original.toString(), reading.toString(), sentenceWords, paragraphs,
             extracted.width, extracted.height, extracted.method, extracted.warnings, extracted.transform,
-            extracted.elements.groupBy { it.block }.map { (block, elements) -> LayoutBlock(block, elements.groupBy { it.line }.map { (line, tokens) -> LayoutLine(line, tokens.joinToString(" ") { it.text }, tokens.flatMap { it.boxes }) }) })
+            extracted.elements.groupBy { it.block }.map { (block, elements) -> LayoutBlock(block, elements.groupBy { it.line }.map { (line, tokens) -> LayoutLine(line, tokens.joinToString(" ") { it.text }, tokens.flatMap { it.boxes }) }) }, extracted.tables)
     }
 }

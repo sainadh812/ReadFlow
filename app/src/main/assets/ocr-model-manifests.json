@@ -1,0 +1,35 @@
+[
+  {
+    "id": "teleocr",
+    "name": "TeleOCR (experimental)",
+    "version": "53dcb6b-Q5_K_M-Q8_0",
+    "runtime": "On-device llama.cpp CPU; Q5 text model and Q8 vision projector. No document upload.",
+    "archiveRoot": "",
+    "url": "https://huggingface.co/nandraj/NaviDC-OCR-GGUF/resolve/53dcb6bfd439ccd0f552e6667592f0653270f9c4/NaviDC-OCR-Q5_K_M.gguf",
+    "sha256": "99871e52c43058dd4d2f3e1a03c657e8870a6be90de2cef3978152b2be67cf61",
+    "downloadBytes": 551374976,
+    "installedBytes": 1393568928,
+    "files": [
+      {
+        "path": "NaviDC-OCR-Q5_K_M.gguf",
+        "bytes": 551374976,
+        "sha256": "99871e52c43058dd4d2f3e1a03c657e8870a6be90de2cef3978152b2be67cf61"
+      }
+    ],
+    "extras": [
+      {
+        "path": "NaviDC-OCR-mmproj-q8_0.gguf",
+        "bytes": 842193952,
+        "sha256": "240002b4a74b77066510de1f4a4395930a4a4ef31fc2d5c36fec2e7282f8d60e",
+        "url": "https://huggingface.co/nandraj/NaviDC-OCR-GGUF/resolve/53dcb6bfd439ccd0f552e6667592f0653270f9c4/NaviDC-OCR-mmproj-q8_0.gguf"
+      }
+    ],
+    "licenses": [
+      "TeleOCR / NaviDC-OCR: Apache-2.0",
+      "llama.cpp and GGUF conversion: MIT"
+    ],
+    "voices": [],
+    "alignment": "ML Kit word geometry where text agrees",
+    "support": "Experimental local document recognition. S25 Ultra speed and accuracy are not yet measured. Tables read row by row; unmatched words have no original-page highlighting."
+  }
+]

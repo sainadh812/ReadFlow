@@ -1,5 +1,6 @@
 package app.readflow.core
 
+import kotlinx.serialization.json.Json
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -96,5 +97,60 @@ class DocumentReadingOrderTest {
         assertSame(first.boxes, result.words[0].boxes)
         assertSame(second.boxes, result.words[1].boxes)
         assertNotEquals(result.words[0].id, result.words[1].id)
+    }
+
+    @Test fun modelTableOrderKeepsEachFinancialValueBesideItsRowLabel() {
+        val texts = listOf("Assets", "$2,000", "Liabilities", "$1,000", "Equity", "$1,000.")
+        val cells = texts.mapIndexed { index, text ->
+            val left = if (index % 2 == 0) 40f else 360f
+            val top = 100f + (index / 2) * 50f
+            TextElement(text, listOf(Box(left, top, left + 140f, top + 25f)), index, index / 2)
+        }
+        val baseline = ExtractedPage(cells, 600f, 800f, "Latin OCR")
+        val geometryOrder = DocumentPipeline().process("table", 0, baseline)
+        assertEquals(listOf("Assets", "Liabilities", "Equity", "$2,000", "$1,000", "$1,000."),
+            geometryOrder.words.map { it.text })
+        val modelOrder = baseline.copy(method = "TeleOCR", preserveOrder = true)
+        checkWordsAndSourceGeometry(modelOrder, texts)
+    }
+
+    @Test fun rotatedModelOrderBypassesColumnHeuristicsAndKeepsSourceGeometry() {
+        // A model may place a sidebar after the body even though it is physically
+        // above the body. Rotation must not cause the geometric sorter to override it.
+        val modelSequence = listOf(
+            TextElement("Main", listOf(Box(50f, 300f, 110f, 325f)), 0, 0),
+            TextElement("paragraph.", listOf(Box(120f, 300f, 240f, 325f)), 0, 0),
+            TextElement("Sidebar.", listOf(Box(350f, 80f, 480f, 105f)), 1, 1),
+        )
+        val page = extracted(modelSequence, Transform(0f, -2f, 3f, 0f, 0f, 1200f), 2700f, 1200f)
+            .copy(method = "TeleOCR", preserveOrder = true)
+        val result = checkWordsAndSourceGeometry(page, listOf("Main", "paragraph.", "Sidebar."))
+        assertEquals("Main paragraph.\n\nSidebar.", result.reading)
+        assertEquals(3, result.words.map { it.id }.toSet().size)
+    }
+
+    @Test fun savedPageRetainsTableSpansHeadersAndGeometryWhenReopened() {
+        val table = RecognizedTable(Box(40f, 100f, 550f, 240f), 3, 2, listOf(
+            RecognizedCell("Assets", 0, 0, columnSpan = 2, header = true),
+            RecognizedCell("Cash", 1, 0, rowSpan = 2),
+            RecognizedCell("$2,000", 1, 1),
+            RecognizedCell("", 2, 1),
+        ))
+        val extracted = ExtractedPage(upright, 600f, 900f, "TeleOCR", preserveOrder = true, tables = listOf(table))
+        val original = DocumentPipeline().process("saved-table", 0, extracted)
+        val restored = Json.decodeFromString<PageContent>(Json.encodeToString(PageContent.serializer(), original))
+        assertEquals(original, restored)
+        assertEquals(listOf(table), restored.tables)
+    }
+
+    @Test fun upgradeReadsPreviouslySavedPagesWithoutTableFields() {
+        val previous = """{"id":"page-id","documentId":"book-id","index":55,"original":"Original text","reading":"Original text","words":[],"paragraphs":[],"width":600.0,"height":800.0,"extraction":"Latin OCR"}"""
+        val restored = Json.decodeFromString<PageContent>(previous)
+        assertEquals("page-id", restored.id)
+        assertEquals("Original text", restored.reading)
+        assertEquals(55, restored.index)
+        assertTrue(restored.tables.isEmpty())
+        assertTrue(restored.layout.isEmpty())
+        assertEquals(Transform(), restored.imageToPage)
     }
 }
