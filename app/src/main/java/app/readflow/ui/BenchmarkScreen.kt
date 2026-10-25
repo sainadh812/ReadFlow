@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -17,6 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.lifecycle.compose.LifecycleResumeEffect
+import app.readflow.speech.ScKokoroEngine
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.readflow.benchmark.*
 import app.readflow.data.Preferences
@@ -33,12 +37,21 @@ import app.readflow.data.Preferences
     val alignmentInstalled = remember(downloads) { vm.app.models.installed("alignment") }
     val installedSpeech = remember(downloads) { listOf("kokoro", "pocket").filter { vm.app.models.installed(it) } }
     val teleInstalled = remember(ocrDownloads) { vm.app.ocrModels.installed("teleocr") }
+    val paddleInstalled = remember(ocrDownloads) { vm.app.ocrModels.installed("paddleocr") }
+    var external by remember { mutableStateOf(ScKokoroEngine.availability(vm.app)) }
+    LifecycleResumeEffect(Unit) {
+        external = ScKokoroEngine.availability(vm.app)
+        onPauseOrDispose { }
+    }
+    val uriHandler = LocalUriHandler.current
     var speechModels by rememberSaveable { mutableStateOf(listOf(prefs.model).filter { it in installedSpeech }) }
     var ocrEngines by rememberSaveable { mutableStateOf(listOf("mlkit")) }
     var repetitions by rememberSaveable { mutableIntStateOf(3) }
     var configuring by rememberSaveable { mutableStateOf(false) }
-    val eligibleSpeech = speechModels.filter { it in installedSpeech && alignmentInstalled }
-    val eligibleOcr = ocrEngines.filter { it == "mlkit" || teleInstalled }
+    var compareThreads by rememberSaveable { mutableStateOf(false) }
+    var sustained by rememberSaveable { mutableIntStateOf(0) }
+    val eligibleSpeech = speechModels.filter { (it in installedSpeech || it == "sc-kokoro" && external.installed) && alignmentInstalled }
+    val eligibleOcr = ocrEngines.filter { it == "mlkit" || it == "teleocr" && teleInstalled || it == "paddleocr" && paddleInstalled }
     if (active) KeepReaderScreenAwake()
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text("Phone testbench") }, navigationIcon = {
@@ -83,6 +96,14 @@ import app.readflow.data.Preferences
                         if (!alignmentInstalled || installedSpeech.size < 2) TextButton(onClick = { vm.screen.value = "voices" }) {
                             Icon(Icons.Default.Download, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("Manage voice models")
                         }
+                        BenchmarkChoice("SC Kokoro · external experiment", external.message,
+                            "sc-kokoro" in speechModels && external.installed && alignmentInstalled, external.installed && alignmentInstalled) { selected ->
+                            speechModels = if (selected) (speechModels + "sc-kokoro").distinct() else speechModels - "sc-kokoro"
+                        }
+                        Text("Tests the separately installed SC Kokoro app with its Heart voice. Synthetic test text is sent locally to that engine. ReadFlow cannot verify GPU use or measure the other app's RAM; results are labeled external.",
+                            style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        TextButton(onClick = { runCatching { uriHandler.openUri(ScKokoroEngine.SOURCE_URL) }
+                            .onFailure { vm.message.value = "Could not open SC Kokoro setup" } }) { Text("SC Kokoro setup and device test") }
                         HorizontalDivider()
                         Text("TEXT RECOGNITION", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                         BenchmarkChoice("ML Kit · Original", "Built in · finance text and table sample", "mlkit" in ocrEngines, true) { selected ->
@@ -90,6 +111,10 @@ import app.readflow.data.Preferences
                         }
                         BenchmarkChoice("TeleOCR", if (teleInstalled) "Installed · may take several minutes per page" else "Download TeleOCR to compare", "teleocr" in ocrEngines, teleInstalled) { selected ->
                             ocrEngines = if (selected) (ocrEngines + "teleocr").distinct() else ocrEngines - "teleocr"
+                        }
+                        BenchmarkChoice("PaddleOCR · mobile Latin", if (paddleInstalled) "Installed · independent detector and recognizer" else "Download PaddleOCR to compare",
+                            "paddleocr" in ocrEngines, paddleInstalled) { selected ->
+                            ocrEngines = if (selected) (ocrEngines + "paddleocr").distinct() else ocrEngines - "paddleocr"
                         }
                         TextButton(onClick = { vm.screen.value = "ocr" }) {
                             Icon(Icons.Default.DocumentScanner, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("OCR setup · ${ocrQualityLabel(prefs.ocrQuality)}")
@@ -104,13 +129,25 @@ import app.readflow.data.Preferences
                                     label = { Text("$count ${if (count == 1) "sample" else "samples"}") }, modifier = Modifier.weight(1f))
                             }
                         }
-                        Text("Speech adds one initial sample before the repeated runs. Each OCR sample processes a full test page; TeleOCR loads again for each page.",
+                        Text("Speech adds an initial sample. OCR repeats the same synthetic page to compare fresh and warm sessions; these are not different book pages.",
+                            style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        SettingsSwitch("Compare CPU thread counts", "Test 2, 3 and 4 speech threads in separate warm blocks. More threads may increase heat.", compareThreads) { compareThreads = it }
+                        Text("Extra sustained speech samples", style = MaterialTheme.typography.bodyMedium)
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            listOf(0, 30, 60).forEach { count ->
+                                FilterChip(selected = sustained == count, onClick = { sustained = count },
+                                    label = { Text(if (count == 0) "Off" else "$count") }, modifier = Modifier.weight(1f))
+                            }
+                        }
+                        Text("Sustained tests use your chosen ${prefs.speechThreads} speech threads and ${prefs.alignmentThreads} timing threads. They generate audio without playing it and can take several minutes.",
                             style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text("Reading pauses during testing. Keep ReadFlow open. For a fair comparison, use similar battery and temperature conditions.",
                             style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Button(onClick = { cancellationRequested = false; configuring = false; vm.startBenchmark(BenchmarkOptions(
                             speechModels = eligibleSpeech, ocrEngines = eligibleOcr, voice = prefs.voice,
                             ocrQuality = prefs.ocrQuality, repetitions = repetitions,
+                            speechThreads = prefs.speechThreads, alignmentThreads = prefs.alignmentThreads, allowSpinning = prefs.allowSpinning,
+                            compareCpuThreads = compareThreads, sustainedSpeechSamples = sustained,
                         )) }, enabled = !active && (eligibleSpeech.isNotEmpty() || eligibleOcr.isNotEmpty()), modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
                             Icon(Icons.Default.PlayArrow, null, Modifier.size(22.dp)); Spacer(Modifier.width(8.dp))
                             Text(if (state.rows.isEmpty()) "Run phone test" else "Run a new test")
@@ -135,6 +172,8 @@ import app.readflow.data.Preferences
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text("${(state.options.speechModels + state.options.ocrEngines).joinToString { modelDisplayName(it) }} · ${ocrQualityLabel(state.options.ocrQuality)} OCR",
                         style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    state.currentDevice?.processPssMiB?.let { MetricDetail("Current ReadFlow memory", "${metricNumber(it, 0)} MiB") }
+                    state.cancellationReason?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
                     state.error?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error) }
                     if (active) OutlinedButton(onClick = { cancellationRequested = true; vm.cancelBenchmark() }, enabled = !stopping,
                         modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
@@ -151,18 +190,25 @@ import app.readflow.data.Preferences
                     Text("Speech preparation above ${metricNumber(prefs.speed.toDouble())}× realtime keeps up with your current ${metricNumber(prefs.speed.toDouble())}× listening speed on these samples.",
                         Modifier.padding(horizontal = 4.dp, vertical = 6.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                items(state.rows, key = { "${it.kind}:${it.model}:${it.sample}" }) { row -> BenchmarkResultCard(row) }
+                itemsIndexed(state.rows, key = { index, row -> "$index:${row.kind}:${row.model}:${row.sample}" }) { _, row ->
+                    BenchmarkResultCard(row, if (active) null else { { chosen ->
+                        vm.updateSpeechPerformance(prefs.copy(speechThreads = chosen.speechThreads ?: prefs.speechThreads,
+                            alignmentThreads = chosen.alignmentThreads ?: prefs.alignmentThreads,
+                            allowSpinning = chosen.allowSpinning ?: prefs.allowSpinning))
+                        vm.message.value = "CPU settings applied to future reading"
+                    } })
+                }
                 item {
                     SettingsCard("What these results mean", Icons.Default.Info) {
                         Text("Chars/min measures generation or extraction speed, not reading speed. Speech preparation includes the time needed for word timing; higher is faster.", style = MaterialTheme.typography.bodySmall)
-                        Text("OCR character errors compare only the built-in fixture, preserving accents and punctuation. Lower is better. The table check looks for the expected cells in row order. Neither is a general book accuracy score.", style = MaterialTheme.typography.bodySmall)
+                        Text("OCR character errors compare only the built-in fixture, preserving accents and punctuation. Lower is better. Scoring uses text before narration punctuation. Table cells and structure are scored separately when the engine provides them. Neither is a general book accuracy score.", style = MaterialTheme.typography.bodySmall)
                         Text("This test generates audio without playing it. It does not score pronunciation, speaker quality or Bluetooth latency.", style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
             if (state.before != null || state.after != null) item {
-                DeviceConditions(state.before, state.after, state.highestObservedPssMiB, state.memorySampleCount)
+                DeviceConditions(state.before, state.after, state.highestObservedPssMiB, state.memorySampleCount, state.schemaVersion >= 2)
             }
         }
     }
@@ -180,7 +226,7 @@ import app.readflow.data.Preferences
     }
 }
 
-@Composable private fun BenchmarkResultCard(row: BenchmarkRow) {
+@Composable private fun BenchmarkResultCard(row: BenchmarkRow, applyCpu: ((BenchmarkRow) -> Unit)? = null) {
     var expanded by remember { mutableStateOf(false) }
     Card(onClick = { expanded = !expanded }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -196,7 +242,7 @@ import app.readflow.data.Preferences
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text(modelDisplayName(row.model), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                     Text(row.sample + if (row.cold) when (row.kind) {
-                        "ocr" -> " · fresh model load"
+                        "ocr" -> if (row.model == "mlkit") " · first request" else " · fresh model load"
                         "speech" -> " · first run"
                         else -> ""
                     } else "", style = MaterialTheme.typography.bodySmall,
@@ -225,13 +271,30 @@ import app.readflow.data.Preferences
                 row.loadMs?.let { MetricDetail("Model loading", metricSeconds(it)) }
                 row.synthesisMs?.let { MetricDetail("Speech generation time", metricSeconds(it)) }
                 row.alignmentMs?.let { MetricDetail("Word timing time", metricSeconds(it)) }
+                row.resampleMs?.let { MetricDetail("Audio resampling", metricSeconds(it)) }
+                row.alignmentInferenceMs?.let { MetricDetail("Timing model inference", metricSeconds(it)) }
+                row.alignmentDecodeMs?.let { MetricDetail("Timing decode", metricSeconds(it)) }
+                row.backend?.let { MetricDetail("Execution backend", it) }
+                row.speechThreads?.let { MetricDetail("Speech CPU threads", it.toString()) }
+                row.alignmentThreads?.let { MetricDetail("Timing CPU threads", it.toString()) }
+                row.allowSpinning?.let { MetricDetail("Worker spinning", if (it) "On" else "Off") }
+                row.ocrLayoutMs?.let { MetricDetail("Layout detection", metricSeconds(it)) }
+                row.ocrRecognitionMs?.let { MetricDetail("Region recognition", metricSeconds(it)) }
+                row.observedPeakPssMiB?.let { MetricDetail("Highest sampled memory during step", "${metricNumber(it, 0)} MiB · ${row.memorySamples} samples") }
                 row.audioSeconds?.let { MetricDetail("Generated audio", "${metricNumber(it)} s") }
                 row.characters?.let { MetricDetail("Characters", it.toString()) }
-                row.tableReadingOrderCorrect?.let { MetricDetail("Fixture table row order", if (it) "Matched" else "Not matched") }
+                row.tableReadingOrderCorrect?.let { MetricDetail("Fixture table token sequence", if (it) "Matched" else "Not matched") }
+                row.tableStructureCorrect?.let { MetricDetail("Table structure", if (it) "Matched" else "Not matched") }
+                row.tableCellAccuracy?.let { MetricDetail("Correct table cells", "${metricNumber(it * 100)}%") }
+                row.recognizedText?.let { Text("Recognized fixture text", style = MaterialTheme.typography.labelMedium)
+                    Text(it, style = MaterialTheme.typography.bodySmall) }
                 row.alignmentAccepted?.let { MetricDetail("Word timing quality check", if (it) "Accepted" else "Not accepted") }
                 row.alignedWords?.let { MetricDetail("Aligned words", it.toString()) }
                 row.voice?.let { MetricDetail("Voice", it) }
                 row.modelVersion?.let { MetricDetail("Model version", it) }
+                if (applyCpu != null && row.status == BenchmarkRowStatus.SUCCESS && row.kind == "speech" && row.backend == "cpu" && row.speechThreads != null) {
+                    TextButton(onClick = { applyCpu(row) }) { Text("Use these CPU settings") }
+                }
                 row.deviceAfter?.let { device ->
                     device.processPssMiB?.let { MetricDetail("App memory after this step", "${metricNumber(it, 0)} MiB") }
                     device.thermalStatus?.let { MetricDetail("Thermal status after this step", thermalLabel(it)) }
@@ -246,16 +309,19 @@ import app.readflow.data.Preferences
     }
 }
 
-@Composable private fun DeviceConditions(before: DeviceSnapshot?, after: DeviceSnapshot?, highestSampledPss: Double?, samples: Int) {
+@Composable private fun DeviceConditions(before: DeviceSnapshot?, after: DeviceSnapshot?, highestSampledPss: Double?, samples: Int, sampledDuringWork: Boolean) {
     SettingsCard("Device conditions", Icons.Default.PhoneAndroid) {
         (after ?: before)?.let { MetricDetail("Phone", "${it.device} · Android API ${it.androidApi}") }
         Text("Snapshots before and after the test, not peak values.", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         MetricDetail("Thermal status · before → after", "${thermalLabel(before?.thermalStatus)} → ${thermalLabel(after?.thermalStatus)}")
+        (after ?: before)?.charging?.let { MetricDetail("Charging", if (it) "Yes" else "No") }
+        (after ?: before)?.powerSave?.let { MetricDetail("Battery saver", if (it) "On" else "Off") }
         MetricDetail("Battery temperature · before → after", "${temperature(before?.batteryTemperatureC)} → ${temperature(after?.batteryTemperatureC)}")
         MetricDetail("App memory · before → after", "${memory(before?.processPssMiB)} → ${memory(after?.processPssMiB)}")
         highestSampledPss?.let { MetricDetail("Highest sampled app memory", "${metricNumber(it, 0)} MiB · $samples snapshots") }
-        Text("Memory is sampled between test steps. TeleOCR unloads before its snapshot, so these values may miss its largest memory use.", style = MaterialTheme.typography.bodySmall,
+        Text(if (sampledDuringWork) "Memory is sampled every second during processing and at step boundaries. Brief peaks can still be missed. External speech-engine memory is not included."
+            else "This older report sampled memory only between steps and may miss TeleOCR's working memory. Run a new test for corrected OCR scoring and memory samples.", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("App memory is the process’s proportional memory share. It includes the app and all loaded components.", style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant)

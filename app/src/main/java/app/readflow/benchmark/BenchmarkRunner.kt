@@ -1,5 +1,6 @@
 package app.readflow.benchmark
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -15,157 +16,199 @@ import android.os.PowerManager
 import android.os.SystemClock
 import app.readflow.BuildConfig
 import app.readflow.core.*
-import app.readflow.ingest.LocalExtraction
-import app.readflow.ingest.OcrEnhancement
-import app.readflow.ingest.OcrQuality
-import app.readflow.ingest.TeleOcrEngine
+import app.readflow.ingest.*
 import app.readflow.models.ModelStore
-import app.readflow.speech.OnnxForcedAligner
-import app.readflow.speech.SherpaEngine
+import app.readflow.speech.*
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.util.concurrent.atomic.AtomicReference
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-/**
- * Runs the production normalization, speech, alignment and OCR code against synthetic fixtures.
- * The owner must suspend reading and document extraction for the lifetime of run(). Native work
- * drains before resource cleanup, including cancellation; no two benchmark models run together.
- */
+/** Real production pipelines on original synthetic fixtures; no reading or OCR may run concurrently. */
 class BenchmarkRunner(
     private val context: Context,
     private val models: ModelStore,
     private val ocrModels: ModelStore,
     private val teleOcr: TeleOcrEngine,
+    private val paddleOcr: PaddleOcrEngine,
 ) {
     private val lock = Mutex()
     private val store = BenchmarkStore(File(context.noBackupFilesDir, "benchmark"))
 
     suspend fun run(options: BenchmarkOptions, onUpdate: (BenchmarkState) -> Unit): BenchmarkState =
-        withContext(Dispatchers.Default) { lock.withLock {
+        withContext(Dispatchers.Default) { lock.withLock { coroutineScope {
             val selected = options.validated()
             val started = SystemClock.elapsedRealtime()
             val before = snapshot()
+            val samples = BenchmarkMemorySamples().apply { add(before.processPssMiB) }
+            val publication = Mutex()
             var state = BenchmarkState(appVersion = BuildConfig.VERSION_NAME, status = BenchmarkStatus.RUNNING,
-                options = selected, startedAtMs = System.currentTimeMillis(), before = before,
-                highestObservedPssMiB = before.processPssMiB, memorySampleCount = if (before.processPssMiB == null) 0 else 1,
-                total = selected.speechModels.size * (selected.repetitions + 2) + selected.ocrEngines.size * selected.repetitions)
-            val temporary = File(context.cacheDir, "benchmark-work").apply { mkdirs() }
+                options = selected, startedAtMs = System.currentTimeMillis(), before = before, currentDevice = before,
+                total = benchmarkMeasurementCount(selected))
+            val basePhase = AtomicReference("Preparing phone benchmark")
+            val detail = AtomicReference<() -> String?>({ null })
+            val temporary = File(context.cacheDir, "benchmark-work").apply { check(isDirectory || mkdirs()) }
             val job = currentCoroutineContext().job
-            var speechEngine: SherpaEngine? = null
+            var speechEngine: TtsEngine? = null
             var speechAligner: OnnxForcedAligner? = null
             var extraction: LocalExtraction? = null
 
-            suspend fun cleanupAttempt(close: suspend () -> Unit): Throwable? = try {
-                close(); null
-            } catch (failure: Exception) { failure }
-            catch (failure: LinkageError) { failure }
-
+            suspend fun update(persist: Boolean = false, transform: (BenchmarkState) -> BenchmarkState = { it }) {
+                val captured = publication.withLock {
+                    val memory = samples.overall()
+                    state = transform(state).copy(elapsedMs = SystemClock.elapsedRealtime() - started,
+                        highestObservedPssMiB = memory.peakMiB, memorySampleCount = memory.count)
+                    onUpdate(state)
+                    state
+                }
+                if (persist) try { withContext(Dispatchers.IO) { store.save(captured) } }
+                catch (cancel: CancellationException) { throw cancel }
+                catch (_: Exception) {
+                    publication.withLock {
+                        val warning = "A report save failed; copy the results to keep them."
+                        state = state.copy(error = if (state.error?.contains(warning) == true) state.error
+                            else listOfNotNull(state.error, warning).joinToString(" ").take(2400))
+                        onUpdate(state)
+                    }
+                }
+            }
+            suspend fun phase(label: String, progress: () -> String? = { null }) {
+                basePhase.set(label); detail.set(progress)
+                update(persist = true) { it.copy(phase = label) }
+            }
+            fun beginMeasurement() { samples.beginRow(); samples.add(snapshot().processPssMiB) }
+            suspend fun record(row: BenchmarkRow, count: Int = 1) {
+                val device = snapshot()
+                samples.add(device.processPssMiB)
+                val memory = samples.finishRow()
+                update(persist = true) { it.copy(rows = it.rows + row.copy(deviceAfter = device,
+                    observedPeakPssMiB = memory.peakMiB, memorySamples = memory.count), currentDevice = device,
+                    completed = (it.completed + count).coerceAtMost(it.total)) }
+            }
+            suspend fun cleanupAttempt(close: suspend () -> Unit): Throwable? = try { close(); null }
+                catch (failure: Exception) { failure } catch (failure: LinkageError) { failure }
             suspend fun releaseSpeech(): Throwable? {
-                // Transfer ownership before JNI teardown: a throwing native free must never be retried.
                 val engine = speechEngine; speechEngine = null
                 val aligner = speechAligner; speechAligner = null
-                val engineFailure = cleanupAttempt { engine?.unload() }
-                val alignmentFailure = cleanupAttempt { aligner?.close() }
-                return engineFailure ?: alignmentFailure
+                val failure = cleanupAttempt { engine?.unload() }
+                return cleanupAttempt { aligner?.close() } ?: failure
             }
-
             suspend fun releaseExtraction(): Throwable? {
                 val local = extraction; extraction = null
                 return cleanupAttempt { local?.close() }
             }
-
-            fun cleanupWarning(failure: Throwable) {
-                state = state.copy(error = listOfNotNull(state.error,
-                    "A model could not close cleanly: ${safeError(failure)}").joinToString(" ").take(2400))
+            suspend fun releaseOcr(): Throwable? {
+                val local = releaseExtraction()
+                val tele = cleanupAttempt { teleOcr.close() }
+                val paddle = cleanupAttempt { paddleOcr.close() }
+                return local ?: tele ?: paddle
             }
-
-            suspend fun publish() {
-                state = state.copy(elapsedMs = SystemClock.elapsedRealtime() - started)
-                onUpdate(state)
-                try { withContext(Dispatchers.IO) { store.save(state) } }
-                catch (cancel: CancellationException) { throw cancel }
-                catch (_: Exception) {
-                    // A full disk must not erase completed rows or mask a cancellation while draining native work.
-                    val warning = "A report save failed. Completed measurements remain on this screen; copy the report to keep them."
-                    state = state.copy(error = if (state.error?.contains(warning) == true) state.error
-                        else listOfNotNull(state.error, warning).joinToString(" ").take(2400))
-                    onUpdate(state)
+            suspend fun cleanupWarning(failure: Throwable) = update {
+                it.copy(error = listOfNotNull(it.error, "Model cleanup failed: ${safeError(failure)}").joinToString(" ").take(2400))
+            }
+            // Sampling is concurrent with blocking native inference. This ticker never writes/fsyncs
+            // reports; state is persisted only at phase/row transitions and completion.
+            val samplerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+            val ticker = samplerScope.launch {
+                while (isActive) {
+                    delay(1000)
+                    val device = snapshot()
+                    samples.add(device.processPssMiB)
+                    update { current -> current.copy(currentDevice = device, phase = if (current.running) {
+                        listOfNotNull(basePhase.get(), detail.get().invoke()?.takeIf(String::isNotBlank)).joinToString(" · ")
+                    } else current.phase) }
                 }
-            }
-            suspend fun phase(label: String) { state = state.copy(phase = label); publish() }
-            suspend fun record(row: BenchmarkRow, count: Int = 1) {
-                val device = snapshot()
-                state = state.copy(rows = state.rows + row.copy(deviceAfter = device),
-                    completed = (state.completed + count).coerceAtMost(state.total),
-                    highestObservedPssMiB = listOfNotNull(state.highestObservedPssMiB, device.processPssMiB).maxOrNull(),
-                    memorySampleCount = state.memorySampleCount + if (device.processPssMiB == null) 0 else 1)
-                publish()
             }
 
             try {
-                publish()
+                update(persist = true)
+                // A previous reader OCR session must not contaminate speech memory/CPU comparisons.
+                releaseOcr()?.let { throw IllegalStateException("Could not release prior OCR model", it) }
                 for (model in selected.speechModels) {
+                    val external = model == ScKokoroEngine.MODEL_ID
+                    val passes = speechPasses(selected, model)
+                    val required = passes.sumOf { it.measurements }
                     currentCoroutineContext().ensureActive()
-                    val pack = models.packs.first { it.id == model }
-                    if (!models.installed(model) || !models.installed("alignment")) {
-                        record(BenchmarkRow("speech", model, "Not installed", BenchmarkRowStatus.SKIPPED,
-                            note = "Install this speech model and Word alignment in Settings first."), selected.repetitions + 2)
+                    val pack = models.packs.firstOrNull { it.id == model }
+                    val available = if (external) ScKokoroEngine.availability(context).installed else models.installed(model)
+                    if (!available || !models.installed("alignment")) {
+                        record(BenchmarkRow("speech", model, "Not ready", BenchmarkRowStatus.SKIPPED,
+                            backend = if (external) "external-unverified" else "cpu",
+                            note = if (external) "Install SC Kokoro separately, finish its model download/device test, and install ReadFlow's Word alignment. No CPU substitute was tested."
+                                else "Install this speech model and Word alignment first."), required)
                         continue
                     }
-                    val voice = pack.voices.firstOrNull { it.id == selected.voice }?.id ?: pack.voices.first().id
-                    val engine = SherpaEngine(models::directory) { id -> models.packs.first { it.id == id }.voices }
-                    val aligner = OnnxForcedAligner { File(models.directory("alignment"), "model.onnx") }
-                    speechEngine = engine; speechAligner = aligner
-                    try {
-                        phase("$model · verifying installed models")
-                        val verifyStart = SystemClock.elapsedRealtime()
-                        models.verifyInstalled(model); models.verifyInstalled("alignment")
-                        val verifyMs = SystemClock.elapsedRealtime() - verifyStart
-                        phase("$model · loading speech model")
-                        val loadStart = SystemClock.elapsedRealtime()
-                        engine.load(model, voice)
-                        val loadMs = SystemClock.elapsedRealtime() - loadStart
-                        record(BenchmarkRow("speech-load", model, "Fresh speech session", cold = true,
-                            totalMs = verifyMs + loadMs, verifyMs = verifyMs, loadMs = loadMs, voice = voice,
-                            modelVersion = pack.version,
-                            note = "Verification may use this process's verified-file cache. OS file cache is not cleared. Alignment loads during the first speech sample."))
-                        for (sample in 0..selected.repetitions) {
-                            currentCoroutineContext().ensureActive()
-                            val cold = sample == 0
-                            val label = if (cold) "First speech sample" else "Warm speech sample $sample"
-                            phase("$model · $label")
-                            val text = BenchmarkFixtures.SPEECH[(sample - 1).coerceAtLeast(0) % BenchmarkFixtures.SPEECH.size]
-                            val row = try {
-                                speechSample(engine, aligner, text, model, voice, label, cold,
-                                    pack.version, File(temporary, "speech.wav")) { job.isActive }
-                            } catch (cancel: CancellationException) { throw cancel }
-                            catch (failure: Exception) {
+                    val voice = if (external) selected.voice.takeIf { it in setOf("af_heart", "af_bella", "af_nicole") } ?: ScKokoroEngine.DEFAULT_VOICE
+                        else pack!!.voices.firstOrNull { it.id == selected.voice }?.id ?: pack.voices.first().id
+                    val version = if (external) "SC Kokoro ${ScKokoroEngine.availability(context).version ?: "unknown version"}" else pack!!.version
+                    for ((passIndex, pass) in passes.withIndex()) {
+                        currentCoroutineContext().ensureActive()
+                        val backend = if (external) "external-unverified" else "cpu"
+                        val title = if (pass.sustained) "$model · sustained preparation" else "$model · block ${passIndex + 1}/${passes.size}"
+                        val configLabel = pass.threads?.let { "$it speech threads" } ?: "external engine"
+                        val engine: TtsEngine = if (external) ScKokoroEngine(context) else
+                            SherpaEngine(models::directory) { id -> models.packs.first { it.id == id }.voices }.also {
+                                it.configure(SpeechRuntimeConfig(pass.threads!!, selected.allowSpinning))
+                            }
+                        val aligner = OnnxForcedAligner { File(models.directory("alignment"), "model.onnx") }
+                        aligner.configure(SpeechRuntimeConfig(selected.alignmentThreads, selected.allowSpinning))
+                        speechEngine = engine; speechAligner = aligner
+                        var done = 0
+                        try {
+                            beginMeasurement()
+                            phase("$title · $configLabel · verifying")
+                            val verifyStart = SystemClock.elapsedRealtime()
+                            if (!external) models.verifyInstalled(model)
+                            models.verifyInstalled("alignment")
+                            val verifyMs = SystemClock.elapsedRealtime() - verifyStart
+                            phase("$title · $configLabel · loading")
+                            val loadStart = SystemClock.elapsedRealtime()
+                            engine.load(model, voice)
+                            val loadMs = SystemClock.elapsedRealtime() - loadStart
+                            record(BenchmarkRow("speech-load", model, "$configLabel · fresh session", cold = !external,
+                                totalMs = verifyMs + loadMs, verifyMs = verifyMs, loadMs = loadMs, voice = voice,
+                                modelVersion = version, backend = backend, speechThreads = pass.threads,
+                                alignmentThreads = selected.alignmentThreads, allowSpinning = selected.allowSpinning,
+                                note = if (external) "Connects to a separate app. Its internal model may already be warm. Android TTS does not expose GPU/CPU placement; ReadFlow PSS excludes the external process."
+                                    else "One resident speech model. Blocks run sequentially; later blocks may encounter more heat. Verification/OS caches are not cleared; alignment loads in the first sample."))
+                            done++
+                            for (sample in 0..pass.warmSamples) {
                                 currentCoroutineContext().ensureActive()
-                                BenchmarkRow("speech", model, label, BenchmarkRowStatus.FAILED, cold = cold,
-                                    voice = voice, modelVersion = pack.version, note = safeError(failure))
+                                val cold = sample == 0 && !external
+                                val label = "$configLabel · " + if (sample == 0) "First sample" else if (pass.sustained) "Sustained sample $sample/${pass.warmSamples}" else "Warm sample $sample"
+                                beginMeasurement()
+                                phase("$title · $label")
+                                val text = BenchmarkFixtures.SPEECH[(sample - 1).coerceAtLeast(0) % BenchmarkFixtures.SPEECH.size]
+                                val sampleStart = SystemClock.elapsedRealtime()
+                                val row = try {
+                                    speechSample(engine, aligner, text, model, voice, label, cold, version,
+                                        File(temporary, "speech.wav"), selected, pass.threads) { job.isActive }
+                                } catch (cancel: CancellationException) { throw cancel }
+                                catch (failure: Exception) {
+                                    currentCoroutineContext().ensureActive()
+                                    BenchmarkRow("speech", model, label, BenchmarkRowStatus.FAILED, cold = cold,
+                                        totalMs = SystemClock.elapsedRealtime() - sampleStart, voice = voice, modelVersion = version,
+                                        backend = backend, speechThreads = pass.threads, alignmentThreads = selected.alignmentThreads,
+                                        allowSpinning = selected.allowSpinning, note = safeError(failure))
+                                }
+                                record(row); done++
                             }
-                            record(row)
-                        }
-                    } catch (cancel: CancellationException) { throw cancel }
-                    catch (failure: Exception) {
-                        currentCoroutineContext().ensureActive()
-                        val done = state.rows.count { it.model == model }
-                        record(BenchmarkRow("speech-load", model, "Speech setup failed", BenchmarkRowStatus.FAILED,
-                            note = safeError(failure)), (selected.repetitions + 2 - done).coerceAtLeast(1))
-                    } catch (failure: LinkageError) {
-                        currentCoroutineContext().ensureActive()
-                        val done = state.rows.count { it.model == model }
-                        record(BenchmarkRow("speech-load", model, "Native speech runtime unavailable", BenchmarkRowStatus.FAILED,
-                            note = failure.javaClass.simpleName), (selected.repetitions + 2 - done).coerceAtLeast(1))
-                    } finally {
-                        withContext(NonCancellable) {
-                            releaseSpeech()?.let { failure ->
+                        } catch (cancel: CancellationException) { throw cancel }
+                        catch (failure: Exception) {
+                            currentCoroutineContext().ensureActive()
+                            record(BenchmarkRow("speech-load", model, "$configLabel · setup failed", BenchmarkRowStatus.FAILED,
+                                backend = backend, speechThreads = pass.threads, note = safeError(failure)), (pass.measurements - done).coerceAtLeast(1))
+                        } catch (failure: LinkageError) {
+                            record(BenchmarkRow("speech-load", model, "$configLabel · native runtime unavailable", BenchmarkRowStatus.FAILED,
+                                backend = backend, note = safeError(failure)), (pass.measurements - done).coerceAtLeast(1))
+                        } finally {
+                            withContext(NonCancellable) { releaseSpeech()?.let { failure ->
                                 cleanupWarning(failure)
-                                if (job.isActive) throw IllegalStateException("Speech model cleanup failed", failure)
-                            }
+                                if (job.isActive) throw IllegalStateException("Speech cleanup failed", failure)
+                            } }
                         }
                     }
                 }
@@ -176,118 +219,127 @@ class BenchmarkRunner(
                     renderFixture(fixture)
                     for (ocr in selected.ocrEngines) {
                         currentCoroutineContext().ensureActive()
-                        if (ocr == "teleocr" && !ocrModels.installed("teleocr")) {
+                        if (ocr != "mlkit" && !ocrModels.installed(ocr)) {
                             record(BenchmarkRow("ocr", ocr, "Not installed", BenchmarkRowStatus.SKIPPED,
-                                note = "Install TeleOCR in Settings first. No substitute engine was tested."), selected.repetitions)
+                                note = "Install $ocr first. No substitute engine was tested."), selected.repetitions)
                             continue
                         }
+                        releaseOcr()?.let { throw IllegalStateException("Could not release OCR model", it) }
                         val local = LocalExtraction()
                         extraction = local
                         try {
                             repeat(selected.repetitions) { index ->
                                 currentCoroutineContext().ensureActive()
-                                val cold = ocr == "teleocr" || index == 0
                                 val label = "Financial page ${index + 1}"
-                                phase("$ocr · $label of ${selected.repetitions}")
-                                val sampleStarted = SystemClock.elapsedRealtime()
+                                beginMeasurement()
+                                phase("$ocr · $label of ${selected.repetitions}") {
+                                    when (ocr) { "teleocr" -> teleOcr.progress.value; "paddleocr" -> paddleOcr.progress.value; else -> null }
+                                }
+                                val sampleStart = SystemClock.elapsedRealtime()
                                 val row = try {
-                                    val enhance: OcrEnhancement? = if (ocr == "teleocr") { bitmap, quality, words ->
-                                        val result = teleOcr.recognize(bitmap, quality, words)
-                                        check(result.method.startsWith("TeleOCR")) {
-                                            "TeleOCR failed; ML Kit fallback is excluded from this test. ${result.warnings.joinToString(" ")}"
-                                        }
-                                        result
-                                    } else null
-                                    val extracted = local.extract(fixture.path, 0, quality = OcrQuality.fromId(selected.ocrQuality), enhancement = enhance)
+                                    val enhancement: OcrEnhancement? = when (ocr) {
+                                        "teleocr" -> { bitmap, quality, words -> teleOcr.recognize(bitmap, quality, words).also {
+                                            check(it.method.startsWith("TeleOCR")) { "TeleOCR failed; ML Kit fallback is excluded. ${it.warnings.joinToString(" ")}" }
+                                        } }
+                                        "paddleocr" -> { bitmap, quality, words -> paddleOcr.recognize(bitmap, quality, words).also {
+                                            check(it.method.startsWith("PaddleOCR")) { "PaddleOCR failed; substitute output is excluded." }
+                                        } }
+                                        else -> null
+                                    }
+                                    val extracted = local.extract(fixture.path, 0, quality = OcrQuality.fromId(selected.ocrQuality), enhancement = enhancement)
                                     val page = DocumentPipeline().process("benchmark", 0, extracted)
-                                    val ms = SystemClock.elapsedRealtime() - sampleStarted
-                                    val characters = BenchmarkMetrics.characters(page.reading)
-                                    BenchmarkRow("ocr", ocr, label, cold = cold, totalMs = ms, characters = characters,
-                                        charactersPerMinute = BenchmarkMetrics.charactersPerMinute(characters, ms),
-                                        characterErrorRate = BenchmarkMetrics.characterErrorRate(BenchmarkFixtures.OCR_REFERENCE, page.reading),
-                                        tableReadingOrderCorrect = BenchmarkMetrics.tableReadingOrderCorrect(page.reading),
-                                        modelVersion = if (ocr == "teleocr") ocrModels.packs.first { it.id == ocr }.version else "ML Kit Latin 16.0.1",
+                                    val raw = extracted.recognitionText ?: page.original
+                                    val ms = SystemClock.elapsedRealtime() - sampleStart
+                                    val metrics = when (ocr) { "teleocr" -> teleOcr.lastMetrics; "paddleocr" -> paddleOcr.lastMetrics; else -> null }
+                                    val characters = BenchmarkMetrics.characters(raw)
+                                    BenchmarkRow("ocr", ocr, label, cold = metrics?.cold ?: (index == 0), totalMs = ms,
+                                        loadMs = metrics?.loadMs, ocrLayoutMs = metrics?.layoutMs, ocrRecognitionMs = metrics?.recognitionMs,
+                                        characters = characters, charactersPerMinute = BenchmarkMetrics.charactersPerMinute(characters, ms),
+                                        characterErrorRate = BenchmarkMetrics.characterErrorRate(BenchmarkFixtures.OCR_REFERENCE, raw),
+                                        tableReadingOrderCorrect = BenchmarkMetrics.tableReadingOrderCorrect(raw),
+                                        tableStructureCorrect = if (ocr != "teleocr" && extracted.tables.isEmpty()) null else BenchmarkMetrics.tableStructureCorrect(extracted.tables),
+                                        tableCellAccuracy = if (ocr != "teleocr" && extracted.tables.isEmpty()) null else BenchmarkMetrics.tableCellAccuracy(extracted.tables),
+                                        recognizedText = raw.take(8192), referenceText = BenchmarkFixtures.OCR_REFERENCE,
+                                        backend = metrics?.backend ?: "ML Kit · hardware backend not exposed",
+                                        modelVersion = if (ocr == "mlkit") "ML Kit Latin 16.0.1" else ocrModels.packs.first { it.id == ocr }.version,
                                         note = buildString {
-                                            append("Synthetic paragraph and table only; lower character error rate is better. Includes image decode, OCR, retries and reading order. ")
-                                            if (ocr == "teleocr") append("Includes ML Kit geometry and loading TeleOCR anew for each page. ")
+                                            append("Raw OCR is scored before speech cleanup; synthetic paragraph/table only. Includes decode, geometry, retries and reading order. ")
+                                            append("Sessions are released before this engine's first page and reused between repetitions. ")
+                                            append("The text sequence check includes exact cell spelling; structure and cell-position scores are reported separately. ")
                                             append(extracted.warnings.joinToString(" "))
                                         }.take(1600))
                                 } catch (cancel: CancellationException) { throw cancel }
                                 catch (failure: Exception) {
                                     currentCoroutineContext().ensureActive()
-                                    BenchmarkRow("ocr", ocr, label, BenchmarkRowStatus.FAILED, cold = cold,
-                                        totalMs = SystemClock.elapsedRealtime() - sampleStarted, note = safeError(failure))
+                                    BenchmarkRow("ocr", ocr, label, BenchmarkRowStatus.FAILED, cold = index == 0,
+                                        totalMs = SystemClock.elapsedRealtime() - sampleStart, note = safeError(failure))
                                 } catch (failure: LinkageError) {
-                                    BenchmarkRow("ocr", ocr, label, BenchmarkRowStatus.FAILED, cold = cold,
-                                        totalMs = SystemClock.elapsedRealtime() - sampleStarted, note = failure.javaClass.simpleName)
+                                    BenchmarkRow("ocr", ocr, label, BenchmarkRowStatus.FAILED, cold = index == 0,
+                                        totalMs = SystemClock.elapsedRealtime() - sampleStart, note = safeError(failure))
                                 }
                                 record(row)
                             }
                         } finally {
-                            withContext(NonCancellable) {
-                                releaseExtraction()?.let { failure ->
-                                    cleanupWarning(failure)
-                                    if (job.isActive) throw IllegalStateException("OCR cleanup failed", failure)
-                                }
-                            }
+                            withContext(NonCancellable) { releaseOcr()?.let { failure ->
+                                cleanupWarning(failure)
+                                if (job.isActive) throw IllegalStateException("OCR cleanup failed", failure)
+                            } }
                         }
                     }
                 }
                 currentCoroutineContext().ensureActive()
-                val failures = state.rows.count { it.status == BenchmarkRowStatus.FAILED }
-                state = state.copy(status = BenchmarkStatus.COMPLETED,
-                    phase = if (failures == 0) "Test complete" else "Test complete · $failures failed measurements")
+                update { val failures = it.rows.count { row -> row.status == BenchmarkRowStatus.FAILED }
+                    it.copy(status = BenchmarkStatus.COMPLETED, phase = if (failures == 0) "Test complete" else "Test complete · $failures failed measurements") }
             } catch (cancel: CancellationException) {
-                state = state.copy(status = BenchmarkStatus.CANCELLED, phase = "Test cancelled",
-                    error = listOfNotNull(state.error, "Completed measurements were kept.").joinToString(" ").take(2400))
+                withContext(NonCancellable) { update { it.copy(status = BenchmarkStatus.CANCELLED, phase = "Test cancelled",
+                    error = listOfNotNull(it.error, "Completed measurements were kept.").joinToString(" ").take(2400)) } }
                 throw cancel
             } catch (failure: Exception) {
-                state = state.copy(status = BenchmarkStatus.FAILED, phase = "Test could not finish",
-                    error = listOfNotNull(state.error, safeError(failure)).joinToString(" ").take(2400))
+                update { it.copy(status = BenchmarkStatus.FAILED, phase = "Test could not finish", error = safeError(failure)) }
             } catch (failure: LinkageError) {
-                state = state.copy(status = BenchmarkStatus.FAILED, phase = "Native runtime unavailable",
-                    error = listOfNotNull(state.error, safeError(failure)).joinToString(" ").take(2400))
+                update { it.copy(status = BenchmarkStatus.FAILED, phase = "Native runtime unavailable", error = safeError(failure)) }
             } finally {
                 withContext(NonCancellable) {
-                    // Cleanup continues even when cancellation arrived inside synchronous native inference.
-                    val speechCleanupFailure = releaseSpeech()
-                    val ocrCleanupFailure = releaseExtraction()
-                    listOfNotNull(speechCleanupFailure, ocrCleanupFailure).forEach { failure ->
+                    // Keep sampling throughout cleanup; a cancelled large model may take time to drain.
+                    val speechFailure = releaseSpeech()
+                    val ocrFailure = releaseOcr()
+                    listOfNotNull(speechFailure, ocrFailure).forEach { failure ->
                         cleanupWarning(failure)
-                        if (state.status != BenchmarkStatus.CANCELLED) {
-                            state = state.copy(status = BenchmarkStatus.FAILED, phase = "Test cleanup failed")
-                        }
+                        update { if (it.status == BenchmarkStatus.CANCELLED) it else it.copy(status = BenchmarkStatus.FAILED, phase = "Test cleanup failed") }
                     }
+                    ticker.cancelAndJoin()
+                    samplerScope.cancel()
                     temporary.deleteRecursively()
-                    val after = snapshot()
-                    state = state.copy(after = after,
-                        highestObservedPssMiB = listOfNotNull(state.highestObservedPssMiB, after.processPssMiB).maxOrNull(),
-                        memorySampleCount = state.memorySampleCount + if (after.processPssMiB == null) 0 else 1)
-                    publish()
+                    val after = snapshot(); samples.add(after.processPssMiB)
+                    update(persist = true) { it.copy(after = after, currentDevice = after) }
                 }
             }
             state
-        } }
+        } } }
 
-    private suspend fun speechSample(engine: SherpaEngine, aligner: OnnxForcedAligner, text: String,
+    private suspend fun speechSample(engine: TtsEngine, aligner: OnnxForcedAligner, text: String,
         model: String, voice: String, label: String, cold: Boolean, version: String,
-        wave: File, isCurrent: () -> Boolean): BenchmarkRow {
+        wave: File, options: BenchmarkOptions, threads: Int?, isCurrent: () -> Boolean): BenchmarkRow {
         val started = SystemClock.elapsedRealtime()
         val page = DocumentPipeline().process("benchmark", 0,
             ExtractedPage(listOf(TextElement(text, emptyList())), 0f, 0f, "Synthetic benchmark"))
         val prepared = SpeechPlanner().prepare(page.words).toList()
         var synthesisMs = 0L; var alignmentMs = 0L; var audioSeconds = 0.0; var alignedWords = 0
+        var resampleMs = 0L; var inferenceMs = 0L; var decodeMs = 0L; var loadMs = 0L; var normalizationMs = 0L; var copyMs = 0L
         var accepted = true
         for (part in prepared) {
             currentCoroutineContext().ensureActive()
-            var stageStarted = SystemClock.elapsedRealtime()
+            var stage = SystemClock.elapsedRealtime()
             val audio = engine.synthesize(part.speech.text, isCurrent)
-            synthesisMs += SystemClock.elapsedRealtime() - stageStarted
+            synthesisMs += SystemClock.elapsedRealtime() - stage
             val quantized = withContext(Dispatchers.IO) { writeQuantizedWave(wave, audio) }
             currentCoroutineContext().ensureActive()
-            stageStarted = SystemClock.elapsedRealtime()
+            stage = SystemClock.elapsedRealtime()
             val alignment = alignForPlayback(aligner, quantized, part.speech)
-            alignmentMs += SystemClock.elapsedRealtime() - stageStarted
+            alignmentMs += SystemClock.elapsedRealtime() - stage
+            val timing = aligner.lastTimings
+            resampleMs += timing.resampleMs; inferenceMs += timing.inferenceMs; decodeMs += timing.ctcMs
+            loadMs += timing.sessionLoadMs; normalizationMs += timing.normalizationMs; copyMs += timing.outputCopyMs
             audioSeconds += audio.samples.size.toDouble() / audio.sampleRate
             alignedWords += alignment.timings.size
             accepted = accepted && alignment.rejected == null && alignment.timings.isNotEmpty()
@@ -299,23 +351,33 @@ class BenchmarkRunner(
             audioSeconds = audioSeconds, charactersPerMinute = BenchmarkMetrics.charactersPerMinute(characters, synthesisMs),
             preparationSpeed = BenchmarkMetrics.preparationSpeed(audioSeconds, total), alignedWords = alignedWords,
             alignmentAccepted = accepted, voice = voice, modelVersion = version,
-            note = "CPU · 2 speech threads · 2 alignment threads. Characters/min uses normalized speech and synthesis time. " +
-                "Preparation includes normalization, synthesis, PCM16 WAV writing and word alignment; excludes playback and database cache commit. " +
-                if (accepted) "Alignment passed its confidence checks; this does not score pronunciation." else "Audio generated, but word alignment was rejected; no word timings were invented.")
+            backend = if (engine is ScKokoroEngine) engine.lastExecution?.backend ?: "external-unverified" else "cpu",
+            speechThreads = threads, alignmentThreads = options.alignmentThreads, allowSpinning = options.allowSpinning,
+            resampleMs = resampleMs, alignmentInferenceMs = inferenceMs, alignmentDecodeMs = decodeMs,
+            alignmentLoadMs = loadMs, alignmentNormalizationMs = normalizationMs, alignmentOutputCopyMs = copyMs,
+            note = buildString {
+                if (engine is ScKokoroEngine) append("SC Kokoro external engine; GPU/CPU placement unverified. Engine-process memory is excluded. Synthesis includes Android IPC and external WAV handling. ")
+                else append("CPU · $threads speech threads · spinning ${if (options.allowSpinning) "on" else "off"}. ")
+                append("${options.alignmentThreads} alignment threads. Characters/min uses synthesis time. Preparation includes normalization, synthesis, PCM16 writing and alignment, not playback/database commit. ")
+                append(if (accepted) "Alignment passed; this does not score pronunciation or playback gaps." else "Alignment rejected; no timings were invented.")
+            })
     }
 
     private fun snapshot(): DeviceSnapshot {
-        val thermal = runCatching { context.getSystemService(PowerManager::class.java).currentThermalStatus }.getOrNull()
-        val temperature = runCatching {
-            val battery = context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
-            battery?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, Int.MIN_VALUE)?.takeIf { it != Int.MIN_VALUE }?.div(10.0)
-        }.getOrNull()
-        val pss = runCatching { Debug.MemoryInfo().also(Debug::getMemoryInfo).totalPss / 1024.0 }.getOrNull()
-        return DeviceSnapshot("${Build.MANUFACTURER} ${Build.MODEL}", Build.VERSION.SDK_INT, thermal, temperature, pss)
+        val power = context.getSystemService(PowerManager::class.java)
+        val battery = runCatching { context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED)) }.getOrNull()
+        val status = battery?.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+        return DeviceSnapshot("${Build.MANUFACTURER} ${Build.MODEL}", Build.VERSION.SDK_INT,
+            thermalStatus = runCatching { power.currentThermalStatus }.getOrNull(),
+            batteryTemperatureC = battery?.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, Int.MIN_VALUE)?.takeIf { it != Int.MIN_VALUE }?.div(10.0),
+            processPssMiB = runCatching { Debug.MemoryInfo().also(Debug::getMemoryInfo).totalPss / 1024.0 }.getOrNull(),
+            charging = status?.takeIf { it >= 0 }?.let { it == BatteryManager.BATTERY_STATUS_CHARGING || it == BatteryManager.BATTERY_STATUS_FULL },
+            powerSave = runCatching { power.isPowerSaveMode }.getOrNull(),
+            availableMemoryMiB = runCatching { ActivityManager.MemoryInfo().also {
+                context.getSystemService(ActivityManager::class.java).getMemoryInfo(it)
+            }.availMem / 1048576.0 }.getOrNull())
     }
-
-    private fun safeError(error: Throwable): String =
-        "${error.javaClass.simpleName}: ${error.message.orEmpty()}".take(1600)
+    private fun safeError(error: Throwable) = "${error.javaClass.simpleName}: ${error.message.orEmpty()}".take(1600)
 }
 
 /** Matches AudioCache's PCM16 conversion so the aligner sees the same samples as production. */

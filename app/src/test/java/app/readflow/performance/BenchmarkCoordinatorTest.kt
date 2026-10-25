@@ -73,7 +73,7 @@ class BenchmarkCoordinatorTest {
             ioDispatcher = StandardTestDispatcher(testScheduler))
 
         assertTrue(coordinator.start(options))
-        coordinator.cancel()
+        coordinator.cancel("ReadFlow moved to the background")
         assertTrue(coordinator.busy.value)
         runCurrent()
         assertTrue(preparationEntered.isCompleted)
@@ -86,6 +86,7 @@ class BenchmarkCoordinatorTest {
         assertFalse(coordinator.busy.value)
         assertEquals(BenchmarkStatus.CANCELLED, coordinator.state.value.status)
         assertEquals(BenchmarkStatus.CANCELLED, store.load()!!.status)
+        assertEquals("ReadFlow moved to the background", store.load()!!.cancellationReason)
     }
 
     @Test fun cancellationDuringOldWorkDrainDoesNotReleaseExclusivityEarly() = runTest {

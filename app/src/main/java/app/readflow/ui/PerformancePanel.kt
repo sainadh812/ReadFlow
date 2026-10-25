@@ -111,5 +111,7 @@ internal fun modelDisplayName(id: String): String = when (id) {
     "pocket" -> "Pocket TTS"
     "mlkit" -> "ML Kit · Original"
     "teleocr" -> "TeleOCR"
+    "paddleocr" -> "PaddleOCR"
+    "sc-kokoro" -> "SC Kokoro · external"
     else -> id
 }

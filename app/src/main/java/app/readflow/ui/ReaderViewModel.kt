@@ -26,8 +26,15 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     val preferences = app.preferences.values.stateIn(viewModelScope, SharingStarted.Eagerly, Preferences())
     val downloads = app.models.progress
     val ocrDownloads = app.ocrModels.progress
-    val ocrProgress = app.teleOcr.progress
-    val ocrLastRun = app.teleOcr.lastRun
+    val ocrProgress = combine(app.teleOcr.progress, app.paddleOcr.progress) { tele, paddle -> tele ?: paddle }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    val ocrLastRun = combine(app.teleOcr.lastRun, app.paddleOcr.lastRun, preferences) { tele, paddle, prefs ->
+        when (prefs.ocrEngine) {
+            "paddleocr" -> paddle
+            "teleocr" -> tele
+            else -> null
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
     val performance = app.diagnostics.performance
     val ocrPerformance = app.diagnostics.extractionPerformance
     val benchmark = app.benchmarks.state
@@ -43,7 +50,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     val sendingIssues = MutableStateFlow(false)
     val githubIssueUrl = MutableStateFlow<String?>(null)
     private val jobs = mutableMapOf<String, Job>()
-    private var ocrDownload: Job? = null
+    private val ocrDownloadJobs = mutableMapOf<String, Job>()
     private var ocrRefresh: Job? = null
     private val activeOperations = ConcurrentHashMap.newKeySet<Job>()
     private fun benchmarkBlocksWork(): Boolean = app.benchmarks.busy.value.also {
@@ -71,15 +78,16 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     fun update(preferences: Preferences) { viewModelScope.launch { app.preferences.set(preferences) } }
     fun chooseOcrEngine(engine: String) {
         if (benchmarkBlocksWork()) return
-        if (engine !in setOf("mlkit", "teleocr")) return
-        if (engine == "teleocr" && !app.ocrModels.installed("teleocr")) {
-            message.value = "Download TeleOCR before selecting it"; return
+        if (engine !in setOf("mlkit", "teleocr", "paddleocr")) return
+        if (engine != "mlkit" && !app.ocrModels.installed(engine)) {
+            message.value = "Download ${modelDisplayName(engine)} before selecting it"; return
         }
         app.playback.stop()
         operation("OCR_MODEL_SWITCH") {
             ocrRefresh?.cancelAndJoin()
+            app.teleOcr.close(); app.paddleOcr.close()
             app.preferences.set(app.preferences.values.first().copy(ocrEngine = engine))
-            message.value = "${if (engine == "mlkit") "ML Kit" else "TeleOCR"} selected · apply to the current page to update saved text"
+            message.value = "${modelDisplayName(engine)} selected · apply to the current page to update saved text"
         }
     }
     fun startBenchmark(options: BenchmarkOptions) {
@@ -94,8 +102,8 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
             screen.value = "benchmark"
         } catch (error: IllegalArgumentException) { message.value = error.message }
     }
-    fun cancelBenchmark() = app.benchmarks.cancel()
-    fun leaveBenchmark() { app.benchmarks.cancel(); screen.value = "settings" }
+    fun cancelBenchmark(reason: String = "Stopped by user") = app.benchmarks.cancel(reason)
+    fun leaveBenchmark() { app.benchmarks.cancel("Left the testbench"); screen.value = "settings" }
     fun copyBenchmarkResults() {
         try {
             app.getSystemService(ClipboardManager::class.java).setPrimaryClip(
@@ -103,18 +111,28 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
             message.value = "Benchmark results copied"
         } catch (_: Exception) { message.value = "Could not copy benchmark results" }
     }
-    fun downloadTeleOcr() {
-        if (ocrDownload?.isActive == true) return
-        ocrDownload = operation("OCR_MODEL_INSTALL") { app.ocrModels.install("teleocr") }
+    fun downloadOcr(id: String) {
+        if (id !in setOf("teleocr", "paddleocr") || ocrDownloadJobs[id]?.isActive == true) return
+        ocrDownloadJobs[id] = operation("OCR_MODEL_INSTALL") { app.ocrModels.install(id) }
     }
-    fun cancelTeleOcrDownload() { ocrDownload?.cancel() }
-    fun deleteTeleOcr() { operation("OCR_MODEL_DELETE") {
-        ocrDownload?.cancelAndJoin()
-        cancelOcr()
-        app.preferences.set(app.preferences.values.first().copy(ocrEngine = "mlkit"))
-        app.teleOcr.deleteModels()
-        message.value = "TeleOCR removed; ML Kit is selected"
+    fun cancelOcrDownload(id: String) { ocrDownloadJobs[id]?.cancel() }
+    fun deleteOcr(id: String) { operation("OCR_MODEL_DELETE") {
+        require(id in setOf("teleocr", "paddleocr"))
+        ocrDownloadJobs[id]?.cancelAndJoin()
+        cancelOcr(); ocrRefresh?.join()
+        val prefs = app.preferences.values.first()
+        if (prefs.ocrEngine == id) app.preferences.set(prefs.copy(ocrEngine = "mlkit"))
+        if (id == "teleocr") app.teleOcr.deleteModels() else app.paddleOcr.deleteModels()
+        message.value = "${modelDisplayName(id)} removed"
     } }
+    fun downloadTeleOcr() = downloadOcr("teleocr")
+    fun cancelTeleOcrDownload() = cancelOcrDownload("teleocr")
+    fun deleteTeleOcr() = deleteOcr("teleocr")
+    fun updateSpeechPerformance(prefs: Preferences) {
+        if (benchmarkBlocksWork()) return
+        app.playback.stop()
+        update(prefs)
+    }
     fun cancelOcr() { ocrRefresh?.cancel(); app.playback.stop() }
     fun download(id: String) {
         if (jobs[id]?.isActive == true) return

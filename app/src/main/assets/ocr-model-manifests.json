@@ -31,5 +31,50 @@
     "voices": [],
     "alignment": "ML Kit word geometry where text agrees",
     "support": "Experimental local document recognition. S25 Ultra speed and accuracy are not yet measured. Tables read row by row; unmatched words have no original-page highlighting."
+  },
+  {
+    "id": "paddleocr",
+    "name": "PaddleOCR · Mobile Latin",
+    "version": "PP-OCRv5-e6f4fa8-89d3a50",
+    "runtime": "On-device ONNX Runtime CPU; PP-OCRv5 mobile detector + Latin-script recognizer. No document upload.",
+    "archiveRoot": "",
+    "url": "https://huggingface.co/PaddlePaddle/PP-OCRv5_mobile_det_onnx/resolve/e6f4fa85f00e168c862bc462aebca69eef9b3d3d/inference.onnx",
+    "sha256": "a431985659dc921974177a95adcfbb90fd9e51989a5e04d70d0b75f597b6e61d",
+    "downloadBytes": 4826518,
+    "installedBytes": 12886734,
+    "files": [
+      {
+        "path": "det.onnx",
+        "bytes": 4826518,
+        "sha256": "a431985659dc921974177a95adcfbb90fd9e51989a5e04d70d0b75f597b6e61d"
+      }
+    ],
+    "extras": [
+      {
+        "path": "rec.onnx",
+        "url": "https://huggingface.co/PaddlePaddle/latin_PP-OCRv5_mobile_rec_onnx/resolve/89d3a50e2c27e2e7cceeab0e944c25c807d5db4f/inference.onnx",
+        "bytes": 8042023,
+        "sha256": "7888113072263cb471b93f66dd5e2ad70548dc526fa1ace760d0d973dd121498"
+      },
+      {
+        "path": "rec.yml",
+        "url": "https://huggingface.co/PaddlePaddle/latin_PP-OCRv5_mobile_rec_onnx/resolve/89d3a50e2c27e2e7cceeab0e944c25c807d5db4f/inference.yml",
+        "bytes": 6817,
+        "sha256": "0bbe984570f597af3638e50bdf2e8276f3ab26a61966096538b3b0d1849f5c84"
+      },
+      {
+        "path": "LICENSE-PaddleOCR.txt",
+        "url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/dab3fe35379033fdcb2d0e9572fac0b36c9a9ebf/LICENSE",
+        "bytes": 11376,
+        "sha256": "3840c5c0c61c294264d2dd77b8777be6ddd90121ef4e0e64abcd22edea581d6e"
+      }
+    ],
+    "licenses": [
+      "PaddleOCR official models and deployment reference: Apache-2.0 (PaddlePaddle Authors)",
+      "ONNX Runtime: MIT"
+    ],
+    "voices": [],
+    "alignment": "Exact matching ML Kit word geometry; unmatched words keep no fabricated boxes",
+    "support": "Local Latin-script OCR, including accented names. Warm sessions are reused; model memory releases after 45 seconds idle. Text recognition only, not merged-cell table reconstruction. Phone speed must be measured."
   }
 ]

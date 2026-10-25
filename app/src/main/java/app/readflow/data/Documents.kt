@@ -24,6 +24,7 @@ class Documents(private val context: Context, val database: ReadFlowDatabase, va
     private val teleOcr: TeleOcrEngine? = null,
     private val diagnostics: PlaybackDiagnostics? = null,
     private val benchmarkActive: () -> Boolean = { false },
+    private val paddleOcr: PaddleOcrEngine? = null,
 ) {
     val dao = database.dao()
     private val root = File(context.noBackupFilesDir, "documents").apply { mkdirs() }
@@ -91,6 +92,10 @@ class Documents(private val context: Context, val database: ReadFlowDatabase, va
             { bitmap, effort, words ->
                 checkNotNull(teleOcr) { "TeleOCR is unavailable in this build" }.recognize(bitmap, effort, words)
             }
+        } else if (settings.ocrEngine == "paddleocr") {
+            { bitmap, effort, words ->
+                checkNotNull(paddleOcr) { "PaddleOCR is unavailable in this build" }.recognize(bitmap, effort, words)
+            }
         } else null
         val started = SystemClock.elapsedRealtime()
         val extracted = extractor.extract(document.localPath, index, rotation ?: old?.rotation ?: 0, quality, enhancement)
@@ -110,6 +115,7 @@ class Documents(private val context: Context, val database: ReadFlowDatabase, va
         method.startsWith("Embedded PDF") -> "Embedded PDF"
         method.contains("TeleOCR fallback") -> "ML Kit fallback"
         method.contains("TeleOCR") -> "TeleOCR"
+        method.contains("PaddleOCR") -> "PaddleOCR"
         method.contains("Latin OCR") -> "ML Kit"
         else -> "Other extraction"
     }

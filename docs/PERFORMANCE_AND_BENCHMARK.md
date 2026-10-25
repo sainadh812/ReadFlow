@@ -1,33 +1,62 @@
-# Performance display and phone testbench — 0.1.12
+# Performance and phone testbench — 0.1.13
 
-## Use on your phone
+Install the update over the existing prototype without uninstalling. The package and signing identity are unchanged; versionCode is 14. Books, downloaded packs, bookmarks and preferences stay in the same stores.
 
-Install the update over ReadFlow; keep the existing app and its data. Open **Settings > Text recognition** to choose **ML Kit · Original** or **TeleOCR**. ML Kit is bundled. TeleOCR needs its separate installed model pack; selecting it does not download it automatically. Use **Apply to current page** to replace a saved page's OCR with the selected engine/quality. Native PDF text remains preferred when usable.
+## Reading controls
 
-The reader's performance card is enabled by default. Tap it for details; use its close button, reader menu or **Settings > Show reading metrics** to hide it. Fullscreen hides it. The display observes existing measurements at 2 Hz; it does not run an additional inference job.
+**Settings > Performance > Speech processing effort** selects Low (one speech/one alignment thread), Medium (two/two) or High (four/two). Medium remains the default. The optional worker-spinning switch is off by default; it can trade battery use for shorter scheduling waits. These controls do not change voice quality, OCR quality or playback speed. More threads are not guaranteed faster, especially when the phone heats up. The testbench can compare three threads too, and its expanded CPU results have **Use these CPU settings**.
 
-Open **Settings > Phone testbench**, select installed speech/OCR models and 1, 3 or 5 samples, then run. Word alignment must be installed for speech tests. Tests run sequentially using real local production models and original fixed fixtures. Reading pauses first; model changes, extraction and new playback are blocked until native work finishes. Cancel, leave the screen or background the app to stop; an in-flight native call may need to drain. Screen rotation retains the run. Cancellation preserves completed rows. Results remain private; **Copy results** explicitly puts the report on the clipboard. No automatic upload occurs.
+The speech engine and aligner apply real ONNX Runtime thread/spinning settings. The resampler reuses bounded rational-phase filter tables rather than recalculating trigonometric coefficients for each output sample; the existing 49-tap bandlimited filter, sample count and timing convention are preserved. Unit tests compare the prior implementation, anti-aliasing, DC, impulses and concurrent callers. No S25 speedup is inferred from those tests.
 
-## What the numbers mean
+**Reader menu > Prepare pages before listening** prepares from the current page through a chosen final page. Enter a chapter's final page when reading a PDF; automatic chapter-boundary discovery is not implemented. This runs real extraction, normalization, synthesis and validated alignment into the ordinary verified audio cache. It does not start playback automatically. Keep ReadFlow open: backgrounding cancels preparation, preserving completed chunks. Progress includes prepared pages and audio duration. Preparation stops before exceeding the configured cache budget or available storage; earlier chunks in the chosen range are protected from eviction while the operation runs. Normal cache eviction still applies during later use. Changing voice or recognized text requires different audio cache entries.
 
-| Measurement | Definition and interpretation |
+The existing bounded lookahead remains: four complete future sentences and a listening-time reserve. It cannot compensate indefinitely for a producer slower than playback. Preparing a range before listening is useful in that situation.
+
+## OCR selection and memory reuse
+
+**Settings > Text recognition** offers ML Kit (bundled/default), PaddleOCR mobile Latin (~13 MB optional download) and TeleOCR (~1.394 GB optional download). Both downloads are pinned by revision, byte count and SHA-256. See [PaddleOCR provenance](PADDLE_OCR.md) and [OCR settings](OCR_MODELS_AND_PRESETS.md).
+
+Saved pages keep their text until **Apply to current page**. Reliable native PDF text still bypasses OCR. PaddleOCR runs its own detector and recognizer; ML Kit supplies matching measured word boxes only, never substitute text. Unsupported exact word highlights are omitted and disclosed. PaddleOCR has no dedicated table-structure model. TeleOCR reconstructs supported tables and adds pauses for narration.
+
+TeleOCR keeps one warm native session for up to 60 seconds of idle time; PaddleOCR keeps one detector/recognizer pair for up to 45 seconds. Both serialize work and release safely on memory pressure, quality replacement, deletion or benchmark boundaries. Cancelled TeleOCR contexts are discarded. TeleOCR reuses bounded image-transfer buffers. Models are not all deliberately kept loaded together. There is no artificial RAM reservation or `largeHeap` performance switch.
+
+The user's 0.1.12 test took about four minutes per TeleOCR synthetic page. Warm reuse removes repeated loading but does not establish that inference itself is now fast. ML Kit remains the immediate-reading default; use heavy OCR before listening or on selected difficult pages.
+
+## Phone benchmark
+
+Open **Settings > Phone testbench**. Select installed speech models and any of the three OCR engines. Choose 1, 3 or 5 repetitions. OCR repeats the *same* synthetic financial page; it is not a sample of different books. Speech runs an initial sample followed by warm samples. **Compare CPU thread counts** adds sequential 2/3/4-thread blocks, with only one resident speech model at a time. Blocks may experience different thermal conditions; reverse/repeat comparable runs on a cooled phone before deciding a setting is best. **Extra sustained speech samples** adds 30 or 60 samples at the chosen configuration. All runs use real model inference, not simulated throughput.
+
+Reading pauses before the benchmark, and model changes/imports/new reading are blocked until model work drains. Cancel, leaving the screen or backgrounding the app preserves completed rows. The report records the cancellation reason; rotation retains the run. Elapsed time, OCR processing stage and current memory update during native work. The progress ticker does not repeatedly fsync the report; reports are saved at measurement/phase boundaries and completion.
+
+Reports remain local. **Copy results** explicitly copies synthetic fixture outputs and measurements; it never includes books or benchmark audio. One bounded report is retained. Old schema-1 reports can be read but their OCR accuracy and memory methodology should not be compared directly with schema 2.
+
+| Measurement | Meaning and limits |
 |---|---|
-| Speech characters/min | Normalized Unicode characters actually sent to speech synthesis divided by synthesis time. Numeric expansions count as spoken text. Cached audio and zero-duration samples do not inflate this rate. |
-| Preparation speed | Generated audio seconds divided by measured preparation seconds. At 1× listening, greater than 1 is needed to build reserve; at 2×, greater than 2. Live headroom divides this ratio by the selected playback speed. |
-| Live reserve / gaps | Listening seconds already prepared, complete future sentences, and unexpected queue depletions. Startup and normal completion are not counted as gaps. These are application observations, not measured speaker latency. |
-| Model setup | Speech model verification and loading measured separately. The first sample also includes lazy alignment loading; later samples use the loaded sessions. OS caches are not cleared, so “cold” means a fresh model session. |
-| Speech benchmark | Normalization, real synthesis, PCM16 WAV writing and forced word alignment. Preparation time excludes actual playback and the database cache commit. Alignment confidence is shown separately and is not a pronunciation-quality score. |
-| OCR characters/min | Recognized output characters divided by page processing time. More output can include mistakes, so consider this alongside character error rate. TeleOCR includes ML Kit geometry and a fresh TeleOCR load per page, matching production. |
-| OCR error rate | Character edit distance against the synthetic page after Unicode/whitespace normalization. Case, accents, punctuation and missing/extra text count. Lower is better; insertions can produce more than 100%. This is one fixture, not general book accuracy. |
-| Table order | Whether this fixture's cell tokens occur contiguously in expected row order. It does not establish table geometry, arbitrary financial-table accuracy or spreadsheet extraction. |
-| Memory / temperature | Whole-app proportional memory (PSS), Android thermal state and battery temperature at phase boundaries. Highest sampled memory is not continuously measured peak memory; TeleOCR can unload before sampling. Battery temperature is not CPU temperature. |
+| Speech characters/min | Normalized characters actually sent to synthesis divided by synthesis time. It is generation speed, not listening speed or pronunciation quality. |
+| Preparation speed | Generated audio seconds divided by full preparation seconds. Greater than the selected playback speed is needed to build reserve. Includes normalization, synthesis, PCM16 WAV writing and alignment; excludes playback and database commit. |
+| Alignment stages | Session load, resampling, normalization, neural inference, output copying and CTC decoding are recorded separately. Confidence acceptance is not a pronunciation score or a human timing audit. |
+| Model setup | Verification and loading are separated. "Fresh" means a new session, not cleared OS caches. External engine model warmth is unknown and not reported as cold. |
+| OCR time | Image decode, ML Kit geometry/retries, selected model inference and reading order. TeleOCR/Paddle additionally report model loading, detection/layout and recognition stages. Sessions are reused between repetitions. |
+| OCR character errors | Edit distance against the original synthetic reference, after Unicode/whitespace normalization only. Scores raw recognized text before narration punctuation or speech cleanup. Real accents, decimals, separators and monetary symbols remain significant. |
+| Table token sequence | Exact cell tokens in expected row order. A mismatch can be spelling or order; it is not by itself proof of a layout failure. |
+| Table structure / cell accuracy | Actual structured grid dimensions/spans and exact values at row/column coordinates. Null for engines without table structure output; not mislabeled as a recognition failure. |
+| Memory | ReadFlow process PSS sampled every second during inference and at boundaries, with per-row and whole-run highest observations. Brief peaks can be missed. External engine process RAM is excluded. Values are not managed-heap limits or whole-device usage. |
+| Device conditions | Android thermal status, battery temperature, charging, battery saver and available memory. Battery temperature is not CPU temperature; correlation alone does not prove thermal throttling. |
 
-Live measurements reset for a new reading session, retain at most 64 preparation samples and contain no document excerpts. Live OCR identifies cached pages, embedded PDF text and TeleOCR fallback explicitly; fallback has no misleading engine throughput score. OCR time is separate from speech preparation, so fast speech alone does not establish uninterrupted reading across slow page extraction.
+### Corrected OCR scoring
 
-The testbench keeps one bounded report under private no-backup storage and removes temporary generated audio/images after cleanup. It synthesizes audio without playing it aloud. It does not measure Bluetooth delay, actual first-audible time, voice quality, battery drain, sustained 30-minute throughput, GPU/NPU utilization or peak memory. Speech and alignment remain CPU inference with two threads each. Run on your phone under comparable conditions before choosing models; the testbench does not automatically change your model or OCR settings.
+Schema 1 compared narrated TeleOCR output to a reference without narration punctuation. The adapter adds eight semicolons and four periods to this fixture's table, so perfect recognition could score 12/276 = 4.35% error and fail the table-token test. Schema 2 scores `recognitionText` before these additions, retains raw synthetic output/reference for inspection, and tests table cells separately. It does not globally remove punctuation, which would hide real financial-text mistakes. Regression tests reproduce the old false errors and verify zero error for a perfectly recognized raw fixture.
+
+### Optional external acceleration experiment
+
+The testbench can call a separately installed [SC Kokoro](https://github.com/speech-central/sc-voices-android) Android TTS engine. Finish its model download/device test first. ReadFlow explicitly selects its offline English voice, requests a PCM16 WAV without playing it, then uses the normal alignment path. The default test voice is `af_heart`; this differs from ReadFlow's older Kokoro v0.19 default voice. Synthesized test text crosses a local Android IPC boundary to that app. ReadFlow does not bundle its wrapper, OpenCL backend or model, or change the system default TTS engine.
+
+Results are labeled `external-unverified`: Android's TTS API cannot tell ReadFlow whether SC Kokoro used GPU or CPU. Its process memory is not counted in ReadFlow PSS, and its synthesis time includes IPC/WAV handling. No silent CPU substitute is counted as an acceleration result. This is a functional test route, not verified S25 GPU support or an embedded acceleration toggle.
+
+Direct embedded OpenCL integration and the S25 QNN/NPU port remain unimplemented. The current bundled Kokoro v0.19 ONNX graph exposes only `audio`, and Sherpa's public API provides no phoneme/source-word duration mapping. Native-duration highlighting therefore still needs a compatible model/frontend/JNI migration and acoustic validation; the current update keeps validated CTC. XNNPACK is not exposed as an unverified acceleration option.
 
 ## Validation
 
-JVM tests cover rate calculations, Unicode OCR comparison, fixture expectations, report limits/restoration, cache/fallback attribution and benchmark exclusivity/cancellation. Application and instrumentation APKs are built with the release. Exact results are in [build-results.json](evidence/build-results.json) and [STATUS.md](STATUS.md).
+See [build results](evidence/build-results.json), [Paddle host smoke](evidence/paddleocr/host-smoke.json) and [delivery status](STATUS.md). The host smoke exercises official ONNX weights with the app's actual Kotlin detection/CTC postprocessing; it is not an Android performance measurement. The packaged ARM64 app and instrumentation APK are built; no physical S25 is attached here.
 
-No Android device is attached in the build environment. On the S25 Ultra, verify the settings toggle persists, ML Kit/TeleOCR selection and page refresh work, both installed speech models complete the benchmark, cancel/background waits safely for cleanup, copied results retain completed rows, and normal reading resumes afterward. Check light/dark themes and large text. Device performance and visual acceptance are pending these checks.
+On the phone, compare all three OCR engines, review raw fixture outputs/amounts, and test a difficult real page with each. Run baseline and sustained CPU tests under comparable conditions. Test warm-page transitions, cancel/background/rotation, memory pressure, page-range cancellation/cache limits and ordinary reading afterward. Listen for pronunciation and sentence gaps; the synthesis benchmark does not play audio or measure speaker/Bluetooth latency.

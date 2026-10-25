@@ -14,6 +14,11 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.json.Json
 
+// Compute settings do not change the requested voice/text. Retain the established
+// recipe identifier so valid audio from older releases remains reusable.
+private const val CACHE_SYNTHESIS_RECIPE = "steps=5;temperature=.7;speed=1;threads=2"
+private class PrepareAheadLimit(message: String) : Exception(message)
+
 data class ReaderPlayback(
     val document: DocumentEntity? = null, val page: PageContent? = null, val activeWordId: String? = null,
     val selectedWordId: String? = null, val playing: Boolean = false, val preparing: Boolean = false,
@@ -27,6 +32,7 @@ data class ReaderPlayback(
     val bufferedListeningMs: Long = 0,
     val fillingBuffer: Boolean = false,
     val bufferTargetSentences: Int = 4,
+    val prepareAheadProgress: PrepareAheadProgress? = null,
 )
 data class BlockedSentence(val pageIndex: Int, val wordId: String, val resume: SpeechTarget?)
 class GenerationGate {
@@ -140,10 +146,12 @@ class ReadingCoordinator(
     fun detach() { observer?.cancel(); playerListener?.let { player?.removeListener(it) }; playerListener = null; player = null; stop() }
     fun open(document: DocumentEntity, pageIndex: Int? = null) {
         if (benchmarkActive()) return
+        val old = work
         val generation = invalidate()
         mutable.value = ReaderPlayback(document = document, preparing = true, status = "Extracting page", viewPageIndex = pageIndex ?: 0)
         work = scope.launch {
             try {
+                old?.join()
                 val position = documents.dao.position(document.id)
                 val requestedPage = pageIndex ?: position?.page ?: 0
                 mutable.value = mutable.value.copy(viewPageIndex = requestedPage)
@@ -155,7 +163,7 @@ class ReadingCoordinator(
             catch (e: Exception) { if (gate.current(generation)) {
                 issues.record("EXTRACT_PAGE", e, documentIssueInput(document, pageIndex = state.value.viewPageIndex))
                 if (gate.current(generation)) mutable.value = mutable.value.copy(preparing = false, status = e.message ?: "Extraction failed", error = e.message ?: "Extraction failed")
-            } }
+            } } finally { withContext(NonCancellable) { old?.join() } }
         }
     }
     private fun invalidate(): Long {
@@ -167,7 +175,10 @@ class ReadingCoordinator(
         player?.pause(); player?.stop(); player?.clearMediaItems(); queued.clear()
         mutable.value = mutable.value.copy(activeWordId = null, activeWordIds = emptySet(), currentChunk = null, playing = false,
             wantsToPlay = false, positionMs = 0, durationMs = 0, blockedSentence = null,
-            bufferedSentences = 0, bufferedListeningMs = 0, fillingBuffer = false)
+            bufferedSentences = 0, bufferedListeningMs = 0, fillingBuffer = false,
+            prepareAheadProgress = mutable.value.prepareAheadProgress?.let {
+                if (it.running) it.copy(running = false, status = "Cancelled · prepared audio kept") else it
+            })
         return generation
     }
     fun stop(): Long {
@@ -235,6 +246,168 @@ class ReadingCoordinator(
             mutable.value = mutable.value.copy(error = null, selectedWordId = null, status = "End of document")
         }
     }
+
+    /** Prepare a chosen page range into the ordinary verified audio cache, without playback. */
+    fun prepareAhead(endPageInclusive: Int) {
+        if (benchmarkActive()) return
+        val document = state.value.document ?: return
+        val startPage = state.value.page?.index ?: state.value.viewPageIndex
+        require(endPageInclusive in startPage until document.pageCount) { "Choose an end page within this document" }
+        val old = work
+        val generation = invalidate()
+        val chosen = settings
+        val limit = chosen.cacheMb * 1024L * 1024L
+        val budget = PreparedRangeBudget(limit)
+        var progress = PrepareAheadProgress(startPage, endPageInclusive)
+        mutable.value = mutable.value.copy(preparing = true, error = null, status = "Preparing pages for later",
+            prepareAheadProgress = progress)
+        work = scope.launch {
+            var page: PageContent? = null
+            var words = emptyList<SourceWord>()
+            var speech: SpeechText? = null
+            var key: String? = null
+            var stage = "VERIFY_MODELS"
+            fun input() = documentIssueInput(document, page, words, speech,
+                page?.index ?: progress.currentPage, details = mapOf("model" to chosen.model,
+                    "voice" to chosen.voice, "synthesis" to runtimeDescription(chosen), "operation" to "prepare-pages"))
+            fun publish(status: String) {
+                progress = progress.copy(status = status, bytes = budget.bytes)
+                if (gate.current(generation)) mutable.value = mutable.value.copy(status = status, prepareAheadProgress = progress)
+            }
+            try {
+                old?.join()
+                diagnostics.beginSession(chosen.model, chosen.voice)
+                models.verifyInstalled(chosen.model); models.verifyInstalled("alignment")
+                configureRuntime(chosen)
+                val manifest = models.packs.first { it.id == chosen.model }
+                val modelRevision = sha256(Json.encodeToString(VoicePack.serializer(), manifest).toByteArray())
+                for (index in startPage..endPageInclusive) {
+                    currentCoroutineContext().ensureActive()
+                    progress = progress.copy(currentPage = index)
+                    page = null; words = emptyList(); speech = null; key = null
+                    stage = "EXTRACT_PAGE"
+                    publish("Preparing page ${index + 1} of ${endPageInclusive + 1}")
+                    issues.activeInput = input()
+                    val extractedPage = documents.loadPage(document, index)
+                    page = extractedPage
+                    val pageWords = extractedPage.words.filter { !chosen.skipMargins || !it.marginal }
+                    stage = "NORMALIZE_TEXT"
+                    for (prepared in planner.prepare(pageWords)) {
+                        currentCoroutineContext().ensureActive()
+                        words = prepared.words; speech = prepared.speech
+                        val chunkKey = cacheKey(document.id, prepared.speech, modelRevision, chosen.voice,
+                            CACHE_SYNTHESIS_RECIPE, CtcAlignment.VERSION)
+                        key = chunkKey
+                        issues.activeInput = input()
+                        stage = "READ_AUDIO_CACHE"
+                        val started = SystemClock.elapsedRealtime()
+                        var synthesisMs = 0L; var alignmentMs = 0L
+                        val cached = cache.get(chunkKey)
+                        val audio = cached ?: run {
+                            var committed = false
+                            try {
+                                stage = "LOAD_MODEL"
+                                engine.load(chosen.model, chosen.voice)
+                                stage = "SYNTHESIZE"
+                                val synthesisStarted = SystemClock.elapsedRealtime()
+                                val generated = engine.synthesize(prepared.speech.text) { gate.current(generation) }
+                                synthesisMs = SystemClock.elapsedRealtime() - synthesisStarted
+                                val requiredBytes = 44L + generated.samples.size.toLong() * 2
+                                if (!budget.canAdd(chunkKey, requiredBytes)) throw PrepareAheadLimit(
+                                    "Audio cache limit reached · prepared pages kept. Increase the cache limit or choose fewer pages.")
+                                if (cache.file(chunkKey).parentFile?.usableSpace?.let { it < requiredBytes + 16L * 1024 * 1024 } == true)
+                                    throw PrepareAheadLimit("Storage is nearly full · prepared pages kept")
+                                // Make room only by removing unrelated audio. Every completed range
+                                // chunk remains protected, including chunks reused from an older run.
+                                cache.trim(limit - requiredBytes, budget.protectedKeys + chunkKey)
+                                stage = "WRITE_AUDIO"
+                                val quantized = cache.writePcm(chunkKey, generated)
+                                stage = "ALIGN_WORDS"
+                                val alignmentStarted = SystemClock.elapsedRealtime()
+                                val alignment = alignForPlayback(aligner, quantized, prepared.speech)
+                                alignmentMs = SystemClock.elapsedRealtime() - alignmentStarted
+                                alignment.rejected?.let { rejection ->
+                                    issues.record(stage, rejection, input(), audio = cache.file(chunkKey),
+                                        warnings = listOf("Prepared audio has no validated word highlighting for this chunk."),
+                                        dedupeKey = "alignment-audio-only-$chunkKey")
+                                }
+                                currentCoroutineContext().ensureActive()
+                                AlignedAudio(chunkKey, cache.file(chunkKey).path,
+                                    withContext(Dispatchers.IO) { fileHash(cache.file(chunkKey)) }, quantized.sampleRate,
+                                    quantized.samples.size.toLong(), alignment.timings, prepared.speech.sourceIds,
+                                    prepared.speech, manifest.id + manifest.version, chosen.voice, CtcAlignment.VERSION)
+                                    .also { cache.commit(document.id, it); committed = true }
+                            } finally {
+                                if (!committed) withContext(NonCancellable + Dispatchers.IO) { cache.file(chunkKey).delete() }
+                            }
+                        }
+                        val audioBytes = withContext(Dispatchers.IO) { cache.file(chunkKey).length() }
+                        if (!budget.canAdd(chunkKey, audioBytes)) throw PrepareAheadLimit(
+                            "Audio cache limit reached · prepared pages kept. Increase the cache limit or choose fewer pages.")
+                        budget.add(chunkKey, audioBytes)
+                        diagnostics.recordPreparation(cached != null, synthesisMs, alignmentMs,
+                            SystemClock.elapsedRealtime() - started, audio.durationMs,
+                            characters = prepared.speech.text.codePointCount(0, prepared.speech.text.length))
+                        progress = progress.copy(preparedChunks = progress.preparedChunks + 1,
+                            reusedChunks = progress.reusedChunks + if (cached != null) 1 else 0,
+                            audioMs = progress.audioMs + audio.durationMs)
+                        publish("Preparing page ${index + 1} · ${progress.preparedChunks} audio chunks ready")
+                        stage = "NORMALIZE_TEXT"
+                    }
+                    progress = progress.copy(completedPages = progress.completedPages + 1)
+                    cache.trim(limit, budget.protectedKeys)
+                    publish("${progress.completedPages} of ${progress.totalPages} pages prepared")
+                }
+                progress = progress.copy(running = false)
+                publish(if (progress.preparedChunks == 0) "No readable text in these pages"
+                    else "Pages ${startPage + 1}–${endPageInclusive + 1} ready · press Play to read")
+            } catch (cancel: CancellationException) { throw cancel }
+            catch (limitReached: PrepareAheadLimit) {
+                progress = progress.copy(running = false)
+                publish(limitReached.message ?: "Preparation stopped · completed audio kept")
+            } catch (error: Exception) {
+                if (gate.current(generation)) {
+                    issues.record(stage, error, input(), audio = key?.let(cache::file))
+                    progress = progress.copy(running = false)
+                    publish("${error.message ?: "Preparation failed"} · completed audio kept")
+                    mutable.value = mutable.value.copy(error = error.message ?: "Preparation failed")
+                }
+            } finally {
+                // Next reading/benchmark work joins this job, including native cleanup.
+                withContext(NonCancellable) {
+                    try { old?.join(); releaseSpeechModels() }
+                    catch (error: Exception) {
+                        issues.record("RELEASE_MODELS", error, input())
+                        if (gate.current(generation) && mutable.value.error == null) {
+                            progress = progress.copy(status = "Prepared audio kept · model cleanup failed")
+                            mutable.value = mutable.value.copy(status = progress.status,
+                                error = error.message ?: "Model cleanup failed")
+                        }
+                    } finally {
+                        if (gate.current(generation)) {
+                            progress = progress.copy(running = false)
+                            mutable.value = mutable.value.copy(preparing = false, prepareAheadProgress = progress)
+                            issues.activeInput = IssueInput()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun configureRuntime(chosen: Preferences) {
+        engine.configure(SpeechRuntimeConfig(chosen.speechThreads, chosen.allowSpinning))
+        aligner.configure(SpeechRuntimeConfig(chosen.alignmentThreads, chosen.allowSpinning))
+    }
+
+    private suspend fun releaseSpeechModels() = withContext(NonCancellable) {
+        try { engine.unload() } finally { aligner.close() }
+    }
+
+    private fun runtimeDescription(chosen: Preferences) =
+        "steps=5;temperature=.7;speed=1;backend=cpu;speechThreads=${chosen.speechThreads};" +
+            "alignmentThreads=${chosen.alignmentThreads};spinning=${chosen.allowSpinning};resampler=phase-sinc-v1"
+
     fun start(document: DocumentEntity = checkNotNull(state.value.document), pageIndex: Int = state.value.page?.index ?: state.value.viewPageIndex, wordId: String? = null) {
         if (benchmarkActive()) return
         val old = work
@@ -258,7 +431,7 @@ class ReadingCoordinator(
             var sampleCount: Int? = null
             fun input(words: List<SourceWord> = currentWords) = documentIssueInput(document, processingPage, words, currentSpeech,
                 currentIndex, wordId, mapOf("model" to chosen.model, "modelVersion" to modelVersion, "voice" to chosen.voice,
-                    "speed" to chosen.speed.toString(), "synthesis" to "steps=5;temperature=.7;speed=1;threads=2",
+                    "speed" to chosen.speed.toString(), "synthesis" to runtimeDescription(chosen),
                     "generation" to generation.toString(), "audioKey" to audioKey.orEmpty(), "sampleRate" to sampleRate.toString(), "sampleCount" to sampleCount.toString()))
             try {
                 // A cancelled native call owns its resources until it returns. New work waits here.
@@ -267,6 +440,7 @@ class ReadingCoordinator(
                 checkNotNull(player) { "Playback service is not connected" }
                 diagnostics.record(chosen.model, PlaybackStage.VERIFYING_MODELS)
                 models.verifyInstalled(chosen.model); models.verifyInstalled("alignment")
+                configureRuntime(chosen)
                 val manifest = models.packs.first { it.id == chosen.model }
                 modelVersion = manifest.version
                 val modelRevision = sha256(Json.encodeToString(VoicePack.serializer(), manifest).toByteArray())
@@ -309,7 +483,7 @@ class ReadingCoordinator(
                         val prepared = chunks.next()
                         val speech = prepared.speech
                         currentWords = prepared.words; currentSpeech = speech
-                        val key = cacheKey(document.id, speech, modelRevision, chosen.voice, "steps=5;temperature=.7;speed=1;threads=2", CtcAlignment.VERSION)
+                        val key = cacheKey(document.id, speech, modelRevision, chosen.voice, CACHE_SYNTHESIS_RECIPE, CtcAlignment.VERSION)
                         audioKey = key
                         issues.activeInput = input()
                         stage = "READ_AUDIO_CACHE"
@@ -421,6 +595,7 @@ class ReadingCoordinator(
                         selectedWordId = if (queued.isEmpty()) blocked?.wordId else mutable.value.selectedWordId)
                 }
             } finally {
+                withContext(NonCancellable) { old?.join() }
                 if (gate.current(generation)) {
                     producerFinished = true
                     // A short document, or an error further ahead, must not strand valid audio.
@@ -488,7 +663,7 @@ class ReadingCoordinator(
         check(!benchmarkActive()) { "Finish or cancel the benchmark before changing a model" }
         val old = work; val generation = invalidate()
         mutable.value = mutable.value.copy(preparing = false, status = "Paused")
-        old?.join(); engine.unload(); aligner.close()
+        old?.join(); releaseSpeechModels()
         if (gate.current(generation)) {
             settings = settings.copy(model = model, voice = voice)
             preferences.set(settings)
@@ -496,11 +671,11 @@ class ReadingCoordinator(
     }
     suspend fun deleteModel(id: String) {
         check(!benchmarkActive()) { "Finish or cancel the benchmark before removing a model" }
-        val old = work; stop(); old?.join(); engine.unload(); aligner.close(); models.delete(id)
+        val old = work; stop(); old?.join(); releaseSpeechModels(); models.delete(id)
     }
     suspend fun releaseForBenchmark() {
         val old = work
-        stop(); old?.join(); engine.unload(); aligner.close()
+        stop(); old?.join(); releaseSpeechModels()
     }
     suspend fun clearCache() { val old = work; stop(); old?.join(); cache.clear() }
     suspend fun deleteDocument(document: DocumentEntity) {

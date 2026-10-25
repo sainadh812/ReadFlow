@@ -1,4 +1,14 @@
-# OCR models and processing effort — 0.1.10
+# OCR model update — 0.1.13
+
+The current app offers **ML Kit**, **PaddleOCR mobile Latin** and **TeleOCR**. ML Kit remains the default; PaddleOCR and TeleOCR are optional pinned downloads. PaddleOCR is about 13 MB and uses an actual PP-OCRv5 mobile detector plus Latin recognizer on ONNX Runtime CPU. It recognizes text and line order, without a separate table-structure model. See [PaddleOCR implementation and model provenance](PADDLE_OCR.md).
+
+TeleOCR retains a single warm native session for up to 60 seconds between calls; PaddleOCR retains detector/recognizer sessions for up to 45 seconds. Quality changes, explicit removal, benchmark boundaries and memory pressure release sessions after native work drains. Cancelled TeleOCR sessions are discarded. Heavy OCR is best applied before listening through **Prepare pages before listening**, or manually to a difficult page. Default live recognition remains ML Kit.
+
+The phone testbench compares all three on the same synthetic page, distinguishing fresh and warm sessions. Raw recognition is scored before narration punctuation; structured table scores are unavailable for engines without table reconstruction. Memory is sampled during inference once per second. See [benchmark definitions](PERFORMANCE_AND_BENCHMARK.md).
+
+The following section records the original 0.1.10 setup and validation. Its one-page session lifetime has been superseded by the reuse policy above.
+
+## Original OCR models and processing effort — 0.1.10
 
 Install the ARM64 APK over 0.1.9. The application ID remains `app.readflow`; version code rises from 10 to 11. The Room database version, private document paths, voice-model manifests and preference storage name are unchanged. Existing extraction defaults remain ML Kit and Medium/Balanced. Do not uninstall or clear app data when updating.
 

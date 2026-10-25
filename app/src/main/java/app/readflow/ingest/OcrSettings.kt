@@ -21,3 +21,15 @@ enum class OcrQuality(
         fun fromId(id: String?): OcrQuality = entries.firstOrNull { it.id == id } ?: BALANCED
     }
 }
+
+/** The mobile detector budget is separate from PDF rendering detail. */
+internal val OcrQuality.paddleDetectionSide: Int get() = when (this) {
+    OcrQuality.FAST -> 736
+    OcrQuality.BALANCED -> 960
+    OcrQuality.HIGH -> 1280
+}
+internal val OcrQuality.paddleThreads: Int get() = when (this) {
+    OcrQuality.FAST -> 2
+    OcrQuality.BALANCED -> 3
+    OcrQuality.HIGH -> 4
+}

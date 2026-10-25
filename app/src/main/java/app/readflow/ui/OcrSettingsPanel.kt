@@ -37,40 +37,43 @@ import java.util.Locale
     val lastRun by vm.ocrLastRun.collectAsStateWithLifecycle()
     val playback by vm.playback.collectAsStateWithLifecycle()
     val refreshing by vm.refreshingText.collectAsStateWithLifecycle()
-    val setup = downloads["teleocr"]
-    val installed = remember(setup) { vm.app.ocrModels.installed("teleocr") }
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text("Choose how ReadFlow sees the page.", Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
             style = MaterialTheme.typography.headlineSmall)
         SettingsCard("Recognition model", Icons.Default.DocumentScanner) {
-            Text("Both work on your phone. ML Kit is the original, built-in option.", style = MaterialTheme.typography.bodySmall,
+            Text("All three process pages locally. Choose a model, then compare it in the phone testbench.", style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             OcrChoice("ML Kit · Original", "Built in · fast · offline", prefs.ocrEngine == "mlkit", true) { vm.chooseOcrEngine("mlkit") }
-            OcrChoice("TeleOCR", "Experimental · text and tables · 1.4 GB download", prefs.ocrEngine == "teleocr", installed) { vm.chooseOcrEngine("teleocr") }
-            Text("TeleOCR may take much longer. Compare both on your phone in the testbench. Tables read row by row; some words may not highlight on the original page.",
-                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            if (setup?.busy == true) {
-                Text(setup.phase, style = MaterialTheme.typography.bodySmall)
-                if (setup.total > 0) {
-                    LinearProgressIndicator(progress = { (setup.received.toFloat() / setup.total).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth())
-                    Text(String.format(Locale.US, "%.1f / %.1f MB", setup.received / 1_000_000.0, setup.total / 1_000_000.0), style = MaterialTheme.typography.bodySmall)
-                } else LinearProgressIndicator(Modifier.fillMaxWidth())
-                TextButton(onClick = vm::cancelTeleOcrDownload) { Text("Cancel download") }
-            } else if (!installed) {
-                setup?.let { Text(it.phase, style = MaterialTheme.typography.bodySmall) }
-                Button(onClick = vm::downloadTeleOcr, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
-                    Icon(Icons.Default.Download, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp))
-                    Text(if (setup?.canResume == true) "Resume TeleOCR download" else "Download TeleOCR")
+            listOf("paddleocr", "teleocr").forEach { id ->
+                val setup = downloads[id]
+                val installed = remember(setup, id) { vm.app.ocrModels.installed(id) }
+                val pack = vm.app.ocrModels.packs.first { it.id == id }
+                val name = modelDisplayName(id)
+                val size = String.format(Locale.US, "%.1f MB", pack.installedBytes / 1_000_000.0)
+                val description = if (id == "paddleocr") "Mobile Latin text recognition · $size" else "Experimental text and tables · $size"
+                OcrChoice(name, description, prefs.ocrEngine == id, installed) { vm.chooseOcrEngine(id) }
+                if (setup?.busy == true) {
+                    Text("$name · ${setup.phase}", style = MaterialTheme.typography.bodySmall)
+                    if (setup.total > 0) {
+                        LinearProgressIndicator(progress = { (setup.received.toFloat() / setup.total).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth())
+                        Text(String.format(Locale.US, "%.1f / %.1f MB", setup.received / 1_000_000.0, setup.total / 1_000_000.0), style = MaterialTheme.typography.bodySmall)
+                    } else LinearProgressIndicator(Modifier.fillMaxWidth())
+                    TextButton(onClick = { vm.cancelOcrDownload(id) }) { Text("Cancel $name download") }
+                } else if (!installed) {
+                    setup?.let { Text(it.phase, style = MaterialTheme.typography.bodySmall) }
+                    FilledTonalButton(onClick = { vm.downloadOcr(id) }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                        Icon(Icons.Default.Download, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp))
+                        Text(if (setup?.canResume == true) "Resume $name download" else "Download $name")
+                    }
+                } else {
+                    TextButton(onClick = { vm.deleteOcr(id) }) { Text("Remove $name download") }
                 }
-                Text("Allow about 3 GB of free storage during setup. Keep ReadFlow open; an interrupted download can resume.", style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
-            } else {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Icon(Icons.Default.CheckCircle, null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.primary)
-                    Text("TeleOCR installed · ready offline", style = MaterialTheme.typography.bodySmall)
-                }
-                TextButton(onClick = vm::deleteTeleOcr) { Text("Remove TeleOCR download") }
+                if (id == "paddleocr") HorizontalDivider()
             }
+            Text("PaddleOCR reads text; it has no dedicated table-structure model. TeleOCR can take several minutes per page: prepare difficult pages before listening. Some recognized words may lack exact highlights on the original page.",
+                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("TeleOCR needs about 3 GB of free storage during setup. Keep ReadFlow open; interrupted downloads can resume.",
+                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         SettingsCard("Recognition detail", Icons.Default.Tune) {
             listOf(

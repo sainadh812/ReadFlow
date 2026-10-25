@@ -32,5 +32,5 @@ class BenchmarkStore(private val directory: File) {
 
     fun report(state: BenchmarkState): String = json.encodeToString(state)
 
-    companion object { const val MAX_ROWS = 40; const val MAX_BYTES = 256 * 1024 }
+    companion object { const val MAX_ROWS = 512; const val MAX_BYTES = 2 * 1024 * 1024 }
 }

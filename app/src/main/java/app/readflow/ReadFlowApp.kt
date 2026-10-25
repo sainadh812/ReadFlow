@@ -17,11 +17,15 @@ import java.io.File
 class ReadFlowApp : Application() {
     val database by lazy { ReadFlowDatabase.open(this) }
     val documents: Documents by lazy { Documents(this, database, LocalExtraction(), ReadabilityArticles(this, issues), issues, preferences, teleOcr,
-        diagnostics, { benchmarks.busy.value }) }
+        diagnostics, { benchmarks.busy.value }, paddleOcr) }
     val preferences by lazy { PreferenceStore(this) }
     val models by lazy { ModelStore(this) }
     val ocrModels by lazy { ModelStore(this, "ocr-model-manifests.json", "-ocr") }
-    val teleOcr by lazy { TeleOcrEngine(this, ocrModels) }
+    private val teleOcrInstance = lazy { TeleOcrEngine(this, ocrModels) }
+    val teleOcr by teleOcrInstance
+    private val paddleOcrInstance = lazy { PaddleOcrEngine(ocrModels) }
+    val paddleOcr by paddleOcrInstance
+    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     val cache by lazy { AudioCache(this, database) }
     val diagnostics by lazy { PlaybackDiagnostics(File(noBackupFilesDir, "diagnostics")) }
     val issues by lazy { IssueLogs(File(noBackupFilesDir, "issues"), ::issueEnvironment) }
@@ -32,8 +36,8 @@ class ReadFlowApp : Application() {
     val playback: ReadingCoordinator by playbackInstance
     val benchmarks: BenchmarkCoordinator by lazy { BenchmarkCoordinator(CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate),
         BenchmarkStore(File(noBackupFilesDir, "benchmark")),
-        prepare = { playback.releaseForBenchmark(); documents.awaitExtractionIdle() },
-        execute = { options, update -> BenchmarkRunner(this, models, ocrModels, teleOcr).run(options, update) }) }
+        prepare = { playback.releaseForBenchmark(); documents.awaitExtractionIdle(); teleOcr.close(); paddleOcr.close() },
+        execute = { options, update -> BenchmarkRunner(this, models, ocrModels, teleOcr, paddleOcr).run(options, update) }) }
     override fun onCreate() {
         super.onCreate()
         val previous = Thread.getDefaultUncaughtExceptionHandler()
@@ -48,6 +52,15 @@ class ReadFlowApp : Application() {
     }
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
-        if (isMemoryPressureLevel(level) && playbackInstance.isInitialized()) playback.pressure()
+        if (isMemoryPressureLevel(level)) {
+            if (playbackInstance.isInitialized()) playback.pressure()
+            // Engines own their locks until native work drains. Do not free a live inference.
+            appScope.launch {
+                // Release an idle engine immediately even while the other one drains
+                // a long inference. The two model owners have independent locks.
+                if (teleOcrInstance.isInitialized()) launch { teleOcr.close() }
+                if (paddleOcrInstance.isInitialized()) launch { paddleOcr.close() }
+            }
+        }
     }
 }

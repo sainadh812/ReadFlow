@@ -3,6 +3,7 @@ package app.readflow.benchmark
 import java.text.Normalizer
 import java.util.Locale
 import kotlinx.serialization.Serializable
+import app.readflow.core.RecognizedTable
 
 @Serializable
 data class BenchmarkOptions(
@@ -12,11 +13,20 @@ data class BenchmarkOptions(
     val ocrQuality: String = "balanced",
     /** Speech warm samples after one cold sample; OCR total page runs per selected engine. */
     val repetitions: Int = 3,
+    val speechThreads: Int = 2,
+    val alignmentThreads: Int = 2,
+    val allowSpinning: Boolean = false,
+    /** Sequential 2/3/4-thread warm blocks; one resident model, with thermal state reported. */
+    val compareCpuThreads: Boolean = false,
+    /** Longer preparation sequence including alignment; not a speaker/underrun measurement. */
+    val sustainedSpeechSamples: Int = 0,
 ) {
     fun validated(): BenchmarkOptions {
         require(repetitions in setOf(1, 3, 5)) { "Choose 1, 3, or 5 samples" }
-        require(speechModels.all { it in setOf("kokoro", "pocket") }) { "Unknown speech model" }
-        require(ocrEngines.all { it in setOf("mlkit", "teleocr") }) { "Unknown OCR engine" }
+        require(speechModels.all { it in setOf("kokoro", "pocket", "sc-kokoro") }) { "Unknown speech model" }
+        require(ocrEngines.all { it in setOf("mlkit", "teleocr", "paddleocr") }) { "Unknown OCR engine" }
+        require(speechThreads in 1..4 && alignmentThreads in 1..4) { "Choose 1–4 CPU threads" }
+        require(sustainedSpeechSamples in setOf(0, 30, 60)) { "Choose a supported sustained test length" }
         require(ocrQuality in setOf("fast", "balanced", "high")) { "Unknown OCR quality" }
         require(speechModels.isNotEmpty() || ocrEngines.isNotEmpty()) { "Select a speech or OCR test" }
         return copy(speechModels = speechModels.distinct(), ocrEngines = ocrEngines.distinct())
@@ -34,6 +44,9 @@ data class DeviceSnapshot(
     val batteryTemperatureC: Double? = null,
     /** Whole process proportional set size, not Java heap or whole-device RAM. */
     val processPssMiB: Double? = null,
+    val charging: Boolean? = null,
+    val powerSave: Boolean? = null,
+    val availableMemoryMiB: Double? = null,
 )
 
 @Serializable
@@ -63,11 +76,30 @@ data class BenchmarkRow(
     val note: String? = null,
     /** Sampled after this measurement, before speech-model teardown. Not a peak reading. */
     val deviceAfter: DeviceSnapshot? = null,
+    val observedPeakPssMiB: Double? = null,
+    val memorySamples: Int = 0,
+    val backend: String? = null,
+    val speechThreads: Int? = null,
+    val alignmentThreads: Int? = null,
+    val allowSpinning: Boolean? = null,
+    val resampleMs: Long? = null,
+    val alignmentInferenceMs: Long? = null,
+    val alignmentDecodeMs: Long? = null,
+    val alignmentLoadMs: Long? = null,
+    val alignmentNormalizationMs: Long? = null,
+    val alignmentOutputCopyMs: Long? = null,
+    val ocrLayoutMs: Long? = null,
+    val ocrRecognitionMs: Long? = null,
+    /** Synthetic fixture output only; original user documents are never included. */
+    val recognizedText: String? = null,
+    val referenceText: String? = null,
+    val tableStructureCorrect: Boolean? = null,
+    val tableCellAccuracy: Double? = null,
 )
 
 @Serializable
 data class BenchmarkState(
-    val schemaVersion: Int = 1,
+    val schemaVersion: Int = 2,
     val fixtureVersion: String = BenchmarkFixtures.VERSION,
     val appVersion: String = "",
     val status: BenchmarkStatus = BenchmarkStatus.IDLE,
@@ -80,10 +112,13 @@ data class BenchmarkState(
     val rows: List<BenchmarkRow> = emptyList(),
     val before: DeviceSnapshot? = null,
     val after: DeviceSnapshot? = null,
-    /** Maximum across before, completed measurements, and after; not continuously sampled peak RAM. */
+    /** Highest observed PSS, sampled during work every second; brief peaks may still be missed. */
     val highestObservedPssMiB: Double? = null,
     val memorySampleCount: Int = 0,
     val error: String? = null,
+    val cancellationReason: String? = null,
+    val currentDevice: DeviceSnapshot? = null,
+    val memorySamplingIntervalMs: Long = 1000,
 ) {
     val running get() = status == BenchmarkStatus.RUNNING
 }
@@ -126,5 +161,23 @@ object BenchmarkMetrics {
         val expected = BenchmarkFixtures.TABLE_ROWS.flatMap { it }.joinToString(" ")
             .lowercase(Locale.ROOT).split(' ')
         return actual.windowed(expected.size).any { it == expected }
+    }
+
+    fun tableStructureCorrect(tables: List<RecognizedTable>): Boolean = tables.size == 1 && tables.single().let {
+        it.rows == BenchmarkFixtures.TABLE_ROWS.size && it.columns == BenchmarkFixtures.TABLE_ROWS.first().size &&
+            it.cells.size == it.rows * it.columns && it.cells.all { cell -> cell.rowSpan == 1 && cell.columnSpan == 1 } &&
+            it.cells.map { cell -> cell.row to cell.column }.toSet().size == it.cells.size &&
+            it.cells.all { cell -> cell.row in 0 until it.rows && cell.column in 0 until it.columns }
+    }
+
+    /** Values are checked in their actual cell positions, preserving financial punctuation. */
+    fun tableCellAccuracy(tables: List<RecognizedTable>): Double {
+        if (tables.size != 1) return 0.0
+        val cells = tables.single().cells.groupBy { it.row to it.column }
+        val expected = BenchmarkFixtures.TABLE_ROWS
+        val matches = expected.mapIndexed { row, values -> values.mapIndexed { column, value ->
+            cells[row to column]?.singleOrNull()?.let { it.rowSpan == 1 && it.columnSpan == 1 && normalizeOcr(it.text) == value } == true
+        }.count { it } }.sum()
+        return matches.toDouble() / maxOf(expected.sumOf { it.size }, tables.single().cells.size)
     }
 }

@@ -14,7 +14,7 @@ data class TeleOcrCell(val text: String, val row: Int, val column: Int, val rowS
     val columnSpan: Int = 1, val header: Boolean = false)
 /** Empty cells and merged-cell spans are retained even though they contain no spoken words. */
 data class TeleOcrTable(val regionIndex: Int, val rowCount: Int, val columnCount: Int, val cells: List<TeleOcrCell>)
-data class TeleOcrAdapted(val elements: List<TextElement>, val warnings: List<String>, val tables: List<TeleOcrTable>)
+data class TeleOcrAdapted(val elements: List<TextElement>, val warnings: List<String>, val tables: List<TeleOcrTable>, val recognitionText: String)
 
 /**
  * TeleOCR uses two passes: layout detection followed by recognition of each cropped region.
@@ -87,6 +87,7 @@ object TeleOcrOutput {
         val elements = mutableListOf<TextElement>()
         val warnings = mutableListOf<String>()
         val tables = mutableListOf<TeleOcrTable>()
+        val recognized = mutableListOf<String>()
         val usedReferences = mutableSetOf<Int>()
         var nextBlock = 0
         var unmatched = 0
@@ -130,6 +131,7 @@ object TeleOcrOutput {
                     }
             }
             val matches = matchWords(words.map { it.source }, references.map { it.value.text })
+            recognized += words.joinToString(" ") { it.source }
             words.forEachIndexed { index, word ->
                 val reference = matches[index]?.let(references::get)
                 val boxes = reference?.value?.boxes.orEmpty()
@@ -140,7 +142,7 @@ object TeleOcrOutput {
         require(elements.isNotEmpty()) { "TeleOCR returned no readable text." }
         if (unmatched > 0) warnings += "Exact word highlights are unavailable for $unmatched of ${elements.size} TeleOCR words; those words remain available in text view."
         if (tables.isNotEmpty()) warnings += "Tables are read row by row, with pauses between cells. Blank cells and merged cells are retained; column headings are not repeated for each value."
-        return TeleOcrAdapted(elements, warnings.distinct(), tables)
+        return TeleOcrAdapted(elements, warnings.distinct(), tables, recognized.joinToString("\n"))
     }
 
     fun parseTable(raw: String, regionIndex: Int = 0): TeleOcrTable {

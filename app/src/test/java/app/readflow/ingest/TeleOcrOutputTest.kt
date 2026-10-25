@@ -16,6 +16,28 @@ class TeleOcrOutputTest {
         try { block(); fail("Invalid or incomplete output must be rejected") } catch (_: IllegalArgumentException) { }
     }
 
+    @Test fun financialBenchmarkScoresRecognitionBeforeNarrationPunctuation() {
+        val fixture = app.readflow.benchmark.BenchmarkFixtures
+        val table = fixture.TABLE_ROWS.joinToString("") { row -> row.joinToString("") { "<fcel>$it" } + "<nl>" }
+        val adapted = TeleOcrOutput.adapt(listOf(
+            TeleOcrRegion("text", region, content = fixture.PARAGRAPH_LINES.joinToString("\n")),
+            TeleOcrRegion("table", region, content = table),
+        ))
+        val metrics = app.readflow.benchmark.BenchmarkMetrics
+        assertEquals(0.0, metrics.characterErrorRate(fixture.OCR_REFERENCE, adapted.recognitionText)!!, 0.0)
+        assertTrue(metrics.tableReadingOrderCorrect(adapted.recognitionText))
+        val narrated = adapted.elements.joinToString(" ") { it.text }
+        assertTrue(metrics.characterErrorRate(fixture.OCR_REFERENCE, narrated)!! > .04)
+        assertFalse(metrics.tableReadingOrderCorrect(narrated))
+    }
+
+    @Test fun rawRecognitionRetainsRealFinancialPunctuationAndErrors() {
+        val adapted = TeleOcrOutput.adapt(listOf(TeleOcrRegion("table", region,
+            content = "<fcel>Assets<fcel>\$9.3<nl><fcel>Costs<fcel>\$1,000<nl>")))
+        assertEquals("Assets \$9.3 Costs \$1,000", adapted.recognitionText)
+        assertTrue(app.readflow.benchmark.BenchmarkMetrics.characterErrorRate("Assets \$9.8 Costs \$1,000", adapted.recognitionText)!! > 0)
+    }
+
     @Test fun officialDetectionFormatScalesCoordinatesAndKeepsModelOrder() {
         val layout = TeleOcrOutput.parseLayout("<box:500 100 900 300><label:text><up>\n<box:50 100 450 300><label:table><right>", 2000f, 1000f)
         assertEquals(Box(1000f, 100f, 1800f, 300f), layout.regions[0].box)

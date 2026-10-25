@@ -93,6 +93,19 @@ import java.util.Locale
                     SettingsSwitch("Show reading metrics", "Speech speed, prepared audio and buffering gaps while you read.", prefs.showPerformance) {
                         vm.update(prefs.copy(showPerformance = it))
                     }
+                    Text("Speech processing effort", style = MaterialTheme.typography.bodyMedium)
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        listOf(Triple("Low", 1, 1), Triple("Medium", 2, 2), Triple("High", 4, 2)).forEach { (label, speech, alignment) ->
+                            FilterChip(selected = prefs.speechThreads == speech && prefs.alignmentThreads == alignment,
+                                onClick = { vm.updateSpeechPerformance(prefs.copy(speechThreads = speech, alignmentThreads = alignment)) },
+                                label = { Text(label) }, modifier = Modifier.weight(1f))
+                        }
+                    }
+                    Text("Uses ${prefs.speechThreads} speech and ${prefs.alignmentThreads} timing threads. More threads may finish faster but can increase heat. Voice quality stays the same; compare sustained results on your phone.",
+                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    SettingsSwitch("Keep CPU workers active", "Experimental: may reduce brief waits, with higher battery use. Off is recommended for long reading.", prefs.allowSpinning) {
+                        vm.updateSpeechPerformance(prefs.copy(allowSpinning = it))
+                    }
                     HorizontalDivider(Modifier.padding(vertical = 4.dp))
                     FilledTonalButton(onClick = { vm.screen.value = "benchmark" }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
                         Icon(Icons.Default.Science, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Open phone testbench")

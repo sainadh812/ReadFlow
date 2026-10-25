@@ -254,6 +254,9 @@ class PlaybackDiagnosticsTest {
         val measured = diagnostics.extractionPerformance.value!!
         assertEquals("TeleOCR", measured.engine)
         assertEquals(36_000.0, measured.charactersPerMinute!!, 0.001)
+        diagnostics.recordExtraction("PaddleOCR", 1_200, 1_000)
+        assertEquals("PaddleOCR", diagnostics.extractionPerformance.value!!.engine)
+        assertEquals(72_000.0, diagnostics.extractionPerformance.value!!.charactersPerMinute!!, 0.001)
         diagnostics.recordExtraction("Embedded PDF", 1_200, 0)
         assertNull(diagnostics.extractionPerformance.value!!.charactersPerMinute)
         diagnostics.recordExtraction("ML Kit", -1, -1)

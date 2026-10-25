@@ -20,6 +20,7 @@ class BenchmarkCoordinator(
     private var job: Job? = null
     private var revision = 0L
     @Volatile private var cancelling = false
+    @Volatile private var cancellationReason: String? = null
 
     init {
         val expectedRevision = revision
@@ -34,7 +35,7 @@ class BenchmarkCoordinator(
     fun start(options: BenchmarkOptions): Boolean {
         if (mutableBusy.value) return false
         val validated = options.validated()
-        revision++; cancelling = false; mutableBusy.value = true
+        revision++; cancelling = false; cancellationReason = null; mutableBusy.value = true
         mutable.value = BenchmarkState(status = BenchmarkStatus.RUNNING,
             phase = "Pausing reading and preparing the test", options = validated)
         val assigned = CompletableDeferred<Unit>()
@@ -63,6 +64,7 @@ class BenchmarkCoordinator(
             } finally {
                 withContext(NonCancellable) {
                     if (latest.running) latest = latest.copy(status = BenchmarkStatus.FAILED, phase = "Test interrupted")
+                    if (latest.status == BenchmarkStatus.CANCELLED) latest = latest.copy(cancellationReason = cancellationReason)
                     try { withContext(ioDispatcher) { store.save(latest) } }
                     catch (_: Exception) {
                         latest = latest.copy(error = listOfNotNull(latest.error, "Results could not be saved; copy them before closing.").joinToString(" "))
@@ -76,8 +78,9 @@ class BenchmarkCoordinator(
         return true
     }
 
-    fun cancel() {
+    fun cancel(reason: String = "Stopped by user") {
         if (!mutableBusy.value) return
+        if (!cancelling) cancellationReason = reason.take(160)
         cancelling = true
         mutable.value = mutable.value.copy(status = BenchmarkStatus.RUNNING,
             phase = "Stopping · waiting for model work to finish")

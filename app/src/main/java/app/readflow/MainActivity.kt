@@ -36,7 +36,10 @@ class MainActivity : ComponentActivity() {
         super.onStop()
         // Benchmarks are foreground tools, not unattended background model workloads.
         // Configuration changes retain the app-owned run and its cancellation gate.
-        if (!isChangingConfigurations) vm.cancelBenchmark()
+        if (!isChangingConfigurations) {
+            vm.cancelBenchmark("ReadFlow moved to the background")
+            if (vm.playback.value.prepareAheadProgress?.running == true) vm.app.playback.stop()
+        }
     }
     private fun handleShare(intent: Intent) {
         if (intent.action != Intent.ACTION_SEND) return

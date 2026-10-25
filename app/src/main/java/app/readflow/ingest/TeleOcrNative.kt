@@ -23,7 +23,7 @@ object TeleOcrNative {
         return Session(nativeCreate(threads))
     }
 
-    /** Own one session per page, reuse it for layout/region passes, then close it. */
+    /** Reuse one session across pages; cancel permanently invalidates it. Serialize work and close. */
     class Session internal constructor(handle: Long) : AutoCloseable {
         private val nativeHandle = AtomicLong(handle)
 

@@ -134,7 +134,7 @@ class PlaybackDiagnostics(private val directory: File) {
         synchronized(performanceLock) {
             if (cached && _extractionPerformance.value?.cached == false) return@synchronized
             _extractionPerformance.value = ExtractionPerformanceMeasurement(
-                engine = engine.takeIf { it in setOf("ML Kit", "ML Kit fallback", "TeleOCR", "Embedded PDF") } ?: "Other extraction",
+                engine = engine.takeIf { it in setOf("ML Kit", "ML Kit fallback", "TeleOCR", "PaddleOCR", "Embedded PDF") } ?: "Other extraction",
                 characters = characters.coerceAtLeast(0),
                 elapsedMs = elapsedMs.coerceAtLeast(0),
                 cached = cached,
@@ -289,7 +289,7 @@ class PlaybackDiagnostics(private val directory: File) {
             appendLine("Android: ${Build.VERSION.RELEASE}, API ${Build.VERSION.SDK_INT}")
             appendLine("ABIs: ${Build.SUPPORTED_ABIS.joinToString()}")
             appendLine("Java heap limit: ${Runtime.getRuntime().maxMemory() / (1024 * 1024)} MiB")
-            appendLine("Runtime: Sherpa 1.13.8; alignment ORT 1.20.0; CPU, two threads")
+            appendLine("Runtime: Sherpa 1.13.8; alignment ORT 1.20.0; CPU, configurable threads")
             appendLine(performanceReport())
             appendLine("Last playback step: ${checkpoint?.let { Json.encodeToString(PlaybackCheckpoint.serializer(), it) } ?: "No playback attempt recorded"}")
             appendLine("Recent process exits:\n$exits")

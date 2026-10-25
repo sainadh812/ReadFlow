@@ -14,7 +14,7 @@ import kotlinx.coroutines.sync.withLock
 import java.io.File
 import kotlin.math.*
 
-/** Local, opt-in TeleOCR. Models live only for one page and are released before returning. */
+/** Local, opt-in TeleOCR. One warm session; idle/pressure cleanup and serialized native calls. */
 class TeleOcrEngine(private val context: Context, private val models: ModelStore) {
     private val lock = Mutex()
     private val mutableProgress = MutableStateFlow<String?>(null)
@@ -22,17 +22,49 @@ class TeleOcrEngine(private val context: Context, private val models: ModelStore
     private val mutableLastRun = MutableStateFlow<String?>(null)
     val lastRun = mutableLastRun.asStateFlow()
 
-    suspend fun deleteModels() = lock.withLock { models.delete("teleocr") }
+    private val cleanupScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var idleCleanup: Job? = null
+    private var warmSession: TeleOcrNative.Session? = null
+    private var warmQuality: OcrQuality? = null
+    private val rgbBuffers = linkedMapOf<Int, ByteArray>()
+    private var rowBuffer = IntArray(0)
+    @Volatile var lastMetrics: OcrRunMetrics? = null
+        private set
+
+    suspend fun close() = withContext(Dispatchers.IO) { lock.withLock { releaseLocked() } }
+    suspend fun deleteModels() = withContext(Dispatchers.IO) { lock.withLock {
+        releaseLocked(); models.delete("teleocr")
+    } }
+    private fun releaseLocked() {
+        idleCleanup?.cancel(); idleCleanup = null
+        val old = warmSession; warmSession = null; warmQuality = null
+        rgbBuffers.clear(); rowBuffer = IntArray(0)
+        old?.close()
+    }
+    private fun releaseWhenIdle() {
+        idleCleanup?.cancel()
+        idleCleanup = cleanupScope.launch {
+            delay(60_000)
+            lock.withLock { releaseLocked() }
+        }
+    }
 
     suspend fun recognize(bitmap: Bitmap, quality: OcrQuality, reference: List<TextElement>): ExtractedPage =
         withContext(Dispatchers.IO) { lock.withLock {
             val started = System.nanoTime()
+            idleCleanup?.cancel(); idleCleanup = null
+            lastMetrics = null
+            var successful = false
             try {
                 check(models.installed("teleocr")) { "Download TeleOCR in Settings first" }
+                // A different quality needs a new native session. Release the old model
+                // before checking free RAM, otherwise its own resident pages can make
+                // the replacement appear impossible even when enough memory is available.
+                if (warmSession != null && warmQuality != quality) releaseLocked()
                 val memory = ActivityManager.MemoryInfo()
                 context.getSystemService(ActivityManager::class.java).getMemoryInfo(memory)
                 val requiredMemory = if (quality == OcrQuality.HIGH) 3L * 1024 * 1024 * 1024 else 2560L * 1024 * 1024
-                check(!memory.lowMemory && memory.availMem >= requiredMemory) {
+                check(!memory.lowMemory && (warmSession != null && warmQuality == quality || memory.availMem >= requiredMemory)) {
                     "TeleOCR needs more free memory; close other apps and retry"
                 }
                 mutableProgress.value = "Checking TeleOCR model"
@@ -45,25 +77,38 @@ class TeleOcrEngine(private val context: Context, private val models: ModelStore
                 val cropPixels = when (quality) { OcrQuality.FAST -> 512 * 784; OcrQuality.BALANCED -> 1024 * 784; OcrQuality.HIGH -> 2048 * 784 }
                 val threads = when (quality) { OcrQuality.FAST -> 2; OcrQuality.BALANCED -> 3; OcrQuality.HIGH -> 4 }
                 val result = withTimeout(10 * 60_000L) {
-                    val session = TeleOcrNative.create(threads)
-                    try {
-                        coroutineScope {
+                    val cold = warmSession == null
+                    val session = warmSession ?: TeleOcrNative.create(threads).also {
+                        warmSession = it; warmQuality = quality
+                    }
+                    var loadMs = 0L
+                    var layoutMs = 0L
+                    var recognitionMs = 0L
+                    coroutineScope {
+                            val owner = currentCoroutineContext().job
                             // Native calls are synchronous; cancellation must reach them from another thread.
                             val cancellation = launch(Dispatchers.Default, start = CoroutineStart.UNDISPATCHED) {
-                                try { awaitCancellation() } finally { session.cancel() }
+                                try { awaitCancellation() } finally { if (!owner.isActive) session.cancel() }
                             }
                             try {
                                 currentCoroutineContext().ensureActive()
-                                session.load(File(directory, "NaviDC-OCR-Q5_K_M.gguf").path,
-                                    File(directory, "NaviDC-OCR-mmproj-q8_0.gguf").path, imageTokens)
+                                if (cold) {
+                                    val loadStarted = System.nanoTime()
+                                    session.load(File(directory, "NaviDC-OCR-Q5_K_M.gguf").path,
+                                        File(directory, "NaviDC-OCR-mmproj-q8_0.gguf").path, imageTokens)
+                                    loadMs = (System.nanoTime() - loadStarted) / 1_000_000
+                                }
                                 currentCoroutineContext().ensureActive()
                                 mutableProgress.value = "TeleOCR · finding text and tables"
+                                val layoutStarted = System.nanoTime()
                                 val layoutImage = Bitmap.createScaledBitmap(bitmap, 1036, 1036, true)
                                 val rawLayout = try { infer(session, layoutImage, TeleOcrOutput.LAYOUT_PROMPT, 4096) }
                                     finally { if (layoutImage !== bitmap) layoutImage.recycle() }
+                                layoutMs = (System.nanoTime() - layoutStarted) / 1_000_000
                                 val layout = TeleOcrOutput.parseLayout(rawLayout, bitmap.width.toFloat(), bitmap.height.toFloat())
                                 check(layout.regions.isNotEmpty()) { "TeleOCR could not locate text on this page" }
                                 check(layout.regions.size <= 64) { "This page is too complex for local TeleOCR" }
+                                val recognitionStarted = System.nanoTime()
                                 val regions = layout.regions.mapIndexed { index, region ->
                                     currentCoroutineContext().ensureActive()
                                     mutableProgress.value = "TeleOCR · section ${index + 1} of ${layout.regions.size}"
@@ -76,6 +121,7 @@ class TeleOcrEngine(private val context: Context, private val models: ModelStore
                                         } finally { crop.recycle() }
                                     }
                                 }
+                                recognitionMs = (System.nanoTime() - recognitionStarted) / 1_000_000
                                 val adapted = TeleOcrOutput.adapt(regions, reference)
                                 check(adapted.elements.isNotEmpty()) { "TeleOCR returned no readable text" }
                                 // A failed/partial layout must not silently discard a large portion of a book page.
@@ -85,16 +131,17 @@ class TeleOcrEngine(private val context: Context, private val models: ModelStore
                                 check(reference.size < 10 || located >= reference.size * .8f) {
                                     "TeleOCR left too much detected text outside its reading regions"
                                 }
+                                lastMetrics = OcrRunMetrics(cold, loadMs, layoutMs, recognitionMs, "llama.cpp CPU · $threads threads")
                                 ExtractedPage(adapted.elements, bitmap.width.toFloat(), bitmap.height.toFloat(),
                                     "TeleOCR · ${quality.id}", layout.warnings + adapted.warnings, preserveOrder = true,
                                     tables = adapted.tables.map { table -> RecognizedTable(regions[table.regionIndex].box,
                                         table.rowCount, table.columnCount, table.cells.map { cell ->
                                             RecognizedCell(cell.text, cell.row, cell.column, cell.rowSpan, cell.columnSpan, cell.header)
-                                        }) })
+                                        }) }, recognitionText = adapted.recognitionText)
                             } finally { withContext(NonCancellable) { cancellation.cancelAndJoin() } }
-                        }
-                    } finally { session.close() }
+                    }
                 }
+                successful = true
                 mutableLastRun.value = "TeleOCR · ${elapsed(started)} seconds"
                 result.copy(method = "${result.method} · ${elapsed(started)}s")
             } catch (timeout: TimeoutCancellationException) {
@@ -106,7 +153,11 @@ class TeleOcrEngine(private val context: Context, private val models: ModelStore
                 fallback(bitmap, reference, error.message ?: "TeleOCR could not recognize this page", started)
             } catch (_: LinkageError) {
                 fallback(bitmap, reference, "The local TeleOCR runtime could not load on this device", started)
-            } finally { mutableProgress.value = null }
+            } finally {
+                mutableProgress.value = null
+                // A cancelled session's abort flag is permanent. Never reuse it.
+                if (successful) releaseWhenIdle() else releaseLocked()
+            }
         } }
 
     private fun fallback(bitmap: Bitmap, words: List<TextElement>, reason: String, started: Long): ExtractedPage {
@@ -124,13 +175,20 @@ class TeleOcrEngine(private val context: Context, private val models: ModelStore
         val input = if (scale < 1) Bitmap.createScaledBitmap(bitmap,
             (bitmap.width * scale).roundToInt().coerceAtLeast(1), (bitmap.height * scale).roundToInt().coerceAtLeast(1), true) else bitmap
         try {
-            val row = IntArray(input.width)
-            val rgb = ByteArray(input.width * input.height * 3)
+            if (rowBuffer.size < input.width) rowBuffer = IntArray(input.width)
+            val row = rowBuffer
+            val bytes = input.width * input.height * 3
+            val rgb = rgbBuffers[bytes] ?: ByteArray(bytes).also {
+                // Layout plus one crop buffer. No unbounded accumulation across page sizes.
+                if (rgbBuffers.size >= 2) rgbBuffers.remove(rgbBuffers.keys.last())
+                rgbBuffers[bytes] = it
+            }
             var offset = 0
             for (y in 0 until input.height) {
                 currentCoroutineContext().ensureActive()
                 input.getPixels(row, 0, input.width, 0, y, input.width, 1)
-                for (pixel in row) {
+                for (x in 0 until input.width) {
+                    val pixel = row[x]
                     rgb[offset++] = (pixel shr 16).toByte(); rgb[offset++] = (pixel shr 8).toByte(); rgb[offset++] = pixel.toByte()
                 }
             }

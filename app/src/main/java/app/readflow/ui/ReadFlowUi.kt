@@ -193,6 +193,7 @@ private val SelectionBackground = Color(0xFFD4EEE6)
     var menu by remember { mutableStateOf(false) }
     var details by remember { mutableStateOf(false) }
     var speeds by remember { mutableStateOf(false) }
+    var preparePages by remember { mutableStateOf(false) }
     var pageOnly by rememberSaveable(state.document?.id) { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     var follow by remember(state.document?.id) { mutableStateOf(true) }
@@ -234,6 +235,9 @@ private val SelectionBackground = Color(0xFFD4EEE6)
                             DropdownMenuItem(text = { Text("Bookmark selected word") }, onClick = { vm.bookmark(selected); menu = false }, leadingIcon = { Icon(Icons.Default.BookmarkAdd, null) })
                         }
                         DropdownMenuItem(text = { Text("Contents and bookmarks") }, onClick = { contents = true; menu = false }, leadingIcon = { Icon(Icons.Default.List, null) })
+                        DropdownMenuItem(text = { Text("Prepare pages before listening") }, onClick = { preparePages = true; menu = false },
+                            enabled = state.document != null && !state.preparing && !refreshingText,
+                            leadingIcon = { Icon(Icons.Default.Download, null) })
                         if ((state.document?.pageCount ?: 0) > 1) {
                             DropdownMenuItem(text = { Text("Previous page") }, onClick = { vm.page(pageIndex - 1); menu = false }, enabled = pageIndex > 0, leadingIcon = { Icon(Icons.Default.ChevronLeft, null) })
                             DropdownMenuItem(text = { Text("Next page") }, onClick = { vm.page(pageIndex + 1); menu = false }, enabled = pageIndex + 1 < (state.document?.pageCount ?: 1), leadingIcon = { Icon(Icons.Default.ChevronRight, null) })
@@ -253,7 +257,7 @@ private val SelectionBackground = Color(0xFFD4EEE6)
                         DropdownMenuItem(text = { Text("Voice models") }, onClick = { vm.screen.value = "voices"; menu = false }, leadingIcon = { Icon(Icons.Default.RecordVoiceOver, null) })
                         DropdownMenuItem(text = { Text(if (follow) "Stop following reading" else "Follow reading") }, onClick = { follow = !follow; menu = false }, leadingIcon = { Icon(Icons.Default.MyLocation, null) })
                         DropdownMenuItem(text = { Text(if (prefs.showPerformance) "Hide performance" else "Show performance") }, onClick = { vm.update(prefs.copy(showPerformance = !prefs.showPerformance)); menu = false }, leadingIcon = { Icon(Icons.Default.Speed, null) })
-                        DropdownMenuItem(text = { Text("Text recognition · ${if (prefs.ocrEngine == "teleocr") "TeleOCR" else "ML Kit"}") }, onClick = { vm.screen.value = "ocr"; menu = false }, leadingIcon = { Icon(Icons.Default.DocumentScanner, null) })
+                        DropdownMenuItem(text = { Text("Text recognition · ${modelDisplayName(prefs.ocrEngine)}") }, onClick = { vm.screen.value = "ocr"; menu = false }, leadingIcon = { Icon(Icons.Default.DocumentScanner, null) })
                         DropdownMenuItem(text = { Text("Phone testbench") }, onClick = { vm.screen.value = "benchmark"; menu = false }, leadingIcon = { Icon(Icons.Default.Science, null) })
                         DropdownMenuItem(text = { Text("Settings and appearance") }, onClick = { vm.screen.value = "settings"; menu = false }, leadingIcon = { Icon(Icons.Default.Tune, null) })
                         DropdownMenuItem(text = { Text("Reading details") }, onClick = { details = true; menu = false }, leadingIcon = { Icon(Icons.Default.Info, null) })
@@ -278,10 +282,39 @@ private val SelectionBackground = Color(0xFFD4EEE6)
                 Icon(Icons.Default.MyLocation, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text("Follow reading")
             }
         }
+        if (!pageOnly) state.prepareAheadProgress?.let { progress ->
+            Surface(color = MaterialTheme.colorScheme.secondaryContainer, modifier = Modifier.fillMaxWidth()) {
+                Column(Modifier.padding(horizontal = 16.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(progress.status, style = MaterialTheme.typography.bodyMedium)
+                    if (progress.running) LinearProgressIndicator(progress = { progress.completedPages.toFloat() / progress.totalPages }, modifier = Modifier.fillMaxWidth())
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("${progress.completedPages}/${progress.totalPages} pages · ${formatTime(progress.audioMs)} audio ready",
+                            Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                        if (progress.running) TextButton(onClick = { vm.app.playback.stop() }) { Text("Cancel") }
+                    }
+                }
+            }
+        }
         if (!pageOnly && prefs.showPerformance) PerformancePanel(vm, prefs)
         if (!pageOnly) PlaybackPanel(vm, state, requestNotifications, prefs.speed, { speeds = true }, hasOriginal, original,
             { original = !original; if (original) searching = false }, selected, status,
             showDetails = { details = true }, copySelection = { selected?.let { clipboard.setText(AnnotatedString(it.text)) } })
+    }
+    if (preparePages && state.document != null) {
+        var endPage by remember(state.document.id, pageIndex) { mutableStateOf(minOf(pageIndex + 10, state.document.pageCount).toString()) }
+        val end = endPage.toIntOrNull()?.takeIf { it in pageIndex + 1..state.document.pageCount }
+        AlertDialog(onDismissRequest = { preparePages = false }, title = { Text("Prepare pages before listening") }, text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text("Save speech from page ${pageIndex + 1} through the page you choose. For a chapter, enter its last page. Listening starts when you press Play.")
+                OutlinedTextField(endPage, { endPage = it.filter(Char::isDigit).take(5) }, singleLine = true,
+                    label = { Text("Last page") }, suffix = { Text("/ ${state.document.pageCount}") },
+                    keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number))
+                Text("Keep ReadFlow open while preparing. Completed audio is kept if you cancel. Preparation stops before exceeding your ${prefs.cacheMb} MB audio cache.",
+                    style = MaterialTheme.typography.bodySmall)
+                if (prefs.ocrEngine == "teleocr") Text("New TeleOCR pages can take several minutes each.", style = MaterialTheme.typography.bodySmall)
+            }
+        }, confirmButton = { TextButton(onClick = { end?.let { preparePages = false; vm.app.playback.prepareAhead(it - 1) } }, enabled = end != null) { Text("Prepare") } },
+            dismissButton = { TextButton(onClick = { preparePages = false }) { Text("Cancel") } })
     }
     if (details) AlertDialog(onDismissRequest = { details = false }, title = { Text("Reading details") }, text = {
         Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {

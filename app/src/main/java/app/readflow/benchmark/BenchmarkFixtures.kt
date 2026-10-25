@@ -2,7 +2,7 @@ package app.readflow.benchmark
 
 /** Original synthetic text only: reports never contain a user's documents or generated audio. */
 object BenchmarkFixtures {
-    const val VERSION = "financial-page-1"
+    const val VERSION = "financial-page-2-raw-scoring"
     val SPEECH = listOf(
         "She saved \$1 million, or \$9.3 million adjusted for inflation.",
         "People aged 20-24 can compare income, expenses, and emergency savings.",

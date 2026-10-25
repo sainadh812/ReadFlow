@@ -59,7 +59,9 @@ fun stableId(vararg parts: Any): String = sha256(parts.joinToString("\u0000").to
 ) { val durationMs get() = sampleCount * 1000 / sampleRate }
 data class PcmAudio(val samples: FloatArray, val sampleRate: Int)
 data class TextElement(val text: String, val boxes: List<Box>, val block: Int = 0, val line: Int = 0, val heading: Boolean = false)
-data class ExtractedPage(val elements: List<TextElement>, val width: Float, val height: Float, val method: String, val warnings: List<String> = emptyList(), val transform: Transform = Transform(), val preserveOrder: Boolean = false, val tables: List<RecognizedTable> = emptyList())
+data class ExtractedPage(val elements: List<TextElement>, val width: Float, val height: Float, val method: String, val warnings: List<String> = emptyList(), val transform: Transform = Transform(), val preserveOrder: Boolean = false, val tables: List<RecognizedTable> = emptyList(),
+    /** OCR text before narration punctuation. Never strip punctuation from genuine financial text. */
+    val recognitionText: String? = null)
 
 interface PageExtractor { suspend fun extract(path: String, page: Int, rotation: Int = 0): ExtractedPage }
 interface ReadingOrder { fun order(elements: List<TextElement>, width: Float): List<TextElement> }
