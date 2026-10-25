@@ -60,3 +60,9 @@ Direct embedded OpenCL integration and the S25 QNN/NPU port remain unimplemented
 See [build results](evidence/build-results.json), [Paddle host smoke](evidence/paddleocr/host-smoke.json) and [delivery status](STATUS.md). The host smoke exercises official ONNX weights with the app's actual Kotlin detection/CTC postprocessing; it is not an Android performance measurement. The packaged ARM64 app and instrumentation APK are built; no physical S25 is attached here.
 
 On the phone, compare all three OCR engines, review raw fixture outputs/amounts, and test a difficult real page with each. Run baseline and sustained CPU tests under comparable conditions. Test warm-page transitions, cancel/background/rotation, memory pressure, page-range cancellation/cache limits and ordinary reading afterward. Listen for pronunciation and sentence gaps; the synthesis benchmark does not play audio or measure speaker/Bluetooth latency.
+
+## Misaki comparison in 0.1.14
+
+The testbench offers **Kokoro + Misaki · experimental** when the existing Kokoro and Word alignment packs are installed. Select it alongside Kokoro, keep the same voice and thread settings, and choose the financial or pronunciation sample set. The pronunciation set includes names, money, age ranges and context-dependent words. Reports record the exact synthetic input and normalized speech, and separate Misaki phonemization time from acoustic inference. Existing private documents are never used as benchmark fixtures.
+
+The new backend uses direct ONNX Runtime 1.22.0, while the legacy backend uses Sherpa’s embedded runtime. Results therefore compare whole implementations, not only phonemizers. The frontend remains resident for each measured block; model-load timing includes POS and neural fallback session initialization. See [limitations and listening instructions](MISAKI_TRIAL.md).

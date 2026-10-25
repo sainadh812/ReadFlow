@@ -36,6 +36,18 @@ class PlaybackDiagnosticsTest {
         assertFalse(File(directory, "playback.json").readText().contains("private", ignoreCase = true))
     }
 
+    @Test fun misakiSessionAndFailureRemainDistinctFromLegacyKokoro() = runBlocking {
+        val directory = temporary.newFolder()
+        val diagnostics = PlaybackDiagnostics(directory)
+        diagnostics.beginSession("kokoro", "0")
+        diagnostics.recordPreparation(false, 1000, 200, 1200, 5000, 90)
+        diagnostics.beginSession("kokoro-misaki", "0")
+        assertEquals("kokoro-misaki", diagnostics.performance.value.model)
+        assertEquals(0L, diagnostics.performance.value.totalPreparations)
+        diagnostics.record("kokoro-misaki", PlaybackStage.FAILED, IllegalStateException("Synthetic failure"))
+        assertEquals("kokoro-misaki", PlaybackDiagnostics(directory).checkpoint()!!.model)
+    }
+
     @Test fun corruptOrMissingCheckpointDoesNotPreventOpeningDiagnostics() = runBlocking {
         val directory = temporary.newFolder()
         val diagnostics = PlaybackDiagnostics(directory)

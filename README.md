@@ -4,7 +4,9 @@ A native Android reading application built with Kotlin, Compose and local speech
 
 ## Install on a phone
 
-**[Download ReadFlow 0.1.13 APK — Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.13-prototype/ReadFlow-0.1.13-arm64-debug.apk).** Install over your existing ReadFlow prototype without uninstalling to retain documents, settings and model downloads.
+**[Download ReadFlow 0.1.14 APK — Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.14-prototype/ReadFlow-0.1.14-arm64-debug.apk).** Install over your existing ReadFlow prototype without uninstalling to retain documents, settings and model downloads.
+
+Version **0.1.14** adds an optional **Kokoro + Misaki** pronunciation experiment. In **Settings → Voice models**, select Misaki and tap **Try pronunciation sample**, or compare it with the current Kokoro engine in **Phone testbench**. Your existing model downloads are reused. The new path uses a neural fallback without eSpeak, but the prototype APK still bundles the old engine and retains its GPL obligations. This is not a Play Store licensing clearance. See [the trial, tests and limitations](docs/MISAKI_TRIAL.md).
 
 Version **0.1.13** adds **PaddleOCR mobile Latin** alongside ML Kit and TeleOCR, with a pinned ~13 MB optional model pack. TeleOCR and PaddleOCR reuse warm sessions and release them after idle time or memory pressure. **Settings > Performance** controls speech CPU effort; **Reader menu > Prepare pages before listening** caches a chosen chapter/page range. The upgraded testbench scores raw OCR before narration formatting, samples memory during inference, compares CPU thread counts and runs sustained speech tests. An optional SC Kokoro external-engine experiment is available in the testbench; it requires a separate installation and cannot verify GPU placement. Native Kokoro duration timings are not available from the current audio-only export; validated CTC remains active. See [testbench and limits](docs/PERFORMANCE_AND_BENCHMARK.md). No new S25 performance gain is claimed before phone testing.
 
@@ -52,7 +54,7 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 adb shell am start -n app.readflow/.MainActivity
 ```
 
-`bootstrap.sh` needs git, curl, sha256sum and Python 3.10+ only as build/download tools. **The installed app has no Python dependency or server.** A checked-in Gradle wrapper downloads the pinned Gradle 8.11.1 distribution with checksum verification. Models are not required to compile the application.
+`bootstrap.sh` needs git, curl, sha256sum and Python 3.10+ only as build/download tools. **The installed app has no Python dependency or server.** A checked-in Gradle wrapper downloads the pinned Gradle 8.11.1 distribution with checksum verification. Large speech/OCR packs are not required to compile the application. The Misaki native build embeds small dictionary/POS/G2P assets fetched through checksum-pinned Go modules; Gradle runs `scripts/prepare_misaki.py` automatically. This step requires the pinned NDK and Go 1.26.4 (downloaded automatically on Linux x86_64), plus Python with the tarfile data extraction filter.
 
 ## Run
 

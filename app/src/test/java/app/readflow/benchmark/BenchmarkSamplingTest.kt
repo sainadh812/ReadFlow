@@ -56,10 +56,10 @@ class BenchmarkSamplingTest {
     }
 
     @Test fun maximumOptionsStayInsideBoundedReport() {
-        val options = BenchmarkOptions(speechModels = listOf("kokoro", "pocket", "sc-kokoro"),
+        val options = BenchmarkOptions(speechModels = listOf("kokoro", "kokoro-misaki", "pocket", "sc-kokoro"),
             ocrEngines = listOf("mlkit", "teleocr", "paddleocr"), repetitions = 5,
             compareCpuThreads = true, sustainedSpeechSamples = 60).validated()
-        assertEquals(250, benchmarkMeasurementCount(options))
+        assertEquals(333, benchmarkMeasurementCount(options))
         assertTrue(benchmarkMeasurementCount(options) <= BenchmarkStore.MAX_ROWS)
     }
 }

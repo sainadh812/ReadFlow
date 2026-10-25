@@ -4,12 +4,12 @@
   "tests": [
     {
       "name": "app.readflow.benchmark.BenchmarkMetricsTest",
-      "tests": "10",
+      "tests": "11",
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.307",
-      "timestamp": "2026-10-25T19:27:50"
+      "time": "0.942",
+      "timestamp": "2026-10-25T20:28:35"
     },
     {
       "name": "app.readflow.benchmark.BenchmarkSamplingTest",
@@ -17,17 +17,17 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.009",
-      "timestamp": "2026-10-25T19:27:50"
+      "time": "0.016",
+      "timestamp": "2026-10-25T20:28:36"
     },
     {
       "name": "app.readflow.benchmark.BenchmarkStoreTest",
-      "tests": "5",
+      "tests": "8",
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.256",
-      "timestamp": "2026-10-25T19:27:50"
+      "time": "0.938",
+      "timestamp": "2026-10-25T20:28:36"
     },
     {
       "name": "app.readflow.core.AccentedSpeechTest",
@@ -35,8 +35,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.255",
-      "timestamp": "2026-10-25T19:27:50"
+      "time": "0.211",
+      "timestamp": "2026-10-25T20:28:37"
     },
     {
       "name": "app.readflow.core.ArticleHtmlTest",
@@ -44,8 +44,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.139",
-      "timestamp": "2026-10-25T19:27:50"
+      "time": "0.235",
+      "timestamp": "2026-10-25T20:28:37"
     },
     {
       "name": "app.readflow.core.CoreTest",
@@ -53,8 +53,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.093",
-      "timestamp": "2026-10-25T19:27:50"
+      "time": "0.159",
+      "timestamp": "2026-10-25T20:28:37"
     },
     {
       "name": "app.readflow.core.DocumentReadingOrderTest",
@@ -62,8 +62,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.06",
-      "timestamp": "2026-10-25T19:27:51"
+      "time": "0.111",
+      "timestamp": "2026-10-25T20:28:37"
     },
     {
       "name": "app.readflow.core.IntegrityTest",
@@ -71,8 +71,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.025",
-      "timestamp": "2026-10-25T19:27:51"
+      "time": "0.053",
+      "timestamp": "2026-10-25T20:28:37"
     },
     {
       "name": "app.readflow.core.NumericSpeechTest",
@@ -80,8 +80,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.132",
-      "timestamp": "2026-10-25T19:27:51"
+      "time": "0.174",
+      "timestamp": "2026-10-25T20:28:37"
     },
     {
       "name": "app.readflow.core.OcrSpeechTest",
@@ -89,8 +89,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.053",
-      "timestamp": "2026-10-25T19:27:51"
+      "time": "0.062",
+      "timestamp": "2026-10-25T20:28:38"
     },
     {
       "name": "app.readflow.core.PlaybackAlignmentTest",
@@ -98,8 +98,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.312",
-      "timestamp": "2026-10-25T19:27:51"
+      "time": "0.431",
+      "timestamp": "2026-10-25T20:28:38"
     },
     {
       "name": "app.readflow.core.RealAudioTest",
@@ -107,8 +107,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.141",
-      "timestamp": "2026-10-25T19:27:51"
+      "time": "0.155",
+      "timestamp": "2026-10-25T20:28:38"
     },
     {
       "name": "app.readflow.core.SpeechPlanningTest",
@@ -116,8 +116,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.433",
-      "timestamp": "2026-10-25T19:27:51"
+      "time": "0.473",
+      "timestamp": "2026-10-25T20:28:38"
     },
     {
       "name": "app.readflow.core.WebSpeechTest",
@@ -125,8 +125,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.062",
-      "timestamp": "2026-10-25T19:27:52"
+      "time": "0.063",
+      "timestamp": "2026-10-25T20:28:39"
     },
     {
       "name": "app.readflow.diagnostics.GitHubDiagnosticsTest",
@@ -134,8 +134,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.283",
-      "timestamp": "2026-10-25T19:27:52"
+      "time": "0.236",
+      "timestamp": "2026-10-25T20:28:39"
     },
     {
       "name": "app.readflow.diagnostics.IssueLogsTest",
@@ -143,8 +143,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.713",
-      "timestamp": "2026-10-25T19:27:52"
+      "time": "0.832",
+      "timestamp": "2026-10-25T20:28:39"
     },
     {
       "name": "app.readflow.ingest.OcrQualityTest",
@@ -152,8 +152,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.037",
-      "timestamp": "2026-10-25T19:27:53"
+      "time": "0.029",
+      "timestamp": "2026-10-25T20:28:40"
     },
     {
       "name": "app.readflow.ingest.OcrRefinementTest",
@@ -161,8 +161,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.016",
-      "timestamp": "2026-10-25T19:27:53"
+      "time": "0.013",
+      "timestamp": "2026-10-25T20:28:40"
     },
     {
       "name": "app.readflow.ingest.PaddleOcrPostprocessTest",
@@ -170,8 +170,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.079",
-      "timestamp": "2026-10-25T19:27:53"
+      "time": "0.081",
+      "timestamp": "2026-10-25T20:28:40"
     },
     {
       "name": "app.readflow.ingest.TeleOcrOutputTest",
@@ -179,8 +179,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.18",
-      "timestamp": "2026-10-25T19:27:53"
+      "time": "0.16",
+      "timestamp": "2026-10-25T20:28:40"
     },
     {
       "name": "app.readflow.models.PackInstallTest",
@@ -188,8 +188,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "85.399",
-      "timestamp": "2026-10-25T19:27:53"
+      "time": "118.597",
+      "timestamp": "2026-10-25T20:28:40"
     },
     {
       "name": "app.readflow.performance.BenchmarkCoordinatorTest",
@@ -197,8 +197,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.116",
-      "timestamp": "2026-10-25T19:29:19"
+      "time": "0.135",
+      "timestamp": "2026-10-25T20:30:39"
     },
     {
       "name": "app.readflow.playback.AudioReservePolicyTest",
@@ -206,17 +206,17 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.009",
-      "timestamp": "2026-10-25T19:29:19"
+      "time": "0.008",
+      "timestamp": "2026-10-25T20:30:39"
     },
     {
       "name": "app.readflow.playback.PlaybackDiagnosticsTest",
-      "tests": "18",
+      "tests": "19",
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.145",
-      "timestamp": "2026-10-25T19:29:19"
+      "time": "0.14",
+      "timestamp": "2026-10-25T20:30:39"
     },
     {
       "name": "app.readflow.playback.PreparedRangeBudgetTest",
@@ -225,7 +225,7 @@
       "errors": "0",
       "skipped": "0",
       "time": "0.001",
-      "timestamp": "2026-10-25T19:29:19"
+      "timestamp": "2026-10-25T20:30:39"
     },
     {
       "name": "app.readflow.playback.SessionPlaybackPlayerTest",
@@ -233,8 +233,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.053",
-      "timestamp": "2026-10-25T19:29:19"
+      "time": "0.073",
+      "timestamp": "2026-10-25T20:30:39"
     },
     {
       "name": "app.readflow.speech.BandLimitedResamplerTest",
@@ -242,8 +242,17 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.094",
-      "timestamp": "2026-10-25T19:29:19"
+      "time": "0.079",
+      "timestamp": "2026-10-25T20:30:39"
+    },
+    {
+      "name": "app.readflow.speech.MisakiKokoroEngineTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.024",
+      "timestamp": "2026-10-25T20:30:39"
     },
     {
       "name": "app.readflow.speech.PcmWaveTest",
@@ -251,8 +260,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.037",
-      "timestamp": "2026-10-25T19:29:19"
+      "time": "0.04",
+      "timestamp": "2026-10-25T20:30:39"
     },
     {
       "name": "app.readflow.speech.SpeechCallbackTest",
@@ -260,8 +269,17 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.004",
-      "timestamp": "2026-10-25T19:29:19"
+      "time": "0.003",
+      "timestamp": "2026-10-25T20:30:39"
+    },
+    {
+      "name": "app.readflow.speech.SpeechRecipeTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.003",
+      "timestamp": "2026-10-25T20:30:39"
     },
     {
       "name": "app.readflow.speech.SpeechRuntimeConfigTest",
@@ -269,8 +287,8 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.026",
-      "timestamp": "2026-10-25T19:29:19"
+      "time": "0.018",
+      "timestamp": "2026-10-25T20:30:39"
     },
     {
       "name": "app.readflow.ui.PageViewportTest",
@@ -278,11 +296,11 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0",
-      "time": "0.006",
-      "timestamp": "2026-10-25T19:29:19"
+      "time": "0.005",
+      "timestamp": "2026-10-25T20:30:39"
     }
   ],
-  "testTotal": 292,
+  "testTotal": 309,
   "failures": 0,
   "skipped": 0,
   "lintErrors": 0,
@@ -295,12 +313,13 @@
   ],
   "apk": {
     "file": "ReadFlow-arm64-debug.apk",
-    "bytes": 138036083,
-    "sha256": "db05fb1a472d4baff6a97cead2ab2f770fc457797f608c7dcdd0b69074842039",
+    "bytes": 166887159,
+    "sha256": "94f8a046fae2dfc3e53073725ab4fd6ed2769b8d047920723fb22c7cd8f70f34",
     "abis": [
       "arm64-v8a"
     ],
-    "bundledSpeechOrAlignmentWeights": false
+    "bundledSpeechAcousticOrAlignmentWeights": false,
+    "bundledPhonemizerModels": true
   },
   "androidRuntimeVerification": "Not performed for this build: no attached Android runtime; instrumentation APK compiled only",
   "physicalTargetVerification": "No attached device; not performed"

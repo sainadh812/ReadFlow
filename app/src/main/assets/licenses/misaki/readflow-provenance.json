@@ -1,0 +1,28 @@
+{
+  "goG2pRevision": "ec904cda37a171003dc0d2ef9011f8a30c32e7a1",
+  "misakiRevision": "fba1236595f2d2bf21d414ba6e57d25256afada3",
+  "goVersion": "1.26.4",
+  "actualGoDependencies": {
+    "ortenv": "0.2.0",
+    "golang.org/x/text": "0.41.0",
+    "onnxruntime_go": "1.22.0",
+    "regexp2": "1.11.5"
+  },
+  "note": "No fallback/espeak import. Original upstream THIRD_PARTY file retains stale ortenv and x/text version rows; actual versions and licenses are recorded here. Existing ReadFlow Sherpa backend still bundles eSpeak separately.",
+  "assetSha256": {
+    "data/gb_silver.json": "48131e2d92ccc41655f4543e87e0f938e71463eb5a54be7f0693bb712ebb6bce",
+    "data/unicode.json": "ca1a13fd72b43e833448e41e7a4ce109726cdfccdbb9ce2697780dda9b23023e",
+    "data/gb_gold.json": "29e62f4b60261c88f7f3c2c7811ca3825978948090b72d2b27d565b729282f71",
+    "data/us_gold.json": "dc414872a49a28ae6c141463d502fd945f3b2fde040484fdc47d00cc4612686f",
+    "data/tokenizer.json": "f113f9abc69cb5ef317c034a0856ff07809a260fd2ccb3a528763386a01f3870",
+    "data/us_silver.json": "de8f67be911bb6c659187b4a65fd966b6a30e56350e0f790d763210b053ac475",
+    "models/pos.onnx": "84c9fd72f81d629b358358984a9baef3b899fc1635c8db3d347329fa84c1849c",
+    "models/pos.json": "469679c789a108953c29842a287305f9ae73d7481182d37ead0576066dbb02b5",
+    "fallback/neural/models/us.json": "4a4fe499acd14c76071e04cd7050264cd960564fba21ed5a510b6539f71ae4f8",
+    "fallback/neural/models/gb.json": "958f2a4ec425aef9e3b96d337c3952b694b167f18c3a94746e1b356e8f65e8b0",
+    "fallback/neural/models/us-encoder.onnx": "033fbae44cc0c82959388c8c1fb8c94976d76c599f4af6368c86c0e0926e49bb",
+    "fallback/neural/models/gb-decoder.onnx": "f33000e5ba1e8aa385a0db9891c3c9bdaa521e5511870954cbdc7ca3f38b8714",
+    "fallback/neural/models/us-decoder.onnx": "75038d0b604785d6213430e90be38cafc988045b93236c70061662d8a4d6c531",
+    "fallback/neural/models/gb-encoder.onnx": "e4b51e1de1d82352dadaccda2b6a5ea24dbf241fe39df7e0365a4efb7b22a753"
+  }
+}

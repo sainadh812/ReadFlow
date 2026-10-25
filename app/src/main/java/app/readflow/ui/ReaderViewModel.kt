@@ -11,6 +11,7 @@ import app.readflow.core.*
 import app.readflow.data.*
 import app.readflow.diagnostics.*
 import app.readflow.benchmark.BenchmarkOptions
+import app.readflow.benchmark.BenchmarkFixtures
 import app.readflow.ingest.ArticleImportException
 import app.readflow.models.VoicePack
 import kotlinx.coroutines.*
@@ -141,6 +142,10 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     fun cancelDownload(id: String) { jobs[id]?.cancel() }
     fun deleteModel(id: String) { operation("MODEL_DELETE", IssueInput(details = mapOf("model" to id))) { jobs[id]?.cancelAndJoin(); app.playback.deleteModel(id) } }
     fun chooseModel(model: String, voice: String) { operation("MODEL_SWITCH", IssueInput(details = mapOf("model" to model, "voice" to voice))) { app.playback.changeModel(model, voice) } }
+    fun chooseKokoroPhonemizer(phonemizer: String) { operation("PHONEMIZER_SWITCH",
+        IssueInput(details = mapOf("model" to "kokoro", "synthesis" to "phonemizer=$phonemizer"))) {
+        app.playback.changeKokoroPhonemizer(phonemizer)
+    } }
     fun clearCache() { operation("CACHE_DELETE") { app.playback.clearCache(); message.value = "Audio cache cleared" } }
     private fun operation(stage: String, input: IssueInput = IssueInput(), action: suspend () -> Unit): Job {
         val job = viewModelScope.launch(start = CoroutineStart.LAZY) {
@@ -276,13 +281,15 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         app.documents.dao.bookmark(BookmarkEntity(page.documentId, word.id, page.index, word.text))
         message.value = "Bookmark saved"
     } }
-    fun sample(previewModel: String? = null, previewVoice: String? = null) { viewModelScope.launch {
+    fun sample(previewModel: String? = null, previewVoice: String? = null, pronunciation: Boolean = false) { viewModelScope.launch {
         if (benchmarkBlocksWork()) return@launch
         try {
             if (previewModel != null) app.playback.changeModel(previewModel, checkNotNull(previewVoice))
-            val text = app.assets.open("fixtures/reading.txt").bufferedReader().use { it.readText() }.trim()
-            val id = stableId("readflow-original-fixture", PIPELINE_VERSION)
-            val document = DocumentEntity(id, sha256(text.toByteArray()), "ReadFlow original fixture (CC0)", "A quiet space for thought", "", "text/plain", 1)
+            val text = if (pronunciation) BenchmarkFixtures.PRONUNCIATION.joinToString("\n\n")
+                else app.assets.open("fixtures/reading.txt").bufferedReader().use { it.readText() }.trim()
+            val id = stableId(if (pronunciation) "readflow-pronunciation-fixture" else "readflow-original-fixture", PIPELINE_VERSION)
+            val document = DocumentEntity(id, sha256(text.toByteArray()), "ReadFlow original fixture (CC0)",
+                if (pronunciation) "Pronunciation comparison" else "A quiet space for thought", "", "text/plain", 1)
             app.documents.dao.insertDocument(document)
             val page = DocumentPipeline().process(id, 0, ExtractedPage(text.split("\n\n").mapIndexed { index, paragraph -> TextElement(paragraph, emptyList(), index, index) }, 0f, 0f, "Original sample"))
             app.documents.dao.putPage(PageEntity(id, 0, Json.encodeToString(PageContent.serializer(), page), "Original sample"))

@@ -8,15 +8,13 @@ import app.readflow.core.*
 import app.readflow.data.*
 import app.readflow.models.*
 import app.readflow.speech.*
+import app.readflow.speech.misaki.MisakiFrontend
 import app.readflow.diagnostics.*
 import java.util.concurrent.atomic.AtomicLong
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.json.Json
 
-// Compute settings do not change the requested voice/text. Retain the established
-// recipe identifier so valid audio from older releases remains reusable.
-private const val CACHE_SYNTHESIS_RECIPE = "steps=5;temperature=.7;speed=1;threads=2"
 private class PrepareAheadLimit(message: String) : Exception(message)
 
 data class ReaderPlayback(
@@ -46,16 +44,22 @@ class ReadingCoordinator(
     private val preferences: PreferenceStore, private val power: PowerManager,
     private val diagnostics: PlaybackDiagnostics,
     private val issues: IssueLogs,
+    private val misakiOrtLibraryPath: String,
     private val benchmarkActive: () -> Boolean = { false },
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val gate = GenerationGate()
     private val mutable = MutableStateFlow(ReaderPlayback())
     val state = mutable.asStateFlow()
-    private val engine = SherpaEngine(models::directory) { id -> models.packs.first { it.id == id }.voices }
+    private var engine: TtsEngine = newSherpaEngine()
+    private var misakiFrontend: MisakiFrontend? = null
+    private fun newSherpaEngine() = SherpaEngine(models::directory) { id -> models.packs.first { it.id == id }.voices }
     private val aligner = OnnxForcedAligner { java.io.File(models.directory("alignment"), "model.onnx") }
     private val planner = SpeechPlanner()
     private var work: Job? = null
+    // A settings switch must drain the previous producer before touching native
+    // resources. New reading work joins this transition before taking its settings.
+    private var settingsTransition: Job? = null
     private var observer: Job? = null
     private var player: Player? = null
     private var playerListener: Player.Listener? = null
@@ -254,8 +258,9 @@ class ReadingCoordinator(
         val startPage = state.value.page?.index ?: state.value.viewPageIndex
         require(endPageInclusive in startPage until document.pageCount) { "Choose an end page within this document" }
         val old = work
+        val pendingSettings = settingsTransition
         val generation = invalidate()
-        val chosen = settings
+        var chosen = settings
         val limit = chosen.cacheMb * 1024L * 1024L
         val budget = PreparedRangeBudget(limit)
         var progress = PrepareAheadProgress(startPage, endPageInclusive)
@@ -268,7 +273,7 @@ class ReadingCoordinator(
             var key: String? = null
             var stage = "VERIFY_MODELS"
             fun input() = documentIssueInput(document, page, words, speech,
-                page?.index ?: progress.currentPage, details = mapOf("model" to chosen.model,
+                page?.index ?: progress.currentPage, details = mapOf("model" to speechIdentity(chosen),
                     "voice" to chosen.voice, "synthesis" to runtimeDescription(chosen), "operation" to "prepare-pages"))
             fun publish(status: String) {
                 progress = progress.copy(status = status, bytes = budget.bytes)
@@ -276,7 +281,9 @@ class ReadingCoordinator(
             }
             try {
                 old?.join()
-                diagnostics.beginSession(chosen.model, chosen.voice)
+                pendingSettings?.join()
+                chosen = settings
+                diagnostics.beginSession(speechIdentity(chosen), chosen.voice)
                 models.verifyInstalled(chosen.model); models.verifyInstalled("alignment")
                 configureRuntime(chosen)
                 val manifest = models.packs.first { it.id == chosen.model }
@@ -296,7 +303,7 @@ class ReadingCoordinator(
                         currentCoroutineContext().ensureActive()
                         words = prepared.words; speech = prepared.speech
                         val chunkKey = cacheKey(document.id, prepared.speech, modelRevision, chosen.voice,
-                            CACHE_SYNTHESIS_RECIPE, CtcAlignment.VERSION)
+                            speechSynthesisRecipe(chosen), CtcAlignment.VERSION)
                         key = chunkKey
                         issues.activeInput = input()
                         stage = "READ_AUDIO_CACHE"
@@ -335,7 +342,7 @@ class ReadingCoordinator(
                                 AlignedAudio(chunkKey, cache.file(chunkKey).path,
                                     withContext(Dispatchers.IO) { fileHash(cache.file(chunkKey)) }, quantized.sampleRate,
                                     quantized.samples.size.toLong(), alignment.timings, prepared.speech.sourceIds,
-                                    prepared.speech, manifest.id + manifest.version, chosen.voice, CtcAlignment.VERSION)
+                                    prepared.speech, audioModelRevision(manifest, chosen), chosen.voice, CtcAlignment.VERSION)
                                     .also { cache.commit(document.id, it); committed = true }
                             } finally {
                                 if (!committed) withContext(NonCancellable + Dispatchers.IO) { cache.file(chunkKey).delete() }
@@ -375,7 +382,7 @@ class ReadingCoordinator(
             } finally {
                 // Next reading/benchmark work joins this job, including native cleanup.
                 withContext(NonCancellable) {
-                    try { old?.join(); releaseSpeechModels() }
+                    try { old?.join(); pendingSettings?.join(); releaseSpeechModels() }
                     catch (error: Exception) {
                         issues.record("RELEASE_MODELS", error, input())
                         if (gate.current(generation) && mutable.value.error == null) {
@@ -396,26 +403,55 @@ class ReadingCoordinator(
     }
 
     private suspend fun configureRuntime(chosen: Preferences) {
-        engine.configure(SpeechRuntimeConfig(chosen.speechThreads, chosen.allowSpinning))
+        val useMisaki = usesMisaki(chosen)
+        if (useMisaki != (engine is MisakiKokoroEngine)) {
+            releaseSpeechModels()
+            engine = if (useMisaki) MisakiKokoroEngine(models::directory,
+                { id -> models.packs.first { it.id == id }.voices }) { text ->
+                val frontend = misakiFrontend ?: MisakiFrontend(
+                    misakiOrtLibraryPath, threads = 1)
+                    .also { misakiFrontend = it }
+                frontend.phonemize(text)
+            } else newSherpaEngine()
+        }
+        val config = SpeechRuntimeConfig(chosen.speechThreads, chosen.allowSpinning)
+        when (val selected = engine) {
+            is MisakiKokoroEngine -> selected.configure(config)
+            is SherpaEngine -> selected.configure(config)
+        }
         aligner.configure(SpeechRuntimeConfig(chosen.alignmentThreads, chosen.allowSpinning))
     }
 
     private suspend fun releaseSpeechModels() = withContext(NonCancellable) {
-        try { engine.unload() } finally { aligner.close() }
+        try { engine.unload() } finally {
+            try {
+                val frontend = misakiFrontend
+                misakiFrontend = null
+                if (frontend != null) withContext(Dispatchers.Default) { frontend.close() }
+            } finally { aligner.close() }
+        }
     }
+
+    private fun speechIdentity(chosen: Preferences) =
+        if (usesMisaki(chosen)) MisakiKokoroEngine.MODEL_ID else chosen.model
+
+    private fun audioModelRevision(manifest: VoicePack, chosen: Preferences) =
+        speechIdentity(chosen) + manifest.version + if (usesMisaki(chosen)) ";$MISAKI_RECIPE_VERSION" else ""
 
     private fun runtimeDescription(chosen: Preferences) =
         "steps=5;temperature=.7;speed=1;backend=cpu;speechThreads=${chosen.speechThreads};" +
-            "alignmentThreads=${chosen.alignmentThreads};spinning=${chosen.allowSpinning};resampler=phase-sinc-v1"
+            "alignmentThreads=${chosen.alignmentThreads};spinning=${chosen.allowSpinning};resampler=phase-sinc-v1;" +
+            "phonemizer=${if (usesMisaki(chosen)) MISAKI_RECIPE_VERSION else "default"}"
 
     fun start(document: DocumentEntity = checkNotNull(state.value.document), pageIndex: Int = state.value.page?.index ?: state.value.viewPageIndex, wordId: String? = null) {
         if (benchmarkActive()) return
         val old = work
+        val pendingSettings = settingsTransition
         val generation = invalidate()
         startupPending = true; producerFinished = false
         mutable.value = mutable.value.copy(document = document, preparing = true, fillingBuffer = true, wantsToPlay = true,
             status = "Preparing speech", selectedWordId = null, error = null, viewPageIndex = pageIndex)
-        val chosen = settings
+        var chosen = settings
         durableWord = wordId
         work = scope.launch {
             var processingPage: PageContent? = null
@@ -430,19 +466,21 @@ class ReadingCoordinator(
             var sampleRate: Int? = null
             var sampleCount: Int? = null
             fun input(words: List<SourceWord> = currentWords) = documentIssueInput(document, processingPage, words, currentSpeech,
-                currentIndex, wordId, mapOf("model" to chosen.model, "modelVersion" to modelVersion, "voice" to chosen.voice,
+                currentIndex, wordId, mapOf("model" to speechIdentity(chosen), "modelVersion" to modelVersion, "voice" to chosen.voice,
                     "speed" to chosen.speed.toString(), "synthesis" to runtimeDescription(chosen),
                     "generation" to generation.toString(), "audioKey" to audioKey.orEmpty(), "sampleRate" to sampleRate.toString(), "sampleCount" to sampleCount.toString()))
             try {
                 // A cancelled native call owns its resources until it returns. New work waits here.
                 old?.join()
-                diagnostics.beginSession(chosen.model, chosen.voice)
+                pendingSettings?.join()
+                chosen = settings
+                diagnostics.beginSession(speechIdentity(chosen), chosen.voice)
                 checkNotNull(player) { "Playback service is not connected" }
-                diagnostics.record(chosen.model, PlaybackStage.VERIFYING_MODELS)
+                diagnostics.record(speechIdentity(chosen), PlaybackStage.VERIFYING_MODELS)
                 models.verifyInstalled(chosen.model); models.verifyInstalled("alignment")
                 configureRuntime(chosen)
                 val manifest = models.packs.first { it.id == chosen.model }
-                modelVersion = manifest.version
+                modelVersion = manifest.version + if (usesMisaki(chosen)) ";$MISAKI_RECIPE_VERSION" else ""
                 val modelRevision = sha256(Json.encodeToString(VoicePack.serializer(), manifest).toByteArray())
                 var chunksSinceTrim = 0
                 var index = pageIndex
@@ -471,7 +509,7 @@ class ReadingCoordinator(
                     while (true) {
                         val output = checkNotNull(player)
                         currentCoroutineContext().ensureActive()
-                        diagnostics.record(chosen.model, PlaybackStage.PREPARING_TEXT)
+                        diagnostics.record(speechIdentity(chosen), PlaybackStage.PREPARING_TEXT)
                         stage = "NORMALIZE_TEXT"; currentWords = emptyList(); currentSpeech = null; audioKey = null
                         sampleRate = null; sampleCount = null
                         issues.activeInput = input()
@@ -483,7 +521,7 @@ class ReadingCoordinator(
                         val prepared = chunks.next()
                         val speech = prepared.speech
                         currentWords = prepared.words; currentSpeech = speech
-                        val key = cacheKey(document.id, speech, modelRevision, chosen.voice, CACHE_SYNTHESIS_RECIPE, CtcAlignment.VERSION)
+                        val key = cacheKey(document.id, speech, modelRevision, chosen.voice, speechSynthesisRecipe(chosen), CtcAlignment.VERSION)
                         audioKey = key
                         issues.activeInput = input()
                         stage = "READ_AUDIO_CACHE"
@@ -495,11 +533,11 @@ class ReadingCoordinator(
                             var committed = false
                             try {
                                 mutable.value = mutable.value.copy(preparing = true, status = "Loading ${manifest.name}")
-                                diagnostics.record(chosen.model, PlaybackStage.LOADING_MODEL)
+                                diagnostics.record(speechIdentity(chosen), PlaybackStage.LOADING_MODEL)
                                 stage = "LOAD_MODEL"
                                 engine.load(chosen.model, chosen.voice)
                                 mutable.value = mutable.value.copy(status = "Generating speech")
-                                diagnostics.record(chosen.model, PlaybackStage.SYNTHESIZING)
+                                diagnostics.record(speechIdentity(chosen), PlaybackStage.SYNTHESIZING)
                                 stage = "SYNTHESIZE"
                                 val synthesisStarted = SystemClock.elapsedRealtime()
                                 val generated = engine.synthesize(speech.text) { gate.current(generation) }
@@ -508,7 +546,7 @@ class ReadingCoordinator(
                                 stage = "WRITE_AUDIO"
                                 val quantized = cache.writePcm(key, generated)
                                 mutable.value = mutable.value.copy(status = "Aligning words")
-                                diagnostics.record(chosen.model, PlaybackStage.ALIGNING)
+                                diagnostics.record(speechIdentity(chosen), PlaybackStage.ALIGNING)
                                 stage = "ALIGN_WORDS"
                                 val alignmentStarted = SystemClock.elapsedRealtime()
                                 val alignment = alignForPlayback(aligner, quantized, speech)
@@ -520,7 +558,7 @@ class ReadingCoordinator(
                                 }
                                 currentCoroutineContext().ensureActive()
                                 AlignedAudio(key, cache.file(key).path, withContext(Dispatchers.IO) { fileHash(cache.file(key)) }, quantized.sampleRate, quantized.samples.size.toLong(),
-                                    alignment.timings, speech.sourceIds, speech, manifest.id + manifest.version, chosen.voice, CtcAlignment.VERSION).also { cache.commit(document.id, it); committed = true }
+                                    alignment.timings, speech.sourceIds, speech, audioModelRevision(manifest, chosen), chosen.voice, CtcAlignment.VERSION).also { cache.commit(document.id, it); committed = true }
                             } catch (error: Exception) {
                                 if (error !is CancellationException && gate.current(generation)) {
                                     issues.record(stage, error, input(), audio = cache.file(key))
@@ -536,7 +574,7 @@ class ReadingCoordinator(
                             SystemClock.elapsedRealtime() - preparationStarted, audio.durationMs,
                             characters = speech.text.codePointCount(0, speech.text.length))
                         val startMs = if (first) playbackStartMs(audio, requested) else 0L
-                        diagnostics.record(chosen.model, PlaybackStage.STARTING_AUDIO)
+                        diagnostics.record(speechIdentity(chosen), PlaybackStage.STARTING_AUDIO)
                         stage = "QUEUE_AUDIO"
                         currentCoroutineContext().ensureActive()
                         val sentenceId = prepared.words.first().sentenceId
@@ -560,7 +598,7 @@ class ReadingCoordinator(
                         }
                         updateReserve(output)
                         mutable.value = mutable.value.copy(preparing = startupPending)
-                        diagnostics.record(chosen.model, PlaybackStage.AUDIO_READY)
+                        diagnostics.record(speechIdentity(chosen), PlaybackStage.AUDIO_READY)
                         while (output.currentMediaItemIndex > 1) {
                             val removed = output.getMediaItemAt(0).mediaId
                             output.removeMediaItem(0); queued.remove(removed)
@@ -583,7 +621,7 @@ class ReadingCoordinator(
                 if (gate.current(generation)) {
                     if (!loggedFailure) issues.record(stage, error, input(if (error is SpeechPreparationException) error.sentence else currentWords),
                         audio = audioKey?.let(cache::file))
-                    diagnostics.record(chosen.model, PlaybackStage.FAILED, error)
+                    diagnostics.record(speechIdentity(chosen), PlaybackStage.FAILED, error)
                     if (!gate.current(generation)) return@launch
                     val page = processingPage
                     val blocked = if (error is SpeechPreparationException && page != null) {
@@ -595,7 +633,7 @@ class ReadingCoordinator(
                         selectedWordId = if (queued.isEmpty()) blocked?.wordId else mutable.value.selectedWordId)
                 }
             } finally {
-                withContext(NonCancellable) { old?.join() }
+                withContext(NonCancellable) { old?.join(); pendingSettings?.join() }
                 if (gate.current(generation)) {
                     producerFinished = true
                     // A short document, or an error further ahead, must not strand valid audio.
@@ -661,21 +699,41 @@ class ReadingCoordinator(
     }
     suspend fun changeModel(model: String, voice: String) {
         check(!benchmarkActive()) { "Finish or cancel the benchmark before changing a model" }
-        val old = work; val generation = invalidate()
-        mutable.value = mutable.value.copy(preparing = false, status = "Paused")
-        old?.join(); releaseSpeechModels()
-        if (gate.current(generation)) {
-            settings = settings.copy(model = model, voice = voice)
+        changeSpeechSettings { it.copy(model = model, voice = voice) }
+    }
+    suspend fun changeKokoroPhonemizer(phonemizer: String) {
+        require(phonemizer in setOf("espeak", "misaki")) { "Unknown Kokoro pronunciation engine" }
+        check(!benchmarkActive()) { "Finish or cancel the benchmark before changing pronunciation" }
+        changeSpeechSettings { it.copy(kokoroPhonemizer = phonemizer) }
+    }
+    private suspend fun changeSpeechSettings(change: (Preferences) -> Preferences) = coroutineScope {
+        val previousTransition = settingsTransition
+        val old = work
+        stop()
+        val transition = currentCoroutineContext().job
+        settingsTransition = transition
+        try {
+            previousTransition?.join()
+            old?.join()
+            releaseSpeechModels()
+            settings = change(settings)
             preferences.set(settings)
+        } finally {
+            // A cancelled later switch must still keep earlier transitions in
+            // the dependency chain seen by the next reader request.
+            withContext(NonCancellable) { previousTransition?.join(); old?.join() }
+            if (settingsTransition === transition) settingsTransition = null
         }
     }
     suspend fun deleteModel(id: String) {
         check(!benchmarkActive()) { "Finish or cancel the benchmark before removing a model" }
-        val old = work; stop(); old?.join(); releaseSpeechModels(); models.delete(id)
+        val old = work; val transition = settingsTransition
+        stop(); old?.join(); transition?.join(); releaseSpeechModels(); models.delete(id)
     }
     suspend fun releaseForBenchmark() {
         val old = work
-        stop(); old?.join(); releaseSpeechModels()
+        val transition = settingsTransition
+        stop(); old?.join(); transition?.join(); releaseSpeechModels()
     }
     suspend fun clearCache() { val old = work; stop(); old?.join(); cache.clear() }
     suspend fun deleteDocument(document: DocumentEntity) {

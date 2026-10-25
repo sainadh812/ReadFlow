@@ -35,6 +35,43 @@ class BenchmarkStoreTest {
         assertEquals(1, recovered.completed)
     }
 
+    @Test fun misakiReportsPreserveFrontendTimingAndExactNormalizedInput() {
+        val store = BenchmarkStore(temporary.newFolder())
+        val result = BenchmarkState(status = BenchmarkStatus.COMPLETED,
+            options = BenchmarkOptions(speechModels = listOf("kokoro-misaki"), speechFixture = "pronunciation"),
+            speechFixtureVersion = BenchmarkFixtures.SPEECH_VERSION,
+            rows = listOf(BenchmarkRow("speech", "kokoro-misaki", "Names", phonemizerMs = 45,
+                speechInferenceMs = 700, inputText = "Milanković's example.",
+                normalizedSpeechText = "Milankovich's example.")))
+        store.save(result)
+        assertEquals(result, store.load())
+        assertTrue(store.report(result).contains("\"phonemizerMs\": 45"))
+    }
+
+    @Test fun oldReportsDoNotClaimARecordedSpeechFixtureVersion() {
+        val directory = temporary.newFolder()
+        File(directory, "latest.json").writeText("""{"status":"COMPLETED","rows":[]}""")
+        assertNull(BenchmarkStore(directory).load()!!.speechFixtureVersion)
+    }
+
+    @Test fun maximumComparisonWithSpeechDetailsFitsSavedReportBudget() {
+        val store = BenchmarkStore(temporary.newFolder())
+        val options = BenchmarkOptions(speechModels = listOf("kokoro", "kokoro-misaki", "pocket", "sc-kokoro"),
+            ocrEngines = listOf("mlkit", "teleocr", "paddleocr"), repetitions = 5,
+            compareCpuThreads = true, sustainedSpeechSamples = 60).validated()
+        val report = BenchmarkState(status = BenchmarkStatus.COMPLETED, options = options,
+            rows = List(benchmarkMeasurementCount(options)) {
+                BenchmarkRow("speech", "kokoro-misaki", "4 speech threads · Sustained sample 60/60",
+                    phonemizerMs = 100, speechInferenceMs = 1000, synthesisMs = 1150, alignmentMs = 500,
+                    inputText = BenchmarkFixtures.PRONUNCIATION.last(), normalizedSpeechText = "a".repeat(220),
+                    modelVersion = "v".repeat(200), note = "n".repeat(1600),
+                    deviceAfter = DeviceSnapshot(processPssMiB = 1024.0, batteryTemperatureC = 40.0))
+            })
+        assertTrue(store.report(report).toByteArray(Charsets.UTF_8).size < BenchmarkStore.MAX_BYTES)
+        store.save(report)
+        assertEquals(report.rows.size, store.load()!!.rows.size)
+    }
+
     @Test fun cancellationAndPartialFailuresRemainVisible() {
         val store = BenchmarkStore(temporary.newFolder())
         val partial = BenchmarkState(status = BenchmarkStatus.CANCELLED,

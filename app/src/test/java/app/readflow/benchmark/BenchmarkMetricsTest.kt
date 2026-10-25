@@ -65,10 +65,20 @@ class BenchmarkMetricsTest {
         assertThrows(IllegalArgumentException::class.java) { BenchmarkOptions(repetitions = 100).validated() }
         assertThrows(IllegalArgumentException::class.java) { BenchmarkOptions(ocrEngines = listOf("cloud")).validated() }
         assertThrows(IllegalArgumentException::class.java) { BenchmarkOptions(speechModels = emptyList(), ocrEngines = emptyList()).validated() }
+        assertThrows(IllegalArgumentException::class.java) { BenchmarkOptions(speechFixture = "unknown").validated() }
+    }
+
+    @Test fun comparisonKeepsCurrentAndMisakiAsSeparateMeasurements() {
+        val options = BenchmarkOptions(speechModels = listOf("kokoro", "kokoro-misaki", "kokoro-misaki"),
+            ocrEngines = emptyList(), speechFixture = "pronunciation", repetitions = 5).validated()
+        assertEquals(listOf("kokoro", "kokoro-misaki"), options.speechModels)
+        assertEquals("pronunciation", options.speechFixture)
+        assertEquals(14, benchmarkMeasurementCount(options))
+        assertEquals(speechPasses(options, "kokoro"), speechPasses(options, "kokoro-misaki"))
     }
 
     @Test fun fixturesPassTheRealSpeechPlannerIncludingCurrencyRangeAndAccent() {
-        for (text in BenchmarkFixtures.SPEECH) {
+        for (text in BenchmarkFixtures.SPEECH + BenchmarkFixtures.PRONUNCIATION) {
             val page = DocumentPipeline().process("benchmark", 0,
                 ExtractedPage(listOf(TextElement(text, emptyList())), 0f, 0f, "Synthetic test"))
             val prepared = SpeechPlanner().prepare(page.words).toList()

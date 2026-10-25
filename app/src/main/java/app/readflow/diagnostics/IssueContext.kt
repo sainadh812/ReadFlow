@@ -10,7 +10,7 @@ fun issueEnvironment() = mapOf(
     "appVersion" to BuildConfig.VERSION_NAME, "versionCode" to BuildConfig.VERSION_CODE.toString(),
     "device" to "${Build.MANUFACTURER} ${Build.MODEL}", "android" to "${Build.VERSION.RELEASE} API ${Build.VERSION.SDK_INT}",
     "abis" to Build.SUPPORTED_ABIS.joinToString(), "heapLimitMiB" to (Runtime.getRuntime().maxMemory() / 1048576).toString(),
-    "sherpa" to "1.13.8", "alignmentOrt" to "1.20.0", "alignmentVersion" to CtcAlignment.VERSION,
+    "sherpa" to "1.13.8", "alignmentOrt" to "1.22.0", "alignmentVersion" to CtcAlignment.VERSION,
     "pipeline" to PIPELINE_VERSION, "normalization" to EnglishNormalizer.VERSION,
     "inference" to "CPU; configurable threads; speech settings recorded in input.details",
 )

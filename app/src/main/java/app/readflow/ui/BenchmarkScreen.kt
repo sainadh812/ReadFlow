@@ -35,7 +35,9 @@ import app.readflow.data.Preferences
     val downloads by vm.downloads.collectAsStateWithLifecycle()
     val ocrDownloads by vm.ocrDownloads.collectAsStateWithLifecycle()
     val alignmentInstalled = remember(downloads) { vm.app.models.installed("alignment") }
-    val installedSpeech = remember(downloads) { listOf("kokoro", "pocket").filter { vm.app.models.installed(it) } }
+    val installedSpeech = remember(downloads) {
+        listOf("kokoro", "kokoro-misaki", "pocket").filter { vm.app.models.installed(if (it == "kokoro-misaki") "kokoro" else it) }
+    }
     val teleInstalled = remember(ocrDownloads) { vm.app.ocrModels.installed("teleocr") }
     val paddleInstalled = remember(ocrDownloads) { vm.app.ocrModels.installed("paddleocr") }
     var external by remember { mutableStateOf(ScKokoroEngine.availability(vm.app)) }
@@ -44,12 +46,15 @@ import app.readflow.data.Preferences
         onPauseOrDispose { }
     }
     val uriHandler = LocalUriHandler.current
-    var speechModels by rememberSaveable { mutableStateOf(listOf(prefs.model).filter { it in installedSpeech }) }
+    var speechModels by rememberSaveable { mutableStateOf(listOf(
+        if (prefs.model == "kokoro" && prefs.kokoroPhonemizer == "misaki") "kokoro-misaki" else prefs.model
+    ).filter { it in installedSpeech }) }
     var ocrEngines by rememberSaveable { mutableStateOf(listOf("mlkit")) }
     var repetitions by rememberSaveable { mutableIntStateOf(3) }
     var configuring by rememberSaveable { mutableStateOf(false) }
     var compareThreads by rememberSaveable { mutableStateOf(false) }
     var sustained by rememberSaveable { mutableIntStateOf(0) }
+    var pronunciationSamples by rememberSaveable { mutableStateOf(false) }
     val eligibleSpeech = speechModels.filter { (it in installedSpeech || it == "sc-kokoro" && external.installed) && alignmentInstalled }
     val eligibleOcr = ocrEngines.filter { it == "mlkit" || it == "teleocr" && teleInstalled || it == "paddleocr" && paddleInstalled }
     if (active) KeepReaderScreenAwake()
@@ -83,17 +88,18 @@ import app.readflow.data.Preferences
                 item {
                     SettingsCard("Choose what to measure", Icons.Default.Tune) {
                         Text("SPEECH + WORD TIMING", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
-                        listOf("kokoro", "pocket").forEach { model ->
+                        listOf("kokoro", "kokoro-misaki", "pocket").forEach { model ->
                             val installed = model in installedSpeech
                             BenchmarkChoice(modelDisplayName(model), when {
                                 !installed -> "Download this voice model to test"
                                 !alignmentInstalled -> "Download word synchronization to test"
+                                model == "kokoro-misaki" -> "Same Kokoro voice · Misaki English pronunciation · compare with Kokoro"
                                 else -> "Installed · actual voice generation and alignment"
                             }, model in speechModels && installed && alignmentInstalled, installed && alignmentInstalled) { selected ->
                                 speechModels = if (selected) (speechModels + model).distinct() else speechModels - model
                             }
                         }
-                        if (!alignmentInstalled || installedSpeech.size < 2) TextButton(onClick = { vm.screen.value = "voices" }) {
+                        if (!alignmentInstalled || installedSpeech.size < 3) TextButton(onClick = { vm.screen.value = "voices" }) {
                             Icon(Icons.Default.Download, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("Manage voice models")
                         }
                         BenchmarkChoice("SC Kokoro · external experiment", external.message,
@@ -131,6 +137,9 @@ import app.readflow.data.Preferences
                         }
                         Text("Speech adds an initial sample. OCR repeats the same synthetic page to compare fresh and warm sessions; these are not different book pages.",
                             style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        SettingsSwitch("Pronunciation comparison samples", "Names, amounts, years and words such as record and read. Choose 5 samples to include every sentence. Timing checks do not score pronunciation.", pronunciationSamples) {
+                            pronunciationSamples = it
+                        }
                         SettingsSwitch("Compare CPU thread counts", "Test 2, 3 and 4 speech threads in separate warm blocks. More threads may increase heat.", compareThreads) { compareThreads = it }
                         Text("Extra sustained speech samples", style = MaterialTheme.typography.bodyMedium)
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -148,6 +157,7 @@ import app.readflow.data.Preferences
                             ocrQuality = prefs.ocrQuality, repetitions = repetitions,
                             speechThreads = prefs.speechThreads, alignmentThreads = prefs.alignmentThreads, allowSpinning = prefs.allowSpinning,
                             compareCpuThreads = compareThreads, sustainedSpeechSamples = sustained,
+                            speechFixture = if (pronunciationSamples) "pronunciation" else "financial",
                         )) }, enabled = !active && (eligibleSpeech.isNotEmpty() || eligibleOcr.isNotEmpty()), modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp)) {
                             Icon(Icons.Default.PlayArrow, null, Modifier.size(22.dp)); Spacer(Modifier.width(8.dp))
                             Text(if (state.rows.isEmpty()) "Run phone test" else "Run a new test")
@@ -270,6 +280,8 @@ import app.readflow.data.Preferences
                 row.verifyMs?.let { MetricDetail("Model verification", metricSeconds(it)) }
                 row.loadMs?.let { MetricDetail("Model loading", metricSeconds(it)) }
                 row.synthesisMs?.let { MetricDetail("Speech generation time", metricSeconds(it)) }
+                row.phonemizerMs?.let { MetricDetail("Pronunciation preparation", metricSeconds(it)) }
+                row.speechInferenceMs?.let { MetricDetail("Speech model inference", metricSeconds(it)) }
                 row.alignmentMs?.let { MetricDetail("Word timing time", metricSeconds(it)) }
                 row.resampleMs?.let { MetricDetail("Audio resampling", metricSeconds(it)) }
                 row.alignmentInferenceMs?.let { MetricDetail("Timing model inference", metricSeconds(it)) }
@@ -288,6 +300,8 @@ import app.readflow.data.Preferences
                 row.tableCellAccuracy?.let { MetricDetail("Correct table cells", "${metricNumber(it * 100)}%") }
                 row.recognizedText?.let { Text("Recognized fixture text", style = MaterialTheme.typography.labelMedium)
                     Text(it, style = MaterialTheme.typography.bodySmall) }
+                row.inputText?.let { MetricDetail("Speech fixture text", it) }
+                row.normalizedSpeechText?.let { MetricDetail("Text sent to speech engine", it) }
                 row.alignmentAccepted?.let { MetricDetail("Word timing quality check", if (it) "Accepted" else "Not accepted") }
                 row.alignedWords?.let { MetricDetail("Aligned words", it.toString()) }
                 row.voice?.let { MetricDetail("Voice", it) }

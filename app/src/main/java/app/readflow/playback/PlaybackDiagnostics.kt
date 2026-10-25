@@ -122,7 +122,7 @@ class PlaybackDiagnostics(private val directory: File) {
         readyChunks = null
         bufferedListeningMs = null
         _performance.value = PlaybackPerformanceSummary.Empty.copy(
-            model = model.takeIf { it in setOf("kokoro", "pocket") } ?: "unknown",
+            model = model.takeIf { it in setOf("kokoro", "kokoro-misaki", "pocket") } ?: "unknown",
             voice = voice.takeIf { it.matches(Regex("[A-Za-z0-9_-]{1,64}")) } ?: "unknown",
         )
     }
@@ -246,7 +246,7 @@ class PlaybackDiagnostics(private val directory: File) {
     suspend fun record(model: String, stage: PlaybackStage, error: Throwable? = null) = withContext(Dispatchers.IO) {
         mutex.withLock {
             val checkpoint = PlaybackCheckpoint(
-                BuildConfig.VERSION_NAME, model.takeIf { it in setOf("kokoro", "pocket") } ?: "unknown",
+                BuildConfig.VERSION_NAME, model.takeIf { it in setOf("kokoro", "kokoro-misaki", "pocket") } ?: "unknown",
                 stage, System.currentTimeMillis(),
                 generateSequence(error) { it.cause }.take(4).map { it.javaClass.name }.toList(),
             )
@@ -289,7 +289,7 @@ class PlaybackDiagnostics(private val directory: File) {
             appendLine("Android: ${Build.VERSION.RELEASE}, API ${Build.VERSION.SDK_INT}")
             appendLine("ABIs: ${Build.SUPPORTED_ABIS.joinToString()}")
             appendLine("Java heap limit: ${Runtime.getRuntime().maxMemory() / (1024 * 1024)} MiB")
-            appendLine("Runtime: Sherpa 1.13.8; alignment ORT 1.20.0; CPU, configurable threads")
+            appendLine("Runtime: Sherpa 1.13.8 / experimental Misaki; shared ORT 1.22.0; CPU, configurable threads")
             appendLine(performanceReport())
             appendLine("Last playback step: ${checkpoint?.let { Json.encodeToString(PlaybackCheckpoint.serializer(), it) } ?: "No playback attempt recorded"}")
             appendLine("Recent process exits:\n$exits")

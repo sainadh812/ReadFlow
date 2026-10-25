@@ -32,6 +32,7 @@ class ReadFlowApp : Application() {
     val githubSettings by lazy { GitHubSettings(this) }
     val githubDiagnostics by lazy { GitHubDiagnostics(GitHubRestApi()) }
     private val playbackInstance: Lazy<ReadingCoordinator> = lazy { ReadingCoordinator(documents, models, cache, preferences, getSystemService(PowerManager::class.java), diagnostics, issues,
+        misakiOrtLibraryPath = app.readflow.speech.misaki.MisakiFrontend.ortLibraryPath(this),
         benchmarkActive = { benchmarks.busy.value }) }
     val playback: ReadingCoordinator by playbackInstance
     val benchmarks: BenchmarkCoordinator by lazy { BenchmarkCoordinator(CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate),

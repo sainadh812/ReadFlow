@@ -5,6 +5,18 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
 }
+val misakiAbi = if (providers.gradleProperty("emulator").orNull == "true") "x86_64" else "arm64-v8a"
+val prepareMisaki by tasks.registering(Exec::class) {
+    workingDir(rootProject.projectDir)
+    commandLine("python3", "scripts/prepare_misaki.py", "--abi", misakiAbi)
+    inputs.dir("src/main/misaki")
+    inputs.file(rootProject.file("scripts/prepare_misaki.py"))
+    inputs.file("src/main/assets/licenses/misaki/readflow-provenance.json")
+    inputs.property("abi", misakiAbi)
+    outputs.file(layout.buildDirectory.file("generated/misaki/jniLibs/$misakiAbi/libreadflow_misaki.so"))
+    outputs.file(layout.buildDirectory.file("generated/misaki/jniLibs/$misakiAbi/libreadflow_misaki.build.json"))
+}
+tasks.named("preBuild").configure { dependsOn(prepareMisaki) }
 android {
     namespace = "app.readflow"
     compileSdk = 35
@@ -15,13 +27,14 @@ android {
         applicationId = "app.readflow"
         minSdk = 35
         targetSdk = 35
-        versionCode = 14
-        versionName = "0.1.13-prototype"
+        versionCode = 15
+        versionName = "0.1.14-prototype"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild { cmake { arguments += listOf("-DANDROID_STL=c++_static", "-DCMAKE_BUILD_TYPE=Release") } }
         ndk { abiFilters += if (providers.gradleProperty("emulator").orNull == "true") "x86_64" else "arm64-v8a" }
     }
     buildFeatures { compose = true; buildConfig = true }
+    sourceSets["main"].jniLibs.srcDir(layout.buildDirectory.dir("generated/misaki/jniLibs"))
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = "17" }
     packaging {
@@ -55,7 +68,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.jsoup:jsoup:1.18.3")
     implementation("org.apache.commons:commons-compress:1.27.1")
-    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.20.0")
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.22.0")
     implementation(files("libs/sherpa-onnx-static-link-onnxruntime-1.13.8.aar"))
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")

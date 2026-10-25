@@ -20,14 +20,17 @@ data class BenchmarkOptions(
     val compareCpuThreads: Boolean = false,
     /** Longer preparation sequence including alignment; not a speaker/underrun measurement. */
     val sustainedSpeechSamples: Int = 0,
+    /** Compare names and contextual pronunciations; generated audio still requires listening. */
+    val speechFixture: String = "financial",
 ) {
     fun validated(): BenchmarkOptions {
         require(repetitions in setOf(1, 3, 5)) { "Choose 1, 3, or 5 samples" }
-        require(speechModels.all { it in setOf("kokoro", "pocket", "sc-kokoro") }) { "Unknown speech model" }
+        require(speechModels.all { it in setOf("kokoro", "kokoro-misaki", "pocket", "sc-kokoro") }) { "Unknown speech model" }
         require(ocrEngines.all { it in setOf("mlkit", "teleocr", "paddleocr") }) { "Unknown OCR engine" }
         require(speechThreads in 1..4 && alignmentThreads in 1..4) { "Choose 1–4 CPU threads" }
         require(sustainedSpeechSamples in setOf(0, 30, 60)) { "Choose a supported sustained test length" }
         require(ocrQuality in setOf("fast", "balanced", "high")) { "Unknown OCR quality" }
+        require(speechFixture in setOf("financial", "pronunciation")) { "Unknown speech samples" }
         require(speechModels.isNotEmpty() || ocrEngines.isNotEmpty()) { "Select a speech or OCR test" }
         return copy(speechModels = speechModels.distinct(), ocrEngines = ocrEngines.distinct())
     }
@@ -95,6 +98,11 @@ data class BenchmarkRow(
     val referenceText: String? = null,
     val tableStructureCorrect: Boolean? = null,
     val tableCellAccuracy: Double? = null,
+    val phonemizerMs: Long? = null,
+    val speechInferenceMs: Long? = null,
+    /** Original built-in fixture and the exact normalized text passed to the speech engine. */
+    val inputText: String? = null,
+    val normalizedSpeechText: String? = null,
 )
 
 @Serializable
@@ -119,6 +127,7 @@ data class BenchmarkState(
     val cancellationReason: String? = null,
     val currentDevice: DeviceSnapshot? = null,
     val memorySamplingIntervalMs: Long = 1000,
+    val speechFixtureVersion: String? = null,
 ) {
     val running get() = status == BenchmarkStatus.RUNNING
 }

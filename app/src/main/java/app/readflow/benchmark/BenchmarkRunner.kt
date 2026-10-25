@@ -19,6 +19,7 @@ import app.readflow.core.*
 import app.readflow.ingest.*
 import app.readflow.models.ModelStore
 import app.readflow.speech.*
+import app.readflow.speech.misaki.MisakiFrontend
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -47,6 +48,7 @@ class BenchmarkRunner(
             val publication = Mutex()
             var state = BenchmarkState(appVersion = BuildConfig.VERSION_NAME, status = BenchmarkStatus.RUNNING,
                 options = selected, startedAtMs = System.currentTimeMillis(), before = before, currentDevice = before,
+                speechFixtureVersion = BenchmarkFixtures.SPEECH_VERSION,
                 total = benchmarkMeasurementCount(selected))
             val basePhase = AtomicReference("Preparing phone benchmark")
             val detail = AtomicReference<() -> String?>({ null })
@@ -54,6 +56,7 @@ class BenchmarkRunner(
             val job = currentCoroutineContext().job
             var speechEngine: TtsEngine? = null
             var speechAligner: OnnxForcedAligner? = null
+            var speechFrontend: MisakiFrontend? = null
             var extraction: LocalExtraction? = null
 
             suspend fun update(persist: Boolean = false, transform: (BenchmarkState) -> BenchmarkState = { it }) {
@@ -93,8 +96,10 @@ class BenchmarkRunner(
             suspend fun releaseSpeech(): Throwable? {
                 val engine = speechEngine; speechEngine = null
                 val aligner = speechAligner; speechAligner = null
+                val frontend = speechFrontend; speechFrontend = null
                 val failure = cleanupAttempt { engine?.unload() }
-                return cleanupAttempt { aligner?.close() } ?: failure
+                val frontendFailure = cleanupAttempt { frontend?.close() }
+                return cleanupAttempt { aligner?.close() } ?: frontendFailure ?: failure
             }
             suspend fun releaseExtraction(): Throwable? {
                 val local = extraction; extraction = null
@@ -129,11 +134,13 @@ class BenchmarkRunner(
                 releaseOcr()?.let { throw IllegalStateException("Could not release prior OCR model", it) }
                 for (model in selected.speechModels) {
                     val external = model == ScKokoroEngine.MODEL_ID
+                    val misaki = model == MisakiKokoroEngine.MODEL_ID
+                    val packId = if (misaki) "kokoro" else model
                     val passes = speechPasses(selected, model)
                     val required = passes.sumOf { it.measurements }
                     currentCoroutineContext().ensureActive()
-                    val pack = models.packs.firstOrNull { it.id == model }
-                    val available = if (external) ScKokoroEngine.availability(context).installed else models.installed(model)
+                    val pack = models.packs.firstOrNull { it.id == packId }
+                    val available = if (external) ScKokoroEngine.availability(context).installed else models.installed(packId)
                     if (!available || !models.installed("alignment")) {
                         record(BenchmarkRow("speech", model, "Not ready", BenchmarkRowStatus.SKIPPED,
                             backend = if (external) "external-unverified" else "cpu",
@@ -143,37 +150,51 @@ class BenchmarkRunner(
                     }
                     val voice = if (external) selected.voice.takeIf { it in setOf("af_heart", "af_bella", "af_nicole") } ?: ScKokoroEngine.DEFAULT_VOICE
                         else pack!!.voices.firstOrNull { it.id == selected.voice }?.id ?: pack.voices.first().id
-                    val version = if (external) "SC Kokoro ${ScKokoroEngine.availability(context).version ?: "unknown version"}" else pack!!.version
+                    val version = if (external) "SC Kokoro ${ScKokoroEngine.availability(context).version ?: "unknown version"}"
+                        else pack!!.version + if (misaki) " + ${MisakiFrontend.VERSION} + ${MisakiKokoroEngine.ADAPTER_VERSION}" else ""
                     for ((passIndex, pass) in passes.withIndex()) {
                         currentCoroutineContext().ensureActive()
                         val backend = if (external) "external-unverified" else "cpu"
                         val title = if (pass.sustained) "$model · sustained preparation" else "$model · block ${passIndex + 1}/${passes.size}"
                         val configLabel = pass.threads?.let { "$it speech threads" } ?: "external engine"
-                        val engine: TtsEngine = if (external) ScKokoroEngine(context) else
-                            SherpaEngine(models::directory) { id -> models.packs.first { it.id == id }.voices }.also {
-                                it.configure(SpeechRuntimeConfig(pass.threads!!, selected.allowSpinning))
-                            }
-                        val aligner = OnnxForcedAligner { File(models.directory("alignment"), "model.onnx") }
-                        aligner.configure(SpeechRuntimeConfig(selected.alignmentThreads, selected.allowSpinning))
-                        speechEngine = engine; speechAligner = aligner
                         var done = 0
                         try {
                             beginMeasurement()
                             phase("$title · $configLabel · verifying")
                             val verifyStart = SystemClock.elapsedRealtime()
-                            if (!external) models.verifyInstalled(model)
+                            if (!external) models.verifyInstalled(packId)
                             models.verifyInstalled("alignment")
                             val verifyMs = SystemClock.elapsedRealtime() - verifyStart
                             phase("$title · $configLabel · loading")
                             val loadStart = SystemClock.elapsedRealtime()
-                            engine.load(model, voice)
+                            val engine: TtsEngine = when {
+                                external -> ScKokoroEngine(context).also { speechEngine = it }
+                                misaki -> {
+                                    val frontend = withContext(Dispatchers.IO) {
+                                        MisakiFrontend(MisakiFrontend.ortLibraryPath(context), threads = 1).also { speechFrontend = it }
+                                    }
+                                    MisakiKokoroEngine(models::directory,
+                                        { id -> models.packs.first { it.id == id }.voices }, { frontend.phonemize(it) }).also {
+                                        speechEngine = it
+                                        it.configure(SpeechRuntimeConfig(pass.threads!!, selected.allowSpinning))
+                                    }
+                                }
+                                else -> SherpaEngine(models::directory) { id -> models.packs.first { it.id == id }.voices }.also {
+                                    speechEngine = it
+                                    it.configure(SpeechRuntimeConfig(pass.threads!!, selected.allowSpinning))
+                                }
+                            }
+                            val aligner = OnnxForcedAligner { File(models.directory("alignment"), "model.onnx") }.also { speechAligner = it }
+                            aligner.configure(SpeechRuntimeConfig(selected.alignmentThreads, selected.allowSpinning))
+                            engine.load(packId, voice)
                             val loadMs = SystemClock.elapsedRealtime() - loadStart
                             record(BenchmarkRow("speech-load", model, "$configLabel · fresh session", cold = !external,
                                 totalMs = verifyMs + loadMs, verifyMs = verifyMs, loadMs = loadMs, voice = voice,
                                 modelVersion = version, backend = backend, speechThreads = pass.threads,
                                 alignmentThreads = selected.alignmentThreads, allowSpinning = selected.allowSpinning,
                                 note = if (external) "Connects to a separate app. Its internal model may already be warm. Android TTS does not expose GPU/CPU placement; ReadFlow PSS excludes the external process."
-                                    else "One resident speech model. Blocks run sequentially; later blocks may encounter more heat. Verification/OS caches are not cleared; alignment loads in the first sample."))
+                                    else (if (misaki) "Misaki POS and neural pronunciation models are included in model loading; one pronunciation thread. " else "") +
+                                        "One resident speech model. Blocks run sequentially; later blocks may encounter more heat. Verification/OS caches are not cleared; alignment loads in the first sample."))
                             done++
                             for (sample in 0..pass.warmSamples) {
                                 currentCoroutineContext().ensureActive()
@@ -181,7 +202,8 @@ class BenchmarkRunner(
                                 val label = "$configLabel · " + if (sample == 0) "First sample" else if (pass.sustained) "Sustained sample $sample/${pass.warmSamples}" else "Warm sample $sample"
                                 beginMeasurement()
                                 phase("$title · $label")
-                                val text = BenchmarkFixtures.SPEECH[(sample - 1).coerceAtLeast(0) % BenchmarkFixtures.SPEECH.size]
+                                val fixtures = BenchmarkFixtures.speechSamples(selected.speechFixture)
+                                val text = fixtures[(sample - 1).coerceAtLeast(0) % fixtures.size]
                                 val sampleStart = SystemClock.elapsedRealtime()
                                 val row = try {
                                     speechSample(engine, aligner, text, model, voice, label, cold, version,
@@ -192,7 +214,7 @@ class BenchmarkRunner(
                                     BenchmarkRow("speech", model, label, BenchmarkRowStatus.FAILED, cold = cold,
                                         totalMs = SystemClock.elapsedRealtime() - sampleStart, voice = voice, modelVersion = version,
                                         backend = backend, speechThreads = pass.threads, alignmentThreads = selected.alignmentThreads,
-                                        allowSpinning = selected.allowSpinning, note = safeError(failure))
+                                        allowSpinning = selected.allowSpinning, inputText = text, note = safeError(failure))
                                 }
                                 record(row); done++
                             }
@@ -326,12 +348,17 @@ class BenchmarkRunner(
         val prepared = SpeechPlanner().prepare(page.words).toList()
         var synthesisMs = 0L; var alignmentMs = 0L; var audioSeconds = 0.0; var alignedWords = 0
         var resampleMs = 0L; var inferenceMs = 0L; var decodeMs = 0L; var loadMs = 0L; var normalizationMs = 0L; var copyMs = 0L
+        var phonemizerMs = 0L; var speechInferenceMs = 0L
         var accepted = true
         for (part in prepared) {
             currentCoroutineContext().ensureActive()
             var stage = SystemClock.elapsedRealtime()
             val audio = engine.synthesize(part.speech.text, isCurrent)
             synthesisMs += SystemClock.elapsedRealtime() - stage
+            if (engine is MisakiKokoroEngine) {
+                phonemizerMs += engine.lastTimings.phonemizerMs
+                speechInferenceMs += engine.lastTimings.inferenceMs
+            }
             val quantized = withContext(Dispatchers.IO) { writeQuantizedWave(wave, audio) }
             currentCoroutineContext().ensureActive()
             stage = SystemClock.elapsedRealtime()
@@ -355,9 +382,13 @@ class BenchmarkRunner(
             speechThreads = threads, alignmentThreads = options.alignmentThreads, allowSpinning = options.allowSpinning,
             resampleMs = resampleMs, alignmentInferenceMs = inferenceMs, alignmentDecodeMs = decodeMs,
             alignmentLoadMs = loadMs, alignmentNormalizationMs = normalizationMs, alignmentOutputCopyMs = copyMs,
+            phonemizerMs = phonemizerMs.takeIf { engine is MisakiKokoroEngine },
+            speechInferenceMs = speechInferenceMs.takeIf { engine is MisakiKokoroEngine },
+            inputText = text, normalizedSpeechText = prepared.joinToString(" ") { it.speech.text },
             note = buildString {
                 if (engine is ScKokoroEngine) append("SC Kokoro external engine; GPU/CPU placement unverified. Engine-process memory is excluded. Synthesis includes Android IPC and external WAV handling. ")
                 else append("CPU · $threads speech threads · spinning ${if (options.allowSpinning) "on" else "off"}. ")
+                if (engine is MisakiKokoroEngine) append("Experimental Misaki English with neural fallback, one pronunciation thread, direct ONNX Kokoro. Uses the same voice weights; pronunciation can differ. ")
                 append("${options.alignmentThreads} alignment threads. Characters/min uses synthesis time. Preparation includes normalization, synthesis, PCM16 writing and alignment, not playback/database commit. ")
                 append(if (accepted) "Alignment passed; this does not score pronunciation or playback gaps." else "Alignment rejected; no timings were invented.")
             })

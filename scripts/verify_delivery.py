@@ -19,6 +19,8 @@ with zipfile.ZipFile(apk) as package:
     assert not any(name.endswith(".onnx") or name.endswith("voices.bin") for name in names)
     assert "assets/model-manifests.json" in names
     assert "assets/vendor/Readability.js" in names
+    assert "lib/arm64-v8a/libreadflow_misaki.so" in names
+    assert "assets/licenses/misaki/readflow-provenance.json" in names
 result = dict(command="./gradlew assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest --console=plain",
     exitCode=0, tests=tests, testTotal=sum(int(s["tests"]) for s in tests),
     failures=sum(int(s["failures"]) + int(s["errors"]) for s in tests),
@@ -26,7 +28,8 @@ result = dict(command="./gradlew assembleDebug testDebugUnitTest lintDebug assem
     lintErrors=sum(i.attrib["severity"] in ["Error", "Fatal"] for i in issues),
     lintWarnings=sum(i.attrib["severity"] == "Warning" for i in issues),
     lintIssueIds=sorted({i.attrib["id"] for i in issues}),
-    apk=dict(file=apk.name, bytes=apk.stat().st_size, sha256=hashlib.sha256(apk.read_bytes()).hexdigest(), abis=abis, bundledSpeechOrAlignmentWeights=False),
+    apk=dict(file=apk.name, bytes=apk.stat().st_size, sha256=hashlib.sha256(apk.read_bytes()).hexdigest(), abis=abis,
+        bundledSpeechAcousticOrAlignmentWeights=False, bundledPhonemizerModels=True),
     androidRuntimeVerification="Not performed for this build: no attached Android runtime; instrumentation APK compiled only",
     physicalTargetVerification="No attached device; not performed")
 assert result["testTotal"] > 0 and result["failures"] == 0 and result["skipped"] == 0 and result["lintErrors"] == 0

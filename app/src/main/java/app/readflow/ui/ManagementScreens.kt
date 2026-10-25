@@ -55,6 +55,24 @@ import java.util.Locale
                         TextButton(onClick = { vm.cancelDownload(pack.id) }) { Icon(Icons.Default.Close, null); Text("Cancel setup") }
                     } else if (!installed) Button(onClick = { vm.download(pack.id) }) { Icon(Icons.Default.Download, null); Spacer(Modifier.width(6.dp)); Text(if (status?.canResume == true) "Resume setup" else "Download") }
                     else {
+                        if (pack.id == "kokoro") {
+                            Text("English pronunciation", style = MaterialTheme.typography.titleSmall,
+                                modifier = Modifier.padding(top = 12.dp))
+                            listOf("espeak" to "Current · eSpeak", "misaki" to "Misaki · experimental").forEach { (value, label) ->
+                                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                    RadioButton(selected = prefs.kokoroPhonemizer == value,
+                                        onClick = { vm.chooseKokoroPhonemizer(value) },
+                                        modifier = Modifier.semantics { contentDescription = "Kokoro pronunciation: $label" })
+                                    Text(label, Modifier.weight(1f))
+                                }
+                            }
+                            Text("Misaki uses your downloaded Kokoro voice. No extra download is needed. Names, emphasis and rhythm may sound different; preview a voice or compare both in the phone testbench.",
+                                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            TextButton(enabled = vm.app.models.installed("alignment"), onClick = {
+                                val voice = pack.voices.firstOrNull { it.id == prefs.voice }?.id ?: pack.voices.first().id
+                                vm.sample("kokoro", voice, pronunciation = true)
+                            }) { Icon(Icons.Default.PlayArrow, null); Text("Try pronunciation sample") }
+                        }
                         pack.voices.forEach { voice ->
                             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                 RadioButton(selected = prefs.model == pack.id && prefs.voice == voice.id, onClick = { vm.chooseModel(pack.id, voice.id) }, modifier = Modifier.semantics { contentDescription = "Use ${voice.name}" })
