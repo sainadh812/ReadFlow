@@ -37,8 +37,12 @@ import app.readflow.data.Preferences
     val downloads by vm.downloads.collectAsStateWithLifecycle()
     val ocrDownloads by vm.ocrDownloads.collectAsStateWithLifecycle()
     val alignmentInstalled = remember(downloads) { vm.app.models.installed("alignment") }
+    val alignmentAvailable = remember(downloads) { vm.app.models.hasLocalInstallation("alignment") }
+    val localSpeech = remember(downloads) {
+        SpeechDistribution.benchmarkModels.filter { it != "sc-kokoro" }.filter { vm.app.models.hasLocalInstallation(if (it == "kokoro-misaki") "kokoro" else it) }
+    }
     val installedSpeech = remember(downloads) {
-        SpeechDistribution.benchmarkModels.filter { it != "sc-kokoro" }.filter { vm.app.models.installed(if (it == "kokoro-misaki") "kokoro" else it) }
+        localSpeech.filter { vm.app.models.installed(if (it == "kokoro-misaki") "kokoro" else it) }
     }
     val teleInstalled = remember(ocrDownloads) { vm.app.ocrModels.installed("teleocr") }
     val paddleInstalled = remember(ocrDownloads) { vm.app.ocrModels.installed("paddleocr") }
@@ -51,14 +55,14 @@ import app.readflow.data.Preferences
     val uriHandler = LocalUriHandler.current
     var speechModels by rememberSaveable { mutableStateOf(listOf(
         if (prefs.model == "kokoro" && prefs.kokoroPhonemizer == "misaki") "kokoro-misaki" else prefs.model
-    ).filter { it in installedSpeech }) }
+    ).filter { it in localSpeech }) }
     var ocrEngines by rememberSaveable { mutableStateOf(listOf("mlkit")) }
     var repetitions by rememberSaveable { mutableIntStateOf(3) }
     var configuring by rememberSaveable { mutableStateOf(false) }
     var compareThreads by rememberSaveable { mutableStateOf(false) }
     var sustained by rememberSaveable { mutableIntStateOf(0) }
     var pronunciationSamples by rememberSaveable { mutableStateOf(false) }
-    val eligibleSpeech = speechModels.filter { (it in installedSpeech || it == "sc-kokoro" && external.installed) && alignmentInstalled }
+    val eligibleSpeech = speechModels.filter { (it in localSpeech || it == "sc-kokoro" && external.installed) && alignmentAvailable }
     val eligibleOcr = ocrEngines.filter { it == "mlkit" || it == "teleocr" && teleInstalled || it == "paddleocr" && paddleInstalled }
     if (active) KeepReaderScreenAwake()
     Column(Modifier.fillMaxSize()) {
@@ -92,13 +96,14 @@ import app.readflow.data.Preferences
                     SettingsCard("Choose what to measure", Icons.Default.Tune) {
                         Text("SPEECH + WORD TIMING", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                         SpeechDistribution.benchmarkModels.filter { it != "sc-kokoro" }.forEach { model ->
-                            val installed = model in installedSpeech
+                            val available = model in localSpeech
                             BenchmarkChoice(modelDisplayName(model), when {
-                                !installed -> "Download this voice model to test"
-                                !alignmentInstalled -> "Download word synchronization to test"
+                                !available -> "Download this voice model to test"
+                                !alignmentAvailable -> "Download word synchronization to test"
+                                model !in installedSpeech || !alignmentInstalled -> "Existing setup will be verified and updated before testing"
                                 model == "kokoro-misaki" -> if (SpeechDistribution.IS_PLAY_BUILD) "Misaki English pronunciation · on-device Kokoro speech" else "Same Kokoro voice · Misaki English pronunciation · compare with Kokoro"
                                 else -> "Installed · actual voice generation and alignment"
-                            }, model in speechModels && installed && alignmentInstalled, installed && alignmentInstalled) { selected ->
+                            }, model in speechModels && available && alignmentAvailable, available && alignmentAvailable) { selected ->
                                 speechModels = if (selected) (speechModels + model).distinct() else speechModels - model
                             }
                         }
@@ -106,8 +111,9 @@ import app.readflow.data.Preferences
                             Icon(Icons.Default.Download, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("Manage voice models")
                         }
                         if (!SpeechDistribution.IS_PLAY_BUILD) {
-                        BenchmarkChoice("SC Kokoro · external experiment", external.message,
-                            "sc-kokoro" in speechModels && external.installed && alignmentInstalled, external.installed && alignmentInstalled) { selected ->
+                        BenchmarkChoice("SC Kokoro · external experiment", if (external.installed && alignmentAvailable && !alignmentInstalled)
+                            "Existing word synchronization setup will be verified and updated before testing" else external.message,
+                            "sc-kokoro" in speechModels && external.installed && alignmentAvailable, external.installed && alignmentAvailable) { selected ->
                             speechModels = if (selected) (speechModels + "sc-kokoro").distinct() else speechModels - "sc-kokoro"
                         }
                         Text("Tests the separately installed SC Kokoro app with its Heart voice. Synthetic test text is sent locally to that engine. ReadFlow cannot verify GPU use or measure the other app's RAM; results are labeled external.",

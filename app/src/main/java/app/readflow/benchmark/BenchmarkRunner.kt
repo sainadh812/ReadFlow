@@ -140,8 +140,10 @@ class BenchmarkRunner(
                     val required = passes.sumOf { it.measurements }
                     currentCoroutineContext().ensureActive()
                     val pack = models.packs.firstOrNull { it.id == packId }
-                    val available = if (external) ScKokoroEngine.availability(context).installed else models.installed(packId)
-                    if (!available || !models.installed("alignment")) {
+                    // A prior app version's local files are candidates for checked migration.
+                    // verifyInstalled below must complete before any inference session opens.
+                    val available = if (external) ScKokoroEngine.availability(context).installed else models.hasLocalInstallation(packId)
+                    if (!available || !models.hasLocalInstallation("alignment")) {
                         record(BenchmarkRow("speech", model, "Not ready", BenchmarkRowStatus.SKIPPED,
                             backend = if (external) "external-unverified" else "cpu",
                             note = if (external) "Install SC Kokoro separately, finish its model download/device test, and install ReadFlow's Word alignment. No CPU substitute was tested."

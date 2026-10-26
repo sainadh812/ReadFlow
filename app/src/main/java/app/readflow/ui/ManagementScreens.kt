@@ -33,6 +33,7 @@ import java.util.Locale
             items(vm.app.models.packs, key = { it.id }) { pack ->
                 val status = progress[pack.id]
                 val installed = remember(status, pack.id) { vm.app.models.installed(pack.id) }
+                val existingFiles = remember(status, pack.id) { vm.app.models.hasLocalInstallation(pack.id) }
                 Column(Modifier.fillMaxWidth().padding(20.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(if (pack.id == "alignment") Icons.Default.Sync else Icons.Default.RecordVoiceOver, null, tint = MaterialTheme.colorScheme.primary)
@@ -44,7 +45,8 @@ import java.util.Locale
                         Tool(Icons.Default.Info, "${pack.name} details") { details = pack.id }
                     }
                     Spacer(Modifier.height(10.dp))
-                    Text(if (installed) "Installed" else status?.phase ?: "Not installed", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary)
+                    Text(if (installed) "Installed" else status?.phase ?: if (existingFiles) "Existing files need verification" else "Not installed",
+                        style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary)
                     if (status?.busy == true) {
                         if (status.total > 0) LinearProgressIndicator(progress = { (status.received.toFloat() / status.total).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
                         else LinearProgressIndicator(Modifier.fillMaxWidth().padding(vertical = 8.dp))
@@ -53,7 +55,15 @@ import java.util.Locale
                             style = MaterialTheme.typography.bodySmall,
                         )
                         TextButton(onClick = { vm.cancelDownload(pack.id) }) { Icon(Icons.Default.Close, null); Text("Cancel setup") }
-                    } else if (!installed) Button(onClick = { vm.download(pack.id) }) { Icon(Icons.Default.Download, null); Spacer(Modifier.width(6.dp)); Text(if (status?.canResume == true) "Resume setup" else "Download") }
+                    } else if (!installed) Button(onClick = { vm.download(pack.id) }) {
+                        Icon(if (existingFiles) Icons.Default.Sync else Icons.Default.Download, null)
+                        Spacer(Modifier.width(6.dp))
+                        Text(when {
+                            existingFiles -> "Update setup"
+                            status?.canResume == true -> "Resume setup"
+                            else -> "Download"
+                        })
+                    }
                     else {
                         if (pack.id == "kokoro") {
                             Text("English pronunciation", style = MaterialTheme.typography.titleSmall,

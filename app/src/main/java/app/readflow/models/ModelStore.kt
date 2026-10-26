@@ -79,6 +79,8 @@ class ModelStore internal constructor(
     }
     override fun directory(id: String) = File(root, packs.first { it.id == id }.id)
     override fun installed(id: String): Boolean = File(directory(id), ".verified").readTextOrNull() == manifestHash(id)
+    /** Local setup candidate only. Call verifyInstalled before opening any model. */
+    fun hasLocalInstallation(id: String): Boolean = File(directory(id), ".verified").isFile
     private fun manifestHash(id: String) = manifestHashes.getValue(id)
     private fun update(id: String, phase: String, bytes: Long = 0, total: Long = 0, busy: Boolean = true) {
         mutableProgress.update { it + (id to PackProgress(phase, bytes, total, busy,
@@ -97,9 +99,28 @@ class ModelStore internal constructor(
     }
     suspend fun verifyInstalled(id: String) = withContext(Dispatchers.IO) {
         mutex.withLock {
-            check(installed(id)) { "Download $id first" }
+            val pack = packs.first { it.id == id }
+            if (!installed(id)) {
+                check(hasLocalInstallation(id)) { "Download ${pack.name} in Voice models first." }
+                verifiedThisProcess -= id
+                try {
+                    // An app update may change catalog metadata or remove unused
+                    // files without changing the model bytes. Playback must repair
+                    // that setup locally instead of demanding another Download tap.
+                    // Never call install here: it takes this mutex and can download.
+                    check(reuseCompatibleInstallation(id, pack)) {
+                        "Existing ${pack.name} files are incomplete or damaged. Open Voice models and update setup."
+                    }
+                } catch (cancel: CancellationException) {
+                    update(id, "Setup check cancelled; retry to continue", busy = false)
+                    throw cancel
+                } catch (error: Exception) {
+                    update(id, error.message ?: "Model setup check failed", busy = false)
+                    throw error
+                }
+            }
             if (id !in verifiedThisProcess) {
-                verify(directory(id), packs.first { it.id == id }) {}
+                verify(directory(id), pack) {}
                 verifiedThisProcess += id
             }
         }
@@ -122,15 +143,7 @@ class ModelStore internal constructor(
                 catch (cancel: CancellationException) { throw cancel }
                 catch (_: IllegalStateException) { File(directory(id), ".verified").delete(); verifiedThisProcess -= id }
             }
-            check(!staging.exists() || staging.deleteRecursively()) { "Cannot clear interrupted installation" }
-            // A distribution can change its manifest while keeping the exact model
-            // bytes (for example, removing an unused pronunciation engine's data).
-            // Verify against the NEW manifest before reusing anything, and copy
-            // only its allowlisted files into the replacement installation.
-            if (stageCompatibleInstallation(id, pack, staging)) {
-                finishInstallation(id, pack, staging)
-                return@withContext
-            }
+            if (reuseCompatibleInstallation(id, pack)) return@withContext
             val pending = (pack.downloadBytes - File(downloadRoot, "$id.part").length()).coerceAtLeast(0) +
                 pack.extras.sumOf { (it.bytes - extraDownload(id, it).length()).coerceAtLeast(0) }
             check(root.usableSpace > pending + pack.installedBytes + 64L * 1024 * 1024) { "Not enough free storage for download and installation" }
@@ -160,6 +173,20 @@ class ModelStore internal constructor(
             throw error
         } finally {
             if (ownsStaging) mutex.unlock()
+        }
+    }
+    /** Caller owns mutex. Reuse is offline, hash-checked and atomically promoted. */
+    private suspend fun reuseCompatibleInstallation(id: String, pack: VoicePack): Boolean {
+        val staging = File(root, ".$id.installing")
+        check(!staging.exists() || staging.deleteRecursively()) { "Cannot clear interrupted installation" }
+        try {
+            if (!stageCompatibleInstallation(id, pack, staging)) return false
+            finishInstallation(id, pack, staging)
+            return true
+        } finally {
+            // Cancellation or an incomplete local pack must leave the previous
+            // installation available for retry, and no half-written replacement.
+            staging.deleteRecursively()
         }
     }
     private suspend fun stageCompatibleInstallation(id: String, pack: VoicePack, staging: File): Boolean {

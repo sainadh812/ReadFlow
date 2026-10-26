@@ -179,6 +179,105 @@ class PackInstallTest {
         assertFalse(File(root, ".test.installing").exists())
     }
 
+    @Test fun concurrentPlaybackChecksMigrateOldFilesWithoutAnInstallAction() = runBlocking {
+        val model = Random(32).nextBytes(200_000)
+        val source = pack(model, model).copy(archiveRoot = "")
+        val root = temporary.newFolder()
+        val downloads = temporary.newFolder()
+        File(downloads, "test.part").writeBytes(model)
+        ModelStore(listOf(source), root, downloads).install("test")
+        File(root, "test/unused-legacy-data").writeText("old")
+        val nextPack = source.copy(runtime = "new runtime metadata")
+        val next = ModelStore(listOf(nextPack), root, downloads)
+        assertTrue(next.hasLocalInstallation("test"))
+        assertFalse(next.installed("test"))
+        coroutineScope { List(8) { async(Dispatchers.IO) { next.verifyInstalled("test") } }.awaitAll() }
+        assertTrue(next.installed("test"))
+        assertEquals(setOf("model.onnx", ".verified"), next.directory("test").list()!!.toSet())
+        assertArrayEquals(model, File(next.directory("test"), "model.onnx").readBytes())
+        assertTrue(downloads.list()!!.isEmpty())
+        assertFalse(File(root, ".test.installing").exists())
+        assertFalse(File(root, ".test.previous").exists())
+        assertEquals("Installed", next.progress.value.getValue("test").phase)
+        assertFalse(next.progress.value.getValue("test").busy)
+        ModelStore(listOf(nextPack), root, downloads).verifyInstalled("test")
+    }
+
+    @Test fun playbackCheckRejectsDamagedOrMissingOldFilesWithoutDownloadingOrReplacingThem() = runBlocking {
+        for (missing in listOf(false, true)) {
+            val model = "original model".toByteArray()
+            val source = pack(model, model).copy(archiveRoot = "")
+            val root = temporary.newFolder()
+            val downloads = temporary.newFolder()
+            File(downloads, "test.part").writeBytes(model)
+            ModelStore(listOf(source), root, downloads).install("test")
+            val marker = File(root, "test/.verified").readText()
+            val file = File(root, "test/model.onnx")
+            if (missing) assertTrue(file.delete())
+            else file.writeBytes(model.copyOf().apply { this[0] = (this[0].toInt() xor 1).toByte() })
+            val next = ModelStore(listOf(source.copy(version = "next")), root, downloads)
+            try {
+                next.verifyInstalled("test")
+                fail("A stale marker must not authorize invalid bytes")
+            } catch (error: IllegalStateException) {
+                assertTrue(error.message.orEmpty().contains("Open Voice models and update setup"))
+            }
+            assertFalse(next.installed("test"))
+            assertEquals(marker, File(root, "test/.verified").readText())
+            assertEquals(!missing, file.exists())
+            if (!missing) assertNotEquals(sha256(model), fileHash(file))
+            assertTrue(downloads.list()!!.isEmpty())
+            assertFalse(File(root, ".test.installing").exists())
+            assertFalse(File(root, ".test.previous").exists())
+            assertFalse(next.progress.value.getValue("test").busy)
+        }
+    }
+
+    @Test fun cancelledPlaybackUpgradePreservesPreviousSetupAndRetrySucceeds() = runBlocking {
+        val model = Random(33).nextBytes(512 * 1024)
+        val source = pack(model, model).copy(archiveRoot = "")
+        val root = temporary.newFolder()
+        val downloads = temporary.newFolder()
+        File(downloads, "test.part").writeBytes(model)
+        ModelStore(listOf(source), root, downloads).install("test")
+        val next = ModelStore(listOf(source.copy(version = "next")), root, downloads)
+        val job = launch(start = CoroutineStart.LAZY) { next.verifyInstalled("test") }
+        val watcher = launch(Dispatchers.Unconfined) {
+            next.progress.first { it["test"]?.phase?.startsWith("Reusing") == true }
+            job.cancel()
+        }
+        job.start(); job.join(); watcher.join()
+        assertTrue(job.isCancelled)
+        val previous = ModelStore(listOf(source), root, downloads)
+        assertTrue(previous.installed("test"))
+        previous.verifyInstalled("test")
+        assertFalse(File(root, ".test.installing").exists())
+        assertFalse(next.progress.value.getValue("test").busy)
+        next.verifyInstalled("test")
+        assertTrue(next.installed("test"))
+        assertTrue(downloads.list()!!.isEmpty())
+    }
+
+    @Test fun playbackDoesNotDownloadOrAdoptUnmarkedLocalFiles() = runBlocking {
+        val model = "uninstalled model".toByteArray()
+        val source = pack(model, model).copy(archiveRoot = "")
+        val root = temporary.newFolder()
+        val downloads = temporary.newFolder()
+        File(root, "test").mkdirs()
+        File(root, "test/model.onnx").writeBytes(model)
+        val store = ModelStore(listOf(source), root, downloads)
+        assertFalse(store.hasLocalInstallation("test"))
+        try {
+            store.verifyInstalled("test")
+            fail("An initial installation is required")
+        } catch (error: IllegalStateException) {
+            assertTrue(error.message.orEmpty().contains("in Voice models first"))
+        }
+        assertFalse(store.installed("test"))
+        assertTrue(downloads.list()!!.isEmpty())
+        assertFalse(File(root, ".test.installing").exists())
+    }
+
     @Test fun rawGgufAndProjectorResumeOfflineAndBothRequireVerifiedChecksums() = runBlocking {
         val model = Random(90).nextBytes(200_000)
         val projector = Random(91).nextBytes(80_000)
