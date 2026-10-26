@@ -1,0 +1,39 @@
+{
+  "verifiedDate": "2026-10-26",
+  "kokoroRevision": "92805c485745946a0d945562d3aba19e7cbb2104",
+  "kokoroTreeApi": "https://huggingface.co/api/models/csukuangfj/kokoro-en-v0_19/tree/92805c485745946a0d945562d3aba19e7cbb2104?recursive=false",
+  "kokoroNetworkEvidence": {
+    "allFourDirectUrls": "HTTP HEAD 200; sizes match manifest",
+    "modelAndVoices": "Immutable repository tree LFS SHA-256 matches manifest; local downloaded archive copies independently hashed; large blobs not fully re-downloaded in this audit",
+    "tokensAndLicense": "HTTP GET bodies independently SHA-256 checked against manifest"
+  },
+  "alignmentBaseRevision": "22aad52d435eb6dbaf354bdad9b0da84ce7d6156",
+  "alignmentExportRevision": "729c1a6730fb549c20a1c73a3d3f96f11020225e",
+  "alignmentEvidence": "Pinned export README names Facebook base; base API card declares apache-2.0; all existing local export files independently hashed against release manifest",
+  "kokoroFiles": [
+    {
+      "path": "model.onnx",
+      "bytes": 345555491,
+      "sha256": "10ff414106a038ce7e9e0126c6461e4dc8a86efaa89dc91d2009d69fe635e339"
+    },
+    {
+      "path": "tokens.txt",
+      "bytes": 1078,
+      "sha256": "4f31c71282d14af4e926cd12462078fe9d20d00c589e63fe2750a8f56d6d7f7b",
+      "url": "https://huggingface.co/csukuangfj/kokoro-en-v0_19/resolve/92805c485745946a0d945562d3aba19e7cbb2104/tokens.txt"
+    },
+    {
+      "path": "voices.bin",
+      "bytes": 5755904,
+      "sha256": "a372c67b056ef0b695c375d39b99630d23fb07ad4c8d87aa32a19a62fca523ad",
+      "url": "https://huggingface.co/csukuangfj/kokoro-en-v0_19/resolve/92805c485745946a0d945562d3aba19e7cbb2104/voices.bin"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "url": "https://huggingface.co/csukuangfj/kokoro-en-v0_19/resolve/92805c485745946a0d945562d3aba19e7cbb2104/LICENSE"
+    }
+  ],
+  "licenseSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+}

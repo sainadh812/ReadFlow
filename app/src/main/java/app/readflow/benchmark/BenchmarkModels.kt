@@ -4,10 +4,11 @@ import java.text.Normalizer
 import java.util.Locale
 import kotlinx.serialization.Serializable
 import app.readflow.core.RecognizedTable
+import app.readflow.speech.SpeechDistribution
 
 @Serializable
 data class BenchmarkOptions(
-    val speechModels: List<String> = listOf("kokoro"),
+    val speechModels: List<String> = listOf(if (SpeechDistribution.IS_PLAY_BUILD) "kokoro-misaki" else "kokoro"),
     val ocrEngines: List<String> = listOf("mlkit"),
     val voice: String = "0",
     val ocrQuality: String = "balanced",
@@ -33,6 +34,11 @@ data class BenchmarkOptions(
         require(speechFixture in setOf("financial", "pronunciation")) { "Unknown speech samples" }
         require(speechModels.isNotEmpty() || ocrEngines.isNotEmpty()) { "Select a speech or OCR test" }
         return copy(speechModels = speechModels.distinct(), ocrEngines = ocrEngines.distinct())
+    }
+
+    /** Historical reports may mention other engines; only the build's engines can execute. */
+    internal fun validatedForExecution(): BenchmarkOptions = validated().also { options ->
+        require(options.speechModels.all { it in SpeechDistribution.benchmarkModels }) { "Speech model unavailable in this build" }
     }
 }
 

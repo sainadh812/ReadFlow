@@ -289,7 +289,9 @@ class PlaybackDiagnostics(private val directory: File) {
             appendLine("Android: ${Build.VERSION.RELEASE}, API ${Build.VERSION.SDK_INT}")
             appendLine("ABIs: ${Build.SUPPORTED_ABIS.joinToString()}")
             appendLine("Java heap limit: ${Runtime.getRuntime().maxMemory() / (1024 * 1024)} MiB")
-            appendLine("Runtime: Sherpa 1.13.8 / experimental Misaki; shared ORT 1.22.0; CPU, configurable threads")
+            appendLine(if (app.readflow.speech.SpeechDistribution.IS_PLAY_BUILD)
+                "Runtime: Misaki; ONNX Runtime 1.22.0; CPU, configurable threads"
+                else "Runtime: Sherpa 1.13.8 / experimental Misaki; shared ORT 1.22.0; CPU, configurable threads")
             appendLine(performanceReport())
             appendLine("Last playback step: ${checkpoint?.let { Json.encodeToString(PlaybackCheckpoint.serializer(), it) } ?: "No playback attempt recorded"}")
             appendLine("Recent process exits:\n$exits")

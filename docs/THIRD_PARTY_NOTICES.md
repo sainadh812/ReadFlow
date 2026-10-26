@@ -2,12 +2,13 @@
 
 This inventory is part of the source delivery. No large model weights or third-party source trees are committed. The Gradle wrapper, small generated original fixtures and evidence audio are included. Downloaded third-party build inputs remain under ignored `app/libs`, `app/src/main/assets/vendor` and `.deps`.
 
+**Distribution scope:** references below to the bundled Sherpa AAR, eSpeak and Pocket apply to the debug/prototype distribution. The Play `release` variant uses a separate Kokoro + Misaki implementation and a four-file Kokoro download catalog. See [Play model distribution and audit limits](PLAY_MODEL_DISTRIBUTION.md). The exact release artifact still requires a dependency/license audit before publication; selecting Misaki in a prototype does not remove its existing GPL obligations.
+
 | Component | Pin | License / source |
 |---|---|---|
 | Kotlin/compiler/Compose compiler | 2.1.20 | Apache-2.0; https://github.com/JetBrains/kotlin |
 | Gradle wrapper | 8.11.1 | Apache-2.0; https://github.com/gradle/gradle |
-| Android Gradle plugin | 8.6.1 | Apache-2.0; https://developer.android.com/build/releases/agp-8-6-0-release-notes |
-| Android lint override | 8.8.2 | Apache-2.0; https://developer.android.com/develop/ui/compose/tooling/lint |
+| Android Gradle plugin / lint | 8.9.2 | Apache-2.0; https://developer.android.com/build/releases/past-releases/agp-8-9-0-release-notes |
 | Compose BOM/Material 3 | 2025.04.01 | Apache-2.0; https://developer.android.com/jetpack/compose/bom |
 | Activity/Lifecycle | 1.10.1 / 2.8.7 | Apache-2.0, AndroidX |
 | Room/DataStore | 2.7.1 / 1.1.4 | Apache-2.0, AndroidX |
@@ -27,6 +28,14 @@ This inventory is part of the source delivery. No large model weights or third-p
 | JUnit / AndroidX Test | 4.13.2 / runner 1.6.2 | EPL-1.0 / Apache-2.0 |
 
 ## Models and voices
+
+### Reader fonts and resolved runtime notices
+
+OpenDyslexic, Atkinson Hyperlegible Next, Lexend, Literata, Source Serif 4 and Noto Sans are bundled as unmodified upstream font files under SIL OFL 1.1. Their exact revisions, source URLs, sizes, SHA-256s, copyright statements and license texts are in `app/src/main/assets/licenses/fonts/provenance.json` and adjacent folders. `scripts/verify_reader_fonts.py` checks the repository or a built APK/AAB against this inventory. Font license obligations remain separate from the application license; no medical benefit is asserted.
+
+The Play build automatically retains embedded notices from its resolved runtime artifacts under `assets/licenses/dependencies/`. Supplemental upstream license texts, exact POM evidence and remaining file-level audit items are in `app/src/main/assets/licenses/runtime/`. DataStore's relocated Protobuf is BSD-3-Clause, not covered by a blanket AndroidX Apache assertion. ONNX Runtime's full bundled third-party notices and Misaki/TeleOCR notices are retained separately. See the [publishing audit instructions](PLAY_STORE_HANDOFF.md) before any public-store release.
+
+### Speech and OCR
 
 - **Misaki experiment:** the new direct Kokoro path does not invoke eSpeak. The Go port, Misaki dictionaries and PeterReid neural G2P models declare Apache-2.0; spaCy's tokenizer/POS export is MIT with retained source notices. Go and `x/text` are BSD-3-Clause; ONNX Go bindings, ortenv and regexp2 are MIT; Unicode data retain their Unicode notice. The direct engine's silence-scaling algorithm follows Apache-2.0 Sherpa code (Copyright 2023 Xiaomi Corporation). The existing Sherpa AAR remains bundled, so its GPL/eSpeak obligations still apply to this prototype. Do not treat a runtime selection as app-wide license clearance.
 

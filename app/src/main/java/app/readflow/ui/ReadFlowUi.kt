@@ -43,7 +43,6 @@ import app.readflow.playback.ReaderPlayback
 import java.util.Locale
 
 private val Accent = Color(0xFF126D63)
-private val SelectionBackground = Color(0xFFD4EEE6)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable fun ReadFlowUi(vm: ReaderViewModel, requestNotifications: () -> Unit) {
@@ -52,6 +51,8 @@ private val SelectionBackground = Color(0xFFD4EEE6)
     val playback by vm.playback.collectAsStateWithLifecycle()
     val message by vm.message.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
+    val readerPaper = remember(prefs.readerTheme) { ReaderPapers.selected(prefs.readerTheme) }
+    ReaderSystemBarAppearance(if (screen == "reader") readerPaper.dark else prefs.dark)
     var urlDialog by remember { mutableStateOf(false) }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> if (uri != null) vm.import(uri) }
     BackHandler(screen != "library") {
@@ -79,12 +80,14 @@ private val SelectionBackground = Color(0xFFD4EEE6)
             titleLarge = TextStyle(fontSize = 21.sp, lineHeight = 28.sp, fontWeight = FontWeight.SemiBold),
             bodyLarge = TextStyle(fontSize = 18.sp, lineHeight = 28.sp, letterSpacing = 0.sp)),
         shapes = Shapes(small = RoundedCornerShape(12.dp), medium = RoundedCornerShape(18.dp), large = RoundedCornerShape(24.dp))) {
-        Scaffold(snackbarHost = { SnackbarHost(snackbar) }) { insets ->
+        Scaffold(snackbarHost = { SnackbarHost(snackbar) },
+            containerColor = if (screen == "reader") readerPaper.chrome else MaterialTheme.colorScheme.background) { insets ->
             Box(Modifier.fillMaxSize().padding(insets)) {
                 when (screen) {
-                    "reader" -> Reader(vm, playback, prefs, requestNotifications)
+                    "reader" -> ReaderTheme(prefs.readerTheme) { Reader(vm, playback, prefs, requestNotifications) }
                     "voices" -> Voices(vm)
                     "settings" -> Settings(vm, prefs)
+                    "legal" -> LegalScreen(vm)
                     "ocr" -> OcrSettingsScreen(vm, prefs)
                     "benchmark" -> BenchmarkScreen(vm, prefs)
                     "issues" -> IssueLogsScreen(vm)
@@ -194,6 +197,7 @@ private val SelectionBackground = Color(0xFFD4EEE6)
     var details by remember { mutableStateOf(false) }
     var speeds by remember { mutableStateOf(false) }
     var preparePages by remember { mutableStateOf(false) }
+    var appearance by remember { mutableStateOf(false) }
     var pageOnly by rememberSaveable(state.document?.id) { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     var follow by remember(state.document?.id) { mutableStateOf(true) }
@@ -209,7 +213,7 @@ private val SelectionBackground = Color(0xFFD4EEE6)
     LaunchedEffect(state.error, state.blockedSentence) {
         if (state.error != null || state.blockedSentence != null) pageOnly = false
     }
-    Column(Modifier.fillMaxSize()) {
+    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         // Keep navigation in the header and listening controls in one dock; the page owns the remaining height.
         if (!pageOnly) Surface {
             Row(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -222,10 +226,15 @@ private val SelectionBackground = Color(0xFFD4EEE6)
                         Icon(Icons.Default.ExpandMore, null, Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
-                Tool(Icons.Default.Fullscreen, "Hide controls for more page space") { searching = false; pageOnly = true }
+                IconButton(onClick = { appearance = true }, modifier = Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp)
+                    .semantics { contentDescription = "Reader appearance: paper, font and size" }) {
+                    Text("Aa", fontFamily = FontFamily.Serif, fontSize = 23.sp, color = MaterialTheme.colorScheme.primary)
+                }
                 Box {
                     Tool(Icons.Default.MoreVert, "Reader menu") { menu = true }
                     DropdownMenu(menu, { menu = false }) {
+                        DropdownMenuItem(text = { Text("Paper, font and size") }, onClick = { appearance = true; menu = false }, leadingIcon = { Icon(Icons.Default.TextFields, null) })
+                        DropdownMenuItem(text = { Text("Hide controls for more page space") }, onClick = { searching = false; pageOnly = true; menu = false }, leadingIcon = { Icon(Icons.Default.Fullscreen, null) })
                         if (ocrProgress != null || refreshingText) {
                             DropdownMenuItem(text = { Text("Cancel text recognition") }, onClick = { vm.cancelOcr(); menu = false }, leadingIcon = { Icon(Icons.Default.Close, null) })
                         }
@@ -246,9 +255,11 @@ private val SelectionBackground = Color(0xFFD4EEE6)
                             DropdownMenuItem(text = { Text(if (original) "Show reader text" else "Show original page") }, onClick = { original = !original; if (original) searching = false; menu = false }, leadingIcon = { Icon(if (original) Icons.Default.TextFields else Icons.Default.Description, null) })
                             if (original) {
                                 DropdownMenuItem(text = { Text(if (fitWidth) "Fit whole page" else "Fit page width") }, onClick = { fitWidth = !fitWidth; menu = false }, leadingIcon = { Icon(Icons.Default.FitScreen, null) })
-                                DropdownMenuItem(text = { Text(if (prefs.swipePages) "Page swipes: on" else "Page swipes: off") }, onClick = { vm.update(prefs.copy(swipePages = !prefs.swipePages)); menu = false })
                                 DropdownMenuItem(text = { Text("Rotate page view") }, onClick = { rotation = (rotation + 90) % 360; menu = false }, leadingIcon = { Icon(Icons.Default.RotateRight, null) })
                             }
+                        }
+                        if ((state.document?.pageCount ?: 0) > 1) {
+                            DropdownMenuItem(text = { Text(if (prefs.swipePages) "Page swipes: on" else "Page swipes: off") }, onClick = { vm.update(prefs.copy(swipePages = !prefs.swipePages)); menu = false })
                         }
                         DropdownMenuItem(text = { Text("Find in page text") }, onClick = { searching = true; original = false; menu = false }, leadingIcon = { Icon(Icons.Default.Search, null) })
                         DropdownMenuItem(text = { Text("Playback speed · ${String.format(Locale.US, "%.2f×", prefs.speed)}") }, onClick = { speeds = true; menu = false }, leadingIcon = { Icon(Icons.Default.Speed, null) })
@@ -271,10 +282,14 @@ private val SelectionBackground = Color(0xFFD4EEE6)
             }
         }
         if (searching) OutlinedTextField(query, { query = it }, label = { Text("Find on page") }, trailingIcon = { Tool(Icons.Default.Close, "Close search") { query = ""; searching = false } }, singleLine = true, modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp))
-        Box(Modifier.weight(1f).fillMaxWidth()) {
+        Box(Modifier.weight(1f).fillMaxWidth().readerPaper(LocalReaderPaper.current)) {
             if (original) OriginalPage(vm, state, Modifier.fillMaxSize(), follow, rotation, fitWidth, prefs.swipePages, prefs.swipeRightAdvances) { follow = false }
             else if (page == null) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { if (state.preparing) CircularProgressIndicator() }
-            else ReaderText(page, state, prefs, query, follow, { follow = false }, { vm.app.playback.select(it) }, { vm.bookmark(it) }, Modifier.fillMaxSize())
+            else key(page.id) {
+                ReaderText(page, state, prefs, query, follow, { follow = false }, { vm.app.playback.select(it) }, { vm.bookmark(it) },
+                    Modifier.fillMaxSize().readerPageSwipes(page.id, prefs.swipePages, prefs.swipeRightAdvances,
+                        manualScroll = { follow = false }, turn = { vm.page(pageIndex + it) }))
+            }
             if (pageOnly) Surface(Modifier.align(Alignment.TopEnd).padding(4.dp), shape = MaterialTheme.shapes.large, tonalElevation = 1.dp) {
                 Tool(Icons.Default.FullscreenExit, "Show reader controls") { pageOnly = false }
             }
@@ -300,6 +315,7 @@ private val SelectionBackground = Color(0xFFD4EEE6)
             { original = !original; if (original) searching = false }, selected, status,
             showDetails = { details = true }, copySelection = { selected?.let { clipboard.setText(AnnotatedString(it.text)) } })
     }
+    if (appearance) ReaderAppearanceSheet(prefs, vm::update) { appearance = false }
     if (preparePages && state.document != null) {
         var endPage by remember(state.document.id, pageIndex) { mutableStateOf(minOf(pageIndex + 10, state.document.pageCount).toString()) }
         val end = endPage.toIntOrNull()?.takeIf { it in pageIndex + 1..state.document.pageCount }
@@ -360,6 +376,8 @@ private val SelectionBackground = Color(0xFFD4EEE6)
 
 @Composable private fun ReaderText(page: PageContent, state: ReaderPlayback, prefs: Preferences, query: String, follow: Boolean, manualScroll: () -> Unit,
     tap: (String) -> Unit, bookmark: (SourceWord) -> Unit, modifier: Modifier) {
+    val paper = LocalReaderPaper.current
+    val readerFont = ReaderFonts.family(prefs.readerFont)
     val list = rememberLazyListState()
     val dragging by list.interactionSource.collectIsDraggedAsState()
     val active = page.words.firstOrNull { it.id == state.activeWordId }
@@ -373,44 +391,47 @@ private val SelectionBackground = Color(0xFFD4EEE6)
     LaunchedEffect(query) {
         if (query.isNotBlank()) page.paragraphs.indexOfFirst { page.reading.substring(it.start, it.end).contains(query, true) }.takeIf { it >= 0 }?.let { list.animateScrollToItem(it) }
     }
-    LazyColumn(state = list, modifier = modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 22.dp),
-        verticalArrangement = Arrangement.spacedBy(22.dp)) {
-        items(page.paragraphs, key = { it.id }) { paragraph ->
-            val words = page.words.filter { it.paragraphId == paragraph.id }
-            var layout by remember { mutableStateOf<TextLayoutResult?>(null) }
-            LaunchedEffect(state.activeWordId, follow, layout) {
-                if (follow && active?.paragraphId == paragraph.id) {
-                    val measured = layout ?: return@LaunchedEffect
-                    val box = measured.getBoundingBox(active.start - paragraph.start)
-                    val item = list.layoutInfo.visibleItemsInfo.firstOrNull { it.key == paragraph.id }
-                    val y = (item?.offset ?: -10000) + box.top
-                    if (y < 0 || y + box.height > list.layoutInfo.viewportEndOffset) list.animateScrollToItem(paragraph.order, (box.top - 40).toInt().coerceAtLeast(0))
+    Box(modifier, contentAlignment = Alignment.TopCenter) {
+        LazyColumn(state = list, modifier = Modifier.widthIn(max = 760.dp).fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 28.dp, vertical = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(22.dp)) {
+            items(page.paragraphs, key = { it.id }) { paragraph ->
+                val words = page.words.filter { it.paragraphId == paragraph.id }
+                var layout by remember { mutableStateOf<TextLayoutResult?>(null) }
+                LaunchedEffect(state.activeWordId, follow, layout) {
+                    if (follow && active?.paragraphId == paragraph.id) {
+                        val measured = layout ?: return@LaunchedEffect
+                        val box = measured.getBoundingBox(active.start - paragraph.start)
+                        val item = list.layoutInfo.visibleItemsInfo.firstOrNull { it.key == paragraph.id }
+                        val y = (item?.offset ?: -10000) + box.top
+                        if (y < 0 || y + box.height > list.layoutInfo.viewportEndOffset) list.animateScrollToItem(paragraph.order, (box.top - 40).toInt().coerceAtLeast(0))
+                    }
                 }
-            }
-            val text = buildAnnotatedString {
-                append(page.reading.substring(paragraph.start, paragraph.end))
-                words.forEach { word ->
-                    val start = word.start - paragraph.start; val end = word.end - paragraph.start
-                    if (word.sentenceId == active?.sentenceId) addStyle(SpanStyle(background = if (prefs.dark) Color(0xFF254D43) else SelectionBackground), start, end)
-                    if (query.isNotBlank() && word.text.contains(query, true)) addStyle(SpanStyle(background = Color(0xFFFFDB75), color = Color(0xFF202020)), start, end)
-                    if (word.id in state.activeWordIds) addStyle(SpanStyle(background = Accent, color = Color.White), start, end)
-                    else if (word.id == state.selectedWordId) addStyle(SpanStyle(background = if (prefs.dark) Color(0xFF355B4D) else SelectionBackground), start, end)
+                val text = buildAnnotatedString {
+                    append(page.reading.substring(paragraph.start, paragraph.end))
+                    words.forEach { word ->
+                        val start = word.start - paragraph.start; val end = word.end - paragraph.start
+                        if (word.sentenceId == active?.sentenceId) addStyle(SpanStyle(background = paper.sentence), start, end)
+                        if (query.isNotBlank() && word.text.contains(query, true)) addStyle(SpanStyle(background = Color(0xFFFFDB75), color = Color(0xFF202020)), start, end)
+                        if (word.id in state.activeWordIds) addStyle(SpanStyle(background = paper.accent, color = paper.onAccent), start, end)
+                        else if (word.id == state.selectedWordId) addStyle(SpanStyle(background = paper.sentence), start, end)
+                    }
                 }
+                fun hit(position: androidx.compose.ui.geometry.Offset): SourceWord? {
+                    val measured = layout ?: return null
+                    val offset = measured.getOffsetForPosition(position)
+                    if (offset !in text.indices || !measured.getBoundingBox(offset).contains(position)) return null
+                    return words.firstOrNull { offset + paragraph.start in it.start until it.end }
+                }
+                Text(text, fontSize = (prefs.fontSize + if (paragraph.heading) 3 else 0).sp, lineHeight = (prefs.fontSize * 1.65f).sp, fontFamily = readerFont,
+                    color = paper.ink,
+                    fontWeight = if (paragraph.heading) androidx.compose.ui.text.font.FontWeight.Bold else androidx.compose.ui.text.font.FontWeight.Normal,
+                    onTextLayout = { layout = it }, modifier = Modifier.fillMaxWidth()
+                        .pointerInput(page.id, paragraph.id) { detectTapGestures(onTap = { point -> hit(point)?.let { tap(it.id) } }, onLongPress = { point -> hit(point)?.let(bookmark) }) }
+                        .semantics { customActions = listOf(CustomAccessibilityAction("Read this paragraph") { words.firstOrNull()?.let { tap(it.id) }; true }) })
             }
-            fun hit(position: androidx.compose.ui.geometry.Offset): SourceWord? {
-                val measured = layout ?: return null
-                val offset = measured.getOffsetForPosition(position)
-                if (offset !in text.indices || !measured.getBoundingBox(offset).contains(position)) return null
-                return words.firstOrNull { offset + paragraph.start in it.start until it.end }
-            }
-            Text(text, fontSize = (prefs.fontSize + if (paragraph.heading) 3 else 0).sp, lineHeight = (prefs.fontSize * 1.65f).sp, fontFamily = FontFamily.Serif,
-                fontWeight = if (paragraph.heading) androidx.compose.ui.text.font.FontWeight.Bold else androidx.compose.ui.text.font.FontWeight.Normal,
-                onTextLayout = { layout = it }, modifier = Modifier.fillMaxWidth()
-                    .pointerInput(page.id, paragraph.id) { detectTapGestures(onTap = { point -> hit(point)?.let { tap(it.id) } }, onLongPress = { point -> hit(point)?.let(bookmark) }) }
-                    .semantics { customActions = listOf(CustomAccessibilityAction("Read this paragraph") { words.firstOrNull()?.let { tap(it.id) }; true }) })
+            if (page.words.isEmpty()) item { Text("No readable text on this page.", color = MaterialTheme.colorScheme.onSurfaceVariant) }
         }
-        if (page.words.isEmpty()) item { Text("No readable text on this page.", color = MaterialTheme.colorScheme.onSurfaceVariant) }
     }
 }
 

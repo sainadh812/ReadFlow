@@ -98,6 +98,87 @@ class PackInstallTest {
         assertArrayEquals(data, File(store.directory("test"), "model.onnx").readBytes())
     }
 
+    @Test fun changedManifestReusesOnlyVerifiedAllowlistedFilesWithoutNetwork() = runBlocking {
+        val model = "same acoustic weights".toByteArray()
+        val voices = "same voice styles".toByteArray()
+        val oldBytes = archive(listOf("fixture/model.onnx" to model, "fixture/espeak-ng-data/unused" to "legacy".toByteArray()))
+        val oldPack = pack(oldBytes, model).copy(
+            files = listOf(PackFile("model.onnx", model.size.toLong(), sha256(model)),
+                PackFile("espeak-ng-data/unused", 6, sha256("legacy".toByteArray()))),
+            extras = listOf(PackFile("voices.bin", voices.size.toLong(), sha256(voices), "https://invalid.example/voices.bin")),
+            installedBytes = model.size + voices.size + 6L,
+        )
+        val root = temporary.newFolder()
+        val downloads = temporary.newFolder()
+        File(downloads, "test.part").writeBytes(oldBytes)
+        File(downloads, "test-voices.bin.part").writeBytes(voices)
+        ModelStore(listOf(oldPack), root, downloads).install("test")
+        val replacement = oldPack.copy(version = "misaki", archiveRoot = "", sha256 = sha256(model),
+            downloadBytes = model.size.toLong(), installedBytes = (model.size + voices.size).toLong(),
+            files = oldPack.files.filterNot { it.path.startsWith("espeak") })
+        val store = ModelStore(listOf(replacement), root, downloads)
+        assertFalse(store.installed("test"))
+        store.install("test") // invalid.example cannot supply files; this must reuse verified local bytes.
+        assertTrue(store.installed("test"))
+        assertEquals(setOf("model.onnx", "voices.bin", ".verified"), store.directory("test").list()!!.toSet())
+        assertArrayEquals(model, File(store.directory("test"), "model.onnx").readBytes())
+        assertArrayEquals(voices, File(store.directory("test"), "voices.bin").readBytes())
+        assertFalse(File(root, ".test.previous").exists())
+        store.verifyInstalled("test")
+    }
+
+    @Test fun changedManifestDoesNotTrustSameSizeCorruptReusableFiles() = runBlocking {
+        val model = "verified model".toByteArray()
+        val source = pack(model, model).copy(archiveRoot = "")
+        val root = temporary.newFolder()
+        val downloads = temporary.newFolder()
+        File(downloads, "test.part").writeBytes(model)
+        val old = ModelStore(listOf(source), root, downloads)
+        old.install("test")
+        File(old.directory("test"), "model.onnx").writeBytes(model.copyOf().apply { this[0] = (this[0].toInt() xor 1).toByte() })
+        File(downloads, "test.part").writeBytes(model)
+        val replacement = ModelStore(listOf(source.copy(version = "new-manifest")), root, downloads)
+        replacement.install("test")
+        assertArrayEquals(model, File(replacement.directory("test"), "model.onnx").readBytes())
+        replacement.verifyInstalled("test")
+    }
+
+    @Test fun interruptedReplacementRestoresOldInstallationBeforeNewStoreUsesIt() = runBlocking {
+        val model = "recoverable model".toByteArray()
+        val source = pack(model, model).copy(archiveRoot = "")
+        val root = temporary.newFolder()
+        val downloads = temporary.newFolder()
+        File(downloads, "test.part").writeBytes(model)
+        val store = ModelStore(listOf(source), root, downloads)
+        store.install("test")
+        assertTrue(store.directory("test").renameTo(File(root, ".test.previous")))
+        val recovered = ModelStore(listOf(source), root, downloads)
+        assertTrue(recovered.installed("test"))
+        recovered.verifyInstalled("test")
+        assertFalse(File(root, ".test.previous").exists())
+    }
+
+    @Test fun cancelledReuseKeepsWorkingOldInstallation() = runBlocking {
+        val model = Random(31).nextBytes(512 * 1024)
+        val source = pack(model, model).copy(archiveRoot = "")
+        val root = temporary.newFolder()
+        val downloads = temporary.newFolder()
+        File(downloads, "test.part").writeBytes(model)
+        ModelStore(listOf(source), root, downloads).install("test")
+        val next = ModelStore(listOf(source.copy(version = "next")), root, downloads)
+        val job = launch(start = CoroutineStart.LAZY) { next.install("test") }
+        val watcher = launch(Dispatchers.Unconfined) {
+            next.progress.first { it["test"]?.phase?.startsWith("Reusing") == true }
+            job.cancel()
+        }
+        job.start(); job.join(); watcher.join()
+        assertTrue(job.isCancelled)
+        val original = ModelStore(listOf(source), root, downloads)
+        assertTrue(original.installed("test"))
+        original.verifyInstalled("test")
+        assertFalse(File(root, ".test.installing").exists())
+    }
+
     @Test fun rawGgufAndProjectorResumeOfflineAndBothRequireVerifiedChecksums() = runBlocking {
         val model = Random(90).nextBytes(200_000)
         val projector = Random(91).nextBytes(80_000)

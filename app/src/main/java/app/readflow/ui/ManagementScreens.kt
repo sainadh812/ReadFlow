@@ -17,9 +17,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.readflow.data.Preferences
+import app.readflow.speech.SpeechDistribution
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +58,8 @@ import java.util.Locale
                         if (pack.id == "kokoro") {
                             Text("English pronunciation", style = MaterialTheme.typography.titleSmall,
                                 modifier = Modifier.padding(top = 12.dp))
-                            listOf("espeak" to "Current · eSpeak", "misaki" to "Misaki · experimental").forEach { (value, label) ->
+                            (if (SpeechDistribution.IS_PLAY_BUILD) emptyList() else
+                                listOf("espeak" to "Current · eSpeak", "misaki" to "Misaki · experimental")).forEach { (value, label) ->
                                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                     RadioButton(selected = prefs.kokoroPhonemizer == value,
                                         onClick = { vm.chooseKokoroPhonemizer(value) },
@@ -66,7 +67,7 @@ import java.util.Locale
                                     Text(label, Modifier.weight(1f))
                                 }
                             }
-                            Text("Misaki uses your downloaded Kokoro voice. No extra download is needed. Names, emphasis and rhythm may sound different; preview a voice or compare both in the phone testbench.",
+                            Text(if (SpeechDistribution.IS_PLAY_BUILD) "Misaki prepares English pronunciation for your Kokoro voice. Preview a voice or measure speech preparation in the phone testbench." else "Misaki uses your downloaded Kokoro voice. No extra download is needed. Names, emphasis and rhythm may sound different; preview a voice or compare both in the phone testbench.",
                                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             TextButton(enabled = vm.app.models.installed("alignment"), onClick = {
                                 val voice = pack.voices.firstOrNull { it.id == prefs.voice }?.id ?: pack.voices.first().id
@@ -82,7 +83,7 @@ import java.util.Locale
                         }
                         TextButton(onClick = { vm.deleteModel(pack.id) }) { Icon(Icons.Default.DeleteOutline, null); Spacer(Modifier.width(6.dp)); Text("Delete pack") }
                     }
-                    Text(if (pack.id == "alignment") "Required for word synchronization with either voice model." else "Experimental Android support", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(if (pack.id == "alignment") "Required for word synchronization." else if (SpeechDistribution.IS_PLAY_BUILD) "On-device English speech" else "Experimental Android support", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 HorizontalDivider()
             }
@@ -97,6 +98,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable internal fun Settings(vm: ReaderViewModel, prefs: Preferences) {
     val issues by vm.issueReports.collectAsStateWithLifecycle()
+    var appearance by remember { mutableStateOf(false) }
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text("Make it yours") }, navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.screen.value = if (vm.playback.value.document == null) "library" else "reader" } })
         LazyColumn(contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -133,18 +135,25 @@ import java.util.Locale
             }
             item {
                 SettingsCard("Appearance", Icons.Default.Palette) {
-                    SettingsSwitch("Dark mode", "A softer view for evening reading.", prefs.dark) { vm.update(prefs.copy(dark = it)) }
-                    Text("Reader font size · ${prefs.fontSize}", style = MaterialTheme.typography.bodyMedium)
-                    Slider(prefs.fontSize.toFloat(), { vm.update(prefs.copy(fontSize = it.toInt())) }, valueRange = 16f..34f, steps = 17, modifier = Modifier.semantics { contentDescription = "Reader font size" })
-                    Surface(color = MaterialTheme.colorScheme.background, shape = RoundedCornerShape(12.dp)) {
-                        Text("A little more time to read.", Modifier.fillMaxWidth().padding(16.dp), fontFamily = androidx.compose.ui.text.font.FontFamily.Serif,
-                            fontSize = prefs.fontSize.sp)
+                    SettingsSwitch("App dark mode", "For your library and settings. Reader paper has its own choice.", prefs.dark) { vm.update(prefs.copy(dark = it)) }
+                    val paper = ReaderPapers.selected(prefs.readerTheme)
+                    val font = ReaderFonts.options.firstOrNull { it.id == prefs.readerFont } ?: ReaderFonts.options.first()
+                    Surface(color = paper.paper, shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, paper.outline)) {
+                        Column(Modifier.fillMaxWidth().readerPaper(paper).padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text("A little more time to read.", color = paper.ink, fontFamily = font.family,
+                                style = MaterialTheme.typography.bodyLarge)
+                            Text("${paper.label} · ${font.label} · ${prefs.fontSize}", color = paper.muted,
+                                style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                    FilledTonalButton(onClick = { appearance = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                        Icon(Icons.Default.TextFields, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Paper, font and size")
                     }
                 }
             }
             item {
                 SettingsCard("Pages and reading", Icons.Default.AutoStories) {
-                    SettingsSwitch("Swipe to turn PDF pages", "At normal zoom, swipe sideways to change page. Pinch to zoom.", prefs.swipePages) { vm.update(prefs.copy(swipePages = it)) }
+                    SettingsSwitch("Swipe to turn pages", "Swipe sideways to change page. In the original view, pinch to zoom.", prefs.swipePages) { vm.update(prefs.copy(swipePages = it)) }
                     SettingsSwitch("Swipe right for next page", if (prefs.swipeRightAdvances) "Right: next · Left: previous" else "Left: next · Right: previous",
                         prefs.swipeRightAdvances, enabled = prefs.swipePages) { vm.update(prefs.copy(swipeRightAdvances = it)) }
                     HorizontalDivider(Modifier.padding(vertical = 4.dp))
@@ -173,10 +182,12 @@ import java.util.Locale
                     }
                 }
             }
+            item { SettingsDestination(Icons.Default.Info, "Privacy and licenses", "How data is handled and third-party acknowledgments") { vm.screen.value = "legal" } }
             item { Text("ReadFlow ${app.readflow.BuildConfig.VERSION_NAME} · Android 15+\nDocument processing and speech stay on this device.",
                 Modifier.padding(horizontal = 4.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
         }
     }
+    if (appearance) ReaderTheme(prefs.readerTheme) { ReaderAppearanceSheet(prefs, vm::update) { appearance = false } }
 }
 
 @Composable internal fun SettingsCard(title: String, icon: ImageVector, content: @Composable ColumnScope.() -> Unit) {

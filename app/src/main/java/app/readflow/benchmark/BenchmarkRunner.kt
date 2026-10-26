@@ -41,7 +41,7 @@ class BenchmarkRunner(
 
     suspend fun run(options: BenchmarkOptions, onUpdate: (BenchmarkState) -> Unit): BenchmarkState =
         withContext(Dispatchers.Default) { lock.withLock { coroutineScope {
-            val selected = options.validated()
+            val selected = options.validatedForExecution()
             val started = SystemClock.elapsedRealtime()
             val before = snapshot()
             val samples = BenchmarkMemorySamples().apply { add(before.processPssMiB) }
@@ -179,9 +179,9 @@ class BenchmarkRunner(
                                         it.configure(SpeechRuntimeConfig(pass.threads!!, selected.allowSpinning))
                                     }
                                 }
-                                else -> SherpaEngine(models::directory) { id -> models.packs.first { it.id == id }.voices }.also {
+                                else -> SpeechDistribution.newLegacyEngine(models::directory) { id -> models.packs.first { it.id == id }.voices }.also {
                                     speechEngine = it
-                                    it.configure(SpeechRuntimeConfig(pass.threads!!, selected.allowSpinning))
+                                    SpeechDistribution.configureLegacy(it, SpeechRuntimeConfig(pass.threads!!, selected.allowSpinning))
                                 }
                             }
                             val aligner = OnnxForcedAligner { File(models.directory("alignment"), "model.onnx") }.also { speechAligner = it }

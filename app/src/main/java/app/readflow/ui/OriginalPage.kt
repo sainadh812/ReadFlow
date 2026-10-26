@@ -79,18 +79,18 @@ import kotlin.math.abs
                 val threshold = maxOf(64.dp.toPx(), minOf(size.width * .18f, 120.dp.toPx()))
                 awaitEachGesture {
                     awaitFirstDown(requireUnconsumed = false)
+                    val swipe = PageSwipeGesture(viewConfiguration.touchSlop)
                     var travel = Offset.Zero
                     var accumulatedZoom = 1f
                     var dragging = false
-                    var multiTouch = false
                     var cancelled = false
                     val initialZoom = zoom
                     do {
                         val event = awaitPointerEvent()
                         cancelled = event.changes.any { it.isConsumed }
                         if (!cancelled) {
-                            multiTouch = multiTouch || event.changes.count { it.pressed || it.previousPressed } > 1
                             val delta = event.calculatePan()
+                            swipe.move(delta, event.changes.count { it.pressed || it.previousPressed })
                             val factor = event.calculateZoom()
                             travel += delta
                             accumulatedZoom *= factor
@@ -108,7 +108,7 @@ import kotlin.math.abs
                         }
                     } while (!cancelled && event.changes.any { it.pressed })
                     if (!cancelled && dragging) {
-                        val delta = swipePageDelta(travel, threshold, multiTouch, maxOf(initialZoom, zoom), swipePages, rightAdvances)
+                        val delta = swipe.pageDelta(threshold, swipePages, rightAdvances, maxOf(initialZoom, zoom))
                         if (delta != 0) vm.page(pageIndex + delta)
                     }
                 }

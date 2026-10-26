@@ -11,3 +11,7 @@ __pycache__/
 *.part
 *.hprof
 dist/
+*.jks
+*.keystore
+keystore.properties
+signing.properties

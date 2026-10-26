@@ -6,7 +6,7 @@ import org.junit.Test
 
 class SpeechRecipeTest {
     @Test fun changingPronunciationCannotReuseLegacyAudio() {
-        val original = Preferences()
+        val original = Preferences(kokoroPhonemizer = "espeak")
         assertNotEquals(speechSynthesisRecipe(original), speechSynthesisRecipe(original.copy(kokoroPhonemizer = "misaki")))
         assertEquals("steps=5;temperature=.7;speed=1;threads=2", speechSynthesisRecipe(original))
     }

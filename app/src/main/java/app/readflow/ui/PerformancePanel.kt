@@ -108,7 +108,7 @@ internal fun metricSeconds(milliseconds: Long): String = when {
 }
 internal fun modelDisplayName(id: String): String = when (id) {
     "kokoro" -> "Kokoro"
-    "kokoro-misaki" -> "Kokoro + Misaki · experimental"
+    "kokoro-misaki" -> if (app.readflow.speech.SpeechDistribution.IS_PLAY_BUILD) "Kokoro + Misaki" else "Kokoro + Misaki · experimental"
     "pocket" -> "Pocket TTS"
     "mlkit" -> "ML Kit · Original"
     "teleocr" -> "TeleOCR"

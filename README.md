@@ -1,10 +1,16 @@
 # ReadFlow
 
-A native Android reading application built with Kotlin, Compose and local speech synthesis. This is an **experimental implementation, not a completed/validated product**. Both real TTS engines and transcript-constrained word alignment work in host smoke tests. Physical Galaxy S25 Ultra acceptance and manually audited audio boundaries remain required. See [status](docs/STATUS.md).
+A native Android reading application built with Kotlin, Compose and local speech synthesis. The current **0.2.0 Play release candidate** includes paper themes, offline reader fonts and Kokoro + Misaki speech. Physical Galaxy S25 Ultra acceptance, the publisher's second license audit and Play Console setup remain required. See [the publishing handoff](docs/PLAY_STORE_HANDOFF.md) and [status](docs/STATUS.md).
 
 ## Install on a phone
 
-**[Download ReadFlow 0.1.14 APK — Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.1.14-prototype/ReadFlow-0.1.14-arm64-debug.apk).** Install over your existing ReadFlow prototype without uninstalling to retain documents, settings and model downloads.
+**[Download ReadFlow 0.2.0 Play preview — Android 15+ ARM64](https://github.com/sainadh812/ReadFlow/releases/download/v0.2.0-play-candidate/ReadFlow-0.2.0-play-preview.apk).** This uses release code with the existing prototype test certificate, so it can update prototypes signed with that same certificate without uninstalling. It is not a production-signed Play installation. The [candidate release](https://github.com/sainadh812/ReadFlow/releases/tag/v0.2.0-play-candidate) also contains an unsigned AAB for review.
+
+Tap **Aa** in the reader for **Warm Paperback**, **Crisp Paper** or **Evening Paper**, plus **OpenDyslexic, Atkinson Hyperlegible Next, Lexend, Literata, Source Serif 4 and Noto Sans**. Pick a size from **5–34** and **Save as my default**. Paper/font choices persist independently of size. Original PDF pages retain their source fonts and colours. Swipe right for next page, left for previous; text view now supports page swipes too.
+
+The Play build contains only the direct Kokoro + Misaki speech path and a clean Kokoro download manifest without eSpeak data. Select **Download/setup** again if an older voice installation needs its files verified and migrated; matching model bytes can be reused locally. Debug builds retain legacy speech comparisons and their license obligations. **Settings → Privacy and licenses** contains packaged notices. Production signing, the public privacy-policy URL and final licensing/Play review are handled by the [publishing agent prompt](docs/PLAY_STORE_HANDOFF.md).
+
+The entries below describe earlier prototype releases and their features; legacy speech choices described there are not offered in the Play variant.
 
 Version **0.1.14** adds an optional **Kokoro + Misaki** pronunciation experiment. In **Settings → Voice models**, select Misaki and tap **Try pronunciation sample**, or compare it with the current Kokoro engine in **Phone testbench**. Your existing model downloads are reused. The new path uses a neural fallback without eSpeak, but the prototype APK still bundles the old engine and retains its GPL obligations. This is not a Play Store licensing clearance. See [the trial, tests and limitations](docs/MISAKI_TRIAL.md).
 
@@ -43,7 +49,9 @@ See the [playback crash fix](docs/PLAYBACK_CRASH_FIX.md) and [installation fix](
 
 ## Build
 
-Use JDK 17, Android SDK platform 35 / build-tools 34.0.0, NDK 27.2.12479018 and CMake 3.22.1+. Minimum Android 15/API 35 is an MVP scope choice, not a permanent requirement. Default APK is ARM64 only. Build tools and dependencies are explicitly pinned in Gradle; Sherpa/Readability bootstrap assets have SHA-256 locks. The bootstrap script prepares a pinned, patched llama.cpp checkout for the local TeleOCR JNI runtime.
+Use JDK 17, Android SDK platform 36 / build-tools 35.0.0, NDK 27.2.12479018 and CMake 3.22.1. Minimum Android 15/API 35 is an MVP scope choice, not a permanent requirement. Default APK is ARM64 only. Build tools and dependencies are explicitly pinned in Gradle; Sherpa/Readability bootstrap assets have SHA-256 locks. The bootstrap script prepares a pinned, patched llama.cpp checkout for the local TeleOCR JNI runtime.
+
+For the Play variant, use `bash scripts/bootstrap.sh --play` and `./gradlew bundleRelease testReleaseUnitTest lintRelease`. With no upload credentials this produces an **unsigned** review bundle. Publication configuration and the final license/device audit are documented in [PLAY_STORE_HANDOFF.md](docs/PLAY_STORE_HANDOFF.md). The debug workflow below is for legacy prototype development.
 
 ```bash
 cd ReadFlow

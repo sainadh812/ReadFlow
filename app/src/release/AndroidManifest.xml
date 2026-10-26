@@ -1,0 +1,4 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <!-- External experimental TTS integrations are not offered in the Play distribution. -->
+    <queries tools:node="remove" />
+</manifest>

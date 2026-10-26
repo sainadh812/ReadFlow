@@ -51,9 +51,15 @@ class ReadingCoordinator(
     private val gate = GenerationGate()
     private val mutable = MutableStateFlow(ReaderPlayback())
     val state = mutable.asStateFlow()
-    private var engine: TtsEngine = newSherpaEngine()
+    private var engine: TtsEngine = if (SpeechDistribution.IS_PLAY_BUILD) newMisakiEngine() else newLegacyEngine()
     private var misakiFrontend: MisakiFrontend? = null
-    private fun newSherpaEngine() = SherpaEngine(models::directory) { id -> models.packs.first { it.id == id }.voices }
+    private fun newLegacyEngine() = SpeechDistribution.newLegacyEngine(models::directory) { id -> models.packs.first { it.id == id }.voices }
+    private fun newMisakiEngine() = MisakiKokoroEngine(models::directory,
+        { id -> models.packs.first { it.id == id }.voices }) { text ->
+        val frontend = misakiFrontend ?: MisakiFrontend(misakiOrtLibraryPath, threads = 1)
+            .also { misakiFrontend = it }
+        frontend.phonemize(text)
+    }
     private val aligner = OnnxForcedAligner { java.io.File(models.directory("alignment"), "model.onnx") }
     private val planner = SpeechPlanner()
     private var work: Job? = null
@@ -406,18 +412,12 @@ class ReadingCoordinator(
         val useMisaki = usesMisaki(chosen)
         if (useMisaki != (engine is MisakiKokoroEngine)) {
             releaseSpeechModels()
-            engine = if (useMisaki) MisakiKokoroEngine(models::directory,
-                { id -> models.packs.first { it.id == id }.voices }) { text ->
-                val frontend = misakiFrontend ?: MisakiFrontend(
-                    misakiOrtLibraryPath, threads = 1)
-                    .also { misakiFrontend = it }
-                frontend.phonemize(text)
-            } else newSherpaEngine()
+            engine = if (useMisaki) newMisakiEngine() else newLegacyEngine()
         }
         val config = SpeechRuntimeConfig(chosen.speechThreads, chosen.allowSpinning)
         when (val selected = engine) {
             is MisakiKokoroEngine -> selected.configure(config)
-            is SherpaEngine -> selected.configure(config)
+            else -> SpeechDistribution.configureLegacy(selected, config)
         }
         aligner.configure(SpeechRuntimeConfig(chosen.alignmentThreads, chosen.allowSpinning))
     }
@@ -698,11 +698,13 @@ class ReadingCoordinator(
         mutable.value = mutable.value.copy(fillingBuffer = false)
     }
     suspend fun changeModel(model: String, voice: String) {
+        require(!SpeechDistribution.IS_PLAY_BUILD || model == "kokoro") { "This build supports Kokoro with Misaki only" }
         check(!benchmarkActive()) { "Finish or cancel the benchmark before changing a model" }
         changeSpeechSettings { it.copy(model = model, voice = voice) }
     }
     suspend fun changeKokoroPhonemizer(phonemizer: String) {
         require(phonemizer in setOf("espeak", "misaki")) { "Unknown Kokoro pronunciation engine" }
+        require(!SpeechDistribution.IS_PLAY_BUILD || phonemizer == "misaki") { "This build uses Misaki pronunciation" }
         check(!benchmarkActive()) { "Finish or cancel the benchmark before changing pronunciation" }
         changeSpeechSettings { it.copy(kokoroPhonemizer = phonemizer) }
     }
@@ -716,7 +718,7 @@ class ReadingCoordinator(
             previousTransition?.join()
             old?.join()
             releaseSpeechModels()
-            settings = change(settings)
+            settings = normalizedSpeechPreferences(change(settings))
             preferences.set(settings)
         } finally {
             // A cancelled later switch must still keep earlier transitions in

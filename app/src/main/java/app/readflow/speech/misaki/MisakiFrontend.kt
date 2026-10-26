@@ -56,7 +56,7 @@ class MisakiFrontend(ortLibraryPath: String = "libonnxruntime.so", threads: Int 
     private inline fun <T> nativeCall(action: () -> T): T = try {
         action()
     } catch (error: LinkageError) {
-        throw IllegalStateException("Misaki could not load its native runtime. Use the current Kokoro frontend and report this test failure.", error)
+        throw IllegalStateException("Misaki could not load its native runtime. Copy playback diagnostics from Settings to report this failure.", error)
     }
 
     private external fun nativeCreate(library: ByteArray, threads: Int): ByteArray

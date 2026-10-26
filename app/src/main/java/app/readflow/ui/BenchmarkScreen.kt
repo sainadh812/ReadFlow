@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import app.readflow.speech.ScKokoroEngine
+import app.readflow.speech.SpeechDistribution
+import app.readflow.speech.ScKokoroAvailability
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.readflow.benchmark.*
 import app.readflow.data.Preferences
@@ -36,13 +38,14 @@ import app.readflow.data.Preferences
     val ocrDownloads by vm.ocrDownloads.collectAsStateWithLifecycle()
     val alignmentInstalled = remember(downloads) { vm.app.models.installed("alignment") }
     val installedSpeech = remember(downloads) {
-        listOf("kokoro", "kokoro-misaki", "pocket").filter { vm.app.models.installed(if (it == "kokoro-misaki") "kokoro" else it) }
+        SpeechDistribution.benchmarkModels.filter { it != "sc-kokoro" }.filter { vm.app.models.installed(if (it == "kokoro-misaki") "kokoro" else it) }
     }
     val teleInstalled = remember(ocrDownloads) { vm.app.ocrModels.installed("teleocr") }
     val paddleInstalled = remember(ocrDownloads) { vm.app.ocrModels.installed("paddleocr") }
-    var external by remember { mutableStateOf(ScKokoroEngine.availability(vm.app)) }
+    fun externalAvailability() = if (SpeechDistribution.IS_PLAY_BUILD) ScKokoroAvailability(false, null, "Unavailable in this build") else ScKokoroEngine.availability(vm.app)
+    var external by remember { mutableStateOf(externalAvailability()) }
     LifecycleResumeEffect(Unit) {
-        external = ScKokoroEngine.availability(vm.app)
+        external = externalAvailability()
         onPauseOrDispose { }
     }
     val uriHandler = LocalUriHandler.current
@@ -88,20 +91,21 @@ import app.readflow.data.Preferences
                 item {
                     SettingsCard("Choose what to measure", Icons.Default.Tune) {
                         Text("SPEECH + WORD TIMING", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
-                        listOf("kokoro", "kokoro-misaki", "pocket").forEach { model ->
+                        SpeechDistribution.benchmarkModels.filter { it != "sc-kokoro" }.forEach { model ->
                             val installed = model in installedSpeech
                             BenchmarkChoice(modelDisplayName(model), when {
                                 !installed -> "Download this voice model to test"
                                 !alignmentInstalled -> "Download word synchronization to test"
-                                model == "kokoro-misaki" -> "Same Kokoro voice · Misaki English pronunciation · compare with Kokoro"
+                                model == "kokoro-misaki" -> if (SpeechDistribution.IS_PLAY_BUILD) "Misaki English pronunciation · on-device Kokoro speech" else "Same Kokoro voice · Misaki English pronunciation · compare with Kokoro"
                                 else -> "Installed · actual voice generation and alignment"
                             }, model in speechModels && installed && alignmentInstalled, installed && alignmentInstalled) { selected ->
                                 speechModels = if (selected) (speechModels + model).distinct() else speechModels - model
                             }
                         }
-                        if (!alignmentInstalled || installedSpeech.size < 3) TextButton(onClick = { vm.screen.value = "voices" }) {
+                        if (!alignmentInstalled || installedSpeech.size < SpeechDistribution.benchmarkModels.count { it != "sc-kokoro" }) TextButton(onClick = { vm.screen.value = "voices" }) {
                             Icon(Icons.Default.Download, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("Manage voice models")
                         }
+                        if (!SpeechDistribution.IS_PLAY_BUILD) {
                         BenchmarkChoice("SC Kokoro · external experiment", external.message,
                             "sc-kokoro" in speechModels && external.installed && alignmentInstalled, external.installed && alignmentInstalled) { selected ->
                             speechModels = if (selected) (speechModels + "sc-kokoro").distinct() else speechModels - "sc-kokoro"
@@ -110,6 +114,7 @@ import app.readflow.data.Preferences
                             style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         TextButton(onClick = { runCatching { uriHandler.openUri(ScKokoroEngine.SOURCE_URL) }
                             .onFailure { vm.message.value = "Could not open SC Kokoro setup" } }) { Text("SC Kokoro setup and device test") }
+                        }
                         HorizontalDivider()
                         Text("TEXT RECOGNITION", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                         BenchmarkChoice("ML Kit · Original", "Built in · finance text and table sample", "mlkit" in ocrEngines, true) { selected ->

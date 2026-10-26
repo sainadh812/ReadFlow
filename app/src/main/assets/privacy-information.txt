@@ -1,0 +1,17 @@
+Privacy information
+
+ReadFlow reads documents you choose on this device. Imported text, images, PDF pages, generated speech, reading progress and settings are stored in app storage. Speech synthesis and document recognition run locally. ReadFlow has no advertising SDK or app-operated analytics service.
+
+Network access
+Downloading voice, alignment and optional OCR models contacts the model hosts named in their download information, including Hugging Face and GitHub. These hosts receive connection information such as your IP address. Importing a webpage contacts the website you choose. Your documents are not sent to these hosts for recognition or speech generation.
+
+Google ML Kit
+The bundled ML Kit SDK can send diagnostics and usage analytics to Google, including device and application information, installation identifiers, performance measurements, configuration, input/output sizes and error codes. Local document processing does not mean that the app and its SDKs never use the internet. Google's disclosure: https://developers.google.com/ml-kit/android-data-disclosure
+
+Error reports and benchmarks
+Error reports can include private document excerpts, source identifiers and generated speech. Reports and benchmark results are stored locally. Exporting or sharing sends the information you choose to your selected destination. GitHub reports are uploaded only after you configure a repository and confirm sending. Review the report first. Public-repository uploads use the app's reduced metadata mode. GitHub credentials are encrypted using Android Keystore and can be removed in GitHub settings. Already shared copies remain with their recipients or hosting service.
+
+Your controls
+Delete a document from the library to remove its local content, associated audio and issue reports. Delete other reports in Issue logs and models in their download screens. Clear app storage or uninstall ReadFlow to erase its remaining local data. Android backup of app data is disabled. Files you exported outside the app must be deleted separately. No ReadFlow account is required.
+
+Read only material you are authorized to use. Recognized text, pronunciations and table reading order can contain errors.
