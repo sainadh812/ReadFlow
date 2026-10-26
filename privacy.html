@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en" data-publication-status="published">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Privacy Policy — Read Assist</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { margin: 0; background: #f8f5ef; color: #242a27; font: 1rem/1.7 system-ui, sans-serif; }
+    main { max-width: 48rem; margin: auto; padding: 3rem 1.25rem; }
+    h1, h2 { line-height: 1.25; color: #173e33; }
+    h1 { font-size: clamp(2rem, 6vw, 3rem); margin-bottom: .5rem; }
+    h2 { font-size: 1.35rem; margin-top: 2rem; }
+    a { color: #185f51; overflow-wrap: anywhere; text-underline-offset: .18em; }
+    a:focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
+    footer { border-top: 1px solid #a5aaa6; margin-top: 2.5rem; padding-top: 1rem; }
+    @media (prefers-color-scheme: dark) {
+      body { background: #1b211e; color: #e4e8df; }
+      h1, h2, a { color: #b5dbc9; }
+    }
+    @media print { body { background: white; color: black; } main { padding: 0; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <p>Read Assist</p>
+    <h1>Privacy Policy</h1>
+    <p>Effective date: <time datetime="2026-10-26">26 October 2026</time></p>
+    <p>Developer: <strong>Oh My Pi</strong><br>
+      Privacy and support: <a href="mailto:xperimenting.ai@gmail.com">xperimenting.ai@gmail.com</a></p>
+  </header>
+  <p>Read Assist is an Android document reader with text-to-speech and optical character recognition (OCR).
+    It was previously called ReadFlow and uses the package name <code>app.readflow</code>.
+    This policy describes how the app and its developer handle information.</p>
+
+  <h2>Documents and reading on your device</h2>
+  <p>You choose the PDFs, images and webpages to import. Imported content, extracted text, generated speech,
+    reading progress and settings are stored in the app's private storage on your device.
+    Document recognition and speech generation run on your device. Your document content is not sent to
+    model hosts for these operations. No Read Assist account is required. The app has no advertising SDK
+    or developer-operated analytics service.</p>
+
+  <h2>Internet connections and model downloads</h2>
+  <p>Downloading voice, alignment and optional OCR models connects to the model hosts identified in the app,
+    including Hugging Face, GitHub and their download infrastructure. Importing a webpage connects to the
+    website you choose. Those services receive connection and request information, such as your IP address
+    and the requested resource, under their own privacy policies. The app uses HTTPS for these requests.
+    After models and content are downloaded, local reading and speech do not require a document-processing server.</p>
+  <p>See the <a href="https://huggingface.co/privacy">Hugging Face privacy policy</a> and
+    <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub privacy statement</a>.</p>
+
+  <h2>Google ML Kit</h2>
+  <p>Read Assist includes Google's ML Kit text-recognition SDK. Google states that ML Kit processes input
+    images and text on the device and does not send that input or recognition results to Google.
+    ML Kit sends technical diagnostics and usage metrics to Google, including device and application
+    information, installation identifiers, performance measurements, configuration, input/output sizes,
+    events and error codes. Local document processing does not mean that the app and its SDKs never transmit data.</p>
+  <p>See <a href="https://developers.google.com/ml-kit/android-data-disclosure">Google's ML Kit data disclosure</a>
+    and <a href="https://developers.google.com/ml-kit/terms">ML Kit terms and privacy information</a>.</p>
+
+  <h2>Error reports, benchmarks and support</h2>
+  <p>The app stores issue reports and benchmark results locally. Reports can include document excerpts,
+    source identifiers, device and configuration information, errors and generated speech.
+    The local issue store holds at most 20 reports within a 24 MiB limit; older reports can be removed
+    when these limits are reached. You can review, export or delete reports. An individual export may
+    include retained audio; combined history exports exclude audio.</p>
+  <p>GitHub uploads occur only after you configure a destination and confirm sending. Reduced reports
+    exclude document text, titles, source URLs, error messages and audio, but retain technical data
+    and an installation identifier. Text excerpts can be uploaded only to a private repository.
+    GitHub uploads do not include original document files or audio. Saved GitHub credentials are encrypted
+    on your device using Android Keystore and can be removed in the app.</p>
+  <p>When you contact the developer or send a report, the developer receives the contact details and content
+    you choose to provide and uses them to respond, investigate problems and maintain the app.
+    Support correspondence and reports received by the developer are deleted within 90 days after the request is resolved. You can contact the privacy email above to request earlier deletion.</p>
+  <p>Copies exported to other apps or sent to another repository or recipient are subject to that
+    destination's handling. Local deletion does not delete those copies.</p>
+
+  <h2>Optional contributions</h2>
+  <p>All existing app features are free. You may choose to support the developer using
+    “Buy me a coffee” and the recipient UPI ID <strong>readassist@ybl</strong>.
+    Contributions do not unlock features, usage, badges or priority support.</p>
+  <p>If you open a payment app, Read Assist passes the recipient UPI ID, the display label “Read Assist,”
+    the selected INR amount and an optional-support note. You may instead copy the public UPI ID to
+    your clipboard and enter it in your payment app. No document information is included.</p>
+  <p>Read Assist does not receive payment callbacks, verify payment status or store transaction records.
+    It does not ask for or handle your UPI PIN, bank password or account-access credentials.
+    Your payment app and the payer's and recipient's banks process transfers under their own terms
+    and privacy policies. The developer may receive transaction information through the recipient's
+    payment service. Depending on the payment provider, this may include the transfer amount, date, reference and payer details displayed by that provider. The developer uses this information to answer contribution questions and meet accounting or legal requirements. Payment records are kept only as needed for those accounting or legal requirements. Bank and payment-provider retention is governed by their own policies.</p>
+  <p>Check the recipient name, UPI ID and amount in your payment app before confirming.
+    Returning to Read Assist is not confirmation that a transfer succeeded; check your payment app
+    for its status. Use the support email above for contribution questions.</p>
+
+  <h2>Storage, deletion and your choices</h2>
+  <p>Deleting a document from the library removes its local content, associated speech cache and issue reports.
+    You can delete other reports and downloaded models through their respective screens. Clear app storage
+    or uninstall Read Assist to remove remaining local app data. Android backup and device transfer of app
+    data are disabled. Delete files exported outside the app separately.</p>
+  <p>For information held by the developer, send a deletion request to
+    <a href="mailto:xperimenting.ai@gmail.com">xperimenting.ai@gmail.com</a> and identify the report or correspondence concerned.
+    Do not send bank credentials, PINs or unnecessary document content. Some information may need to be
+    retained to meet legal obligations or resolve a dispute. Other recipients and payment services
+    manage their own records; uninstalling the app does not erase them.</p>
+
+  <h2>Security</h2>
+  <p>The app uses private device storage, HTTPS for its network requests and Android Keystore protection
+    for saved GitHub credentials. This does not mean document storage is end-to-end encrypted or that
+    exported files have the same protections. Review reports before sharing private content.</p>
+
+  <h2>This privacy website</h2>
+  <p>This page is hosted on GitHub Pages. GitHub logs and stores visitors' IP addresses for security,
+    including visits without signing in. This page has no advertising, analytics scripts, forms or
+    externally loaded fonts. See
+    <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection">GitHub Pages data collection</a>
+    and the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub privacy statement</a>.</p>
+
+  <h2>Policy changes and contact</h2>
+  <p>We will update this policy when the app's practices change and show the revised effective date here.
+    For privacy, support or deletion requests, contact
+    <a href="mailto:xperimenting.ai@gmail.com">xperimenting.ai@gmail.com</a>.</p>
+  <footer><p>Read Assist · Android package <code>app.readflow</code></p></footer>
+</main>
+</body>
+</html>
