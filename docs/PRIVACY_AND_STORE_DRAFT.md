@@ -1,6 +1,6 @@
 # Read Assist: privacy, Data safety and store draft
 
-**DRAFT — not ready to publish. Reviewed 2026-10-26.** The current candidate source is **Read Assist 0.2.3**, package `app.readflow`, version code 19, with host validation recorded in the 0.2.3 evidence and device/production checks still pending. Historical 0.2.2 evidence covers that earlier Read Assit-branded build and previous recipient, not this corrected version. The older ReadFlow `0.2.1` download, version code 17, does not contain the new tip dialog. Keep `app.readflow` for updates and use **Read Assist** (Assist has a double “s”) for the new public name. All existing features remain free. Paid tiers, prices and coupons are deferred. The source now includes optional external UPI support, with no payment SDK/backend, paid entitlement or daily speech quota.
+**Store/Data safety worksheet — final submission pending. Updated 2026-10-26.** The public [Privacy Policy](https://sainadh812.github.io/ReadFlow/privacy.html) is published, with developer display name **Oh My Pi** and owner-approved support/privacy contact **xperimenting.ai@gmail.com**. The current candidate source is **Read Assist 0.2.4**, package `app.readflow`, version code 20; its build and all 335 release JVM tests passed, with release lint at zero errors and 28 warnings. Preview signature, APK 16 KB ZIP alignment, bundle/font checks and the artifact delta review also passed; see the [build record](evidence/play-store-0.2.4/build-results.json). Final production artifact/device checks remain required. Version 0.2.4 configures the live policy URL in the app. Historical 0.2.3 evidence covers that earlier build, which lacks this configured URL. Keep `app.readflow` for updates and use **Read Assist** (Assist has a double “s”) for the public app name. All existing features remain free; paid tiers, prices and coupons are deferred. Optional external UPI support has no payment SDK/backend, paid entitlement or daily speech quota.
 
 Muse Spark should fill verified owner/account information and enter the final approved materials in Play Console. It must not invent policy facts, configure a paid download or create paid products for this launch.
 
@@ -21,57 +21,36 @@ The dialog shows the recipient UPI ID and selected amount, asks the payer to che
 
 Source evidence: [support dialog](../app/src/main/java/app/readflow/ui/SupportTipDialog.kt), [validated amounts and UPI parameters](../app/src/main/java/app/readflow/ui/SupportTipDetails.kt), [Settings entry](../app/src/main/java/app/readflow/ui/ManagementScreens.kt). The handoff contains `pa=readassist@ybl`, `pn=Read Assist`, the INR amount/currency and an optional-tip note. It contains no document text, payer identifier or app-generated transaction identifier. `pn` is an app-supplied display label, not independent verification of the recipient's identity.
 
-## Owner facts needed
+## Confirmed public details and remaining owner facts
 
-Replace every placeholder below with verified information. Unresolved implementation choices go back to the coding agent, not into public text.
+Use the approved facts below; do not ask the publishing agent to invent or republish them from an obsolete draft.
 
-| Placeholder / decision | What is needed |
+| Item | Confirmed information |
 | --- | --- |
-| `[DEVELOPER_LEGAL_NAME]` | Real developer/person/company responsible for the app; consistent with the Play listing. |
-| `[PRIVACY_CONTACT]`, `[SUPPORT_CONTACT]` | Working owner-approved contact addresses or inquiry mechanism. |
-| `[PRIVACY_POLICY_URL]`, `[EFFECTIVE_DATE]` | Public, globally accessible HTTPS HTML policy and its effective date. Supply the URL through `READFLOW_PRIVACY_POLICY_URL` in the final build. |
-| `[OWNER_REPORT_RETENTION_AND_DELETION]` | How the developer handles voluntarily received reports, when they are deleted, how users request deletion, and any necessary exceptions. Local deletion does not delete GitHub comments or recipients' copies. |
-| `[TIP_RECIPIENT_NAME]` and verification of `readassist@ybl` | Real creator identity and confirmation that the owner has registered/changed this new ID with their provider and it belongs to the intended recipient. Check the payment-app-displayed recipient before shipping. Never place banking secrets in the repo. |
-| `[OWNER_TIP_DATA_AND_RETENTION]` | What transaction information the creator actually receives, its purpose, retention/deletion rules and payment-help contact. Do not invent fields, periods or a verification backend. |
-| Optional tip device verification | Test the implemented external intent/copy flow against installed UPI apps and verify the recipient. Re-audit before adding a callback, payment SDK, transaction storage or server. |
-| Audience / territories | Actual intended audience, launch countries and contact/business disclosures required by the account. Do not select a children-directed audience without assessing the additional obligations. |
-| Application terms | Owner-approved application license/EULA and voluntary contribution/payment-help terms. Third-party license texts remain separate. |
+| Public developer display name | **Oh My Pi**. This is the approved display name, not evidence of a verified legal entity/account identity. |
+| Public support/privacy contact | **xperimenting.ai@gmail.com**. Use this store contact; do not substitute a personal profile email. |
+| Privacy Policy | **https://sainadh812.github.io/ReadFlow/privacy.html**, effective **2026-10-26**. Published and HTTP 200/exact bytes verified; source is [site/privacy.html](../site/privacy.html). |
+| Developer-received reports/support correspondence | Delete within **90 days after resolution**. Earlier deletion can be requested through the privacy contact; externally controlled copies are separate. |
+| Developer-held payment records | Retain only as needed for **accounting or legal requirements**. Read Assist itself has no transaction callback or transaction-record storage. Banks/payment providers have their own policies. |
 
-## Privacy Policy — draft public text
+| Remaining fact / decision | What is still needed |
+| --- | --- |
+| Verified legal/account identity | Complete Play's actual developer/account verification. Do not infer the legal identity from the public display name. |
+| Actual recipient and verification of `readassist@ybl` | Confirm the owner has registered/changed this ID and it belongs to the intended recipient. Check the bank-displayed recipient before shipping. Never place banking secrets in the repo. |
+| Recipient-accessible transaction data | Verify what the payment provider actually exposes and keep the policy/Data safety assessment accurate. Do not invent a payment-verification backend. |
+| Optional tip device verification | Test the external intent/copy flow with installed UPI apps. Re-audit before adding callbacks, payment SDKs, transaction storage or servers. |
+| Audience / territories | Actual intended audience, launch countries and account-required disclosures. Assess additional obligations before selecting a children-directed audience. |
+| Application terms | Owner-approved application license/EULA and contribution/payment-help terms. Third-party licenses remain separate. |
 
-**Privacy Policy for Read Assist**
+## Canonical published Privacy Policy
 
-Effective: `[EFFECTIVE_DATE]`
+Use the [live Privacy Policy](https://sainadh812.github.io/ReadFlow/privacy.html) and [canonical source](../site/privacy.html), not a second copied policy in this worksheet. Publication and maintenance details are in [PRIVACY_PUBLICATION.md](PRIVACY_PUBLICATION.md). The page was verified on **2026-10-26** with HTTP 200 and exact matching bytes: GitHub Pages commit `2e3aa9c1092dc20d1bc72adc1b45d0aa8b6e9a93`; SHA-256 `48483d2dc25a971765d77c553cfeb6b242c47c7bb6851dfd4a28bee2a1fbc1d1`.
 
-Developer: `[DEVELOPER_LEGAL_NAME]`
+The policy covers local documents/speech, model-host connections, ML Kit metrics, optional reports/exports, retention/deletion, external UPI support and GitHub Pages hosting. Public availability does not certify Play approval or UPI registration. Keep the app disclosure, page and final Console answers consistent. Version 0.2.4 uses this URL by default; `READFLOW_PRIVACY_POLICY_URL` can override it only with an approved replacement. Earlier 0.2.3 artifacts lack the configured public link.
 
-Privacy contact: `[PRIVACY_CONTACT]`
+Determine the transaction information visible in the actual recipient account before completing Data safety. The inspected app has no payment callback or records, but do not claim the developer never receives payment data. Disclose future SDK/server handling before shipping it. [Data safety payment guidance](https://support.google.com/googleplay/android-developer/answer/10787469).
 
-Read Assist is a document reading and text-to-speech app, formerly called ReadFlow. Its Android package is `app.readflow`. This policy describes the app's data handling. Contact us using the details above for privacy questions.
-
-**Documents and reading.** You choose the PDF files, images and webpages to import. The app stores imported content, extracted text, generated speech, reading progress and settings in its private storage on your device. OCR and speech generation run locally. Your document content is not uploaded to model hosts for these operations. No Read Assist account is required. The app contains no advertising SDK or developer-operated analytics service.
-
-**Internet connections.** Downloading speech, alignment and optional OCR models contacts the model hosts identified in the app, including Hugging Face and GitHub and their download infrastructure. Importing a webpage contacts the website you choose. Those services receive connection/request information such as your IP address and requested resource and apply their own privacy policies. These app requests use HTTPS. After the required models and content are downloaded, local reading and speech do not require a document-processing server.
-
-**Google ML Kit.** The app includes Google's ML Kit text-recognition SDK. Google states that ML Kit processes input images/text on the device rather than sending that input and its recognition results to Google. ML Kit sends technical diagnostics and usage metrics, including device/app information, installation identifiers, performance measurements, configuration, input/output sizes, events and error codes. See [Google's ML Kit disclosure](https://developers.google.com/ml-kit/android-data-disclosure) and [terms/privacy information](https://developers.google.com/ml-kit/terms). Local processing does not mean the app or its SDKs never transmit data.
-
-**Error reports and benchmarks.** The app saves bounded issue reports and benchmark results locally. Reports may contain document excerpts, source identifiers, device/configuration information, error details and generated speech. The local issue store retains at most 20 reports within a 24 MiB limit; older reports can be removed as these limits are reached. You can review, export or delete reports. Individual exports may include retained audio; combined history exports exclude audio.
-
-GitHub uploads occur only after you configure a destination and confirm sending. Reduced reports exclude document text, titles, source URLs, error messages and audio, but retain technical data and an installation identifier. Text excerpts can be uploaded only to a private repository. GitHub uploads do not include original document files or audio. GitHub credentials are encrypted on the device using Android Keystore and can be removed in the app. Copies sent to another app, repository or recipient are subject to that destination's handling. Reports received by the developer are handled as follows: `[OWNER_REPORT_RETENTION_AND_DELETION]`.
-
-**Storage and deletion.** Deleting a document through the library removes its local content, associated speech cache and issue reports. Reports and downloaded models can also be deleted through their respective screens. Remaining local app data can be removed by clearing app storage or uninstalling. Android backup and device transfer of app data are disabled. Files exported outside the app and copies already sent to GitHub or another recipient are not removed by these local controls. Contact `[PRIVACY_CONTACT]` about copies held by the developer. Other services handle their own records under their policies.
-
-**Security and changes.** We use app-private storage, HTTPS for the app's network requests and Android Keystore protection for saved GitHub credentials. This does not describe document storage as end-to-end encrypted or promise that recipient-controlled exports have the same protections. We will update this policy when the app's practices change and identify the updated effective date here.
-
-### Voluntary support — draft public text for 0.2.3
-
-The support flow is retained from 0.2.2 with the corrected name and new recipient in 0.2.3. Resolve the owner identity/transaction-handling placeholders, confirm provider registration and verify the final build before publishing this section; the new recipient is not present in older downloads:
-
-> You may choose to send an optional contribution directly to `[TIP_RECIPIENT_NAME]` at `readassist@ybl` using your payment app. Contributing does not unlock features, perks or priority support. Read Assist passes the recipient ID, the display label “Read Assist,” your selected INR amount and an optional-tip note to the external UPI app. You can instead copy the recipient ID to your clipboard and enter it in your payment app. No document information is included. Read Assist does not receive payment callbacks, verify payment status or store transaction records. Your payment app and the payer's and recipient's banks process the payment under their own terms and privacy policies. The creator receives transaction information through the recipient's payment service: `[OWNER_TIP_DATA_AND_RETENTION]`. Read Assist does not ask for or handle your UPI PIN, bank password or account-access credentials. Check the recipient name, ID and amount in your payment app before confirming. Returning to Read Assist is not confirmation that a transfer succeeded; check your payment app for its status. Contact `[SUPPORT_CONTACT]` for contribution questions.
-
-Determine the transaction information visible to the creator in their recipient account before publishing this section or answering Data safety. Although the inspected app has no transaction callback or records, do not claim “we receive no payment data” for the developer's wider handling. Do not assume Read Assist accesses the credentials that the bank/payment app handles directly. Disclose any future SDK/server and its data handling before shipping it. [Data safety payment guidance](https://support.google.com/googleplay/android-developer/answer/10787469).
-
-The public page must be clearly labeled a Privacy Policy, include the developer/contact and retention/deletion information, and be publicly accessible without login, geofencing or a PDF download. Keep the in-app disclosure, public page and Play answers consistent. Account deletion requirements become relevant if app account creation is added; do not invent an account system just to fill the form. [Play User Data policy](https://support.google.com/googleplay/android-developer/answer/10144311).
+Keep the page accessible without login, geofencing or a PDF download. Account deletion requirements become relevant if app accounts are added; do not invent an account system to fill the form. [Play User Data policy](https://support.google.com/googleplay/android-developer/answer/10144311).
 
 ## Data safety worksheet — fill from the final implementation
 
@@ -110,15 +89,15 @@ Record the signed artifact hash, SDK versions, inspection date and decisions bes
 >
 > Choose your own documents. No Read Assist account is required. ML Kit may send technical diagnostics to Google; see our Privacy Policy for details.
 
-This copy describes the 0.2.3 source, including the retained support dialog and new recipient; publish it only after final build/device checks, recipient verification and owner policy completion. Do not attach it to older artifacts as though they contain the corrected name/new recipient; 0.2.1 also lacks the support dialog. Do not claim dyslexia treatment, financial advice, perfect OCR, guaranteed gap-free reading or universal device compatibility. Use real app screenshots, with content the developer is authorized to redistribute. Android 15+ ARM64 is the current candidate's device support; reassess for the final build.
+This copy describes the 0.2.4 source, including the retained support dialog and published policy link; publish the listing only after final build/device checks, recipient verification and remaining account decisions. Do not attach it to older artifacts as though they contain the corrected name/new recipient; 0.2.1 also lacks the support dialog. Do not claim dyslexia treatment, financial advice, perfect OCR, guaranteed gap-free reading or universal device compatibility. Use real app screenshots, with content the developer is authorized to redistribute. Android 15+ ARM64 is the current candidate's device support; reassess for the final build.
 
-Support contact: `[SUPPORT_CONTACT]`. Privacy Policy: `[PRIVACY_POLICY_URL]`.
+Public developer display name: **Oh My Pi**. Support/privacy contact: **xperimenting.ai@gmail.com**. Privacy Policy: **https://sainadh812.github.io/ReadFlow/privacy.html**.
 
 ## Application terms and Console handoff
 
 Recommended application terms: distribute the app-specific code under the owner's proprietary app license, while preserving every third-party license and source right. This is a proposed business choice, not a license already applied to the repository. A public repository and permissively licensed dependencies do not automatically give the whole app an MIT/Apache license.
 
-The following short terms are ready for owner review once the contact details are final; they are not presently in force:
+The following short terms remain a proposal for owner approval; they are not presently in force. Confirm the legally responsible party before replacing `[DEVELOPER_LEGAL_NAME]`; the public display name Oh My Pi alone does not establish it:
 
 > **Read Assist application terms**
 >
@@ -128,14 +107,14 @@ The following short terms are ready for owner review once the contact details ar
 >
 > Model downloads require storage and an internet connection. Subsequent local use depends on compatible hardware and installed models. Recognition, pronunciation and reading order can contain errors; verify important content against the original document. Read Assist is a reading tool, not a medical treatment or financial adviser.
 >
-> For support, contact `[SUPPORT_CONTACT]`. Nothing in these terms removes statutory rights. Data handling is described at `[PRIVACY_POLICY_URL]`.
+> For support, contact xperimenting.ai@gmail.com. Nothing in these terms removes statutory rights. Data handling is described at https://sainadh812.github.io/ReadFlow/privacy.html.
 
-Additional terms for the optional 0.2.3 support flow:
+Additional proposed terms for the optional support flow retained in 0.2.4:
 
-> Voluntary contributions go directly to the creator named before payment through the payment service you choose. They do not buy app features, content, badges or services. Read Assist does not represent these contributions as tax-deductible charitable donations. Check the recipient and amount before confirming in your payment app. Payment status and processing are handled by that app and the banks involved; opening or returning from it is not a Read Assist confirmation of payment. For contribution questions or a mistaken transfer, contact `[SUPPORT_CONTACT]` and your payment service as appropriate. Your statutory rights remain unaffected.
+> Voluntary contributions go directly to the creator named before payment through the payment service you choose. They do not buy app features, content, badges or services. Read Assist does not represent these contributions as tax-deductible charitable donations. Check the recipient and amount before confirming in your payment app. Payment status and processing are handled by that app and the banks involved; opening or returning from it is not a Read Assist confirmation of payment. For contribution questions or a mistaken transfer, contact xperimenting.ai@gmail.com and your payment service as appropriate. Your statutory rights remain unaffected.
 
 Do not add unsupported warranty waivers, governing-law claims or a blanket “no refunds” promise. Confirm the owner's rights to the app-specific code before applying its license. The model/font/runtime obligations are recorded in the separate re-audit.
 
-Once the final app and policy are ready, Muse Spark should enter the free listing, Data safety answers, audience/content rating and app-access instructions. All existing features must remain accessible without payment; do not configure a Pro product, speech quota or coupon campaign. Explain the external creator-support flow accurately and demonstrate that declining it leaves all features available. Complete the media-playback foreground-service declaration with a real video showing user-started audio continuing in the background and notification controls. [Foreground-service declaration requirements](https://support.google.com/googleplay/android-developer/answer/13392821).
+The public policy is ready; once the final app and remaining account facts are verified, Muse Spark should enter the free listing, Data safety answers, audience/content rating and app-access instructions. All existing features must remain accessible without payment; do not configure a Pro product, speech quota or coupon campaign. Explain the external creator-support flow accurately and demonstrate that declining it leaves all features available. Complete the media-playback foreground-service declaration with a real video showing user-started audio continuing in the background and notification controls. [Foreground-service declaration requirements](https://support.google.com/googleplay/android-developer/answer/13392821).
 
 Stop submission if required owner placeholders, recipient verification, licensing findings or release/device checks remain unresolved. If support is removed from the final build, remove its public-policy/listing text too. Neither the old unsigned 0.2.1 AAB nor any debug-key preview APK is an upload-ready production artifact; use the final production-signed release.

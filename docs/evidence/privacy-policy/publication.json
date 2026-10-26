@@ -1,0 +1,24 @@
+{
+  "verifiedAtUtc": "2026-10-26T17:32:20.013353+00:00",
+  "url": "https://sainadh812.github.io/ReadFlow/privacy.html",
+  "finalUrl": "https://sainadh812.github.io/ReadFlow/privacy.html",
+  "httpStatus": 200,
+  "contentType": "text/html",
+  "authenticatedRequest": false,
+  "matchesLocalSource": true,
+  "source": "site/privacy.html",
+  "sha256": "48483d2dc25a971765d77c553cfeb6b242c47c7bb6851dfd4a28bee2a1fbc1d1",
+  "effectiveDate": "2026-10-26",
+  "developerDisplayName": "Oh My Pi",
+  "privacyAndSupportContact": "xperimenting.ai@gmail.com",
+  "pagesBranch": "gh-pages",
+  "pagesCommit": "2e3aa9c1092dc20d1bc72adc1b45d0aa8b6e9a93",
+  "pagesBuildStatus": "built",
+  "httpsEnforced": true,
+  "physicalDeviceCheck": false,
+  "notes": [
+    "Owner supplied developer/contact and approved report/payment retention.",
+    "No personal profile email is included in the public policy.",
+    "Script checks do not certify legal compliance or Play approval."
+  ]
+}

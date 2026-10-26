@@ -22,7 +22,9 @@ tasks.named("preBuild").configure { dependsOn(prepareMisaki) }
 // Upload credentials belong to the publisher's environment, never the repository.
 val uploadKeys = listOf("READFLOW_UPLOAD_STORE_FILE", "READFLOW_UPLOAD_STORE_PASSWORD", "READFLOW_UPLOAD_KEY_ALIAS", "READFLOW_UPLOAD_KEY_PASSWORD")
 val uploadValues = uploadKeys.associateWith { providers.environmentVariable(it).orNull }
-val privacyPolicyUrl = providers.environmentVariable("READFLOW_PRIVACY_POLICY_URL").orElse("").get()
+// Published policy verified on 2026-10-26; a publisher can override it when hosting changes.
+val privacyPolicyUrl = providers.environmentVariable("READFLOW_PRIVACY_POLICY_URL")
+    .orElse("https://sainadh812.github.io/ReadFlow/privacy.html").get()
 val parsedPrivacyUrl = runCatching { URI(privacyPolicyUrl) }.getOrNull()
 require(privacyPolicyUrl.isEmpty() || (parsedPrivacyUrl?.scheme == "https" && !parsedPrivacyUrl.host.isNullOrBlank() &&
     parsedPrivacyUrl.userInfo == null && privacyPolicyUrl.none { it == '\"' || it == '\\' || it.isWhitespace() })) {
@@ -63,8 +65,8 @@ android {
         applicationId = "app.readflow"
         minSdk = 35
         targetSdk = 36
-        versionCode = 19
-        versionName = "0.2.3"
+        versionCode = 20
+        versionName = "0.2.4"
         buildConfigField("String", "PRIVACY_POLICY_URL", "\"$privacyPolicyUrl\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild { cmake { arguments += listOf("-DANDROID_STL=c++_static", "-DCMAKE_BUILD_TYPE=Release") } }
