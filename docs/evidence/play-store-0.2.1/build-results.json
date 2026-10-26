@@ -1,0 +1,103 @@
+{
+  "appVersion": "0.2.1",
+  "versionCode": 17,
+  "builtFromCommit": "436d7c71e6c32da15a7efde5a478e1deb08d4747",
+  "buildCommand": "./gradlew :app:testReleaseUnitTest :app:testDebugUnitTest :app:lintRelease :app:lintDebug :app:bundleRelease :app:assembleRelease --console=plain",
+  "buildResult": "BUILD SUCCESSFUL",
+  "duration": "4m 11s",
+  "jvmTests": {
+    "release": {
+      "tests": 332,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "debug": {
+      "tests": 331,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "lint": {
+    "release": {
+      "severities": {
+        "Warning": 28
+      },
+      "categories": {
+        "GradleDependency": 12,
+        "ExportedService": 1,
+        "UsableSpace": 4,
+        "UseKtx": 11
+      }
+    },
+    "debug": {
+      "severities": {
+        "Warning": 28
+      },
+      "categories": {
+        "GradleDependency": 12,
+        "ExportedService": 1,
+        "UsableSpace": 4,
+        "UseKtx": 11
+      }
+    }
+  },
+  "upgradeRegression": {
+    "test": "prototypeSpeechPacksUpgradeDuringPlaybackVerificationWithoutDownloading",
+    "beforeFix": "java.lang.IllegalStateException: Download kokoro first",
+    "afterFix": "passed",
+    "hostSeconds": 3.742,
+    "fixtures": "Actual pinned prototype Kokoro and alignment assets with original manifest fingerprints",
+    "entrypoint": "verifyInstalled only, without install/download action",
+    "checks": [
+      "new manifest fingerprints",
+      "complete hashes of new allowlist",
+      "old eSpeak files removed from migrated Kokoro installation",
+      "no staging/backup residue",
+      "empty download directory",
+      "fresh-store verification"
+    ]
+  },
+  "additionalRegressionCoverage": [
+    "concurrent verification",
+    "same-size corruption and missing files",
+    "cancellation preserves previous setup and retry succeeds",
+    "unmarked files require initial setup"
+  ],
+  "artifacts": [
+    {
+      "file": "ReadFlow-0.2.1-play-preview.apk",
+      "bytes": 128358355,
+      "sha256": "f91e61aa8f05702d77fb89e860eb8403b4a241a727121b02d6b6192323ab7394"
+    },
+    {
+      "file": "ReadFlow-0.2.1-play-unsigned.aab",
+      "bytes": 70975360,
+      "sha256": "84056ec99abaa69753e7f5f032ce7f3fa8b7a658ad4d9e4c4e011b91fa3fb447"
+    }
+  ],
+  "previewSigning": {
+    "identity": "Existing Android debug certificate for prototype upgrade testing",
+    "apkSignatureScheme": "v3",
+    "sha256": "f7313f98e9414c166f3fb2d2a9329ba1bb5dd9d76b068254522d20d1f8b109f9",
+    "apksignerVerification": "passed",
+    "zipalign16KiB": "passed"
+  },
+  "fontHashVerification": {
+    "aab": "passed",
+    "apk": "passed",
+    "fontFiles": 7,
+    "families": 6
+  },
+  "physicalDeviceTestsPerformed": false,
+  "publicationRemaining": [
+    "Final exact-artifact licensing audit",
+    "Owner signing and real privacy-policy/contact details",
+    "Device/Play testing"
+  ],
+  "limitations": [
+    "No connected phone. This validates local upgrade setup, not Android audio playback or physical install-over behavior.",
+    "Automatic migration needs temporary free storage and never starts a network download. Missing or damaged files require explicit setup."
+  ]
+}
