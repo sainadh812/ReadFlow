@@ -4,6 +4,8 @@
 
 This audit inspected the already built **ReadFlow 0.2.1**, package `app.readflow`, version code `17`. The public rename to **Read Assit**, proposed free/paid feature split, billing and any promotion mechanism are subsequent work. The artifact inspected here contains neither the proposed paywall nor the new notice additions described below. The repository/package identity remains unchanged.
 
+**Plan update:** the owner subsequently chose [free distribution with optional creator tips](FREE_DISTRIBUTION_PLAN.md). Paid features and coupons are deferred. The artifact facts below remain the historical 0.2.1 review.
+
 ## Artifact and reproducible checks
 
 | Item | Verified result |

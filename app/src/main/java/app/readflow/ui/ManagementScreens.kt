@@ -109,6 +109,7 @@ import java.util.Locale
 @Composable internal fun Settings(vm: ReaderViewModel, prefs: Preferences) {
     val issues by vm.issueReports.collectAsStateWithLifecycle()
     var appearance by remember { mutableStateOf(false) }
+    var support by remember { mutableStateOf(false) }
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text("Make it yours") }, navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.screen.value = if (vm.playback.value.document == null) "library" else "reader" } })
         LazyColumn(contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -192,12 +193,14 @@ import java.util.Locale
                     }
                 }
             }
+            item { SettingsDestination(Icons.Default.LocalCafe, "Buy me a coffee", "Optional support · all current features stay free") { support = true } }
             item { SettingsDestination(Icons.Default.Info, "Privacy and licenses", "How data is handled and third-party acknowledgments") { vm.screen.value = "legal" } }
             item { Text("Read Assit ${app.readflow.BuildConfig.VERSION_NAME} · Android 15+\nDocument processing and speech stay on this device.",
                 Modifier.padding(horizontal = 4.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
         }
     }
     if (appearance) ReaderTheme(prefs.readerTheme) { ReaderAppearanceSheet(prefs, vm::update) { appearance = false } }
+    if (support) SupportTipDialog { support = false }
 }
 
 @Composable internal fun SettingsCard(title: String, icon: ImageVector, content: @Composable ColumnScope.() -> Unit) {
