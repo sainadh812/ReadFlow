@@ -51,8 +51,19 @@ def main():
         with zipfile.ZipFile(args.artifact) as artifact:
             prefix = "base/" if args.artifact.suffix == ".aab" else ""
             assert artifact.read(prefix + "assets/licenses/fonts/provenance.json") == manifest_bytes
+            # AAPT2 shortens resource filenames in optimized release APKs.
+            # Verify the original bytes even when res/font/name.ttf becomes res/XY.ttf.
+            packaged_fonts = {}
+            for name in artifact.namelist():
+                if name.startswith(prefix + "res/") and name.endswith((".ttf", ".otf")):
+                    digest = hashlib.sha256(artifact.read(name)).hexdigest()
+                    packaged_fonts.setdefault(digest, []).append(name)
             for row in files:
                 packaged_path = prefix + row["path"].removeprefix("app/src/main/")
+                if row["kind"] == "font" and packaged_path not in artifact.namelist():
+                    matches = packaged_fonts.get(row["sha256"], [])
+                    assert len(matches) == 1, f"Missing or ambiguous packaged font: {row['path']}"
+                    packaged_path = matches[0]
                 validate_file(row, artifact.read(packaged_path))
     print(json.dumps({"status": "PASS", "families": len(EXPECTED_IDS), "fontFiles": len(listed_fonts),
                       "fontBytes": sum(r["bytes"] for r in files if r["kind"] == "font"),

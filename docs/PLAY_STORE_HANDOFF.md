@@ -28,6 +28,8 @@ This is a prepared release candidate, not a published or legally approved store 
 
 `ReadFlow-0.2.0-play-preview.apk` uses the release code/model selection but is signed with the existing Android debug certificate solely for prototype-device testing. It can update prototypes signed with that same certificate. It is not a production signing identity. A later Play-signed build normally cannot update a differently signed prototype; plan data preservation and migration with the owner, and never uninstall the prototype automatically.
 
+The candidate artifacts were built from implementation commit `60a2789f826d808ea8392f7a0b346ae242da1f4c`. Later candidate commits contain verification and delivery records only. See [build results and artifact hashes](evidence/play-store/build-results.json), [bundle inspection](evidence/play-store/packaging.json) and [resolved release dependencies](evidence/play-store/resolved-runtime.json). Both variants passed 327 JVM tests each and lint with zero errors (28 warnings each). Final AAB/APK font hashes, APK signature and 16 KB zip alignment passed. No device tests ran.
+
 Keep keystores and secrets outside Git. Supply these through the publisher's secure environment:
 
 - `READFLOW_UPLOAD_STORE_FILE`: upload keystore path.
