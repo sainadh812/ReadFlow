@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
         // Benchmarks are foreground tools, not unattended background model workloads.
         // Configuration changes retain the app-owned run and its cancellation gate.
         if (!isChangingConfigurations) {
-            vm.cancelBenchmark("Read Assit moved to the background")
+            vm.cancelBenchmark("Read Assist moved to the background")
             if (vm.playback.value.prepareAheadProgress?.running == true) vm.app.playback.stop()
         }
     }

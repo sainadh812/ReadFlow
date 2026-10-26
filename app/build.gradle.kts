@@ -63,8 +63,8 @@ android {
         applicationId = "app.readflow"
         minSdk = 35
         targetSdk = 36
-        versionCode = 18
-        versionName = "0.2.2"
+        versionCode = 19
+        versionName = "0.2.3"
         buildConfigField("String", "PRIVACY_POLICY_URL", "\"$privacyPolicyUrl\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild { cmake { arguments += listOf("-DANDROID_STL=c++_static", "-DCMAKE_BUILD_TYPE=Release") } }

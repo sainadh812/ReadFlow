@@ -1,4 +1,4 @@
-Read Assit / ReadFlow: MPL-2.0 components and source availability
+Read Assist / ReadFlow: MPL-2.0 components and source availability
 
 This index supplements, and does not replace, the original notices bundled with
 OkHttp and ONNX Runtime. The application has not modified their covered source.

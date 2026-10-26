@@ -116,7 +116,7 @@ import app.readflow.data.Preferences
                             "sc-kokoro" in speechModels && external.installed && alignmentAvailable, external.installed && alignmentAvailable) { selected ->
                             speechModels = if (selected) (speechModels + "sc-kokoro").distinct() else speechModels - "sc-kokoro"
                         }
-                        Text("Tests the separately installed SC Kokoro app with its Heart voice. Synthetic test text is sent locally to that engine. Read Assit cannot verify GPU use or measure the other app's RAM; results are labeled external.",
+                        Text("Tests the separately installed SC Kokoro app with its Heart voice. Synthetic test text is sent locally to that engine. Read Assist cannot verify GPU use or measure the other app's RAM; results are labeled external.",
                             style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         TextButton(onClick = { runCatching { uriHandler.openUri(ScKokoroEngine.SOURCE_URL) }
                             .onFailure { vm.message.value = "Could not open SC Kokoro setup" } }) { Text("SC Kokoro setup and device test") }
@@ -161,7 +161,7 @@ import app.readflow.data.Preferences
                         }
                         Text("Sustained tests use your chosen ${prefs.speechThreads} speech threads and ${prefs.alignmentThreads} timing threads. They generate audio without playing it and can take several minutes.",
                             style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text("Reading pauses during testing. Keep Read Assit open. For a fair comparison, use similar battery and temperature conditions.",
+                        Text("Reading pauses during testing. Keep Read Assist open. For a fair comparison, use similar battery and temperature conditions.",
                             style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Button(onClick = { cancellationRequested = false; configuring = false; vm.startBenchmark(BenchmarkOptions(
                             speechModels = eligibleSpeech, ocrEngines = eligibleOcr, voice = prefs.voice,
@@ -193,7 +193,7 @@ import app.readflow.data.Preferences
                         color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text("${(state.options.speechModels + state.options.ocrEngines).joinToString { modelDisplayName(it) }} · ${ocrQualityLabel(state.options.ocrQuality)} OCR",
                         style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    state.currentDevice?.processPssMiB?.let { MetricDetail("Current Read Assit memory", "${metricNumber(it, 0)} MiB") }
+                    state.currentDevice?.processPssMiB?.let { MetricDetail("Current Read Assist memory", "${metricNumber(it, 0)} MiB") }
                     state.cancellationReason?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
                     state.error?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error) }
                     if (active) OutlinedButton(onClick = { cancellationRequested = true; vm.cancelBenchmark() }, enabled = !stopping,

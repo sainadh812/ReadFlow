@@ -5,8 +5,8 @@ import java.math.RoundingMode
 
 /** Public recipient supplied by the owner; this is not a bank-verified identity. */
 internal object SupportTipDetails {
-    const val UPI_ID = "readassit@ybl"
-    const val DISPLAY_NAME = "Read Assit"
+    const val UPI_ID = "readassist@ybl"
+    const val DISPLAY_NAME = "Read Assist"
     private val decimalAmount = Regex("[0-9]{1,4}(\\.[0-9]{1,2})?")
     private val maximum = BigDecimal("1000.00")
 
@@ -24,7 +24,7 @@ internal object SupportTipDetails {
         return linkedMapOf(
             "pa" to UPI_ID,
             "pn" to DISPLAY_NAME,
-            "tn" to "Optional tip for Read Assit; no purchase or benefits",
+            "tn" to "Optional tip for Read Assist; no purchase or benefits",
             "am" to amount,
             "cu" to "INR",
         )

@@ -24,8 +24,8 @@ class SupportTipDetailsTest {
 
     @Test fun requestKeepsOwnerRecipientAndDoesNotInventMerchantOrTransactionData() {
         val parameters = SupportTipDetails.paymentParameters("10.50")!!
-        assertEquals("readassit@ybl", parameters["pa"])
-        assertEquals("Read Assit", parameters["pn"])
+        assertEquals("readassist@ybl", parameters["pa"])
+        assertEquals("Read Assist", parameters["pn"])
         assertEquals("10.50", parameters["am"])
         assertEquals("INR", parameters["cu"])
         assertEquals(setOf("pa", "pn", "tn", "am", "cu"), parameters.keys)

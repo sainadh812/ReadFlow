@@ -108,7 +108,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     fun copyBenchmarkResults() {
         try {
             app.getSystemService(ClipboardManager::class.java).setPrimaryClip(
-                ClipData.newPlainText("Read Assit phone benchmark", app.benchmarks.report()))
+                ClipData.newPlainText("Read Assist phone benchmark", app.benchmarks.report()))
             message.value = "Benchmark results copied"
         } catch (_: Exception) { message.value = "Could not copy benchmark results" }
     }
@@ -212,7 +212,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     fun copyPlaybackDiagnostics() { viewModelScope.launch {
         try {
             val report = app.diagnostics.report(app)
-            app.getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("Read Assit diagnostics", report))
+            app.getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("Read Assist diagnostics", report))
             message.value = "Playback diagnostics copied"
         } catch (cancel: CancellationException) { throw cancel }
         catch (_: Exception) { message.value = "Could not copy playback diagnostics" }
@@ -288,7 +288,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
             val text = if (pronunciation) BenchmarkFixtures.PRONUNCIATION.joinToString("\n\n")
                 else app.assets.open("fixtures/reading.txt").bufferedReader().use { it.readText() }.trim()
             val id = stableId(if (pronunciation) "readflow-pronunciation-fixture" else "readflow-original-fixture", PIPELINE_VERSION)
-            val document = DocumentEntity(id, sha256(text.toByteArray()), "Read Assit original fixture (CC0)",
+            val document = DocumentEntity(id, sha256(text.toByteArray()), "Read Assist original fixture (CC0)",
                 if (pronunciation) "Pronunciation comparison" else "A quiet space for thought", "", "text/plain", 1)
             app.documents.dao.insertDocument(document)
             val page = DocumentPipeline().process(id, 0, ExtractedPage(text.split("\n\n").mapIndexed { index, paragraph -> TextElement(paragraph, emptyList(), index, index) }, 0f, 0f, "Original sample"))

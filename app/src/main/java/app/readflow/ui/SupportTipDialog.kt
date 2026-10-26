@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
         title = { Text("Buy me a coffee") },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("Enjoying Read Assit? You can leave an optional tip for its developer.")
+                Text("Enjoying Read Assist? You can leave an optional tip for its developer.")
                 Surface(color = MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(12.dp)) {
                     Text("All current features are free. Tipping does not unlock features, perks or priority support.",
                         Modifier.padding(12.dp), style = MaterialTheme.typography.bodyMedium,
@@ -76,7 +76,7 @@ import androidx.compose.ui.unit.dp
                             try {
                                 // Launch only. No payment callback, transaction storage or entitlement is involved.
                                 context.startActivity(Intent(Intent.ACTION_VIEW, uri))
-                                feedback = "Continue in your UPI app. Read Assit does not verify payment status."
+                                feedback = "Continue in your UPI app. Read Assist does not verify payment status."
                             } catch (_: ActivityNotFoundException) {
                                 feedback = "No app could open this UPI request. Copy the UPI ID and enter it in your payment app."
                             } catch (_: SecurityException) {
@@ -94,7 +94,7 @@ import androidx.compose.ui.unit.dp
                     try {
                         val clipboard = context.getSystemService(ClipboardManager::class.java)
                         if (clipboard != null) {
-                            clipboard.setPrimaryClip(ClipData.newPlainText("Read Assit UPI ID", SupportTipDetails.UPI_ID))
+                            clipboard.setPrimaryClip(ClipData.newPlainText("Read Assist UPI ID", SupportTipDetails.UPI_ID))
                             feedback = "UPI ID copied. Paste it in your payment app and check the recipient before paying."
                         } else feedback = "Clipboard unavailable. You can select and copy the UPI ID above."
                     } catch (_: SecurityException) {

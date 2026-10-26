@@ -1,6 +1,6 @@
-# Read Assit: privacy, Data safety and store draft
+# Read Assist: privacy, Data safety and store draft
 
-**DRAFT — not ready to publish. Reviewed 2026-10-26.** The reviewed source is **Read Assit 0.2.2**, package `app.readflow`, version code 18, with host build checks recorded separately and device/publication checks pending. The older ReadFlow `0.2.1` download, version code 17, does not contain the new tip dialog. Keep `app.readflow` for updates and use **Read Assit**, exactly as spelled, for the new public name. All existing features remain free. Paid tiers, prices and coupons are deferred. The source now includes optional external UPI support, with no payment SDK/backend, paid entitlement or daily speech quota.
+**DRAFT — not ready to publish. Reviewed 2026-10-26.** The current candidate source is **Read Assist 0.2.3**, package `app.readflow`, version code 19, with host validation recorded in the 0.2.3 evidence and device/production checks still pending. Historical 0.2.2 evidence covers that earlier Read Assit-branded build and previous recipient, not this corrected version. The older ReadFlow `0.2.1` download, version code 17, does not contain the new tip dialog. Keep `app.readflow` for updates and use **Read Assist** (Assist has a double “s”) for the new public name. All existing features remain free. Paid tiers, prices and coupons are deferred. The source now includes optional external UPI support, with no payment SDK/backend, paid entitlement or daily speech quota.
 
 Muse Spark should fill verified owner/account information and enter the final approved materials in Play Console. It must not invent policy facts, configure a paid download or create paid products for this launch.
 
@@ -11,15 +11,15 @@ Muse Spark should fill verified owner/account information and enter the final ap
 | Download | Free; no subscription or ads. |
 | Features | All existing document reading, OCR engines, offered voices, speech, reader themes/fonts/accessibility controls and phone benchmarks remain free. No daily speech quota or payment-gated feature. Model downloads and phone/storage limitations still apply. |
 | Optional tip | Settings → “Buy me a coffee” opens an optional support dialog. Tipping provides no unlocked content, extra usage, badge, status, feature or priority support. This phrase does not imply integration with a particular payment company. |
-| Recipient | The owner supplied `readassit@ybl`. Its registration and bank-displayed recipient name have not been independently verified. Verify both before shipping; do not treat the app's display label as proof of the bank account holder. |
+| Recipient | The owner supplied the new `readassist@ybl` and will register/change it with their UPI provider. Registration, ownership and the bank-displayed recipient name have not been verified. Verify these before shipping; do not treat the app's display label as proof of the bank account holder. |
 | Scope | An external UPI app handoff and “Copy UPI ID” fallback. No QR, global card-payment provider, payment SDK, backend, payment callback, transaction-record storage or success verification. Users can dismiss support and keep using every feature. |
 | Amount | Default ₹10; presets ₹10/₹50/₹100; custom ₹1–₹1,000 with up to two decimal places. The selected amount is sent in INR. |
 
 Google's direct creator-tip exception requires the entire contribution to go to the creator and no digital content or service in exchange, including badges or similar benefits. Verify those conditions for the actual payment arrangement; a “tip” label alone does not qualify. Do not add a platform revenue share or connect payments to app entitlements. This is support for the creator, not a tax-deductible charitable donation. [Play Payments policy guidance, direct tips](https://support.google.com/googleplay/android-developer/answer/10281818).
 
-The dialog shows the recipient UPI ID and selected amount, asks the payer to check the bank-displayed recipient name/ID/amount, and opens an external payment app. Its feedback explicitly says Read Assit does not verify payment status. It never asks for a UPI PIN or bank password, receives no payment callback and does not unlock anything. Test cancellation, payment-app rejection, no-handler and Android-blocked-launch cases on the phone; a return to Read Assit must not be interpreted as success.
+The dialog shows the recipient UPI ID and selected amount, asks the payer to check the bank-displayed recipient name/ID/amount, and opens an external payment app. Its feedback explicitly says Read Assist does not verify payment status. It never asks for a UPI PIN or bank password, receives no payment callback and does not unlock anything. Test cancellation, payment-app rejection, no-handler and Android-blocked-launch cases on the phone; a return to Read Assist must not be interpreted as success.
 
-Source evidence: [support dialog](../app/src/main/java/app/readflow/ui/SupportTipDialog.kt), [validated amounts and UPI parameters](../app/src/main/java/app/readflow/ui/SupportTipDetails.kt), [Settings entry](../app/src/main/java/app/readflow/ui/ManagementScreens.kt). The handoff contains `pa=readassit@ybl`, `pn=Read Assit`, the INR amount/currency and an optional-tip note. It contains no document text, payer identifier or app-generated transaction identifier. `pn` is an app-supplied display label, not independent verification of the recipient's identity.
+Source evidence: [support dialog](../app/src/main/java/app/readflow/ui/SupportTipDialog.kt), [validated amounts and UPI parameters](../app/src/main/java/app/readflow/ui/SupportTipDetails.kt), [Settings entry](../app/src/main/java/app/readflow/ui/ManagementScreens.kt). The handoff contains `pa=readassist@ybl`, `pn=Read Assist`, the INR amount/currency and an optional-tip note. It contains no document text, payer identifier or app-generated transaction identifier. `pn` is an app-supplied display label, not independent verification of the recipient's identity.
 
 ## Owner facts needed
 
@@ -31,7 +31,7 @@ Replace every placeholder below with verified information. Unresolved implementa
 | `[PRIVACY_CONTACT]`, `[SUPPORT_CONTACT]` | Working owner-approved contact addresses or inquiry mechanism. |
 | `[PRIVACY_POLICY_URL]`, `[EFFECTIVE_DATE]` | Public, globally accessible HTTPS HTML policy and its effective date. Supply the URL through `READFLOW_PRIVACY_POLICY_URL` in the final build. |
 | `[OWNER_REPORT_RETENTION_AND_DELETION]` | How the developer handles voluntarily received reports, when they are deleted, how users request deletion, and any necessary exceptions. Local deletion does not delete GitHub comments or recipients' copies. |
-| `[TIP_RECIPIENT_NAME]` and verification of `readassit@ybl` | Real creator identity and confirmation that this owner-supplied ID belongs to the intended recipient. Check the payment-app-displayed recipient before shipping. Never place banking secrets in the repo. |
+| `[TIP_RECIPIENT_NAME]` and verification of `readassist@ybl` | Real creator identity and confirmation that the owner has registered/changed this new ID with their provider and it belongs to the intended recipient. Check the payment-app-displayed recipient before shipping. Never place banking secrets in the repo. |
 | `[OWNER_TIP_DATA_AND_RETENTION]` | What transaction information the creator actually receives, its purpose, retention/deletion rules and payment-help contact. Do not invent fields, periods or a verification backend. |
 | Optional tip device verification | Test the implemented external intent/copy flow against installed UPI apps and verify the recipient. Re-audit before adding a callback, payment SDK, transaction storage or server. |
 | Audience / territories | Actual intended audience, launch countries and contact/business disclosures required by the account. Do not select a children-directed audience without assessing the additional obligations. |
@@ -39,7 +39,7 @@ Replace every placeholder below with verified information. Unresolved implementa
 
 ## Privacy Policy — draft public text
 
-**Privacy Policy for Read Assit**
+**Privacy Policy for Read Assist**
 
 Effective: `[EFFECTIVE_DATE]`
 
@@ -47,9 +47,9 @@ Developer: `[DEVELOPER_LEGAL_NAME]`
 
 Privacy contact: `[PRIVACY_CONTACT]`
 
-Read Assit is a document reading and text-to-speech app, formerly called ReadFlow. Its Android package is `app.readflow`. This policy describes the app's data handling. Contact us using the details above for privacy questions.
+Read Assist is a document reading and text-to-speech app, formerly called ReadFlow. Its Android package is `app.readflow`. This policy describes the app's data handling. Contact us using the details above for privacy questions.
 
-**Documents and reading.** You choose the PDF files, images and webpages to import. The app stores imported content, extracted text, generated speech, reading progress and settings in its private storage on your device. OCR and speech generation run locally. Your document content is not uploaded to model hosts for these operations. No Read Assit account is required. The app contains no advertising SDK or developer-operated analytics service.
+**Documents and reading.** You choose the PDF files, images and webpages to import. The app stores imported content, extracted text, generated speech, reading progress and settings in its private storage on your device. OCR and speech generation run locally. Your document content is not uploaded to model hosts for these operations. No Read Assist account is required. The app contains no advertising SDK or developer-operated analytics service.
 
 **Internet connections.** Downloading speech, alignment and optional OCR models contacts the model hosts identified in the app, including Hugging Face and GitHub and their download infrastructure. Importing a webpage contacts the website you choose. Those services receive connection/request information such as your IP address and requested resource and apply their own privacy policies. These app requests use HTTPS. After the required models and content are downloaded, local reading and speech do not require a document-processing server.
 
@@ -63,13 +63,13 @@ GitHub uploads occur only after you configure a destination and confirm sending.
 
 **Security and changes.** We use app-private storage, HTTPS for the app's network requests and Android Keystore protection for saved GitHub credentials. This does not describe document storage as end-to-end encrypted or promise that recipient-controlled exports have the same protections. We will update this policy when the app's practices change and identify the updated effective date here.
 
-### Voluntary support — draft public text for 0.2.2
+### Voluntary support — draft public text for 0.2.3
 
-The source flow has been inspected. Resolve the owner identity/transaction-handling placeholders and verify the final build before publishing this section; it does not describe the older 0.2.1 download:
+The support flow is retained from 0.2.2 with the corrected name and new recipient in 0.2.3. Resolve the owner identity/transaction-handling placeholders, confirm provider registration and verify the final build before publishing this section; the new recipient is not present in older downloads:
 
-> You may choose to send an optional contribution directly to `[TIP_RECIPIENT_NAME]` at `readassit@ybl` using your payment app. Contributing does not unlock features, perks or priority support. Read Assit passes the recipient ID, the display label “Read Assit,” your selected INR amount and an optional-tip note to the external UPI app. You can instead copy the recipient ID to your clipboard and enter it in your payment app. No document information is included. Read Assit does not receive payment callbacks, verify payment status or store transaction records. Your payment app and the payer's and recipient's banks process the payment under their own terms and privacy policies. The creator receives transaction information through the recipient's payment service: `[OWNER_TIP_DATA_AND_RETENTION]`. Read Assit does not ask for or handle your UPI PIN, bank password or account-access credentials. Check the recipient name, ID and amount in your payment app before confirming. Returning to Read Assit is not confirmation that a transfer succeeded; check your payment app for its status. Contact `[SUPPORT_CONTACT]` for contribution questions.
+> You may choose to send an optional contribution directly to `[TIP_RECIPIENT_NAME]` at `readassist@ybl` using your payment app. Contributing does not unlock features, perks or priority support. Read Assist passes the recipient ID, the display label “Read Assist,” your selected INR amount and an optional-tip note to the external UPI app. You can instead copy the recipient ID to your clipboard and enter it in your payment app. No document information is included. Read Assist does not receive payment callbacks, verify payment status or store transaction records. Your payment app and the payer's and recipient's banks process the payment under their own terms and privacy policies. The creator receives transaction information through the recipient's payment service: `[OWNER_TIP_DATA_AND_RETENTION]`. Read Assist does not ask for or handle your UPI PIN, bank password or account-access credentials. Check the recipient name, ID and amount in your payment app before confirming. Returning to Read Assist is not confirmation that a transfer succeeded; check your payment app for its status. Contact `[SUPPORT_CONTACT]` for contribution questions.
 
-Determine the transaction information visible to the creator in their recipient account before publishing this section or answering Data safety. Although the inspected app has no transaction callback or records, do not claim “we receive no payment data” for the developer's wider handling. Do not assume Read Assit accesses the credentials that the bank/payment app handles directly. Disclose any future SDK/server and its data handling before shipping it. [Data safety payment guidance](https://support.google.com/googleplay/android-developer/answer/10787469).
+Determine the transaction information visible to the creator in their recipient account before publishing this section or answering Data safety. Although the inspected app has no transaction callback or records, do not claim “we receive no payment data” for the developer's wider handling. Do not assume Read Assist accesses the credentials that the bank/payment app handles directly. Disclose any future SDK/server and its data handling before shipping it. [Data safety payment guidance](https://support.google.com/googleplay/android-developer/answer/10787469).
 
 The public page must be clearly labeled a Privacy Policy, include the developer/contact and retention/deletion information, and be publicly accessible without login, geofencing or a PDF download. Keep the in-app disclosure, public page and Play answers consistent. Account deletion requirements become relevant if app account creation is added; do not invent an account system just to fill the form. [Play User Data policy](https://support.google.com/googleplay/android-developer/answer/10144311).
 
@@ -84,7 +84,7 @@ This is evidence for the form, not a ready-made set of Yes/No answers. “Collec
 | GitHub metadata reports | Optional diagnostics/crash information and app installation identifier transmitted after confirmation. | Final schema, repository recipient, purposes and whether the user-initiated sharing exception applies. |
 | Input-bearing reports / exports | May include files/document information and text excerpts; individual exports may include other audio files. | Destination, actual contents, collection vs sharing and user-initiated exceptions. Private repository does not itself exempt disclosure. |
 | Model downloads / webpage import | Hosts receive connection and request information. App does not derive location from an IP address in the reviewed source. | Host/SDK behavior and any retained data; do not invent location collection or promise hosts keep no logs. |
-| Optional creator tip | Implemented in 0.2.2 source; absent in 0.2.1 download. Recipient/display label, INR amount and note go to the external UPI app; copy-ID writes the public recipient ID to the clipboard. No document data, callback or app transaction records. Banks/payment apps process transfers and the creator may receive transaction information. | Test the actual handoff and identify recipient-accessible transaction data. Assess applicable financial/identifier categories and user-initiated/payment-service exceptions without blanket “no data” answers. |
+| Optional creator tip | Introduced in 0.2.2; the corrected name and new recipient apply to 0.2.3. Absent in the 0.2.1 download. Recipient/display label, INR amount and note go to the external UPI app; copy-ID writes the public recipient ID to the clipboard. No document data, callback or app transaction records. Banks/payment apps process transfers and the creator may receive transaction information. | Test the actual handoff and identify recipient-accessible transaction data. Assess applicable financial/identifier categories and user-initiated/payment-service exceptions without blanket “no data” answers. |
 | Security / deletion | Current app requests use HTTPS; local deletion exists. No automatic deletion of external copies. | Validate final transport, owner deletion contact/process and any tip/support retention. Do not equate uninstall with deletion of bank or payment-service records. |
 | Ads / account creation | Neither found in reviewed release. | Reconfirm final dependency graph and account flow before declaring. |
 
@@ -92,13 +92,13 @@ Record the signed artifact hash, SDK versions, inspection date and decisions bes
 
 ## Store copy — future approved build only
 
-**Name:** Read Assit
+**Name:** Read Assist
 
 **Short description:** Read PDFs aloud with offline AI voices, OCR and comfortable reading tools.
 
 **Full description draft:**
 
-> Read Assit helps you read and listen to your PDFs, images and saved web articles.
+> Read Assist helps you read and listen to your PDFs, images and saved web articles.
 >
 > Read documents with paper themes, reader-friendly fonts including OpenDyslexic and adjustable text size. Listen with on-device AI voices and word highlighting. Choose ML Kit, PaddleOCR or TeleOCR for recognition and use the phone testbench to compare performance.
 >
@@ -108,9 +108,9 @@ Record the signed artifact hash, SDK versions, inspection date and decisions bes
 >
 > Speech and recognition run on your device after setup. Voice and optional OCR models require downloads and storage. Speed varies with your phone and document; complex OCR can take longer. Recognition, pronunciation and table order can contain mistakes.
 >
-> Choose your own documents. No Read Assit account is required. ML Kit may send technical diagnostics to Google; see our Privacy Policy for details.
+> Choose your own documents. No Read Assist account is required. ML Kit may send technical diagnostics to Google; see our Privacy Policy for details.
 
-This copy describes the 0.2.2 source, including the implemented support dialog; publish it only after final build/device checks, recipient verification and owner policy completion. Do not attach it to the older 0.2.1 download as though that build includes tipping. Do not claim dyslexia treatment, financial advice, perfect OCR, guaranteed gap-free reading or universal device compatibility. Use real app screenshots, with content the developer is authorized to redistribute. Android 15+ ARM64 is the current candidate's device support; reassess for the final build.
+This copy describes the 0.2.3 source, including the retained support dialog and new recipient; publish it only after final build/device checks, recipient verification and owner policy completion. Do not attach it to older artifacts as though they contain the corrected name/new recipient; 0.2.1 also lacks the support dialog. Do not claim dyslexia treatment, financial advice, perfect OCR, guaranteed gap-free reading or universal device compatibility. Use real app screenshots, with content the developer is authorized to redistribute. Android 15+ ARM64 is the current candidate's device support; reassess for the final build.
 
 Support contact: `[SUPPORT_CONTACT]`. Privacy Policy: `[PRIVACY_POLICY_URL]`.
 
@@ -120,19 +120,19 @@ Recommended application terms: distribute the app-specific code under the owner'
 
 The following short terms are ready for owner review once the contact details are final; they are not presently in force:
 
-> **Read Assit application terms**
+> **Read Assist application terms**
 >
-> `[DEVELOPER_LEGAL_NAME]` provides Read Assit for reading and listening to documents you are authorized to use. You retain your rights in your documents. For the app-specific software, we grant you permission to install and use the app on compatible devices, subject to these terms and any applicable Google Play terms. Third-party software, models and fonts have their own licenses, available in Settings → Privacy and licenses; these terms do not restrict the rights those licenses grant.
+> `[DEVELOPER_LEGAL_NAME]` provides Read Assist for reading and listening to documents you are authorized to use. You retain your rights in your documents. For the app-specific software, we grant you permission to install and use the app on compatible devices, subject to these terms and any applicable Google Play terms. Third-party software, models and fonts have their own licenses, available in Settings → Privacy and licenses; these terms do not restrict the rights those licenses grant.
 >
 > The app is free to download and all included features are available without payment or a daily speech quota. No subscription is required.
 >
-> Model downloads require storage and an internet connection. Subsequent local use depends on compatible hardware and installed models. Recognition, pronunciation and reading order can contain errors; verify important content against the original document. Read Assit is a reading tool, not a medical treatment or financial adviser.
+> Model downloads require storage and an internet connection. Subsequent local use depends on compatible hardware and installed models. Recognition, pronunciation and reading order can contain errors; verify important content against the original document. Read Assist is a reading tool, not a medical treatment or financial adviser.
 >
 > For support, contact `[SUPPORT_CONTACT]`. Nothing in these terms removes statutory rights. Data handling is described at `[PRIVACY_POLICY_URL]`.
 
-Additional terms for the optional 0.2.2 support flow:
+Additional terms for the optional 0.2.3 support flow:
 
-> Voluntary contributions go directly to the creator named before payment through the payment service you choose. They do not buy app features, content, badges or services. Read Assit does not represent these contributions as tax-deductible charitable donations. Check the recipient and amount before confirming in your payment app. Payment status and processing are handled by that app and the banks involved; opening or returning from it is not a Read Assit confirmation of payment. For contribution questions or a mistaken transfer, contact `[SUPPORT_CONTACT]` and your payment service as appropriate. Your statutory rights remain unaffected.
+> Voluntary contributions go directly to the creator named before payment through the payment service you choose. They do not buy app features, content, badges or services. Read Assist does not represent these contributions as tax-deductible charitable donations. Check the recipient and amount before confirming in your payment app. Payment status and processing are handled by that app and the banks involved; opening or returning from it is not a Read Assist confirmation of payment. For contribution questions or a mistaken transfer, contact `[SUPPORT_CONTACT]` and your payment service as appropriate. Your statutory rights remain unaffected.
 
 Do not add unsupported warranty waivers, governing-law claims or a blanket “no refunds” promise. Confirm the owner's rights to the app-specific code before applying its license. The model/font/runtime obligations are recorded in the separate re-audit.
 

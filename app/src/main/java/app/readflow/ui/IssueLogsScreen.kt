@@ -95,7 +95,7 @@ private val issueDisplayJson = Json { prettyPrint = true; encodeDefaults = true 
             else "The ZIP includes captured input, error details and any retained speech audio. Review it before sharing. Nothing is uploaded automatically.") },
         confirmButton = { TextButton(onClick = {
             val id = selected?.id ?: "history"
-            vm.pendingIssueExport = id; exportConsent = false; picker.launch(if (id == "history") "Read-Assit-error-history.zip" else "Read-Assit-issue-${id.take(8)}.zip")
+            vm.pendingIssueExport = id; exportConsent = false; picker.launch(if (id == "history") "Read-Assist-error-history.zip" else "Read-Assist-issue-${id.take(8)}.zip")
         }) { Text("Choose destination") } }, dismissButton = { TextButton(onClick = { exportConsent = false }) { Text("Cancel") } })
     if (deleteConsent) AlertDialog(onDismissRequest = { deleteConsent = false }, title = { Text(if (selected == null) "Delete all issue logs?" else "Delete this issue log?") },
         text = { Text("Previously exported copies and GitHub uploads are not deleted.") },

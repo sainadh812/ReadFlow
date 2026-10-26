@@ -1,4 +1,4 @@
-Read Assit supplemental runtime dependency notices
+Read Assist supplemental runtime dependency notices
 
 These files supplement embedded notices under licenses/dependencies. The component
 inventory and exact Maven POMs preserve original upstream authorship and license

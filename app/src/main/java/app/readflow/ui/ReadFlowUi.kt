@@ -180,7 +180,7 @@ private val Accent = Color(0xFF126D63)
     }
     deleting?.let { document ->
         AlertDialog(onDismissRequest = { deleting = null }, title = { Text("Remove from library?") },
-            text = { Text("Remove “${document.title}” and its saved reading data from Read Assit? Your original file stays on your device.") },
+            text = { Text("Remove “${document.title}” and its saved reading data from Read Assist? Your original file stays on your device.") },
             confirmButton = { TextButton(onClick = { deleting = null; vm.deleteDocument(document) }) { Text("Remove", color = MaterialTheme.colorScheme.error) } },
             dismissButton = { TextButton(onClick = { deleting = null }) { Text("Keep") } })
     }
@@ -327,7 +327,7 @@ private val Accent = Color(0xFF126D63)
                 OutlinedTextField(endPage, { endPage = it.filter(Char::isDigit).take(5) }, singleLine = true,
                     label = { Text("Last page") }, suffix = { Text("/ ${state.document.pageCount}") },
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number))
-                Text("Keep Read Assit open while preparing. Completed audio is kept if you cancel. Preparation stops before exceeding your ${prefs.cacheMb} MB audio cache.",
+                Text("Keep Read Assist open while preparing. Completed audio is kept if you cancel. Preparation stops before exceeding your ${prefs.cacheMb} MB audio cache.",
                     style = MaterialTheme.typography.bodySmall)
                 if (prefs.ocrEngine == "teleocr") Text("New TeleOCR pages can take several minutes each.", style = MaterialTheme.typography.bodySmall)
             }
