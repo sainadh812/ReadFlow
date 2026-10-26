@@ -6,7 +6,7 @@ Paid features and the previous INR 10 / USD 0.99 Pro proposal are deferred. Once
 
 ## Optional coffee support
 
-Add **Settings → Buy me a coffee** for voluntary support to the developer. The owner supplied the new public recipient **`readassist@ybl`** and will register/change it with their UPI provider. This is a configured address, not proof of ownership, completed registration or successful payment. Read Assist cannot create or reserve a UPI ID. Confirm provider registration and verify the bank-resolved recipient before publishing; neither is established by the app update.
+**Settings → Buy me a coffee** is implemented for voluntary support to the developer. The owner supplied the new public recipient **`readassist@ybl`** and will register/change it with their UPI provider. This is a configured address, not proof of ownership, completed registration or successful payment. Read Assist cannot create or reserve a UPI ID. Confirm provider registration and verify the bank-resolved recipient before publishing; neither is established by the app update.
 
 The support flow shows the recipient and INR amount, with choices of INR 10, 50 or 100 and a custom amount from INR 1 to 1,000. The user explicitly opens a compatible UPI app and confirms there. Copy UPI ID is always available for manual entry. No QR code, card provider, payment SDK, merchant account, transaction backend or payment-verification service is added. Only users with a compatible UPI setup can use this option; it is not a worldwide card-payment solution.
 
@@ -16,8 +16,8 @@ Google's direct-tip exception requires the creator to receive the entire contrib
 
 ## Distribution work
 
-1. Produce Read Assist 0.2.3 (version code 19) with the corrected name and new `readassist@ybl` recipient, preserving the optional support option and corrected bundled notices. Preserve `app.readflow`, model identities and existing documents/settings. The prototype preview retains the prior test certificate; it is not the production signing identity.
-2. Publish a clearly labeled test APK and unsigned review AAB on GitHub. No payment or real device behavior is established by a host build.
+1. **Built:** Read Assist 0.2.3 (version code 19) has the corrected name and new `readassist@ybl` recipient, preserving the optional support option and corrected bundled notices. Package `app.readflow`, model identities and document/settings storage remain unchanged. The prototype preview retains the prior test certificate; it is not the production signing identity.
+2. **Published for review:** the [GitHub release](https://github.com/sainadh812/ReadFlow/releases/tag/v0.2.3-play-candidate) includes the test APK and unsigned review AAB. No payment or real device behavior is established by a host build.
 3. Complete actual owner/contact/public-policy information, the final artifact license review, production signing and the required Play/device tests. Billing implementation is **not** a prerequisite for this free release.
 4. Test the support screen, visible address/amount, invalid custom amounts, cancellation, missing UPI app, manual copy, actual recipient and return behavior on a phone. Testing must not imply a payment is required to use or review the app. Do not make a real transfer without the payer's explicit confirmation.
 5. Use the [privacy/store worksheet](PRIVACY_AND_STORE_DRAFT.md) and [publishing handoff](PLAY_STORE_HANDOFF.md). Muse Spark fills verified Console facts; it should not invent a support identity or mark unchecked requirements complete.
