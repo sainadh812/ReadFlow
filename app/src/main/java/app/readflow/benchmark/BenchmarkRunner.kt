@@ -146,7 +146,7 @@ class BenchmarkRunner(
                     if (!available || !models.hasLocalInstallation("alignment")) {
                         record(BenchmarkRow("speech", model, "Not ready", BenchmarkRowStatus.SKIPPED,
                             backend = if (external) "external-unverified" else "cpu",
-                            note = if (external) "Install SC Kokoro separately, finish its model download/device test, and install ReadFlow's Word alignment. No CPU substitute was tested."
+                            note = if (external) "Install SC Kokoro separately, finish its model download/device test, and install Read Assit's Word alignment. No CPU substitute was tested."
                                 else "Install this speech model and Word alignment first."), required)
                         continue
                     }
@@ -194,7 +194,7 @@ class BenchmarkRunner(
                                 totalMs = verifyMs + loadMs, verifyMs = verifyMs, loadMs = loadMs, voice = voice,
                                 modelVersion = version, backend = backend, speechThreads = pass.threads,
                                 alignmentThreads = selected.alignmentThreads, allowSpinning = selected.allowSpinning,
-                                note = if (external) "Connects to a separate app. Its internal model may already be warm. Android TTS does not expose GPU/CPU placement; ReadFlow PSS excludes the external process."
+                                note = if (external) "Connects to a separate app. Its internal model may already be warm. Android TTS does not expose GPU/CPU placement; Read Assit PSS excludes the external process."
                                     else (if (misaki) "Misaki POS and neural pronunciation models are included in model loading; one pronunciation thread. " else "") +
                                         "One resident speech model. Blocks run sequentially; later blocks may encounter more heat. Verification/OS caches are not cleared; alignment loads in the first sample."))
                             done++

@@ -38,7 +38,7 @@ import java.util.Locale
     val playback by vm.playback.collectAsStateWithLifecycle()
     val refreshing by vm.refreshingText.collectAsStateWithLifecycle()
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        Text("Choose how ReadFlow sees the page.", Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
+        Text("Choose how Read Assit sees the page.", Modifier.padding(horizontal = 4.dp, vertical = 4.dp),
             style = MaterialTheme.typography.headlineSmall)
         SettingsCard("Recognition model", Icons.Default.DocumentScanner) {
             Text("All three process pages locally. Choose a model, then compare it in the phone testbench.", style = MaterialTheme.typography.bodySmall,
@@ -72,7 +72,7 @@ import java.util.Locale
             }
             Text("PaddleOCR reads text; it has no dedicated table-structure model. TeleOCR can take several minutes per page: prepare difficult pages before listening. Some recognized words may lack exact highlights on the original page.",
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text("TeleOCR needs about 3 GB of free storage during setup. Keep ReadFlow open; interrupted downloads can resume.",
+            Text("TeleOCR needs about 3 GB of free storage during setup. Keep Read Assit open; interrupted downloads can resume.",
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         SettingsCard("Recognition detail", Icons.Default.Tune) {

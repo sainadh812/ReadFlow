@@ -193,7 +193,7 @@ import java.util.Locale
                 }
             }
             item { SettingsDestination(Icons.Default.Info, "Privacy and licenses", "How data is handled and third-party acknowledgments") { vm.screen.value = "legal" } }
-            item { Text("ReadFlow ${app.readflow.BuildConfig.VERSION_NAME} · Android 15+\nDocument processing and speech stay on this device.",
+            item { Text("Read Assit ${app.readflow.BuildConfig.VERSION_NAME} · Android 15+\nDocument processing and speech stay on this device.",
                 Modifier.padding(horizontal = 4.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
         }
     }

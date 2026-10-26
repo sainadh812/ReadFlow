@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "families": 6,
+  "fontFiles": 7,
+  "fontBytes": 4863856,
+  "licenses": 6,
+  "artifact": "dist/play-0.2.1/ReadFlow-0.2.1-play-unsigned.aab",
+  "command": "python3 scripts/verify_reader_fonts.py --artifact dist/play-0.2.1/ReadFlow-0.2.1-play-unsigned.aab",
+  "artifactSha256": "84056ec99abaa69753e7f5f032ce7f3fa8b7a658ad4d9e4c4e011b91fa3fb447"
+}

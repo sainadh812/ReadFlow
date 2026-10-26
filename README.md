@@ -1,6 +1,8 @@
-# ReadFlow
+# Read Assit
 
-A native Android reading application built with Kotlin, Compose and local speech synthesis. The current **0.2.1 Play release candidate** includes paper themes, offline reader fonts and Kokoro + Misaki speech. Physical Galaxy S25 Ultra acceptance, the publisher's second license audit and Play Console setup remain required. See [the publishing handoff](docs/PLAY_STORE_HANDOFF.md) and [status](docs/STATUS.md).
+A native Android reading application built with Kotlin, Compose and local speech synthesis. **Read Assit** is the new displayed name in source; the package remains `app.readflow` and this repository remains ReadFlow. The [free download + one-time Pro plan](docs/FREE_AND_PRO_PLAN.md) is awaiting owner review; billing and coupon redemption are not implemented. The [second license audit](docs/PLAY_REAUDIT_2026-10-26.md) and [updated Muse Spark handoff](docs/PLAY_STORE_HANDOFF.md) distinguish completed checks from remaining publication work.
+
+The existing **0.2.1 Play release candidate** still displays ReadFlow and includes paper themes, offline reader fonts and Kokoro + Misaki speech. It is a historical test download, not the new monetized release. Physical Galaxy S25 Ultra acceptance, final policy/account details and a reviewed production-signed build remain required. See [status](docs/STATUS.md).
 
 ## Install on a phone
 
@@ -8,7 +10,7 @@ A native Android reading application built with Kotlin, Compose and local speech
 
 Tap **Aa** in the reader for **Warm Paperback**, **Crisp Paper** or **Evening Paper**, plus **OpenDyslexic, Atkinson Hyperlegible Next, Lexend, Literata, Source Serif 4 and Noto Sans**. Pick a size from **5–34** and **Save as my default**. Paper/font choices persist independently of size. Original PDF pages retain their source fonts and colours. Swipe right for next page, left for previous; text view now supports page swipes too.
 
-The Play build contains only the direct Kokoro + Misaki speech path and a clean Kokoro download manifest without eSpeak data. **0.2.1 fixes the upgrade error “Download kokoro first”:** starting playback or a speech benchmark automatically checks and migrates compatible existing Kokoro and word-alignment files, without downloading them again. Missing or damaged files still require setup in Voice models. Debug builds retain legacy speech comparisons and their license obligations. **Settings → Privacy and licenses** contains packaged notices. Production signing, the public privacy-policy URL and final licensing/Play review are handled by the [publishing agent prompt](docs/PLAY_STORE_HANDOFF.md).
+The Play build contains only the direct Kokoro + Misaki speech path and a clean Kokoro download manifest without eSpeak data. **0.2.1 fixes the upgrade error “Download kokoro first”:** starting playback or a speech benchmark automatically checks and migrates compatible existing Kokoro and word-alignment files, without downloading them again. Missing or damaged files still require setup in Voice models. Debug builds retain legacy speech comparisons and their license obligations. **Settings → Privacy and licenses** contains packaged notices. The [publishing agent prompt](docs/PLAY_STORE_HANDOFF.md) now assigns Console entry tasks to Muse Spark and identifies the technical/policy work that must be completed before upload.
 
 The entries below describe earlier prototype releases and their features; legacy speech choices described there are not offered in the Play variant.
 

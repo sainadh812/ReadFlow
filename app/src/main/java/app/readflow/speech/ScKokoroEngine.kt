@@ -160,7 +160,7 @@ class ScKokoroEngine(context: Context) : TtsEngine {
             val info = context.packageManager.getPackageInfo(PACKAGE_NAME, PackageManager.PackageInfoFlags.of(0))
             val enabled = info.applicationInfo?.enabled == true
             ScKokoroAvailability(enabled, info.versionName, if (enabled)
-                "SC Kokoro installed · open it to finish model setup and run its device test. Hardware backend is not exposed to ReadFlow."
+                "SC Kokoro installed · open it to finish model setup and run its device test. Hardware backend is not exposed to Read Assit."
             else "SC Kokoro is disabled in Android settings.")
         } catch (_: PackageManager.NameNotFoundException) {
             ScKokoroAvailability(false, null, "Install SC Kokoro separately, download its voices and run its device test first.")

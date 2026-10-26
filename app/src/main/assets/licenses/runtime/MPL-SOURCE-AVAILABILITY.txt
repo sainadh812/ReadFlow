@@ -1,0 +1,49 @@
+Read Assit / ReadFlow: MPL-2.0 components and source availability
+
+This index supplements, and does not replace, the original notices bundled with
+OkHttp and ONNX Runtime. The application has not modified their covered source.
+MPL-2.0 source rights remain available regardless of the application's own terms.
+The full license is supplied as MPL-2.0.txt in this directory.
+
+1. Public Suffix List included by OkHttp 4.12.0
+
+The unchanged, corresponding source snapshot is supplied offline in this directory:
+  okhttp-4.12.0-public_suffix_list.dat
+SHA-256:
+  e8b273972eb5a70e888bd3e7d7c5b9b04e600a59d69def9136a74d70ae6fcdd3
+Its original MPL-2.0 source header and comments are retained.
+
+Pinned upstream source:
+https://github.com/square/okhttp/blob/4984568367caaf359b82c452bd28b5e192824d1c/okhttp/src/test/resources/okhttp3/internal/publicsuffix/public_suffix_list.dat
+Raw source download:
+https://raw.githubusercontent.com/square/okhttp/4984568367caaf359b82c452bd28b5e192824d1c/okhttp/src/test/resources/okhttp3/internal/publicsuffix/public_suffix_list.dat
+Upstream generator:
+https://github.com/square/okhttp/blob/4984568367caaf359b82c452bd28b5e192824d1c/okhttp/src/test/java/okhttp3/internal/publicsuffix/PublicSuffixListGenerator.java
+
+The sorted rule/exception payload from this source was verified to match the
+publicsuffixes.gz resource in the ReadFlow 0.2.1 review bundle exactly.
+The separate generated dependency notices retain OkHttp's original PSL NOTICE.
+OkHttp's library code is Apache-2.0; this data component is MPL-2.0.
+
+2. Eigen included by ONNX Runtime 1.22.0
+
+Published upstream source dependency revision:
+  1d8b82b0740839c0de7f1242a3585e3390ff5f33
+Source tree, including COPYING.MPL2:
+https://gitlab.com/libeigen/eigen/-/tree/1d8b82b0740839c0de7f1242a3585e3390ff5f33
+Source archive:
+https://gitlab.com/libeigen/eigen/-/archive/1d8b82b0740839c0de7f1242a3585e3390ff5f33/eigen-1d8b82b0740839c0de7f1242a3585e3390ff5f33.zip
+ONNX Runtime's dependency declaration:
+https://github.com/microsoft/onnxruntime/blob/v1.22.0/cmake/deps.txt
+ONNX Runtime's Eigen integration:
+https://github.com/microsoft/onnxruntime/blob/v1.22.0/cmake/external/eigen.cmake
+
+The original Microsoft source-availability offer, contact instructions, complete
+Eigen MPL terms and other incorporated-component notices are preserved unchanged
+in licenses/onnxruntime-1.22-ThirdPartyNotices.txt. These source links supplement
+that offer. They identify the published source pin; they do not claim a
+reproducible-build comparison of Microsoft's supplied Android binary.
+
+Other SDKs may contain additional MPL-covered components. Their original vendor
+notices remain in licenses/dependencies; this index does not replace them or
+claim to identify every incorporated component in closed-source SDK binaries.

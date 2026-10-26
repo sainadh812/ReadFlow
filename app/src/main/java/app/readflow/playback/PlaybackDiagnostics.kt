@@ -283,7 +283,7 @@ class PlaybackDiagnostics(private val directory: File) {
                 }.ifBlank { "No process exits recorded by Android" }
         } catch (_: Exception) { "Android process-exit history unavailable" }
         buildString {
-            appendLine("ReadFlow playback diagnostics")
+            appendLine("Read Assit playback diagnostics")
             appendLine("App: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
             appendLine("Device: ${Build.MANUFACTURER} ${Build.MODEL}")
             appendLine("Android: ${Build.VERSION.RELEASE}, API ${Build.VERSION.SDK_INT}")

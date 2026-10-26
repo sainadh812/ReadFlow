@@ -8,7 +8,7 @@
     "onnxruntime_go": "1.22.0",
     "regexp2": "1.11.5"
   },
-  "note": "No fallback/espeak import. Original upstream THIRD_PARTY file retains stale ortenv and x/text version rows; actual versions and licenses are recorded here. Existing ReadFlow Sherpa backend still bundles eSpeak separately.",
+  "note": "No fallback/espeak import. Original upstream THIRD_PARTY file retains stale ortenv and x/text version rows; actual versions and licenses are recorded here. The historical ReadFlow debug/prototype Sherpa backend bundles eSpeak separately. The Play release variant excludes that backend and eSpeak model data.",
   "assetSha256": {
     "data/gb_silver.json": "48131e2d92ccc41655f4543e87e0f938e71463eb5a54be7f0693bb712ebb6bce",
     "data/unicode.json": "ca1a13fd72b43e833448e41e7a4ce109726cdfccdbb9ce2697780dda9b23023e",

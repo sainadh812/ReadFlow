@@ -1,4 +1,4 @@
-ReadFlow supplemental runtime dependency notices
+Read Assit supplemental runtime dependency notices
 
 These files supplement embedded notices under licenses/dependencies. The component
 inventory and exact Maven POMs preserve original upstream authorship and license
@@ -15,8 +15,14 @@ AndroidX DataStore relocates Protobuf Java Lite 4.28.2 (upstream tag v28.2),
 confirmed from the published binary RuntimeVersion constants and its upstream
 build configuration. Its exact upstream BSD license is protobuf-LICENSE.txt.
 
+Source review on 2026-10-26 checked the eight resolved Media3 1.6.1 modules and
+Graphics Path 1.0.1 against their matching source distributions. Their reviewed
+sources carry Apache-2.0 notices. See the repository's dated re-audit evidence.
+MPL-SOURCE-AVAILABILITY.txt supplies source information for the OkHttp Public
+Suffix List and ONNX Runtime's Eigen dependency; original source offers remain.
+
 Publication review still needed:
-- The POM inventory establishes declared or inherited top-level license types; it is not a full file-level audit. Confirm module-specific NOTICE files and incorporated third-party code, particularly AndroidX native graphics-path and Media3, from matching source distributions.
+- The POM inventory establishes declared or inherited top-level license types; it is not a full file-level audit. Reconcile newly changed modules and incorporated third-party code against the final artifact.
 - Google Play services / ML Kit terms, their SDK telemetry disclosures and binary third-party notices still require publisher review; they are not relicensed by these Apache notices.
 - Confirm final AAB includes all generated dependency notices plus these supplemental notices, model/font/Misaki notices and exact binary hashes. No legal clearance is asserted.
 
