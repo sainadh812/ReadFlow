@@ -42,6 +42,14 @@ Evidence: [release](evidence/play-store-0.2.5-configured/release-evidence.json),
 [dependency delta](evidence/play-store-0.2.5-configured/dependency-delta.json).
 Use this exact candidate for further checks; rebuild only if a change is needed.
 
+## Play upload handoff
+
+The owner reports Muse Spark uploaded the verified AAB as **0.2.5/code 21** to the
+new free Read Assist app (**4975999632955979701**) and saved an internal-test draft.
+No rollout was performed. Reuse that draft; code 21 is already uploaded. This is
+owner-reported Console evidence, separate from the independently verified CI build.
+See [current handoff](PLAY_STORE_HANDOFF.md#current-play-console-state--owner-reported).
+
 ## Firebase config secret
 
 The existing `READASSIT_FIREBASE_CONFIG_BASE64` secret is sufficient. Do not

@@ -6,6 +6,29 @@ The current source is **Read Assist 0.2.5, versionCode 21**, Android 15+ ARM64, 
 
 Public developer display name: **Oh My Pi**. Support/privacy contact: **xperimenting.ai@gmail.com**. Policy URL: **https://sainadh812.github.io/ReadFlow/privacy.html**. The **27 October 2026 policy revision is live and verified** with HTTP 200 and exact matching bytes; it covers optional Crashlytics and manual support email. Check [publication status](PRIVACY_PUBLICATION.md), [Data safety worksheet](PRIVACY_AND_STORE_DRAFT.md), [free distribution plan](FREE_DISTRIBUTION_PLAN.md) and [license re-audit](PLAY_REAUDIT_2026-10-26.md).
 
+## Current Play Console state — owner-reported
+
+The owner relayed Muse Spark's successful draft upload on 27 October 2026.
+This workspace has not independently accessed Play Console. The existing free
+Read Assist app is now **app.readflow**, Play app ID **4975999632955979701**.
+Version **0.2.5/code 21** was accepted and is already used; reuse its existing
+release/library entry instead of creating another app or uploading code 21 again.
+The release is **Draft**, Internal testing **Inactive**; nothing was rolled out.
+Google-managed Play App Signing is configured. Preserve it and automatic protection.
+
+[Existing draft](https://play.google.com/console/u/0/developers/9173169759090733636/app/4975999632955979701/tracks/4701509931226024011/releases/1/prepare) ·
+[Internal testing](https://play.google.com/console/u/0/developers/9173169759090733636/app/4975999632955979701/tracks/internal-testing).
+No upload errors were reported; release notes are missing. Play's attached native
+debug symbols do not establish a Firebase Crashlytics symbol upload.
+See the [reported Console evidence](evidence/play-store-0.2.5-configured/play-console-draft-reported.json).
+
+The next small task is release notes, the owner's explicitly confirmed Google Play
+tester account and internal-test availability. Do not infer the tester account
+from the public support address or put tester email addresses in this public repo.
+Keep public production release and its remaining policy, license and device gates
+separate from this limited test. Do not treat internal-test acceptance as policy
+approval or verified crash delivery.
+
 ## Prompt for the publishing agent
 
 Copy the quoted prompt into Muse Spark. This [current handoff](https://github.com/sainadh812/ReadFlow/blob/fix/reader-playback-and-pdf-space/docs/PLAY_STORE_HANDOFF.md) supersedes release attachments and earlier paid/free-Pro prompts.
@@ -22,7 +45,7 @@ Copy the quoted prompt into Muse Spark. This [current handoff](https://github.co
 >
 > Audit licensing again for the exact final signed AAB, including newly added Firebase/transport dependencies and native binaries. Use `docs/PLAY_REAUDIT_2026-10-26.md` as the baseline, not blanket clearance. Preserve notices, font licenses, MPL sources/offers and the eSpeak/Sherpa-free release. Check model/runtime inventories and hashes; do not change serialized model IDs casually. Record unresolved findings for technical review.
 >
-> Build with the owner's secure upload key and use Play App Signing, never the prototype/debug certificate. Use versionCode 21 only if unused in Console, otherwise choose a higher unused code. Keep configuration, keys and passwords outside Git/chat. Complete release tests/lint, notices/license inventory, 16 KB/native/font/bundle checks, current public-policy verification, Firebase symbol upload and real-device crash-delivery checks. Repeat final checks after configuration or signing changes. Prior unsigned AABs and prototype-signed APKs are review artifacts, not production uploads.
+> Build with the owner's secure upload key and use Play App Signing, never the prototype/debug certificate. Code 21 is now accepted in the existing Play draft. Reuse that bundle; any future rebuilt upload needs a higher unused code and fresh artifact checks. Keep configuration, keys and passwords outside Git/chat. Complete release tests/lint, notices/license inventory, 16 KB/native/font/bundle checks, current public-policy verification, Firebase symbol upload and real-device crash-delivery checks. Repeat final checks after configuration or signing changes. Prior unsigned AABs and prototype-signed APKs are review artifacts, not production uploads.
 >
 > Complete developer/account verification, approved application terms, audience/territories, content rating, app access, Data safety and media-playback foreground-service declarations from verified facts. Use real final-app screenshots and a service-use video. Test model setup, retained documents on updates, OCR/speech/offline reading, sustained playback, swipes, themes/fonts, notification controls, privacy/deletion, the email preview/no-email-app fallback, diagnostics consent and UPI cancellation/no-handler behavior on the S25 Ultra and a 16 KB environment. Complete applicable internal/closed testing. Do not publish with required checks or owner facts unresolved. Report final version, commit, AAB hash, certificate fingerprint, Firebase app/project identifiers (not secrets), delivery/symbol evidence and actual track/tester URL. Claim publication only when Console confirms it.
 
@@ -56,8 +79,8 @@ and [dependency delta](evidence/play-store-0.2.5-configured/dependency-delta.jso
 
 Continue in small tasks. Preserve the exact artifact and reports first. Native
 symbols are retained in the download but have not been uploaded; real device
-consent/crash delivery, final publishing/license review, version-code availability
-in Console and Play acceptance remain pending. No Play upload has been performed.
+consent/crash delivery, final publishing/license review, production readiness remain pending. The owner reports the draft upload was accepted;
+no internal rollout or production submission has been performed.
 The upload-signed APK cannot update a prototype signed with the old debug key;
 use a separate test installation and preserve the owner's reading data.
 
