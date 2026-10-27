@@ -150,6 +150,34 @@ class ReleaseInputsTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             verify.certificate_from_pem(b"unsigned bundle")
 
+    def write_firebase_build_outputs(self, *, variant="Release", configured=True, project=prepare.PROJECT_ID):
+        config = self.workspace / "app/build/generated/source/buildConfig/release/app/readflow/BuildConfig.java"
+        config.parent.mkdir(parents=True, exist_ok=True)
+        config.write_text(f"public static final boolean FIREBASE_CONFIGURED = {str(configured).lower()};")
+        resources = self.workspace / f"app/build/generated/res/process{variant}GoogleServices/values/values.xml"
+        resources.parent.mkdir(parents=True, exist_ok=True)
+        resources.write_text(
+            f'<resources><string name="google_app_id">{prepare.APP_ID}</string>'
+            f'<string name="project_id">{project}</string>'
+            '<string name="gcm_defaultSenderId">831366793321</string></resources>')
+
+    def test_current_plugin_generated_release_resources_are_verified(self):
+        self.write_firebase_build_outputs()
+        with patch.object(verify, "ROOT", self.workspace):
+            verify.verify_firebase_resources()
+
+    def test_firebase_verification_rejects_debug_only_wrong_project_and_unconfigured_build(self):
+        with patch.object(verify, "ROOT", self.workspace):
+            self.write_firebase_build_outputs(variant="Debug")
+            with self.assertRaisesRegex(verify.ReleaseVerificationError, "one generated release"):
+                verify.verify_firebase_resources()
+            self.write_firebase_build_outputs(project="unapproved-project")
+            with self.assertRaisesRegex(verify.ReleaseVerificationError, "approved Android application"):
+                verify.verify_firebase_resources()
+            self.write_firebase_build_outputs(configured=False)
+            with self.assertRaisesRegex(verify.ReleaseVerificationError, "without Firebase configuration"):
+                verify.verify_firebase_resources()
+
 
 if __name__ == "__main__":
     unittest.main()

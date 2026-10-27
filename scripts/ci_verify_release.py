@@ -64,7 +64,9 @@ def verify_firebase_resources():
     build_config = ROOT / "app/build/generated/source/buildConfig/release/app/readflow/BuildConfig.java"
     if not re.search(r"boolean\s+FIREBASE_CONFIGURED\s*=\s*true\s*;", build_config.read_text()):
         raise ReleaseVerificationError("The release was built without Firebase configuration.")
-    resources = list((ROOT / "app/build/generated/res/google-services/release").rglob("values.xml"))
+    # AGP assigns the output directory to the Google Services task through
+    # addGeneratedSourceDirectory; the pinned plugin uses this task-named path.
+    resources = list((ROOT / "app/build/generated/res/processReleaseGoogleServices").rglob("values.xml"))
     if len(resources) != 1:
         raise ReleaseVerificationError("Expected one generated release Firebase resource file.")
     values = {element.attrib.get("name"): element.text for element in ET.parse(resources[0]).getroot()}
