@@ -1,0 +1,52 @@
+{
+  "versionName": "0.2.5",
+  "versionCode": 21,
+  "applicationLabel": "Read Assist",
+  "date": "2026-10-27",
+  "sourceRef": "v0.2.5-play-candidate",
+  "command": "./gradlew :app:assembleRelease :app:bundleRelease :app:testReleaseUnitTest :app:lintRelease --console=plain",
+  "exitCode": 0,
+  "verifiedBuildDuration": "2m 11s",
+  "unitTests": {
+    "release": {
+      "tests": 363,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "releaseLint": {
+    "Error": 0,
+    "Fatal": 0,
+    "Warning": 34,
+    "Information": 0
+  },
+  "artifacts": {
+    "Read-Assist-0.2.5-play-unsigned.aab": {
+      "bytes": 72131047,
+      "sha256": "0e718bafdb27e25211e0dc0f903146f071c800fc69d4f0eaca2f9bbd86e92743"
+    },
+    "Read-Assist-0.2.5-play-preview.apk": {
+      "bytes": 130878823,
+      "sha256": "a650ecd24bbb2ab94beb8baf4ffc9942102d9f350810537c72171fd1ac20ec61"
+    }
+  },
+  "previewCertificateSha256": "f7313f98e9414c166f3fb2d2a9329ba1bb5dd9d76b068254522d20d1f8b109f9",
+  "previewSignatureVerified": true,
+  "previewZipalign16KiB": true,
+  "productionSigned": false,
+  "firebaseConfigured": false,
+  "firebaseDeliveryTested": false,
+  "deviceTestsPerformed": false,
+  "allExistingFeaturesFree": true,
+  "privacyPolicyUrl": "https://sainadh812.github.io/ReadFlow/privacy.html",
+  "privacyPolicyEvidence": "../privacy-policy/publication.json",
+  "packagedNoticeFilesCompared": 143,
+  "syntheticFirebaseConfigAbsentFromArtifacts": true,
+  "limitations": [
+    "Muse Spark must create the owner-approved free Spark project, register app.readflow and add app/google-services.json before configured publication builds.",
+    "Automatic reporting is unavailable in these unconfigured review artifacts; manual support email and local logs are available.",
+    "Real phone consent/network/report-delivery/native-symbol checks and final signed-artifact/license/Play review remain pending.",
+    "Preview retains the prototype certificate; AAB is unsigned. UPI recipient ownership/payment acceptance remain unverified."
+  ]
+}

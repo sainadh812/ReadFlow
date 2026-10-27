@@ -1,6 +1,6 @@
 Privacy information
 
-Read Assist reads documents you choose on this device. Imported text, images, PDF pages, generated speech, reading progress and settings are stored in app storage. Speech synthesis and document recognition run locally. Read Assist has no advertising SDK or app-operated analytics service.
+Read Assist reads documents you choose on this device. Imported text, images, PDF pages, generated speech, reading progress and settings are stored in app storage. Speech synthesis and document recognition run locally. Read Assist has no advertising SDK or Google Analytics SDK.
 
 Network access
 Downloading voice, alignment and optional OCR models contacts the model hosts named in their download information, including Hugging Face and GitHub. These hosts receive connection information such as your IP address. Importing a webpage contacts the website you choose. Your documents are not sent to these hosts for recognition or speech generation.
@@ -8,8 +8,17 @@ Downloading voice, alignment and optional OCR models contacts the model hosts na
 Google ML Kit
 The bundled ML Kit SDK can send diagnostics and usage analytics to Google, including device and application information, installation identifiers, performance measurements, configuration, input/output sizes and error codes. Local document processing does not mean that the app and its SDKs never use the internet. Google's disclosure: https://developers.google.com/ml-kit/android-data-disclosure
 
-Error reports and benchmarks
-Error reports can include private document excerpts, source identifiers and generated speech. Reports and benchmark results are stored locally. Exporting or sharing sends the information you choose to your selected destination. GitHub reports are uploaded only after you configure a repository and confirm sending. Review the report first. Public-repository uploads use the app's reduced metadata mode. GitHub credentials are encrypted using Android Keystore and can be removed in GitHub settings. Already shared copies remain with their recipients or hosting service.
+Optional automatic crash reporting
+Configured builds offer Firebase Crashlytics diagnostics, off by default. Firebase initializes at startup only when the build is configured and you previously enabled reporting. Builds without configuration cannot send these reports. Enabled reporting sends crashes, freezes, device/app information, application state, memory/performance data and installation/session identifiers to Google Firebase for reliability investigation. No account identifier is set and Google Analytics is not included.
+
+Our handled-error summaries exclude document text, names, source URLs, audio and raw error messages. We do not attach documents or audio to automatic reports. Automatic crash traces and native dumps can contain incidental runtime information and cannot be guaranteed free of private content.
+
+Reporting changes take full effect on the next app launch. Turning it off immediately stops our handled-error submissions, but queued work may finish and SDK handlers remain until the process ends. We request deletion of unsent reports; deletion of every pending report is not guaranteed. Stored reports may be sent if reporting is enabled again. Disabling reporting or uninstalling does not erase reports already received by Firebase. Google keeps Crashlytics traces, extracted native data and associated identifiers for 90 days before starting removal; native minidumps are temporary processing data. Related Firebase services have their own retention rules. Details: https://firebase.google.com/support/privacy
+
+Local reports and support
+Local issue reports can include private document excerpts, source identifiers and generated speech; they and benchmark results stay on your device until you export/share them. Review exports before sharing. “Report a problem” previews an email draft to xperimenting.ai@gmail.com. Including reduced technical details is a separate choice, off by default; they exclude document text, names, URLs, audio and raw messages. Your own description is included as written. This flow attaches no files. Opening email or copying the preview does not send it; you decide whether to send through your email provider. Production builds do not offer GitHub upload or token entry; older prototypes/developer debug builds may retain that confirmed-upload workflow.
+
+Developer-received support correspondence and reports are deleted within 90 days after resolution. For privacy or deletion requests, contact xperimenting.ai@gmail.com. Already shared copies remain with their recipients or hosting service. Firebase retention is separate from support-email retention.
 
 Your controls
 Delete a document from the library to remove its local content, associated audio and issue reports. Delete other reports in Issue logs and models in their download screens. Clear app storage or uninstall Read Assist to erase its remaining local data. Android backup of app data is disabled. Files you exported outside the app must be deleted separately. No Read Assist account is required.

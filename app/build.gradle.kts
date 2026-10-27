@@ -1,4 +1,6 @@
 import java.net.URI
+import groovy.json.JsonSlurper
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
 
 plugins {
     id("com.android.application")
@@ -7,6 +9,39 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
 }
+// The owner supplies the Android client config. It is not a credential, but keeping it
+// local prevents review builds from sending reports to somebody else's Firebase project.
+val firebaseConfigFile = file("google-services.json")
+require(fileTree("src") { include("**/google-services.json") }.isEmpty) {
+    "Use app/google-services.json only; source-set overrides could change the validated Firebase destination."
+}
+val firebaseConfigured = if (!firebaseConfigFile.isFile) false else runCatching {
+    val config = JsonSlurper().parse(firebaseConfigFile) as? Map<*, *> ?: return@runCatching false
+    val project = config["project_info"] as? Map<*, *> ?: return@runCatching false
+    val projectNumber = project["project_number"] as? String ?: return@runCatching false
+    val projectId = project["project_id"] as? String ?: return@runCatching false
+    val client = (config["client"] as? List<*>)?.mapNotNull { it as? Map<*, *> }?.firstOrNull {
+        val info = it["client_info"] as? Map<*, *>
+        val androidInfo = info?.get("android_client_info") as? Map<*, *>
+        androidInfo?.get("package_name") == "app.readflow"
+    } ?: return@runCatching false
+    val info = client["client_info"] as? Map<*, *> ?: return@runCatching false
+    val appId = info["mobilesdk_app_id"] as? String ?: return@runCatching false
+    val apiKeys = (client["api_key"] as? List<*>)?.mapNotNull { (it as? Map<*, *>)?.get("current_key") as? String }.orEmpty()
+    projectNumber.matches(Regex("[0-9]+")) && projectId.matches(Regex("[a-z][a-z0-9-]{4,28}[a-z0-9]")) &&
+        appId.matches(Regex("1:${Regex.escape(projectNumber)}:android:[a-fA-F0-9]+")) &&
+        apiKeys.any { it.matches(Regex("AIza[0-9A-Za-z_-]{35}")) }
+}.getOrDefault(false)
+require(!firebaseConfigFile.exists() || firebaseConfigured) {
+    "app/google-services.json is invalid or does not contain a complete app.readflow Android client. Download it from the owner's Firebase project."
+}
+if (firebaseConfigured) {
+    apply(plugin = "com.google.gms.google-services")
+    apply(plugin = "com.google.firebase.crashlytics")
+} else {
+    logger.lifecycle("Firebase is unconfigured: automatic crash reporting is unavailable; local and email diagnostics still work.")
+}
+val playPublication = providers.gradleProperty("playPublication").orNull == "true"
 val misakiAbi = if (providers.gradleProperty("emulator").orNull == "true") "x86_64" else "arm64-v8a"
 val prepareMisaki by tasks.registering(Exec::class) {
     workingDir(rootProject.projectDir)
@@ -33,7 +68,10 @@ require(privacyPolicyUrl.isEmpty() || (parsedPrivacyUrl?.scheme == "https" && !p
 require(uploadValues.values.all { it.isNullOrBlank() } || uploadValues.values.all { !it.isNullOrBlank() }) {
     "Set all four READFLOW_UPLOAD_* variables, or leave all unset to build an unsigned review bundle."
 }
-if (providers.gradleProperty("playPublication").orNull == "true") {
+if (playPublication) {
+    require(firebaseConfigured) {
+        "Publication builds need the owner's valid app/google-services.json for app.readflow. See docs/PLAY_STORE_HANDOFF.md."
+    }
     require(uploadValues.values.all { !it.isNullOrBlank() } && privacyPolicyUrl.isNotEmpty()) {
         "Publication builds need all four READFLOW_UPLOAD_* variables and READFLOW_PRIVACY_POLICY_URL. See docs/PLAY_STORE_HANDOFF.md."
     }
@@ -65,9 +103,10 @@ android {
         applicationId = "app.readflow"
         minSdk = 35
         targetSdk = 36
-        versionCode = 20
-        versionName = "0.2.4"
+        versionCode = 21
+        versionName = "0.2.5"
         buildConfigField("String", "PRIVACY_POLICY_URL", "\"$privacyPolicyUrl\"")
+        buildConfigField("boolean", "FIREBASE_CONFIGURED", firebaseConfigured.toString())
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild { cmake { arguments += listOf("-DANDROID_STL=c++_static", "-DCMAKE_BUILD_TYPE=Release") } }
         ndk { abiFilters += if (providers.gradleProperty("emulator").orNull == "true") "x86_64" else "arm64-v8a" }
@@ -81,12 +120,28 @@ android {
         }
     }
     buildTypes {
-        getByName("debug") { versionNameSuffix = "-prototype" }
+        getByName("debug") {
+            versionNameSuffix = "-prototype"
+            if (firebaseConfigured) configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = false
+                nativeSymbolUploadEnabled = false
+            }
+        }
         getByName("release") {
             isDebuggable = false
             // Keep the validated JNI names and reflection paths intact for the first store candidate.
             isMinifyEnabled = false
             signingConfig = signingConfigs.findByName("upload")
+            if (firebaseConfigured) configure<CrashlyticsExtension> {
+                // Ordinary review builds do not upload mapping files. Native symbols
+                // require an explicit :app:uploadCrashlyticsSymbolFileRelease command.
+                mappingFileUploadEnabled = playPublication
+                nativeSymbolUploadEnabled = true
+                // Includes the matching unstripped Misaki and TeleOCR libraries.
+                // Pre-stripped vendor libraries cannot yield full source-level frames.
+                unstrippedNativeLibsDir = layout.buildDirectory.dir(
+                    "intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib").get().asFile
+            }
         }
     }
     buildFeatures { compose = true; buildConfig = true }
@@ -104,7 +159,14 @@ android {
     lint { abortOnError = true }
 }
 ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+if (firebaseConfigured) tasks.matching { it.name == "generateCrashlyticsSymbolFileRelease" ||
+    it.name == "uploadCrashlyticsSymbolFileRelease" }.configureEach {
+    dependsOn("mergeReleaseNativeLibs")
+}
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:35.1.0"))
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-crashlytics-ndk")
     implementation(platform("androidx.compose:compose-bom:2025.04.01"))
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")

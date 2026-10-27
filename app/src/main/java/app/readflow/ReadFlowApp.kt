@@ -28,7 +28,9 @@ class ReadFlowApp : Application() {
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     val cache by lazy { AudioCache(this, database) }
     val diagnostics by lazy { PlaybackDiagnostics(File(noBackupFilesDir, "diagnostics")) }
-    val issues by lazy { IssueLogs(File(noBackupFilesDir, "issues"), ::issueEnvironment) }
+    val crashReporting by lazy { CrashReporting(this, appScope) }
+    val issues by lazy { IssueLogs(File(noBackupFilesDir, "issues"), ::issueEnvironment,
+        onReport = crashReporting::record) }
     val githubSettings by lazy { GitHubSettings(this) }
     val githubDiagnostics by lazy { GitHubDiagnostics(GitHubRestApi()) }
     private val playbackInstance: Lazy<ReadingCoordinator> = lazy { ReadingCoordinator(documents, models, cache, preferences, getSystemService(PowerManager::class.java), diagnostics, issues,
@@ -41,10 +43,12 @@ class ReadFlowApp : Application() {
         execute = { options, update -> BenchmarkRunner(this, models, ocrModels, teleOcr, paddleOcr).run(options, update) }) }
     override fun onCreate() {
         super.onCreate()
+        // Installs SDK handlers only after consent, before our local-first/sanitizing handler.
+        crashReporting.start()
         val previous = Thread.getDefaultUncaughtExceptionHandler()
         Thread.setDefaultUncaughtExceptionHandler { thread, error ->
             try { issues.recordCrash(error) } catch (_: Throwable) { }
-            previous?.uncaughtException(thread, error)
+            previous?.uncaughtException(thread, crashReporting.throwableForUncaughtHandler(error))
         }
         CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
             issues.refresh()

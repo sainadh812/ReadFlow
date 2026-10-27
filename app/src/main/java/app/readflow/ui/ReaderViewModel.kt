@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import app.readflow.BuildConfig
 import app.readflow.ReadFlowApp
 import app.readflow.core.*
 import app.readflow.data.*
@@ -45,9 +46,10 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     val importing = MutableStateFlow(false)
     val refreshingText = MutableStateFlow(false)
     val issueReports = app.issues.reports
+    val crashReportingState = app.crashReporting.state
     val selectedIssue = MutableStateFlow<IssueReport?>(null)
     var pendingIssueExport: String? = null
-    val githubConfiguration = app.githubSettings.configuration
+    val githubConfiguration by lazy { app.githubSettings.configuration }
     val sendingIssues = MutableStateFlow(false)
     val githubIssueUrl = MutableStateFlow<String?>(null)
     private val jobs = mutableMapOf<String, Job>()
@@ -169,6 +171,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         viewModelScope.launch { app.issues.record(stage, error, input) }
     }
     fun showIssues() { screen.value = "issues"; viewModelScope.launch { app.issues.refresh() } }
+    fun setCrashReportingEnabled(enabled: Boolean) { app.crashReporting.setEnabled(enabled) }
     fun readIssue(id: String) { viewModelScope.launch { selectedIssue.value = app.issues.read(id) } }
     fun deleteIssue(id: String) { viewModelScope.launch {
         try { app.issues.delete(id); if (selectedIssue.value?.id == id) selectedIssue.value = null }
@@ -188,12 +191,14 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         catch (error: Exception) { message.value = error.message ?: "Could not export issue log" }
     } }
     fun saveGitHub(destination: GitHubDestination, token: String, onSaved: () -> Unit) { viewModelScope.launch {
+        if (!BuildConfig.DEBUG) return@launch
         try { check(!sendingIssues.value); app.githubSettings.save(destination, token); onSaved(); message.value = "GitHub settings saved" }
         catch (cancel: CancellationException) { throw cancel }
         catch (error: Exception) { message.value = error.message ?: "GitHub settings could not be saved" }
     } }
     fun forgetGitHubToken() { viewModelScope.launch { app.githubSettings.forgetToken(); message.value = "GitHub token removed from this phone" } }
     fun sendIssues() {
+        if (!BuildConfig.DEBUG) return
         if (sendingIssues.value) return
         sendingIssues.value = true
         viewModelScope.launch {

@@ -1,0 +1,19 @@
+{
+  "unstripped": {
+    "gnuBuildId": "7d3add057967b7ba092ed3cace96742c7185f2d9",
+    "symbolTable": true,
+    "dwarf": true,
+    "bytes": 30815880
+  },
+  "packaged": {
+    "gnuBuildId": "7d3add057967b7ba092ed3cace96742c7185f2d9",
+    "symbolTable": false,
+    "dwarf": false,
+    "bytes": 29227048
+  },
+  "crashlyticsSymbolFile": {
+    "bytes": 3795108,
+    "module": "MODULE Linux arm64 05DD3A7D6779BAB7092ED3CACE96742C0 libreadflow_misaki.so",
+    "uploaded": false
+  }
+}

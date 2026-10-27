@@ -47,6 +47,13 @@ def main():
     assert application.attrib.get(android + "debuggable", "false") == "false"
     assert int(sdk.attrib[android + "targetSdkVersion"]) >= 36
     assert manifest.find("queries") is None, "Unexpected external TTS package queries"
+    providers = [item.attrib.get(android + "name", "") for item in application.findall("provider")]
+    assert "com.google.firebase.provider.FirebaseInitProvider" not in providers, "Firebase must not initialize before consent"
+    metadata = {item.attrib.get(android + "name"): item.attrib.get(android + "value")
+                for item in application.findall("meta-data")}
+    assert metadata.get("firebase_crashlytics_collection_enabled") == "false"
+    assert metadata.get("firebase_data_collection_default_enabled") == "false"
+    assert metadata.get("firebase_analytics_collection_deactivated") == "true"
     config = bundletool("dump", "config", f"--bundle={args.aab}")
     assert "PAGE_ALIGNMENT_16K" in config, "Bundle must request 16 KB native APK alignment"
     with zipfile.ZipFile(args.aab) as archive:
@@ -73,6 +80,9 @@ def main():
         assert "base/assets/licenses/dependencies/resolved-runtime.json" in names
         dependencies = json.loads(archive.read("base/assets/licenses/dependencies/resolved-runtime.json"))
         assert not any("sherpa" in item["coordinate"].lower() for item in dependencies)
+        assert not any(item["coordinate"].startswith(("com.google.firebase:firebase-analytics:",
+            "com.google.firebase:firebase-perf:", "com.google.android.gms:play-services-measurement:"))
+            for item in dependencies), "Unexpected Analytics/performance collection dependency"
         fonts = [name for name in names if name.startswith("base/res/font/") and name.endswith((".ttf", ".otf"))]
         assert len(fonts) >= 6, "Reader font resources missing"
         font_notices = [name for name in names if name.startswith("base/assets/licenses/fonts/")]
@@ -86,6 +96,8 @@ def main():
         "nativeLibraries": native_report, "fontResources": fonts, "fontNoticeFiles": len(font_notices),
         "speechModelIds": [pack["id"] for pack in packs], "sherpaNativeAndJniClassesAbsent": True,
         "legacyEspeakModelDataAbsent": True, "runtimeDependencies": len(dependencies),
+        "firebaseAutoInitializationDisabled": True, "crashReportingDefaultOff": True,
+        "firebaseAnalyticsNotBundled": True,
         "licenseAuditStillRequired": True, "deviceTestsPerformed": False,
     }
     args.report.parent.mkdir(parents=True, exist_ok=True)

@@ -1,6 +1,10 @@
 package app.readflow.ui
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,8 +14,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.semantics.contentDescription
@@ -107,9 +113,14 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable internal fun Settings(vm: ReaderViewModel, prefs: Preferences) {
+    val context = LocalContext.current
     val issues by vm.issueReports.collectAsStateWithLifecycle()
+    val crashReporting by vm.crashReportingState.collectAsStateWithLifecycle()
+    var restartFeedback by remember(crashReporting.enabled, crashReporting.restartRequired) { mutableStateOf<String?>(null) }
     var appearance by remember { mutableStateOf(false) }
     var support by remember { mutableStateOf(false) }
+    var reportProblem by rememberSaveable { mutableStateOf(false) }
+    var crashReportingConsent by rememberSaveable { mutableStateOf(false) }
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text("Make it yours") }, navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.screen.value = if (vm.playback.value.document == null) "library" else "reader" } })
         LazyColumn(contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -187,6 +198,39 @@ import java.util.Locale
             }
             item {
                 SettingsCard("Help and diagnostics", Icons.Default.HelpOutline) {
+                    SettingsSwitch("Automatic crash reports", if (crashReporting.configured)
+                        "Optional: send technical device and error data to Google Firebase to help fix failures. Off by default."
+                        else "Automatic crash reporting is unavailable in this build.",
+                        crashReporting.enabled, enabled = crashReporting.configured) { enabled ->
+                        if (enabled) crashReportingConsent = true else vm.setCrashReportingEnabled(false)
+                    }
+                    if (crashReporting.restartRequired) {
+                        Text(if (crashReporting.enabled) "Restart Read Assist to start automatic reporting."
+                            else "Restart Read Assist to finish turning off crash reporting. Reports already being sent may still finish.",
+                            style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("Use Android App info → Force stop, then reopen Read Assist. This stops current playback.",
+                            style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        TextButton(onClick = {
+                            restartFeedback = null
+                            try {
+                                context.startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    Uri.fromParts("package", context.packageName, null)))
+                            } catch (_: ActivityNotFoundException) {
+                                restartFeedback = "App info could not be opened. Go to Android Settings → Apps → Read Assist → Force stop, then reopen the app."
+                            } catch (_: SecurityException) {
+                                restartFeedback = "Android blocked opening App info. Go to Android Settings → Apps → Read Assist → Force stop, then reopen the app."
+                            }
+                        }) {
+                            Icon(Icons.Default.Settings, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Open app info")
+                        }
+                        restartFeedback?.let { Text(it, style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    }
+                    crashReporting.message?.let { Text(it, style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    TextButton(onClick = { reportProblem = true }) {
+                        Icon(Icons.Default.Feedback, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Report a problem")
+                    }
                     TextButton(onClick = vm::showIssues) { Icon(Icons.Default.BugReport, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Issue logs (${issues.size})") }
                     TextButton(onClick = vm::copyPlaybackDiagnostics) {
                         Icon(Icons.Default.ContentCopy, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Copy playback diagnostics")
@@ -201,6 +245,20 @@ import java.util.Locale
     }
     if (appearance) ReaderTheme(prefs.readerTheme) { ReaderAppearanceSheet(prefs, vm::update) { appearance = false } }
     if (support) SupportTipDialog { support = false }
+    if (reportProblem) ReportProblemDialog(vm, onDismiss = { reportProblem = false })
+    if (crashReportingConsent) AlertDialog(
+        onDismissRequest = { crashReportingConsent = false },
+        title = { Text("Help improve Read Assist?") },
+        text = { Column(Modifier.heightIn(max = 420.dp).verticalScroll(androidx.compose.foundation.rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text("Allow automatic crash and failure reports to Google Firebase Crashlytics. Reports include device/app details, installation identifiers, failure stages and technical stack traces.")
+            Text("Read Assist does not attach your documents, reading text, filenames or audio. Native crash reports can contain low-level memory/register data that the crash SDK captures; we cannot guarantee that it never contains fragments of data being processed.")
+            Text("Reporting is optional and all features work without it. You can turn it off here. Reports already sent are not removed by turning this switch off.")
+            Text("Previously saved crash reports may be sent when reporting is enabled again.")
+        } },
+        confirmButton = { TextButton(onClick = { crashReportingConsent = false; vm.setCrashReportingEnabled(true) }) { Text("Allow reports") } },
+        dismissButton = { TextButton(onClick = { crashReportingConsent = false }) { Text("Not now") } },
+    )
 }
 
 @Composable internal fun SettingsCard(title: String, icon: ImageVector, content: @Composable ColumnScope.() -> Unit) {

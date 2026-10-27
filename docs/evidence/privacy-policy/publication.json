@@ -1,5 +1,5 @@
 {
-  "verifiedAtUtc": "2026-10-26T17:32:20.013353+00:00",
+  "verifiedAtUtc": "2026-10-27T12:29:59.654656+00:00",
   "url": "https://sainadh812.github.io/ReadFlow/privacy.html",
   "finalUrl": "https://sainadh812.github.io/ReadFlow/privacy.html",
   "httpStatus": 200,
@@ -7,18 +7,47 @@
   "authenticatedRequest": false,
   "matchesLocalSource": true,
   "source": "site/privacy.html",
-  "sha256": "48483d2dc25a971765d77c553cfeb6b242c47c7bb6851dfd4a28bee2a1fbc1d1",
-  "effectiveDate": "2026-10-26",
+  "sha256": "cf51f940459aa7ceb246790508aefe5637c5a7c09f6ecff65a5edd94de01f32f",
+  "effectiveDate": "2026-10-27",
   "developerDisplayName": "Oh My Pi",
   "privacyAndSupportContact": "xperimenting.ai@gmail.com",
   "pagesBranch": "gh-pages",
-  "pagesCommit": "2e3aa9c1092dc20d1bc72adc1b45d0aa8b6e9a93",
+  "pagesCommit": "b4aea432664121f5bf82504cd165738f57e982c0",
   "pagesBuildStatus": "built",
   "httpsEnforced": true,
   "physicalDeviceCheck": false,
   "notes": [
     "Owner supplied developer/contact and approved report/payment retention.",
     "No personal profile email is included in the public policy.",
-    "Script checks do not certify legal compliance or Play approval."
-  ]
+    "Script checks do not certify legal compliance or Play approval.",
+    "The 27 October revision adds optional Crashlytics, reporting controls/retention and manual support email.",
+    "Firebase project setup, configured-build delivery testing, native symbol upload and Play publication remain pending."
+  ],
+  "pagesBuildId": 1318678057,
+  "pagesBuildCreatedAtUtc": "2026-10-27T12:27:45Z",
+  "pagesBuildUpdatedAtUtc": "2026-10-27T12:28:17Z",
+  "previousPublication": {
+    "verifiedAtUtc": "2026-10-26T17:32:20.013353+00:00",
+    "url": "https://sainadh812.github.io/ReadFlow/privacy.html",
+    "finalUrl": "https://sainadh812.github.io/ReadFlow/privacy.html",
+    "httpStatus": 200,
+    "contentType": "text/html",
+    "authenticatedRequest": false,
+    "matchesLocalSource": true,
+    "source": "site/privacy.html",
+    "sha256": "48483d2dc25a971765d77c553cfeb6b242c47c7bb6851dfd4a28bee2a1fbc1d1",
+    "effectiveDate": "2026-10-26",
+    "developerDisplayName": "Oh My Pi",
+    "privacyAndSupportContact": "xperimenting.ai@gmail.com",
+    "pagesBranch": "gh-pages",
+    "pagesCommit": "2e3aa9c1092dc20d1bc72adc1b45d0aa8b6e9a93",
+    "pagesBuildStatus": "built",
+    "httpsEnforced": true,
+    "physicalDeviceCheck": false,
+    "notes": [
+      "Owner supplied developer/contact and approved report/payment retention.",
+      "No personal profile email is included in the public policy.",
+      "Script checks do not certify legal compliance or Play approval."
+    ]
+  }
 }

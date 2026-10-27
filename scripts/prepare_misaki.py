@@ -13,6 +13,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import re
 import shutil
 import subprocess
 import tarfile
@@ -25,6 +26,7 @@ GO_ARCHIVE_SHA256 = "1153d3d50e0ac764b447adfe05c2bcf08e889d42a02e0fe0259bd47f673
 NDK_VERSION = "27.2.12479018"
 OUTPUT_ROOT = ROOT / "app/build/generated/misaki/jniLibs"
 PROVENANCE = ROOT / "app/src/main/assets/licenses/misaki/readflow-provenance.json"
+LINKER_FLAGS = "-B gobuildid"
 
 
 def run(*command: str | Path, env=None) -> str:
@@ -68,6 +70,16 @@ def sdk_root() -> Path:
     raise SystemExit("Set ANDROID_SDK_ROOT or sdk.dir in local.properties.")
 
 
+def native_symbols(binary: Path, readelf: Path) -> dict:
+    """Reject an Android artifact that cannot supply matching native symbols."""
+    notes = run(readelf, "-n", binary)
+    sections = run(readelf, "-SW", binary)
+    build_id = re.search(r"Build ID:\s*([0-9a-fA-F]+)", notes)
+    if build_id is None or ".symtab" not in sections or ".debug_info" not in sections:
+        raise SystemExit(f"Misaki must retain a GNU build ID, symbol table and DWARF: {binary}")
+    return {"gnuBuildId": build_id.group(1).lower(), "symbolTable": True, "dwarf": True}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--host", action="store_true", help="Build a host C ABI library for smoke tests")
@@ -76,7 +88,8 @@ def main() -> None:
     go = go_binary()
     env = dict(os.environ, CGO_ENABLED="1", GOTOOLCHAIN="local", GOWORK="off")
     output = ROOT / ".deps/libreadflow_misaki_host.so" if args.host else OUTPUT_ROOT / args.abi / "libreadflow_misaki.so"
-    fingerprint = {"go": GO_VERSION, "host": args.host, "abi": args.abi}
+    fingerprint = {"go": GO_VERSION, "host": args.host, "abi": args.abi, "linkerFlags": LINKER_FLAGS}
+    readelf = None
     if not args.host:
         ndk = sdk_root() / "ndk" / NDK_VERSION
         prebuilt = ndk / "toolchains/llvm/prebuilt"
@@ -84,6 +97,9 @@ def main() -> None:
         candidates = sorted(prebuilt.glob(f"*/bin/{compiler}-linux-android35-clang"))
         if len(candidates) != 1:
             raise SystemExit(f"Install NDK {NDK_VERSION}; Android {args.abi} compiler missing at {prebuilt}")
+        readelf = candidates[0].with_name("llvm-readelf")
+        if not readelf.is_file():
+            raise SystemExit(f"The pinned NDK is missing llvm-readelf: {readelf}")
         env.update(GOOS="android", GOARCH=architecture, CC=str(candidates[0]),
                    CGO_LDFLAGS="-Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384")
         fingerprint["ndk"] = NDK_VERSION
@@ -97,6 +113,8 @@ def main() -> None:
     if output.exists() and stamp.exists():
         cached = json.loads(stamp.read_text())
         if cached.get("inputs") == fingerprint and cached.get("sha256") == hashlib.sha256(output.read_bytes()).hexdigest():
+            if readelf is not None and cached.get("symbols") != native_symbols(output, readelf):
+                raise SystemExit("Misaki symbol metadata differs from its verified build stamp; rebuild the native artifact.")
             print(f"Misaki native library already verified: {output.relative_to(ROOT)}")
             return
     run(go, "mod", "verify", env=env)
@@ -113,11 +131,16 @@ def main() -> None:
             raise SystemExit(f"The embedded Misaki asset differs from its retained provenance: {relative}")
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_name(output.stem + ".pending.so")
+    # Retain one unstripped build as Crashlytics' symbol source. AGP strips its
+    # packaged copy later, preserving the GNU ID that matches this original.
+    # Do not restore -s/-w or clear -buildid: they destroy that correspondence.
     run(go, "build", "-mod=readonly", "-trimpath", "-buildmode=c-shared",
-        "-ldflags=-s -w -buildid=", "-o", temporary, ".", env=env)
+        f"-ldflags={LINKER_FLAGS}", "-o", temporary, ".", env=env)
+    symbols = native_symbols(temporary, readelf) if readelf is not None else None
     temporary.replace(output)
     temporary.with_suffix(".h").unlink(missing_ok=True)
-    stamp.write_text(json.dumps({"inputs": fingerprint, "sha256": hashlib.sha256(output.read_bytes()).hexdigest()}, indent=2) + "\n")
+    stamp.write_text(json.dumps({"inputs": fingerprint, "sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
+                                 "symbols": symbols}, indent=2) + "\n")
     print(f"Misaki native library built: {output.relative_to(ROOT)} ({output.stat().st_size:,} bytes)")
 
 

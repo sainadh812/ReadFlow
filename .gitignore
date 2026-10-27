@@ -15,3 +15,7 @@ dist/
 *.keystore
 keystore.properties
 signing.properties
+# Firebase client configuration is supplied by the owner; never commit account credentials.
+google-services.json
+**/google-services.json
+*-firebase-adminsdk-*.json

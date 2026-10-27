@@ -30,16 +30,18 @@ import kotlinx.serialization.json.Json
     val normalization: NormalizationFailure? = null,
     val audio: IssueAudio = IssueAudio(false, omission = "No generated audio available"),
     val truncatedFields: List<String> = emptyList(), val dedupeKey: String? = null,
-    val privacy: String = "Contains private input excerpts, source identifiers and possibly generated speech. Review before sharing. No automatic upload. Original PDF/image files and full webpages are not attached.",
+    val privacy: String = "Contains private input excerpts, source identifiers and possibly generated speech. Review before sharing. This full report is not uploaded automatically; optional crash reporting uses a separate technical summary. Original PDF/image files and full webpages are not attached.",
 )
 data class IssueSummary(val id: String, val timestampMs: Long, val stage: String, val message: String, val audio: Boolean)
 
 /** Error-only, private, bounded storage. Never invoked as a successful-operation trace. */
 class IssueLogs(private val root: File, private val environment: () -> Map<String, String>,
     private val maxReports: Int = 20, private val maxBytes: Long = 24L * 1024 * 1024,
+    private val onReport: (IssueReport) -> Unit = {},
 ) {
     companion object { const val TEXT_LIMIT = 8192; const val AUDIO_LIMIT = 4L * 1024 * 1024 }
     private val lock = Any()
+    private val notifying = ThreadLocal<Boolean>()
     private val json = Json { prettyPrint = true; encodeDefaults = true; ignoreUnknownKeys = true }
     private val mutable = MutableStateFlow<List<IssueSummary>>(emptyList())
     val reports = mutable.asStateFlow()
@@ -56,7 +58,9 @@ class IssueLogs(private val root: File, private val environment: () -> Map<Strin
     }
     fun recordCrash(error: Throwable) { if (error !is CancellationException) save("UNCAUGHT_JAVA", error, activeInput, emptyList(), null, null) }
 
-    private fun save(stage: String, error: Throwable?, input: IssueInput, warnings: List<String>, audio: File?, dedupeKey: String?): String? = synchronized(lock) {
+    private fun save(stage: String, error: Throwable?, input: IssueInput, warnings: List<String>, audio: File?, dedupeKey: String?): String? {
+        var persisted: IssueReport? = null
+        val id = synchronized(lock) {
         var partial: File? = null
         try {
             if (dedupeKey != null) readAll().firstOrNull { it.dedupeKey == dedupeKey }?.let { return@synchronized it.id }
@@ -114,12 +118,21 @@ class IssueLogs(private val root: File, private val environment: () -> Map<Strin
             check(directory.renameTo(File(root, id))); partial = null
             prune(); refreshLocked()
             mutableStorageFailure.value = null
+            persisted = report
             id
         } catch (_: Exception) {
             partial?.deleteRecursively()
             mutableStorageFailure.value = "An issue log could not be saved. Check available storage."
             null
         }
+        }
+        // The local copy is durable first. No network/reporter failure may hide it or become a new report.
+        if (persisted != null && notifying.get() != true) {
+            notifying.set(true)
+            try { onReport(checkNotNull(persisted)) } catch (_: Throwable) { /* Reporting is optional. */ }
+            finally { notifying.remove() }
+        }
+        return id
     }
     suspend fun read(id: String): IssueReport? = withContext(Dispatchers.IO) { synchronized(lock) { readReport(id) } }
     suspend fun snapshot(): List<IssueReport> = withContext(Dispatchers.IO) { synchronized(lock) { readAll().sortedBy { it.timestampMs } } }
