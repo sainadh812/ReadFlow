@@ -16,16 +16,23 @@ It does not publish to Play Console.
 - Public upload certificate: [PEM](evidence/play-store-upload/upload-certificate.pem).
   SHA-256: `b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2`.
   This is the upload certificate; Play App Signing manages a separate signing key.
-- The Firebase file is not present in this coding workspace. Muse Spark must
-  transfer its existing file to the final repository secret below. Do not create
-  another Firebase project. No service-account/admin credential is needed.
+- The Firebase file is not present in this coding workspace. Its repository secret
+  exists as `READASSIT_FIREBASE_CONFIG_BASE64` (the earlier spelling). The workflow
+  accepts this name as a fallback, so no repeat transfer is needed. The value will
+  be validated against the approved project/app during the first manual build;
+  listing a secret's name does not verify its contents. No build has been started.
 
-## One remaining secret
+## Firebase config secret
 
-In the workspace that actually has the downloaded file, first verify its project,
-package and Firebase app ID match the values above. Store its base64 encoding as
-`READASSIST_FIREBASE_CONFIG_BASE64` in `sainadh812/ReadFlow` repository Actions
-secrets. With authenticated GitHub CLI on Linux:
+The existing `READASSIT_FIREBASE_CONFIG_BASE64` secret is sufficient. Do not
+recreate it or change signing secrets. If `READASSIST_FIREBASE_CONFIG_BASE64` is
+added later, that preferred spelling takes precedence. Both workflow input steps
+resolve names identically and retain the same strict project/app validation.
+
+For a future deliberate config replacement, verify the downloaded file's project,
+package and Firebase app ID against the values above. Store its base64 encoding as
+`READASSIST_FIREBASE_CONFIG_BASE64` in repository Actions secrets. With authenticated
+GitHub CLI on Linux:
 
 ```bash
 base64 -w0 app/google-services.json | gh secret set READASSIST_FIREBASE_CONFIG_BASE64 --repo sainadh812/ReadFlow

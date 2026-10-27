@@ -2,8 +2,8 @@
 
 Read Assist 0.2.5 adds optional Firebase Crashlytics and manual **Report a problem**
 email. Crashlytics is available on Firebase's no-cost Spark plan; Analytics and
-paid Firebase services are not needed. Muse Spark reports the owner’s project is created; the existing configuration
-still needs to be transferred into the GitHub build. See [the publishing handoff](PLAY_STORE_HANDOFF.md).
+paid Firebase services are not needed. Muse Spark reports the owner’s project is created; the GitHub workflow now accepts its existing config secret under the earlier
+`READASSIT_FIREBASE_CONFIG_BASE64` spelling. Configured-build and device checks remain pending. See [the publishing handoff](PLAY_STORE_HANDOFF.md).
 
 ## Reporting boundary
 

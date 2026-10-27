@@ -1,6 +1,6 @@
 # Publishing the Read Assist privacy policy
 
-Status: **27 October 2026 revision published and verified.** The [public URL](https://sainadh812.github.io/ReadFlow/privacy.html) returns HTTP 200 and exactly matches the current [source](../site/privacy.html), which adds optional Crashlytics, reduced support email and production removal of GitHub upload/token entry. See the [machine-readable publication evidence](evidence/privacy-policy/publication.json). The existing Firebase project still needs its configuration transferred into the GitHub build; real delivery testing remains pending.
+Status: **27 October 2026 revision published and verified.** The [public URL](https://sainadh812.github.io/ReadFlow/privacy.html) returns HTTP 200 and exactly matches the current [source](../site/privacy.html), which adds optional Crashlytics, reduced support email and production removal of GitHub upload/token entry. See the [machine-readable publication evidence](evidence/privacy-policy/publication.json). The GitHub workflow accepts the existing Firebase config secret under its earlier spelling; configured-build validation and real delivery testing remain pending.
 
 The developer remains **Oh My Pi**, with **xperimenting.ai@gmail.com** for privacy, support and deletion requests. Support correspondence/reports received by the developer are deleted within 90 days after resolution; payment records remain only as needed for accounting/legal requirements. Firebase's separate crash/identifier retention is stated explicitly. Version 0.2.5/code 21 retains the default URL first added in 0.2.4; 0.2.3 artifacts lack that link.
 
@@ -38,7 +38,7 @@ The previous 26 October page was verified at commit `2e3aa9c1092dc20d1bc72adc1b4
 
 ## Include the verified URL in the final AAB
 
-Only after the live check succeeds, transfer the existing project configuration into the prepared [GitHub release build](GITHUB_RELEASE_BUILD.md), which materializes `app/google-services.json` and the upload key outside Git, or configure the equivalent local environment from [the publishing handoff](PLAY_STORE_HANDOFF.md), then run:
+Only after the live check succeeds, use the existing config secret with the prepared [GitHub release build](GITHUB_RELEASE_BUILD.md), which materializes `app/google-services.json` and the upload key outside Git, or configure the equivalent local environment from [the publishing handoff](PLAY_STORE_HANDOFF.md), then run:
 
 ```bash
 export READFLOW_PRIVACY_POLICY_URL=https://sainadh812.github.io/ReadFlow/privacy.html

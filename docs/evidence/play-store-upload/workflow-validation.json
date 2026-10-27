@@ -11,8 +11,12 @@
   },
   "actualUploadKeyMatchesPin": true,
   "firebaseConfigAvailableInThisWorkspace": false,
-  "missingRepositorySecret": "READASSIST_FIREBASE_CONFIG_BASE64",
   "configuredBuildExecuted": false,
   "nativeSymbolsUploaded": false,
-  "playUploadPerformed": false
+  "playUploadPerformed": false,
+  "preferredFirebaseSecret": "READASSIST_FIREBASE_CONFIG_BASE64",
+  "existingFirebaseSecret": "READASSIT_FIREBASE_CONFIG_BASE64",
+  "firebaseSecretFallbackAccepted": true,
+  "repositorySecretNamesVerified": true,
+  "storedFirebaseContentsValidated": false
 }
