@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "reviewedAtUtc": "2026-10-27",
+  "scope": "Bounded technical preservation and dependency/notice delta review of the configured, upload-signed 0.2.5 AAB against the retained unsigned 0.2.5 AAB. Not legal clearance or a reproducible-build assertion.",
+  "workflowRunId": 40529659238,
+  "baselineArtifact": {
+    "path": "dist/play-0.2.5/Read-Assist-0.2.5-play-unsigned.aab",
+    "sha256": "0e718bafdb27e25211e0dc0f903146f071c800fc69d4f0eaca2f9bbd86e92743",
+    "bytes": 72131047
+  },
+  "finalArtifact": {
+    "path": "dist/play-configured-40529659238/Read-Assist-0.2.5-upload-signed.aab",
+    "sha256": "9709f780723e279cbe7cb9a09cb868374e7c158fb9e3d42a2ee32d4bfe7b6bab",
+    "bytes": 72198406
+  },
+  "runtimeDependencies": {
+    "baselineEntries": 144,
+    "finalEntries": 144,
+    "distinctCoordinateArtifactPairs": 141,
+    "comparedDimensions": [
+      "coordinate",
+      "artifact",
+      "sha256"
+    ],
+    "allEntriesMatchAsMultisetIncludingDuplicates": true,
+    "addedArtifacts": [],
+    "removedArtifacts": [],
+    "artifactHashChanges": [],
+    "allOtherFieldsExceptDeclaredLicensesUnchanged": true,
+    "baselineInventorySha256": "2fc55744a32bdd818d4bd49dde92e81ffe47774e043619dc6110662c0a19169c",
+    "finalInventorySha256": "5e45bfde4363b2c59721c03aa6d602fd35da0f9f95f2a20cb5e57fd3c8cb2e25",
+    "inventoryChange": {
+      "field": "declaredLicenses",
+      "changedCoordinateArtifactPairs": 98,
+      "allChangesAddPreviouslyAbsentPomDeclarations": true,
+      "emptyDeclarationsBefore": 105,
+      "emptyDeclarationsAfter": 7,
+      "embeddedNoticeListsUnchanged": true
+    }
+  },
+  "retainedFirebaseDependencyEvidence": {
+    "path": "docs/evidence/play-store-0.2.5/firebase-dependencies.json",
+    "recordsCompared": 35,
+    "allCoordinateArtifactHashesMatch": true
+  },
+  "bundledLicenseAssets": {
+    "baselineCount": 287,
+    "finalCount": 287,
+    "added": [],
+    "removed": [],
+    "changed": [
+      "base/assets/licenses/dependencies/resolved-runtime.json"
+    ],
+    "unchangedCount": 286,
+    "sourceAvailabilityAndSupplementalNoticeBytesPreserved": true
+  },
+  "allAssets": {
+    "baselineCount": 314,
+    "finalCount": 314,
+    "added": [],
+    "removed": [],
+    "changed": [
+      "base/assets/licenses/dependencies/resolved-runtime.json"
+    ]
+  },
+  "modelManifests": [
+    {
+      "path": "base/assets/model-manifests.json",
+      "unchangedBytes": true,
+      "sha256": "41456f64fae42998c43121be5832fcdc5cba51586f48eeee99c5fdcd0580efe5"
+    },
+    {
+      "path": "base/assets/ocr-model-manifests.json",
+      "unchangedBytes": true,
+      "sha256": "12cdfc6c15668d613f02587ececbf5b8913c3b09a66deedf99eb4e89ec36f112"
+    }
+  ],
+  "fonts": {
+    "baselineFiles": 7,
+    "finalFiles": 7,
+    "allPathsAndHashesUnchanged": true
+  },
+  "nativeLibraries": {
+    "baselineCount": 11,
+    "finalCount": 11,
+    "pathsUnchanged": true,
+    "hashChanges": [
+      {
+        "path": "base/lib/arm64-v8a/libreadflow_misaki.so",
+        "baselineSha256": "08171174bc12f2dfcb5ccee1f1473011fbb9be9864c15169f9e25accfc822ac1",
+        "finalSha256": "e7bcc849e4a268d4b7cd4b23ac56efbc3418c903f53c20abd47131ca5f55f6b8"
+      },
+      {
+        "path": "base/lib/arm64-v8a/libreadflow_teleocr.so",
+        "baselineSha256": "26da508649c5ed55fe99b28e4ac59367604d28596e4c16355b38a427fe3bb28f",
+        "finalSha256": "17a73f10a3e26ecd4880d481dc821e51ad745793058ffe77d457473322d63953"
+      }
+    ],
+    "interpretation": "Only project-built Misaki and TeleOCR libraries differ after the clean CI rebuild. This comparison does not establish bit-for-bit reproducibility. Exact final native build IDs/symbol matches are checked separately in native-symbols.json and release-evidence.json.",
+    "misakiRecordedInputHashesMatchCurrentSource": true
+  },
+  "inputPackagingChecks": {
+    "scope": "Final AAB entry names and staged artifact file names; private-key PEM marker scan within AAB assets. Generated Firebase client resources are intentionally included in the configured app.",
+    "rawGoogleServicesJsonFound": false,
+    "keystoreOrPasswordOrSigningInputFilesFound": false,
+    "privateKeyPemMarkerFoundInAssets": false
+  },
+  "limitations": [
+    "This is a technical preservation review, not new legal research, legal advice or blanket commercial-distribution clearance.",
+    "Existing third-party terms, source-availability obligations, model provenance limits and the recorded TeleOCR license-label erratum remain applicable.",
+    "No physical-device crash-delivery, native-symbol-upload or Play acceptance test is established by this delta review.",
+    "No general proof of absence of all copyleft implementations in vendor binaries or secrets under arbitrary filenames is claimed."
+  ]
+}

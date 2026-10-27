@@ -1,0 +1,19 @@
+{
+  "runId": 40529659238,
+  "artifactId": 12745713255,
+  "downloadedFileChecksumsVerified": 68,
+  "artifactAllowlistPassed": true,
+  "apkSignatureVerified": true,
+  "apk16KbZipAlignmentPassed": true,
+  "packagedFirebaseIdentifiersVerified": true,
+  "aabJarSignatureVerified": true,
+  "aabSignedPayloadEntriesVerified": 1098,
+  "jarsignerStrictExitCode": 4,
+  "jarsignerNote": "Self-signed upload certificate. Manifest ZIP order also triggers a JarInputStream warning; all payloads independently verified using JarFile with the expected certificate.",
+  "unitTestsPassed": 360,
+  "unitTestsSkipped": 3,
+  "skipReason": "Downloaded real-model fixtures are absent from the clean CI runner.",
+  "deviceTestsPerformed": false,
+  "nativeSymbolsUploaded": false,
+  "playUploadPerformed": false
+}

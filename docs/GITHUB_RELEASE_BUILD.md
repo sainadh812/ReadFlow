@@ -18,9 +18,29 @@ It does not publish to Play Console.
   This is the upload certificate; Play App Signing manages a separate signing key.
 - The Firebase file is not present in this coding workspace. Its repository secret
   exists as `READASSIT_FIREBASE_CONFIG_BASE64` (the earlier spelling). The workflow
-  accepts this name as a fallback, so no repeat transfer is needed. The value will
-  be validated against the approved project/app during the first manual build;
-  listing a secret's name does not verify its contents. No build has been started.
+  accepts this name as a fallback, so no repeat transfer is needed. The successful
+  configured build validated its project/app IDs, and the downloaded APK resources
+  independently match those identifiers.
+
+## Verified configured build — 27 October 2026
+
+[Successful run](https://github.com/sainadh812/ReadFlow/actions/runs/40529659238) · [signed APK/AAB and verification files](https://github.com/sainadh812/ReadFlow/actions/runs/40529659238/artifacts/12745713255).
+Source commit: `f025430e9e18d65fc317afe06e5bde06acb7fb47`; version **0.2.5/code 21**.
+Artifacts expire after 14 days; preserve the downloaded files and their checksums.
+
+- Firebase project/app, upload certificate, bundle/APK signatures, fonts, policy,
+  16 KB compatibility and matching native build IDs passed.
+- 360 release tests passed; three real-model tests were skipped because the clean
+  runner has no downloaded model fixtures. Lint: zero errors, 34 warnings.
+- All 68 downloaded artifact file hashes matched; every AAB payload entry was
+  independently signature-verified. The APK's packaged Firebase IDs also match.
+- Native symbols were generated and retained, but not uploaded. No phone crash
+  delivery, device testing or Play upload was performed.
+
+Evidence: [release](evidence/play-store-0.2.5-configured/release-evidence.json),
+[local verification](evidence/play-store-0.2.5-configured/local-verification.json),
+[dependency delta](evidence/play-store-0.2.5-configured/dependency-delta.json).
+Use this exact candidate for further checks; rebuild only if a change is needed.
 
 ## Firebase config secret
 

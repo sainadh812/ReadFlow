@@ -2,7 +2,7 @@
 
 **FREE DISTRIBUTION FIRST. Updated 2026-10-27.** All existing features remain free. Paid tiers, INR 10 / USD 0.99 prices, quotas and coupons are deferred. Optional **Buy me a coffee** support to `readassist@ybl` grants no benefit. Package `app.readflow` and repository `sainadh812/ReadFlow` remain unchanged; work from branch `fix/reader-playback-and-pdf-space`.
 
-The current source is **Read Assist 0.2.5, versionCode 21**, Android 15+ ARM64, target API 36. It adds optional Firebase Crashlytics and a previewed support-email flow; production hides GitHub upload/token entry. **Muse Spark reports that the Firebase project is created. The Firebase config secret is stored under the earlier spelling `READASSIT_FIREBASE_CONFIG_BASE64`, which the workflow accepts. Its contents and real-device report delivery remain unverified. The new upload key and four GitHub signing secrets are prepared.** Do not treat historical 0.2.4 tests or artifacts as validation of this build.
+The current source is **Read Assist 0.2.5, versionCode 21**, Android 15+ ARM64, target API 36. It adds optional Firebase Crashlytics and a previewed support-email flow; production hides GitHub upload/token entry. **Muse Spark reports that the Firebase project is created. The Firebase config secret is stored under the earlier spelling `READASSIT_FIREBASE_CONFIG_BASE64`, which the workflow accepts. The configured signed build has now passed; real-device report delivery remains unverified. The new upload key and four GitHub signing secrets are prepared.** Do not treat historical 0.2.4 tests or artifacts as validation of this build.
 
 Public developer display name: **Oh My Pi**. Support/privacy contact: **xperimenting.ai@gmail.com**. Policy URL: **https://sainadh812.github.io/ReadFlow/privacy.html**. The **27 October 2026 policy revision is live and verified** with HTTP 200 and exact matching bytes; it covers optional Crashlytics and manual support email. Check [publication status](PRIVACY_PUBLICATION.md), [Data safety worksheet](PRIVACY_AND_STORE_DRAFT.md), [free distribution plan](FREE_DISTRIBUTION_PLAN.md) and [license re-audit](PLAY_REAUDIT_2026-10-26.md).
 
@@ -12,7 +12,7 @@ Copy the quoted prompt into Muse Spark. This [current handoff](https://github.co
 
 > You are Muse Spark, the publishing assistant for **Read Assist** (double “s”), package `app.readflow`, repository `sainadh812/ReadFlow`. Work from the current `fix/reader-playback-and-pdf-space` branch and this handoff. The candidate is **0.2.5/code 21**. Record the exact final commit and evidence; never transfer test results from an older artifact. Use **Oh My Pi** as the approved public developer display name and **xperimenting.ai@gmail.com** for public support/privacy contact. Preserve existing app data and model identities.
 >
-> Use the **existing** Firebase Spark project **Read Assist**, ID `read-assist-fbd21`, Android package `app.readflow`, Firebase app ID `1:831366793321:android:573b80e46b55eb65103af8`. Muse Spark reports project creation, Spark/no-cost plan, Analytics disabled and the client JSON downloaded. Do not create another project or regenerate the upload key. Four upload-signing secrets are already stored in `sainadh812/ReadFlow`; the public certificate/fingerprint are in `docs/evidence/play-store-upload/`. The config is already stored as **`READASSIT_FIREBASE_CONFIG_BASE64`** (earlier spelling), and the workflow accepts it as a fallback for **`READASSIST_FIREBASE_CONFIG_BASE64`**. No repeat transfer is needed. Do not submit the pending New secret form. The first manual build must validate the stored config against the exact project and app identifiers. Do not paste its contents in chat, commit it, overwrite the signing secrets, create a service-account key, enable Analytics or upgrade to Blaze. See `docs/GITHUB_RELEASE_BUILD.md` for the manual workflow and verification steps.
+> Use the **existing** Firebase Spark project **Read Assist**, ID `read-assist-fbd21`, Android package `app.readflow`, Firebase app ID `1:831366793321:android:573b80e46b55eb65103af8`. Muse Spark reports project creation, Spark/no-cost plan, Analytics disabled and the client JSON downloaded. Do not create another project or regenerate the upload key. Four upload-signing secrets are already stored in `sainadh812/ReadFlow`; the public certificate/fingerprint are in `docs/evidence/play-store-upload/`. The config is already stored as **`READASSIT_FIREBASE_CONFIG_BASE64`** (earlier spelling), and the workflow accepts it as a fallback for **`READASSIST_FIREBASE_CONFIG_BASE64`**. No repeat transfer is needed. Do not submit the pending New secret form. Run 40529659238 validated the stored config and built the signed candidate. Do not repeat setup or rebuild merely to obtain these files. Do not paste its contents in chat, commit it, overwrite the signing secrets, create a service-account key, enable Analytics or upgrade to Blaze. See `docs/GITHUB_RELEASE_BUILD.md` for the manual workflow and verification steps.
 >
 > Reporting is **off by default** and Firebase initializes only at startup with valid configuration and saved consent. Full enable/disable takes effect on the next app launch; our handled-error reports stop immediately on opt-out, while queued work may finish and stored reports may send after re-enabling. Test fresh install/off, consent/on/restart, opt-out/restart and re-enable with pending reports. Verify real sanitized nonfatal, Java fatal, ANR where practical and native-crash delivery in the correct Firebase project after restarting the test app. Use a dedicated test installation and development-only test triggers; do not crash the owner's reading session or expose forced-crash controls in production. Upload matching native symbols for the exact release, follow `docs/NATIVE_CRASH_SYMBOLS.md`, and document any remaining vendor-library or Go unwinding/symbolication limits. A build pass or a visible switch does not prove delivery. Unconfigured review builds cannot send Crashlytics reports and are not this feature's production-ready package.
 >
@@ -28,7 +28,7 @@ Copy the quoted prompt into Muse Spark. This [current handoff](https://github.co
 
 ## Firebase setup and release checks
 
-Muse Spark reports that the owner Firebase project and client configuration exist in its workspace. The file is absent from this coding workspace, but the repository secret `READASSIT_FIREBASE_CONFIG_BASE64` exists. The workflow accepts that earlier spelling; its value has not yet been validated in a configured build. The new upload key and four signing secrets are already stored in GitHub. Ordinary review builds without the config remain usable, with automatic reporting unavailable. Publication builds using `-PplayPublication=true` require a valid owner-supplied `app/google-services.json`, secure signing and the policy URL. The app's Gradle check accepts the exact `app.readflow` client and rejects source-set overrides. It does not verify project ownership, Console enablement or delivery.
+Muse Spark reports that the owner Firebase project and client configuration exist in its workspace. The file is absent from this coding workspace, but the repository secret `READASSIT_FIREBASE_CONFIG_BASE64` exists. The workflow accepts that earlier spelling; its value passed the configured build, and the final APK resources match the approved identifiers. The new upload key and four signing secrets are already stored in GitHub. Ordinary review builds without the config remain usable, with automatic reporting unavailable. Publication builds using `-PplayPublication=true` require a valid owner-supplied `app/google-services.json`, secure signing and the policy URL. The app's Gradle check accepts the exact `app.readflow` client and rejects source-set overrides. It does not verify project ownership, Console enablement or delivery.
 
 After verifying the configured signed release, explicitly run:
 
@@ -40,7 +40,28 @@ Keep the exact build outputs and GNU build IDs. The Misaki build now retains GNU
 
 The new consent/network flow requires device tests. No claim of Firebase project creation, successful upload, production signing or Play approval follows from local compilation. Record the 0.2.5 artifact's own validation evidence when those checks complete.
 
-## Current 0.2.5 review artifacts
+## Current configured, upload-signed candidate
+
+[Verified build](https://github.com/sainadh812/ReadFlow/actions/runs/40529659238) · [download APK/AAB and reports](https://github.com/sainadh812/ReadFlow/actions/runs/40529659238/artifacts/12745713255) (14-day artifact retention).
+Version **0.2.5/code 21**, source `f025430e9e18d65fc317afe06e5bde06acb7fb47`.
+The exact AAB SHA-256 is `9709f780723e279cbe7cb9a09cb868374e7c158fb9e3d42a2ee32d4bfe7b6bab`.
+The APK SHA-256 is `723fd50d4a68fc8ddfa73032d721d9415000c6cd51c5ec5be68e30c04659fb2f`.
+The public upload certificate pin is unchanged. Firebase is configured for the
+approved app; reports remain off by default. Tests: **360 passed, three skipped**
+(real-model files absent on CI); lint: **0 errors / 34 warnings**. Packaging,
+signatures, fonts, public policy and 16 KB checks passed. Dependency/model/notice
+preservation was checked against the earlier 0.2.5 review artifact; this is not
+blanket legal clearance. See [evidence](evidence/play-store-0.2.5-configured/release-evidence.json)
+and [dependency delta](evidence/play-store-0.2.5-configured/dependency-delta.json).
+
+Continue in small tasks. Preserve the exact artifact and reports first. Native
+symbols are retained in the download but have not been uploaded; real device
+consent/crash delivery, final publishing/license review, version-code availability
+in Console and Play acceptance remain pending. No Play upload has been performed.
+The upload-signed APK cannot update a prototype signed with the old debug key;
+use a separate test installation and preserve the owner's reading data.
+
+## Historical unconfigured 0.2.5 review artifacts
 
 [Review release](https://github.com/sainadh812/ReadFlow/releases/tag/v0.2.5-play-candidate): preview APK (prototype certificate), unsigned AAB, source, handoff and checksums. All **363 release JVM tests passed**; lint has **0 errors / 34 warnings**. Bundle, font, APK signature and 16 KB checks passed. The final review artifacts have **no Firebase configuration**, so automatic reporting is unavailable. A temporary synthetic client configuration passed local resource/build-flag/native-symbol generation checks, then was removed; it was never used for report or symbol upload. The final APK/AAB were rebuilt unconfigured. See [build evidence](evidence/play-store-0.2.5/build-results.json), [packaging](evidence/play-store-0.2.5/packaging.json), [native symbols](evidence/play-store-0.2.5/native-symbols.json) and [dependency notices](evidence/play-store-0.2.5/firebase-dependencies.json). These checks do not replace the real-project/device tests above.
 
