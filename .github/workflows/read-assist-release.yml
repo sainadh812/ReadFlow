@@ -1,0 +1,132 @@
+name: Read Assist signed release candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload_symbols:
+        description: Upload this build's matching native symbols to the approved Firebase app
+        type: boolean
+        required: true
+        default: false
+
+# No Play publishing, repository writes, OIDC, pull-request or fork execution.
+permissions:
+  contents: read
+
+concurrency:
+  group: read-assist-production-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.repository == 'sainadh812/ReadFlow' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/reader-playback-and-pdf-space')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out the approved release source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: sainadh812/ReadFlow
+          ref: fix/reader-playback-and-pdf-space
+          persist-credentials: false
+
+      - name: Check required owner inputs without writing them
+        env:
+          READASSIST_UPLOAD_KEYSTORE_BASE64: ${{ secrets.READASSIST_UPLOAD_KEYSTORE_BASE64 }}
+          READASSIST_FIREBASE_CONFIG_BASE64: ${{ secrets.READASSIST_FIREBASE_CONFIG_BASE64 }}
+          READFLOW_UPLOAD_STORE_PASSWORD: ${{ secrets.READFLOW_UPLOAD_STORE_PASSWORD }}
+          READFLOW_UPLOAD_KEY_ALIAS: ${{ secrets.READFLOW_UPLOAD_KEY_ALIAS }}
+          READFLOW_UPLOAD_KEY_PASSWORD: ${{ secrets.READFLOW_UPLOAD_KEY_PASSWORD }}
+        run: python3 scripts/ci_prepare_release.py check
+
+      - name: Set up Java 17
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Install the pinned Android toolchain
+        run: |
+          sdkmanager "platforms;android-36" "build-tools;35.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
+
+      - name: Prepare pinned build dependencies and bundletool
+        run: |
+          bash scripts/bootstrap.sh --play
+          curl --fail --location --retry 3 https://github.com/google/bundletool/releases/download/1.18.3/bundletool-all-1.18.3.jar --output .deps/bundletool-all-1.18.3.jar
+          printf '%s\n' 'a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29  .deps/bundletool-all-1.18.3.jar' | sha256sum --check --status
+          python3 -m unittest discover -s scripts -p 'test_ci_release.py'
+          python3 scripts/verify_reader_fonts.py
+
+      - name: Verify the published privacy policy
+        run: |
+          mkdir -p dist/play-production
+          python3 scripts/verify_privacy_page.py --url https://sainadh812.github.io/ReadFlow/privacy.html > dist/play-production/privacy-verification.txt
+
+      - name: Prepare private signing and Firebase configuration
+        env:
+          READASSIST_UPLOAD_KEYSTORE_BASE64: ${{ secrets.READASSIST_UPLOAD_KEYSTORE_BASE64 }}
+          READASSIST_FIREBASE_CONFIG_BASE64: ${{ secrets.READASSIST_FIREBASE_CONFIG_BASE64 }}
+          READFLOW_UPLOAD_STORE_PASSWORD: ${{ secrets.READFLOW_UPLOAD_STORE_PASSWORD }}
+          READFLOW_UPLOAD_KEY_ALIAS: ${{ secrets.READFLOW_UPLOAD_KEY_ALIAS }}
+          READFLOW_UPLOAD_KEY_PASSWORD: ${{ secrets.READFLOW_UPLOAD_KEY_PASSWORD }}
+        run: python3 scripts/ci_prepare_release.py prepare
+
+      - name: Verify the approved upload certificate
+        env:
+          READFLOW_UPLOAD_STORE_PASSWORD: ${{ secrets.READFLOW_UPLOAD_STORE_PASSWORD }}
+          READFLOW_UPLOAD_KEY_ALIAS: ${{ secrets.READFLOW_UPLOAD_KEY_ALIAS }}
+        run: python3 scripts/ci_verify_release.py key
+
+      - name: Build signed release and run release checks
+        env:
+          READFLOW_UPLOAD_STORE_PASSWORD: ${{ secrets.READFLOW_UPLOAD_STORE_PASSWORD }}
+          READFLOW_UPLOAD_KEY_ALIAS: ${{ secrets.READFLOW_UPLOAD_KEY_ALIAS }}
+          READFLOW_UPLOAD_KEY_PASSWORD: ${{ secrets.READFLOW_UPLOAD_KEY_PASSWORD }}
+        run: |
+          ./gradlew :app:assembleRelease :app:bundleRelease :app:testReleaseUnitTest :app:lintRelease :app:generateCrashlyticsSymbolFileRelease -PplayPublication=true --console=plain --no-daemon
+
+      - name: Audit the exact signed APK and bundle
+        run: |
+          python3 scripts/verify_reader_fonts.py --artifact app/build/outputs/bundle/release/app-release.aab > dist/play-production/font-verification.json
+          python3 scripts/verify_play_bundle.py --aab app/build/outputs/bundle/release/app-release.aab --report dist/play-production/packaging.json
+          python3 scripts/ci_verify_release.py stage
+
+      - name: Upload matching native symbols when requested
+        id: native_upload
+        if: inputs.upload_symbols
+        env:
+          READFLOW_UPLOAD_STORE_PASSWORD: ${{ secrets.READFLOW_UPLOAD_STORE_PASSWORD }}
+          READFLOW_UPLOAD_KEY_ALIAS: ${{ secrets.READFLOW_UPLOAD_KEY_ALIAS }}
+          READFLOW_UPLOAD_KEY_PASSWORD: ${{ secrets.READFLOW_UPLOAD_KEY_PASSWORD }}
+        run: ./gradlew :app:uploadCrashlyticsSymbolFileRelease -PplayPublication=true --console=plain --no-daemon
+
+      - name: Record final evidence and checksums
+        env:
+          SYMBOL_UPLOAD_SUCCEEDED: ${{ steps.native_upload.outcome == 'success' }}
+        run: |
+          if [[ "$SYMBOL_UPLOAD_SUCCEEDED" == "true" ]]; then
+            python3 scripts/ci_verify_release.py finalize --symbols-uploaded
+          else
+            python3 scripts/ci_verify_release.py finalize
+          fi
+
+      - name: Upload verified release files only
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: Read-Assist-signed-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: dist/play-production/
+          if-no-files-found: error
+          retention-days: 14
+          include-hidden-files: false
+
+      - name: Remove private build inputs
+        if: always()
+        run: python3 scripts/ci_prepare_release.py cleanup

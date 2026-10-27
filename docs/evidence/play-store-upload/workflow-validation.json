@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-27",
+  "workflow": ".github/workflows/read-assist-release.yml",
+  "manualDispatchOnly": true,
+  "sourceBranch": "fix/reader-playback-and-pdf-space",
+  "actionlintVersion": "1.7.12",
+  "actionlintPassed": true,
+  "helperTests": {
+    "tests": 11,
+    "failures": 0
+  },
+  "actualUploadKeyMatchesPin": true,
+  "firebaseConfigAvailableInThisWorkspace": false,
+  "missingRepositorySecret": "READASSIST_FIREBASE_CONFIG_BASE64",
+  "configuredBuildExecuted": false,
+  "nativeSymbolsUploaded": false,
+  "playUploadPerformed": false
+}

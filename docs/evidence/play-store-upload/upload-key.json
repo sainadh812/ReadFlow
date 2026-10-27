@@ -1,0 +1,23 @@
+{
+  "createdAtUtc": "2026-10-27T14:11:13.755841+00:00",
+  "purpose": "Read Assist Google Play upload key; Play App Signing manages the separate app-signing key",
+  "alias": "read-assist-upload",
+  "keyAlgorithm": "RSA",
+  "keySize": 3072,
+  "signatureAlgorithm": "SHA256withRSA",
+  "certificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+  "repository": "sainadh812/ReadFlow",
+  "secretNames": [
+    "READASSIST_UPLOAD_KEYSTORE_BASE64",
+    "READFLOW_UPLOAD_KEY_ALIAS",
+    "READFLOW_UPLOAD_KEY_PASSWORD",
+    "READFLOW_UPLOAD_STORE_PASSWORD"
+  ],
+  "firebaseProjectId": "read-assist-fbd21",
+  "firebaseAndroidAppId": "1:831366793321:android:573b80e46b55eb65103af8",
+  "playRegistrationVerified": false,
+  "privateMaterialCommitted": false,
+  "githubSigningSecretsStored": true,
+  "localSigningRoundTripVerified": true,
+  "signingCheckArtifact": "Temporary synthetic JAR; deleted after verification. No configured Android build is claimed."
+}

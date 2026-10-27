@@ -11,8 +11,10 @@ parser.add_argument("--out", type=Path, default=ROOT / "dist/ReadFlow-source.zip
 target = parser.parse_args().out.resolve()
 target.parent.mkdir(parents=True, exist_ok=True)
 paths = [ROOT / name for name in ["README.md", ".gitignore", ".gitattributes", "settings.gradle.kts", "build.gradle.kts", "gradle.properties", "gradlew", "gradlew.bat", "app/build.gradle.kts"]]
-for directory in ["gradle", "app/src", "app/schemas", "docs", "scripts", "site"]:
-    paths.extend(p for p in (ROOT / directory).rglob("*") if p.is_file() and "__pycache__" not in p.parts and "vendor" not in p.parts)
+for directory in ["gradle", "app/src", "app/schemas", "docs", "scripts", "site", ".github"]:
+    paths.extend(p for p in (ROOT / directory).rglob("*") if p.is_file() and "__pycache__" not in p.parts and "vendor" not in p.parts
+                 and p.name not in {"google-services.json", "keystore.properties", "signing.properties", ".env"}
+                 and p.suffix not in {".jks", ".keystore"} and "firebase-adminsdk" not in p.name)
 with zipfile.ZipFile(target, "w", compression=zipfile.ZIP_DEFLATED) as archive:
     for path in sorted(paths):
         archive.write(path, "ReadFlow/" + str(path.relative_to(ROOT)))
