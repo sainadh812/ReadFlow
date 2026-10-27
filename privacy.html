@@ -27,7 +27,7 @@
   <header>
     <p>Read Assist</p>
     <h1>Privacy Policy</h1>
-    <p>Effective date: <time datetime="2026-10-26">26 October 2026</time></p>
+    <p>Effective date: <time datetime="2026-10-27">27 October 2026</time></p>
     <p>Developer: <strong>Oh My Pi</strong><br>
       Privacy and support: <a href="mailto:xperimenting.ai@gmail.com">xperimenting.ai@gmail.com</a></p>
   </header>
@@ -40,7 +40,7 @@
     reading progress and settings are stored in the app's private storage on your device.
     Document recognition and speech generation run on your device. Your document content is not sent to
     model hosts for these operations. No Read Assist account is required. The app has no advertising SDK
-    or developer-operated analytics service.</p>
+    or Google Analytics SDK. Optional crash reporting is described below.</p>
 
   <h2>Internet connections and model downloads</h2>
   <p>Downloading voice, alignment and optional OCR models connects to the model hosts identified in the app,
@@ -60,17 +60,51 @@
   <p>See <a href="https://developers.google.com/ml-kit/android-data-disclosure">Google's ML Kit data disclosure</a>
     and <a href="https://developers.google.com/ml-kit/terms">ML Kit terms and privacy information</a>.</p>
 
-  <h2>Error reports, benchmarks and support</h2>
+  <h2>Optional automatic crash reporting</h2>
+  <p>Builds configured for Firebase Crashlytics offer an optional automatic diagnostics switch, off by
+    default. Firebase is initialized at app startup only when the build is configured and you previously
+    enabled this switch. Builds without that configuration cannot send Crashlytics reports.
+    Declining diagnostics does not limit reading or any other app feature.</p>
+  <p>When enabled, Crashlytics sends crash, freeze and technical failure information to Google Firebase
+    for the developer to investigate reliability problems. This includes stack traces, device and app
+    information, application state, performance or memory measurements, and Firebase installation,
+    session and Crashlytics identifiers. We do not set an account identifier or include Google Analytics.</p>
+  <p>For errors handled by Read Assist, we send a reduced technical summary without document text,
+    document names, source URLs, audio or raw error messages. We do not attach your documents or audio
+    to automatic reports. Automatic crash traces and native crash dumps can nevertheless contain
+    incidental information from the app's runtime; they are not guaranteed to be free of all private content.</p>
+  <p>Changes to automatic reporting take full effect on the next app launch. Turning it off immediately
+    stops Read Assist from submitting additional handled-error reports, but already queued work may
+    finish and SDK crash handlers remain active until the process ends. We request deletion of unsent
+    reports; this is not a guarantee that all pending reports have been removed. Reports still stored on
+    your device may be sent if you enable reporting again. Turning the switch off or uninstalling the
+    app does not remove information already received by Firebase.</p>
+  <p>Google says Crashlytics keeps crash traces, extracted native-crash data and associated identifiers
+    for 90 days before starting removal from live and backup systems. Native minidumps are held
+    temporarily for processing. Related Firebase services have their own retention rules. See
+    <a href="https://firebase.google.com/support/privacy">Firebase privacy and retention information</a>
+    and <a href="https://firebase.google.com/docs/android/play-data-disclosure#crashlytics">Firebase's Android data disclosure</a>.
+    Contact the privacy email above with requests about reports received by the developer; do not send
+    private document content just to identify a report.</p>
+
+  <h2>Local error reports, benchmarks and support</h2>
   <p>The app stores issue reports and benchmark results locally. Reports can include document excerpts,
     source identifiers, device and configuration information, errors and generated speech.
     The local issue store holds at most 20 reports within a 24 MiB limit; older reports can be removed
     when these limits are reached. You can review, export or delete reports. An individual export may
     include retained audio; combined history exports exclude audio.</p>
-  <p>GitHub uploads occur only after you configure a destination and confirm sending. Reduced reports
-    exclude document text, titles, source URLs, error messages and audio, but retain technical data
-    and an installation identifier. Text excerpts can be uploaded only to a private repository.
-    GitHub uploads do not include original document files or audio. Saved GitHub credentials are encrypted
-    on your device using Android Keystore and can be removed in the app.</p>
+  <p>“Report a problem” lets you write a description and preview an email draft to
+    <a href="mailto:xperimenting.ai@gmail.com">xperimenting.ai@gmail.com</a>. Including a reduced
+    technical summary is a separate choice, off by default. That summary excludes document text,
+    names, URLs, audio and raw error messages; your own description is included as written.
+    No files are attached by this flow. You can open your email app or copy the preview, and choose
+    whether to send it. Opening a draft or copying it does not send it. Your email provider handles
+    the message and sender information under its own terms.</p>
+  <p>Production builds do not offer GitHub upload or GitHub token entry. Older prototypes and developer
+    debug builds may retain that workflow: uploads require a configured destination and confirmation;
+    reduced reports retain technical data and an installation identifier, and text excerpts require a
+    private repository. Saved GitHub credentials in those builds are protected by Android Keystore.
+    Original document files and audio are not attached to their GitHub uploads.</p>
   <p>When you contact the developer or send a report, the developer receives the contact details and content
     you choose to provide and uses them to respond, investigate problems and maintain the app.
     Support correspondence and reports received by the developer are deleted within 90 days after the request is resolved. You can contact the privacy email above to request earlier deletion.</p>
@@ -105,8 +139,8 @@
     manage their own records; uninstalling the app does not erase them.</p>
 
   <h2>Security</h2>
-  <p>The app uses private device storage, HTTPS for its network requests and Android Keystore protection
-    for saved GitHub credentials. This does not mean document storage is end-to-end encrypted or that
+  <p>The app uses private device storage and HTTPS for its network requests. Firebase encrypts its
+    reporting traffic in transit. This does not mean document storage is end-to-end encrypted or that
     exported files have the same protections. Review reports before sharing private content.</p>
 
   <h2>This privacy website</h2>
