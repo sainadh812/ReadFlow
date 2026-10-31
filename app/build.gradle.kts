@@ -1,3 +1,7 @@
+import java.net.URI
+import groovy.json.JsonSlurper
+import com.google.firebase.crashlytics.buildtools.gradle.CrashlyticsExtension
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -5,20 +9,144 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
 }
+// The owner supplies the Android client config. It is not a credential, but keeping it
+// local prevents review builds from sending reports to somebody else's Firebase project.
+val firebaseConfigFile = file("google-services.json")
+require(fileTree("src") { include("**/google-services.json") }.isEmpty) {
+    "Use app/google-services.json only; source-set overrides could change the validated Firebase destination."
+}
+val firebaseConfigured = if (!firebaseConfigFile.isFile) false else runCatching {
+    val config = JsonSlurper().parse(firebaseConfigFile) as? Map<*, *> ?: return@runCatching false
+    val project = config["project_info"] as? Map<*, *> ?: return@runCatching false
+    val projectNumber = project["project_number"] as? String ?: return@runCatching false
+    val projectId = project["project_id"] as? String ?: return@runCatching false
+    val client = (config["client"] as? List<*>)?.mapNotNull { it as? Map<*, *> }?.firstOrNull {
+        val info = it["client_info"] as? Map<*, *>
+        val androidInfo = info?.get("android_client_info") as? Map<*, *>
+        androidInfo?.get("package_name") == "app.readflow"
+    } ?: return@runCatching false
+    val info = client["client_info"] as? Map<*, *> ?: return@runCatching false
+    val appId = info["mobilesdk_app_id"] as? String ?: return@runCatching false
+    val apiKeys = (client["api_key"] as? List<*>)?.mapNotNull { (it as? Map<*, *>)?.get("current_key") as? String }.orEmpty()
+    projectNumber.matches(Regex("[0-9]+")) && projectId.matches(Regex("[a-z][a-z0-9-]{4,28}[a-z0-9]")) &&
+        appId.matches(Regex("1:${Regex.escape(projectNumber)}:android:[a-fA-F0-9]+")) &&
+        apiKeys.any { it.matches(Regex("AIza[0-9A-Za-z_-]{35}")) }
+}.getOrDefault(false)
+require(!firebaseConfigFile.exists() || firebaseConfigured) {
+    "app/google-services.json is invalid or does not contain a complete app.readflow Android client. Download it from the owner's Firebase project."
+}
+if (firebaseConfigured) {
+    apply(plugin = "com.google.gms.google-services")
+    apply(plugin = "com.google.firebase.crashlytics")
+} else {
+    logger.lifecycle("Firebase is unconfigured: automatic crash reporting is unavailable; local and email diagnostics still work.")
+}
+val playPublication = providers.gradleProperty("playPublication").orNull == "true"
+val misakiAbi = if (providers.gradleProperty("emulator").orNull == "true") "x86_64" else "arm64-v8a"
+val prepareMisaki by tasks.registering(Exec::class) {
+    workingDir(rootProject.projectDir)
+    commandLine("python3", "scripts/prepare_misaki.py", "--abi", misakiAbi)
+    inputs.dir("src/main/misaki")
+    inputs.file(rootProject.file("scripts/prepare_misaki.py"))
+    inputs.file("src/main/assets/licenses/misaki/readflow-provenance.json")
+    inputs.property("abi", misakiAbi)
+    outputs.file(layout.buildDirectory.file("generated/misaki/jniLibs/$misakiAbi/libreadflow_misaki.so"))
+    outputs.file(layout.buildDirectory.file("generated/misaki/jniLibs/$misakiAbi/libreadflow_misaki.build.json"))
+}
+tasks.named("preBuild").configure { dependsOn(prepareMisaki) }
+// Upload credentials belong to the publisher's environment, never the repository.
+val uploadKeys = listOf("READFLOW_UPLOAD_STORE_FILE", "READFLOW_UPLOAD_STORE_PASSWORD", "READFLOW_UPLOAD_KEY_ALIAS", "READFLOW_UPLOAD_KEY_PASSWORD")
+val uploadValues = uploadKeys.associateWith { providers.environmentVariable(it).orNull }
+// Published policy verified on 2026-10-26; a publisher can override it when hosting changes.
+val privacyPolicyUrl = providers.environmentVariable("READFLOW_PRIVACY_POLICY_URL")
+    .orElse("https://sainadh812.github.io/ReadFlow/privacy.html").get()
+val parsedPrivacyUrl = runCatching { URI(privacyPolicyUrl) }.getOrNull()
+require(privacyPolicyUrl.isEmpty() || (parsedPrivacyUrl?.scheme == "https" && !parsedPrivacyUrl.host.isNullOrBlank() &&
+    parsedPrivacyUrl.userInfo == null && privacyPolicyUrl.none { it == '\"' || it == '\\' || it.isWhitespace() })) {
+    "READFLOW_PRIVACY_POLICY_URL must be a public HTTPS URL."
+}
+require(uploadValues.values.all { it.isNullOrBlank() } || uploadValues.values.all { !it.isNullOrBlank() }) {
+    "Set all four READFLOW_UPLOAD_* variables, or leave all unset to build an unsigned review bundle."
+}
+if (playPublication) {
+    require(firebaseConfigured) {
+        "Publication builds need the owner's valid app/google-services.json for app.readflow. See docs/PLAY_STORE_HANDOFF.md."
+    }
+    require(uploadValues.values.all { !it.isNullOrBlank() } && privacyPolicyUrl.isNotEmpty()) {
+        "Publication builds need all four READFLOW_UPLOAD_* variables and READFLOW_PRIVACY_POLICY_URL. See docs/PLAY_STORE_HANDOFF.md."
+    }
+}
+val prepareReleaseNotices by tasks.registering {
+    val runtime = configurations.named("releaseRuntimeClasspath")
+    val output = layout.buildDirectory.dir("generated/releaseNotices")
+    inputs.files(runtime)
+    inputs.file(rootProject.file("scripts/package_dependency_notices.py"))
+    outputs.dir(output)
+    doLast {
+        val inventory = layout.buildDirectory.file("release-runtime-artifacts.tsv").get().asFile
+        inventory.parentFile.mkdirs()
+        inventory.writeText(runtime.get().resolvedConfiguration.resolvedArtifacts.sortedBy { it.moduleVersion.id.toString() }
+            .joinToString("\n") { "${it.moduleVersion.id}\t${it.file.absolutePath}" })
+        project.exec {
+            commandLine("python3", rootProject.file("scripts/package_dependency_notices.py"), inventory, output.get().asFile)
+        }
+    }
+}
+tasks.matching { it.name == "preReleaseBuild" }.configureEach { dependsOn(prepareReleaseNotices) }
 android {
     namespace = "app.readflow"
-    compileSdk = 35
-    buildToolsVersion = "34.0.0"
+    compileSdk = 36
+    buildToolsVersion = "35.0.0"
+    ndkVersion = "27.2.12479018"
+    externalNativeBuild { cmake { path = file("src/main/cpp/CMakeLists.txt"); version = "3.22.1" } }
     defaultConfig {
         applicationId = "app.readflow"
         minSdk = 35
-        targetSdk = 35
-        versionCode = 7
-        versionName = "0.1.6-prototype"
+        targetSdk = 36
+        versionCode = 22
+        versionName = "0.2.6"
+        buildConfigField("String", "PRIVACY_POLICY_URL", "\"$privacyPolicyUrl\"")
+        buildConfigField("boolean", "FIREBASE_CONFIGURED", firebaseConfigured.toString())
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild { cmake { arguments += listOf("-DANDROID_STL=c++_static", "-DCMAKE_BUILD_TYPE=Release") } }
         ndk { abiFilters += if (providers.gradleProperty("emulator").orNull == "true") "x86_64" else "arm64-v8a" }
     }
+    signingConfigs {
+        if (!uploadValues[uploadKeys.first()].isNullOrBlank()) create("upload") {
+            storeFile = rootProject.file(uploadValues.getValue("READFLOW_UPLOAD_STORE_FILE")!!)
+            storePassword = uploadValues.getValue("READFLOW_UPLOAD_STORE_PASSWORD")
+            keyAlias = uploadValues.getValue("READFLOW_UPLOAD_KEY_ALIAS")
+            keyPassword = uploadValues.getValue("READFLOW_UPLOAD_KEY_PASSWORD")
+        }
+    }
+    buildTypes {
+        getByName("debug") {
+            versionNameSuffix = "-prototype"
+            if (firebaseConfigured) configure<CrashlyticsExtension> {
+                mappingFileUploadEnabled = false
+                nativeSymbolUploadEnabled = false
+            }
+        }
+        getByName("release") {
+            isDebuggable = false
+            // Keep the validated JNI names and reflection paths intact for the first store candidate.
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.findByName("upload")
+            if (firebaseConfigured) configure<CrashlyticsExtension> {
+                // Ordinary review builds do not upload mapping files. Native symbols
+                // require an explicit :app:uploadCrashlyticsSymbolFileRelease command.
+                mappingFileUploadEnabled = playPublication
+                nativeSymbolUploadEnabled = true
+                // Includes the matching unstripped Misaki and TeleOCR libraries.
+                // Pre-stripped vendor libraries cannot yield full source-level frames.
+                unstrippedNativeLibsDir = layout.buildDirectory.dir(
+                    "intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib").get().asFile
+            }
+        }
+    }
     buildFeatures { compose = true; buildConfig = true }
+    sourceSets["main"].jniLibs.srcDir(layout.buildDirectory.dir("generated/misaki/jniLibs"))
+    sourceSets["release"].assets.srcDir(layout.buildDirectory.dir("generated/releaseNotices"))
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = "17" }
     packaging {
@@ -31,7 +159,14 @@ android {
     lint { abortOnError = true }
 }
 ksp { arg("room.schemaLocation", "$projectDir/schemas") }
+if (firebaseConfigured) tasks.matching { it.name == "generateCrashlyticsSymbolFileRelease" ||
+    it.name == "uploadCrashlyticsSymbolFileRelease" }.configureEach {
+    dependsOn("mergeReleaseNativeLibs")
+}
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:35.1.0"))
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-crashlytics-ndk")
     implementation(platform("androidx.compose:compose-bom:2025.04.01"))
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
@@ -52,8 +187,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.jsoup:jsoup:1.18.3")
     implementation("org.apache.commons:commons-compress:1.27.1")
-    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.20.0")
-    implementation(files("libs/sherpa-onnx-static-link-onnxruntime-1.13.8.aar"))
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.22.0")
+    debugImplementation(files("libs/sherpa-onnx-static-link-onnxruntime-1.13.8.aar"))
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

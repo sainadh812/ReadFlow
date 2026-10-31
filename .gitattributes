@@ -1,0 +1,5 @@
+# Upstream notices and provenance are verified byte-for-byte, including original line endings.
+app/src/main/assets/licenses/** -text -whitespace
+app/src/release/assets/licenses/** -text -whitespace
+app/src/main/res/font/*.ttf binary
+app/src/main/res/font/*.otf binary

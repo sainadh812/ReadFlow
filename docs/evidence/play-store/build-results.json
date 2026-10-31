@@ -1,0 +1,86 @@
+{
+  "appVersion": "0.2.0",
+  "versionCode": 16,
+  "builtFromCommit": "60a2789f826d808ea8392f7a0b346ae242da1f4c",
+  "buildCommand": "./gradlew :app:bundleRelease :app:assembleRelease :app:testReleaseUnitTest :app:lintRelease :app:testDebugUnitTest :app:lintDebug :app:assembleDebugAndroidTest --console=plain",
+  "buildResult": "BUILD SUCCESSFUL",
+  "finalRepackageCommand": "./gradlew :app:bundleRelease :app:assembleRelease --console=plain",
+  "finalRepackageResult": "BUILD SUCCESSFUL",
+  "jvmTests": {
+    "release": {
+      "tests": 327,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "debug": {
+      "tests": 327,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "lint": {
+    "release": {
+      "severities": {
+        "Warning": 28
+      },
+      "categories": {
+        "GradleDependency": 12,
+        "ExportedService": 1,
+        "UsableSpace": 4,
+        "UseKtx": 11
+      }
+    },
+    "debug": {
+      "severities": {
+        "Warning": 28
+      },
+      "categories": {
+        "GradleDependency": 12,
+        "ExportedService": 1,
+        "UsableSpace": 4,
+        "UseKtx": 11
+      }
+    }
+  },
+  "instrumentation": "Compiled only; no connected Android device",
+  "artifacts": [
+    {
+      "file": "ReadFlow-0.2.0-play-preview.apk",
+      "bytes": 128358355,
+      "sha256": "a50a2524a5514bc1ad33320043b26faf85167e71337b4b3737496f0026c18fe0"
+    },
+    {
+      "file": "ReadFlow-0.2.0-play-unsigned.aab",
+      "bytes": 70973881,
+      "sha256": "03fd70dd433716dd2a2bc80808d4e7c1e985f760d9eb5f1a7beae1fbd447c4ad"
+    }
+  ],
+  "previewSigning": {
+    "identity": "Android debug certificate; prototype test upgrade only",
+    "apkSignatureScheme": "v3",
+    "sha256": "f7313f98e9414c166f3fb2d2a9329ba1bb5dd9d76b068254522d20d1f8b109f9",
+    "apksignerVerification": "passed",
+    "zipalign16KiB": "passed"
+  },
+  "fontHashVerification": {
+    "source": "passed",
+    "aab": "passed",
+    "apk": "passed",
+    "fontFiles": 7,
+    "families": 6
+  },
+  "publicationGuard": "Expected rejection with -PplayPublication=true when upload credentials and public privacy URL are absent",
+  "publicationRemaining": [
+    "Final exact-artifact licensing and notices audit",
+    "Real policy URL, contact and store declarations",
+    "Owner upload signing and Play App Signing",
+    "Target-device and Play testing"
+  ],
+  "physicalDeviceTestsPerformed": false,
+  "notes": [
+    "All tests ran after implementation changes. The final repackage included updated dependency notice filenames and committed source metadata. Subsequent changes only affect verification scripts and delivery documentation.",
+    "No phone performance or visual acceptance is claimed."
+  ]
+}

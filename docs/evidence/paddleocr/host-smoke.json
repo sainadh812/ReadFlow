@@ -1,0 +1,235 @@
+{
+  "model_version": "PP-OCRv5-e6f4fa8-89d3a50",
+  "host_runtime": "1.20.1",
+  "provider": "CPUExecutionProvider",
+  "threads": 3,
+  "scope": "Synthetic host smoke of real ONNX models and production Kotlin DB/CTC; not Android/S25 speed or book accuracy.",
+  "host_model_load_seconds": 0.14938658475875854,
+  "host_detector_inference_seconds": 0.16792039293795824,
+  "host_recognizer_inference_seconds": 0.6217235834337771,
+  "timing_excludes": "Kotlin process startup, preprocessing, DB/CTC and Android runtime",
+  "fixture_character_edits": 2,
+  "fixture_reference_characters": 204,
+  "fixture_character_error_rate": 0.00980392156862745,
+  "checks": {
+    "full_exact_fixture": false,
+    "accented_names": true,
+    "currency_decimal": true,
+    "age_range": true,
+    "all_table_cells_in_order": true
+  },
+  "reference": "Milanković’s theory and Köppen’s work. He is 20-24 years old. A net worth of $9.3 million. 1999-Apple’s iMac with 6 gigs. 2003-120 gigs. Year Assets Debt 2023 $1,000 $250 2024 $1,250 $200 2025 $1,500 $150",
+  "recognized": "Milanković's theory and Köppen's work. He is 20-24 years old. A net worth of $9.3 million. 1999-Apple’s iMac with 6 gigs. 2003-120 gigs. Year Assets Debt 2023 $1,000 $250 2024 $1,250 $200 2025 $1,500 $150",
+  "regions": [
+    {
+      "text": "Milanković's theory and Köppen's work.",
+      "confidence": 0.9981643,
+      "quad": [
+        42.004665,
+        33.75463,
+        716.66205,
+        33.75463,
+        716.66205,
+        76.09831,
+        42.004665,
+        76.09831
+      ]
+    },
+    {
+      "text": "He is 20-24 years old. A net worth of $9.3 million.",
+      "confidence": 0.99523574,
+      "quad": [
+        40.600742,
+        98.5375,
+        891.39923,
+        98.5375,
+        891.39923,
+        141.02133,
+        40.600742,
+        141.02133
+      ]
+    },
+    {
+      "text": "1999-Apple’s iMac with 6 gigs. 2003-120 gigs.",
+      "confidence": 0.9893632,
+      "quad": [
+        41.231487,
+        160.14722,
+        834.93823,
+        163.02791,
+        834.77216,
+        208.13757,
+        41.065327,
+        205.25687
+      ]
+    },
+    {
+      "text": "Year",
+      "confidence": 0.9999415,
+      "quad": [
+        63.966667,
+        291.14337,
+        158.7,
+        291.14337,
+        158.7,
+        348.12134,
+        63.966667,
+        348.12134
+      ]
+    },
+    {
+      "text": "Assets",
+      "confidence": 0.9998436,
+      "quad": [
+        425.52176,
+        292.687,
+        553.1449,
+        292.687,
+        553.1449,
+        345.25415,
+        425.52176,
+        345.25415
+      ]
+    },
+    {
+      "text": "Debt",
+      "confidence": 0.9998659,
+      "quad": [
+        786.5648,
+        291.0329,
+        887.9997,
+        293.75424,
+        886.58374,
+        345.75864,
+        785.149,
+        343.03735
+      ]
+    },
+    {
+      "text": "2023",
+      "confidence": 0.9999475,
+      "quad": [
+        64.35498,
+        377.55826,
+        170.31169,
+        377.55826,
+        170.31169,
+        431.11823,
+        64.35498,
+        431.11823
+      ]
+    },
+    {
+      "text": "$1,000",
+      "confidence": 0.99997205,
+      "quad": [
+        426.52197,
+        379.27283,
+        560.6062,
+        377.01697,
+        561.4823,
+        428.3268,
+        427.39807,
+        430.58267
+      ]
+    },
+    {
+      "text": "$250",
+      "confidence": 0.99997973,
+      "quad": [
+        785.19476,
+        375.74487,
+        890.80524,
+        375.74487,
+        890.80524,
+        431.6081,
+        785.19476,
+        431.6081
+      ]
+    },
+    {
+      "text": "2024",
+      "confidence": 0.99997884,
+      "quad": [
+        64.35498,
+        462.26413,
+        170.31169,
+        462.26413,
+        170.31169,
+        515.8241,
+        64.35498,
+        515.8241
+      ]
+    },
+    {
+      "text": "$1,250",
+      "confidence": 0.99997693,
+      "quad": [
+        426.1229,
+        463.561,
+        559.81586,
+        461.55023,
+        560.63,
+        514.8868,
+        426.93698,
+        516.8976
+      ]
+    },
+    {
+      "text": "$200",
+      "confidence": 0.99995655,
+      "quad": [
+        785.8133,
+        462.3882,
+        888.8534,
+        462.3882,
+        888.8534,
+        515.7,
+        785.8133,
+        515.7
+      ]
+    },
+    {
+      "text": "2025",
+      "confidence": 0.9999737,
+      "quad": [
+        64.416664,
+        547.03125,
+        168.91667,
+        547.03125,
+        168.91667,
+        600.46875,
+        64.416664,
+        600.46875
+      ]
+    },
+    {
+      "text": "$1,500",
+      "confidence": 0.9999833,
+      "quad": [
+        426.3427,
+        549.9928,
+        560.5275,
+        547.03284,
+        561.6818,
+        598.595,
+        427.497,
+        601.55493
+      ]
+    },
+    {
+      "text": "$150",
+      "confidence": 0.99997807,
+      "quad": [
+        783.79486,
+        546.41406,
+        890.8718,
+        546.41406,
+        890.8718,
+        602.4095,
+        783.79486,
+        602.4095
+      ]
+    }
+  ]
+}

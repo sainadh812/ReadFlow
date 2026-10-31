@@ -1,0 +1,25 @@
+{
+  "versionName": "0.2.5",
+  "versionCode": "21",
+  "sourceCommit": "f025430e9e18d65fc317afe06e5bde06acb7fb47",
+  "repository": "sainadh812/ReadFlow",
+  "package": "app.readflow",
+  "firebaseProjectId": "read-assist-fbd21",
+  "firebaseAndroidAppId": "1:831366793321:android:573b80e46b55eb65103af8",
+  "firebaseConfigured": true,
+  "certificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+  "unitTests": {
+    "tests": 363,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "lintErrors": 0,
+  "lintWarnings": 34,
+  "nativeSymbolsUploaded": false,
+  "crashDeliveryVerified": false,
+  "deviceTestsPerformed": false,
+  "licenseAuditStillRequired": true,
+  "playUploadPerformed": false,
+  "signingNote": "Upload-key-signed APK; Play App Signing uses a separate app-signing certificate."
+}

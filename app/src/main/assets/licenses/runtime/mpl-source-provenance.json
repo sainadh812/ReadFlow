@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-26",
+  "scope": "Additional source/notice files for subsequent builds; not present in the audited 0.2.1 AAB.",
+  "files": [
+    {
+      "file": "okhttp-4.12.0-public_suffix_list.dat",
+      "sourceUrl": "https://raw.githubusercontent.com/square/okhttp/4984568367caaf359b82c452bd28b5e192824d1c/okhttp/src/test/resources/okhttp3/internal/publicsuffix/public_suffix_list.dat",
+      "sha256": "e8b273972eb5a70e888bd3e7d7c5b9b04e600a59d69def9136a74d70ae6fcdd3",
+      "modified": false,
+      "license": "MPL-2.0",
+      "correspondingResourcePayloadVerified": true
+    },
+    {
+      "file": "MPL-2.0.txt",
+      "sourceUrl": "https://gitlab.com/libeigen/eigen/-/raw/1d8b82b0740839c0de7f1242a3585e3390ff5f33/COPYING.MPL2",
+      "sha256": "66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172",
+      "modified": false,
+      "license": "MPL-2.0"
+    },
+    {
+      "file": "MPL-SOURCE-AVAILABILITY.txt",
+      "type": "Project-authored source-availability index; original upstream notices/source offers preserved"
+    }
+  ]
+}

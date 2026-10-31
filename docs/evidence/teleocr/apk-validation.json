@@ -1,0 +1,29 @@
+{
+  "applicationId": "app.readflow",
+  "previousVersion": "0.1.9-prototype",
+  "previousVersionCode": 10,
+  "newVersion": "0.1.10-prototype",
+  "newVersionCode": 11,
+  "abi": "arm64-v8a",
+  "certificateSha256": "f7313f98e9414c166f3fb2d2a9329ba1bb5dd9d76b068254522d20d1f8b109f9",
+  "certificateMatches019": true,
+  "apkBytes": 141298832,
+  "apkSha256": "bf2cef7bae5d2848780fe109b1814391910c6f86a6074eccd593345abdd64d25",
+  "teleocrNativeLibraryBytes": 5606056,
+  "nativeElfLoadAlignment": 16384,
+  "apkZip16KiBAlignment": "passed with Android build-tools 35.0.0 zipalign",
+  "ocrModelsBundled": false,
+  "databaseSchemaVersion": 1,
+  "deviceInstallTested": false,
+  "checks": {
+    "command": "./gradlew assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest --console=plain",
+    "result": "BUILD SUCCESSFUL",
+    "unitTests": 189,
+    "unitFailures": 0,
+    "unitErrors": 0,
+    "unitSkipped": 0,
+    "lintErrors": 0,
+    "lintWarnings": 16,
+    "instrumentation": "compiled; no device connected, not executed"
+  }
+}

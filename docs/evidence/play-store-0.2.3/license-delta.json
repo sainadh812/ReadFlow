@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-26",
+  "reviewType": "Bounded corrective release artifact/license delta against 0.2.2",
+  "publicationApproval": false,
+  "artifact": {
+    "path": "app/build/outputs/bundle/release/app-release.aab",
+    "bytes": 71074192,
+    "sha256": "73f86d0591ffb374050237655b73574a338f8630cd68fb108763a0f2b66e2995",
+    "versionName": "0.2.3",
+    "versionCode": 19,
+    "package": "app.readflow",
+    "applicationLabel": "Read Assist",
+    "productionSigned": false
+  },
+  "baseline": {
+    "path": "dist/play-0.2.2/Read-Assit-0.2.2-play-unsigned.aab",
+    "bytes": 71074599,
+    "sha256": "168948494f4050db9af39a990bf78c0eaf49a0c671fe1fa150a8755bed8519d4",
+    "versionName": "0.2.2",
+    "versionCode": 18,
+    "licenseDelta": "docs/evidence/play-store-0.2.2/license-delta.json",
+    "originalSourceAudit": "docs/PLAY_REAUDIT_2026-10-26.md"
+  },
+  "checks": {
+    "bundletoolAnd16KiBPackaging": "passed",
+    "fontVerification": {
+      "result": "passed",
+      "families": 6,
+      "fontFiles": 7,
+      "fontBytes": 4863856,
+      "licenseFiles": 6
+    },
+    "knownSherpaEspeakLibrariesSymbolsAndJniAbsent": true,
+    "espeakDownloadDataAbsent": true,
+    "runtimeInventory": {
+      "count": 133,
+      "byteIdenticalToBaseline": true,
+      "sha256": "973b7b1d97f25fbdf21f4f13b58144ad5d510dc8b4f2409b37416a535b299024",
+      "addedDependencies": [],
+      "removedDependencies": [],
+      "changedDependencyRecords": []
+    },
+    "permissions": {
+      "identicalToBaseline": true,
+      "billingPermissionAbsent": true,
+      "names": [
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.INTERNET",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.WAKE_LOCK",
+        "app.readflow.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      ]
+    },
+    "playBillingClientDexClassesAbsent": true,
+    "newPaymentSdkDependency": false,
+    "modelManifests": [
+      {
+        "path": "base/assets/model-manifests.json",
+        "bytes": 3799,
+        "sha256": "41456f64fae42998c43121be5832fcdc5cba51586f48eeee99c5fdcd0580efe5",
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/assets/ocr-model-manifests.json",
+        "bytes": 3547,
+        "sha256": "12cdfc6c15668d613f02587ececbf5b8913c3b09a66deedf99eb4e89ec36f112",
+        "identicalToBaseline": true
+      }
+    ],
+    "nativeLibraries": [
+      {
+        "path": "base/lib/arm64-v8a/libandroidx.graphics.path.so",
+        "bytes": 10096,
+        "sha256": "41e9a793c43a0f4fddb19e33f346bace464f30f888ba7b9eaf96294ea115bfb6",
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/lib/arm64-v8a/libdatastore_shared_counter.so",
+        "bytes": 7112,
+        "sha256": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1",
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/lib/arm64-v8a/libmlkit_google_ocr_pipeline.so",
+        "bytes": 11064544,
+        "sha256": "fa41d509a661e8aa8b3e3ac1a28541f8823f308414fcad733fe26d61feea2646",
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/lib/arm64-v8a/libonnxruntime.so",
+        "bytes": 18214224,
+        "sha256": "3fc3e79539f06f67360a810e60eb5c513db5febc16f7bc71e5d9e8ce39e3d775",
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/lib/arm64-v8a/libonnxruntime4j_jni.so",
+        "bytes": 75720,
+        "sha256": "adcaf5e11ff65ad7b54725b2869118568b14ce2f3596d1b6f082ed0c774f2539",
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/lib/arm64-v8a/libreadflow_misaki.so",
+        "bytes": 29226752,
+        "sha256": "16ae6e9ab4f238cbd1c5ca1788747899799e7c7724f931938d05d69b741e99a7",
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/lib/arm64-v8a/libreadflow_teleocr.so",
+        "bytes": 5606056,
+        "sha256": "26da508649c5ed55fe99b28e4ac59367604d28596e4c16355b38a427fe3bb28f",
+        "identicalToBaseline": true
+      }
+    ],
+    "allSevenNativeLibrariesByteIdenticalToBaseline": true,
+    "noticeAssets": {
+      "added": [],
+      "changed": [
+        {
+          "path": "base/assets/licenses/runtime/MPL-SOURCE-AVAILABILITY.txt",
+          "bytes": 2785,
+          "sha256": "c2fd5944e532eb5ee71a510b3bc703ccc7b077bf6ffd736749959609b9381aac",
+          "identicalToBaseline": false,
+          "change": "Exact project-authored brand replacement Read Assit to Read Assist only"
+        },
+        {
+          "path": "base/assets/licenses/runtime/README.txt",
+          "bytes": 7218,
+          "sha256": "aa401156f893ee664d47fa055aa0e10a19d5fb19d5a498210c43ed51afe36611",
+          "identicalToBaseline": false,
+          "change": "Exact project-authored brand replacement Read Assit to Read Assist only"
+        }
+      ],
+      "removed": [],
+      "newMplSourceAndLicenseHashesMatchProvenance": true,
+      "misakiHistoricalSherpaNoteScopedToDebug": true,
+      "originalOnnxMicrosoftSourceOfferUnchanged": true
+    },
+    "brand": {
+      "manifestLabelResource": "@string/app_name",
+      "decodedResourceValue": "Read Assist"
+    },
+    "supportRecipientCorrection": {
+      "expectedOwnerProvidedUpiId": "readassist@ybl",
+      "newIdPresentIn": [
+        "base/assets/privacy-information.txt",
+        "base/dex/classes3.dex"
+      ],
+      "oldId": "readassit@ybl",
+      "oldIdOccurrencesInAssetsAndDex": 0,
+      "scannedAssetAndDexFiles": 253,
+      "privacyStatesFeaturesFreeAndNoTipBenefits": true,
+      "packagedPrivacySha256": "e1e97f099dc6208b7c78defb824d1bb8621e75f11cd196b9480408cb0179c520",
+      "recipientRegistrationVerified": false,
+      "paymentExecutionVerified": false,
+      "note": "Confirmed packaged strings only. UPI registration, account holder, payer behavior and successful transfer require separate owner/device checks."
+    }
+  },
+  "conclusion": "Version, app label and UPI recipient correction verified. No dependency, native library, model-manifest or permission changes; only two project-authored notice brand lines changed. Existing third-party notices/source offers and obligations remain.",
+  "limitations": [
+    "No blanket legal clearance or Google Play approval is asserted.",
+    "Google SDK aggregated notices are preserved; complete binary-to-source/license-exception mapping remains unestablished. GPL/LGPL notice text alone is not proof of a linked GPL-only implementation.",
+    "Model/voice training provenance relies on upstream declarations.",
+    "TeleOCR GGUF weights Apache-2.0 versus MIT runtime labeling erratum remains documented; model manifests are unchanged to preserve installation markers.",
+    "Candidate is unsigned; repeat exact-artifact checks following production signing or other final changes.",
+    "No physical device, Play split installation, sustained playback, UPI recipient registration, account ownership or payment execution verification was performed in this review.",
+    "Optional external support must remain voluntary and grant no paid content/benefits; applicable Play payment policy review is separate from this license delta."
+  ]
+}

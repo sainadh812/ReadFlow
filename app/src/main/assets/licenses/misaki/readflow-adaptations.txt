@@ -1,0 +1,11 @@
+ReadFlow direct Kokoro engine
+
+The silence-scaling algorithm adapts GeneratedAudio::ScaleSilence in
+sherpa-onnx/csrc/offline-tts.cc, tag v1.13.8.
+Copyright (c) 2023 Xiaomi Corporation
+Licensed under the Apache License, Version 2.0 (see LICENSE in this directory).
+ReadFlow re-expresses the sample-selection algorithm in Kotlin for the direct
+ONNX engine. No eSpeak phonemizer implementation is used by this engine.
+
+The phone-alphabet conversion follows hexgrad/Misaki EN_PHONES.md at
+fba1236595f2d2bf21d414ba6e57d25256afada3, Apache-2.0 (see misaki.txt).

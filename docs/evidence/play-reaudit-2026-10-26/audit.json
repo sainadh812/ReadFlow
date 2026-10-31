@@ -1,0 +1,111 @@
+{
+  "date": "2026-10-26",
+  "artifact": "dist/play-0.2.1/ReadFlow-0.2.1-play-unsigned.aab",
+  "sha256": "84056ec99abaa69753e7f5f032ce7f3fa8b7a658ad4d9e4c4e011b91fa3fb447",
+  "packagingCheck": "passed",
+  "fontCheck": "passed: 6 families / 7 files / exact hashes",
+  "runtimeArtifactCount": 133,
+  "withoutEmbeddedNotices": 85,
+  "knownSherpaEspeakSymbolsAndLibraries": "absent",
+  "speechManifests": "kokoro + alignment; no espeak files",
+  "media3SourceReview": [
+    {
+      "module": "common",
+      "url": "https://dl.google.com/dl/android/maven2/androidx/media3/media3-common/1.6.1/media3-common-1.6.1-sources.jar",
+      "sha256": "3e6d466ca1d014fb77bd5ea5e5db9f388c3c9767231a0a6c286dd621104a4590",
+      "sourceFiles": 131,
+      "nonApacheHeader": []
+    },
+    {
+      "module": "container",
+      "url": "https://dl.google.com/dl/android/maven2/androidx/media3/media3-container/1.6.1/media3-container-1.6.1-sources.jar",
+      "sha256": "b1a0fd47f7fd6076ae8e4e33bab4a5ffc89a1444ee4a9f136a5940d7948caed4",
+      "sourceFiles": 12,
+      "nonApacheHeader": []
+    },
+    {
+      "module": "database",
+      "url": "https://dl.google.com/dl/android/maven2/androidx/media3/media3-database/1.6.1/media3-database-1.6.1-sources.jar",
+      "sha256": "1baca4ff0a32e76d08b92ed5d33e0278aa34a9e9c537edbc2fd39573e8ec46a3",
+      "sourceFiles": 7,
+      "nonApacheHeader": []
+    },
+    {
+      "module": "datasource",
+      "url": "https://dl.google.com/dl/android/maven2/androidx/media3/media3-datasource/1.6.1/media3-datasource-1.6.1-sources.jar",
+      "sha256": "d62d1d34ade715f5bd0e9c43b8daa224f2fc54b8a9435e5f3e51401372d27613",
+      "sourceFiles": 57,
+      "nonApacheHeader": []
+    },
+    {
+      "module": "decoder",
+      "url": "https://dl.google.com/dl/android/maven2/androidx/media3/media3-decoder/1.6.1/media3-decoder-1.6.1-sources.jar",
+      "sha256": "a0af9c555d787271c84b4518214d248e33cc55ebf11789ca9d31074f61e9982a",
+      "sourceFiles": 12,
+      "nonApacheHeader": []
+    },
+    {
+      "module": "exoplayer",
+      "url": "https://dl.google.com/dl/android/maven2/androidx/media3/media3-exoplayer/1.6.1/media3-exoplayer-1.6.1-sources.jar",
+      "sha256": "4b6ffcfec4aa63263087fcaa2976c3bfcd13af0f2f7d83c914a2359480110db7",
+      "sourceFiles": 328,
+      "nonApacheHeader": []
+    },
+    {
+      "module": "extractor",
+      "url": "https://dl.google.com/dl/android/maven2/androidx/media3/media3-extractor/1.6.1/media3-extractor-1.6.1-sources.jar",
+      "sha256": "8453813e8c64eaec0374aceacd0810c4cf7c3b2019961f2fee3609c4c4b0e3e1",
+      "sourceFiles": 274,
+      "nonApacheHeader": []
+    },
+    {
+      "module": "session",
+      "url": "https://dl.google.com/dl/android/maven2/androidx/media3/media3-session/1.6.1/media3-session-1.6.1-sources.jar",
+      "sha256": "25a653d88f79cd668edcb3bab57ea888784d2ff02c874c7f7bbde90eb1a4d20a",
+      "sourceFiles": 70,
+      "nonApacheHeader": [
+        "androidx/media3/session/IMediaController.java",
+        "androidx/media3/session/IMediaSession.java",
+        "androidx/media3/session/IMediaSessionService.java"
+      ]
+    }
+  ],
+  "graphicsPathSourceReview": {
+    "revision": "8a05a22af450d589ef911d772a001a49dcb05b71",
+    "source": "https://android.googlesource.com/platform/frameworks/support/+/8a05a22af450d589ef911d772a001a49dcb05b71/graphics/graphics-path/src/main/cpp/",
+    "result": "All 10 C++/header source files carry Apache-2.0 headers; CMake compiles Conic.cpp, PathIterator.cpp, pathway.cpp; no separate Skia copied license established."
+  },
+  "finding": "No commercial-use prohibition established for selected release models/fonts. This is not blanket legal approval.",
+  "requiredDocumentationCorrections": [
+    "TeleOCR GGUF weights are Apache-2.0, runtime MIT: documented erratum; manifest unchanged to avoid installation-marker invalidation.",
+    "Historical Sherpa-in-APK wording now scoped to debug/prototype in project-authored Misaki provenance; original upstream notices unchanged.",
+    "Added explicit MPL source-availability index, full MPL text and verified corresponding OkHttp PSL source for next build; existing source offers preserved."
+  ],
+  "remaining": [
+    "Google ML Kit/Play SDK aggregated notices do not establish a complete binary-to-source/license-exception mapping; no unqualified no-copyleft claim.",
+    "Model training and voice provenance relies on upstream declarations, not independent rights-chain certification.",
+    "Owner app-code/EULA and real privacy/contact/Data safety details remain separate publication work.",
+    "Re-audit final production-signed artifact after branding, billing/promotion implementation and new notice assets."
+  ],
+  "media3GeneratedAidlSources": [
+    {
+      "name": "IMediaController",
+      "url": "https://raw.githubusercontent.com/androidx/media/1.6.1/libraries/session/src/main/aidl/androidx/media3/session/IMediaController.aidl",
+      "apacheHeader": true
+    },
+    {
+      "name": "IMediaSession",
+      "url": "https://raw.githubusercontent.com/androidx/media/1.6.1/libraries/session/src/main/aidl/androidx/media3/session/IMediaSession.aidl",
+      "apacheHeader": true
+    },
+    {
+      "name": "IMediaSessionService",
+      "url": "https://raw.githubusercontent.com/androidx/media/1.6.1/libraries/session/src/main/aidl/androidx/media3/session/IMediaSessionService.aidl",
+      "apacheHeader": true
+    }
+  ],
+  "publicBrand": "Read Assit",
+  "auditedArtifactBrand": "ReadFlow",
+  "scope": "Existing unsigned 0.2.1 review AAB only; subsequent branding, billing, promotions and notice assets are not in this artifact.",
+  "publicationApproval": false
+}

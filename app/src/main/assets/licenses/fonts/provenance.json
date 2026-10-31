@@ -1,0 +1,433 @@
+{
+  "schemaVersion": 1,
+  "description": "Unmodified offline reader fonts. Original font names, metadata, copyright notices and OFL licenses are preserved. Local filenames satisfy Android resource naming rules; font bytes are unchanged. No font download occurs at runtime.",
+  "retrievedOn": "2026-10-26",
+  "fonts": [
+    {
+      "id": "opendyslexic",
+      "name": "OpenDyslexic",
+      "license": "OFL-1.1",
+      "repository": "https://forge.hackers.town/antijingoist/opendyslexic",
+      "revision": "48218028cc8bd9f4f244cd4ce4049e6c879d4d1a",
+      "modified": false,
+      "files": [
+        {
+          "path": "app/src/main/res/font/opendyslexic_regular.otf",
+          "sourcePath": "compiled/OpenDyslexic-Regular.otf",
+          "url": "https://forge.hackers.town/antijingoist/opendyslexic/raw/commit/48218028cc8bd9f4f244cd4ce4049e6c879d4d1a/compiled/OpenDyslexic-Regular.otf",
+          "sha256": "215f0b29780dbafa8c02f2f22118fb9e2ab6b27b6686e3f13c8754041a035f64",
+          "bytes": 175808,
+          "kind": "font",
+          "fontMetadata": {
+            "copyright": [
+              "Copyright © 2019 by Abbie Gonzalez. All rights reserved."
+            ],
+            "family": [
+              "OpenDyslexic"
+            ],
+            "style": [
+              "Regular"
+            ],
+            "version": [
+              "Version 0.990;Glyphs 3.4.1 (3436)"
+            ],
+            "licenseDescription": [
+              "Copyright (c) 2019-07-29, Abbie Gonzalez (https://abbiecod.es|support@abbiecod.es),\nwith Reserved Font Name OpenDyslexic.\nCopyright (c) 12/2012 - 2019\nThis Font Software is licensed under the SIL Open Font License, Version 1.1.\nThis license is copied below, and is also available with a FAQ at:\nhttp://scripts.sil.org/OFL\n\n\n-----------------------------------------------------------\nSIL OPEN FONT LICENSE Version 1.1 - 26 February 2007\n-----------------------------------------------------------\n\nPREAMBLE\nThe goals of the Open Font License (OFL) are to stimulate worldwide\ndevelopment of collaborative font projects, to support the font creation\nefforts of academic and linguistic communities, and to provide a free and\nopen framework in which fonts may be shared and improved in partnership\nwith others.\n\nThe OFL allows the licensed fonts to be used, studied, modified and\nredistributed freely as long as they are not sold by themselves. The\nfonts, including any derivative works, can be bundled, embedded, \nredistributed and/or sold with any software provided that any reserved\nnames are not used by derivative works. The fonts and derivatives,\nhowever, cannot be released under any other type of license. The\nrequirement for fonts to remain under this license does not apply\nto any document created using the fonts or their derivatives.\n\nDEFINITIONS\n\"Font Software\" refers to the set of files released by the Copyright\nHolder(s) under this license and clearly marked as such. This may\ninclude source files, build scripts and documentation.\n\n\"Reserved Font Name\" refers to any names specified as such after the\ncopyright statement(s).\n\n\"Original Version\" refers to the collection of Font Software components as\ndistributed by the Copyright Holder(s).\n\n\"Modified Version\" refers to any derivative made by adding to, deleting,\nor substituting -- in part or in whole -- any of the components of the\nOriginal Version, by changing formats or by porting the Font Software to a\nnew environment.\n\n\"Author\" refers to any designer, engineer, programmer, technical\nwriter or other person who contributed to the Font Software.\n\nPERMISSION & CONDITIONS\nPermission is hereby granted, free of charge, to any person obtaining\na copy of the Font Software, to use, study, copy, merge, embed, modify,\nredistribute, and sell modified and unmodified copies of the Font\nSoftware, subject to the following conditions:\n\n1) Neither the Font Software nor any of its individual components,\nin Original or Modified Versions, may be sold by itself.\n\n2) Original or Modified Versions of the Font Software may be bundled,\nredistributed and/or sold with any software, provided that each copy\ncontains the above copyright notice and this license. These can be\nincluded either as stand-alone text files, human-readable headers or\nin the appropriate machine-readable metadata fields within text or\nbinary files as long as those fields can be easily viewed by the user.\n\n3) No Modified Version of the Font Software may use the Reserved Font\nName(s) unless explicit written permission is granted by the corresponding\nCopyright Holder. This restriction only applies to the primary font name as\npresented to the users.\n\n4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font\nSoftware shall not be used to promote, endorse or advertise any\nModified Version, except to acknowledge the contribution(s) of the\nCopyright Holder(s) and the Author(s) or with their explicit written\npermission.\n\n5) The Font Software, modified or unmodified, in part or in whole,\nmust be distributed entirely under this license, and must not be\ndistributed under any other license. The requirement for fonts to\nremain under this license does not apply to any document created\nusing the Font Software.\n\nTERMINATION\nThis license becomes null and void if any of the above conditions are\nnot met.\n\nDISCLAIMER\nTHE FONT SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT\nOF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE\nCOPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nINCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL\nDAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM\nOTHER DEALINGS IN THE FONT SOFTWARE.\n"
+            ],
+            "licenseUrl": []
+          },
+          "glyphCheck": {
+            "sample": "Milanković’s Köppen 0123456789 $£€%–—",
+            "missingCodePoints": []
+          }
+        },
+        {
+          "path": "app/src/main/res/font/opendyslexic_bold.otf",
+          "sourcePath": "compiled/OpenDyslexic-Bold.otf",
+          "url": "https://forge.hackers.town/antijingoist/opendyslexic/raw/commit/48218028cc8bd9f4f244cd4ce4049e6c879d4d1a/compiled/OpenDyslexic-Bold.otf",
+          "sha256": "ee7a8b9590a78e183826d16d6a22a50f6253c62e2f7f5e0e01ef44eb0676a9e0",
+          "bytes": 184004,
+          "kind": "font",
+          "fontMetadata": {
+            "copyright": [
+              "Copyright © 2019 by Abbie Gonzalez. All rights reserved."
+            ],
+            "family": [
+              "OpenDyslexic"
+            ],
+            "style": [
+              "Bold"
+            ],
+            "version": [
+              "Version 0.990;Glyphs 3.4.1 (3436)"
+            ],
+            "licenseDescription": [
+              "Copyright (c) 2019-07-29, Abbie Gonzalez (https://abbiecod.es|support@abbiecod.es),\nwith Reserved Font Name OpenDyslexic.\nCopyright (c) 12/2012 - 2019\nThis Font Software is licensed under the SIL Open Font License, Version 1.1.\nThis license is copied below, and is also available with a FAQ at:\nhttp://scripts.sil.org/OFL\n\n\n-----------------------------------------------------------\nSIL OPEN FONT LICENSE Version 1.1 - 26 February 2007\n-----------------------------------------------------------\n\nPREAMBLE\nThe goals of the Open Font License (OFL) are to stimulate worldwide\ndevelopment of collaborative font projects, to support the font creation\nefforts of academic and linguistic communities, and to provide a free and\nopen framework in which fonts may be shared and improved in partnership\nwith others.\n\nThe OFL allows the licensed fonts to be used, studied, modified and\nredistributed freely as long as they are not sold by themselves. The\nfonts, including any derivative works, can be bundled, embedded, \nredistributed and/or sold with any software provided that any reserved\nnames are not used by derivative works. The fonts and derivatives,\nhowever, cannot be released under any other type of license. The\nrequirement for fonts to remain under this license does not apply\nto any document created using the fonts or their derivatives.\n\nDEFINITIONS\n\"Font Software\" refers to the set of files released by the Copyright\nHolder(s) under this license and clearly marked as such. This may\ninclude source files, build scripts and documentation.\n\n\"Reserved Font Name\" refers to any names specified as such after the\ncopyright statement(s).\n\n\"Original Version\" refers to the collection of Font Software components as\ndistributed by the Copyright Holder(s).\n\n\"Modified Version\" refers to any derivative made by adding to, deleting,\nor substituting -- in part or in whole -- any of the components of the\nOriginal Version, by changing formats or by porting the Font Software to a\nnew environment.\n\n\"Author\" refers to any designer, engineer, programmer, technical\nwriter or other person who contributed to the Font Software.\n\nPERMISSION & CONDITIONS\nPermission is hereby granted, free of charge, to any person obtaining\na copy of the Font Software, to use, study, copy, merge, embed, modify,\nredistribute, and sell modified and unmodified copies of the Font\nSoftware, subject to the following conditions:\n\n1) Neither the Font Software nor any of its individual components,\nin Original or Modified Versions, may be sold by itself.\n\n2) Original or Modified Versions of the Font Software may be bundled,\nredistributed and/or sold with any software, provided that each copy\ncontains the above copyright notice and this license. These can be\nincluded either as stand-alone text files, human-readable headers or\nin the appropriate machine-readable metadata fields within text or\nbinary files as long as those fields can be easily viewed by the user.\n\n3) No Modified Version of the Font Software may use the Reserved Font\nName(s) unless explicit written permission is granted by the corresponding\nCopyright Holder. This restriction only applies to the primary font name as\npresented to the users.\n\n4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font\nSoftware shall not be used to promote, endorse or advertise any\nModified Version, except to acknowledge the contribution(s) of the\nCopyright Holder(s) and the Author(s) or with their explicit written\npermission.\n\n5) The Font Software, modified or unmodified, in part or in whole,\nmust be distributed entirely under this license, and must not be\ndistributed under any other license. The requirement for fonts to\nremain under this license does not apply to any document created\nusing the Font Software.\n\nTERMINATION\nThis license becomes null and void if any of the above conditions are\nnot met.\n\nDISCLAIMER\nTHE FONT SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT\nOF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE\nCOPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,\nINCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL\nDAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM\nOTHER DEALINGS IN THE FONT SOFTWARE.\n"
+            ],
+            "licenseUrl": []
+          },
+          "glyphCheck": {
+            "sample": "Milanković’s Köppen 0123456789 $£€%–—",
+            "missingCodePoints": []
+          }
+        },
+        {
+          "path": "app/src/main/assets/licenses/fonts/opendyslexic/OFL.txt",
+          "sourcePath": "OFL.txt",
+          "url": "https://forge.hackers.town/antijingoist/opendyslexic/raw/commit/48218028cc8bd9f4f244cd4ce4049e6c879d4d1a/OFL.txt",
+          "sha256": "caafcccfb70fc72458fcbda812ec8f0a06cb300cbabb87eabbb30b946124394b",
+          "bytes": 4453,
+          "kind": "license"
+        }
+      ]
+    },
+    {
+      "id": "atkinson",
+      "name": "Atkinson Hyperlegible Next",
+      "license": "OFL-1.1",
+      "repository": "https://github.com/google/fonts",
+      "revision": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "modified": false,
+      "files": [
+        {
+          "path": "app/src/main/res/font/atkinson_next.ttf",
+          "sourcePath": "ofl/atkinsonhyperlegiblenext/AtkinsonHyperlegibleNext[wght].ttf",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/atkinsonhyperlegiblenext/AtkinsonHyperlegibleNext%5Bwght%5D.ttf",
+          "sha256": "5a455d1cfa099b601ab70751bb9673e8fe1854dc4500c80e1a220d0d75e31745",
+          "bytes": 114552,
+          "kind": "font",
+          "fontMetadata": {
+            "copyright": [
+              "Copyright 2020-2024 The Atkinson Hyperlegible Next Project Authors (https://github.com/googlefonts/atkinson-hyperlegible-next)"
+            ],
+            "family": [
+              "Atkinson Hyperlegible Next"
+            ],
+            "style": [
+              "Regular"
+            ],
+            "version": [
+              "Version 2.001"
+            ],
+            "licenseDescription": [
+              "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://openfontlicense.org"
+            ],
+            "licenseUrl": [
+              "https://openfontlicense.org"
+            ],
+            "axes": [
+              {
+                "tag": "wght",
+                "minimum": 200.0,
+                "default": 400.0,
+                "maximum": 800.0
+              }
+            ]
+          },
+          "glyphCheck": {
+            "sample": "Milanković’s Köppen 0123456789 $£€%–—",
+            "missingCodePoints": []
+          }
+        },
+        {
+          "path": "app/src/main/assets/licenses/fonts/atkinson/OFL.txt",
+          "sourcePath": "ofl/atkinsonhyperlegiblenext/OFL.txt",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/atkinsonhyperlegiblenext/OFL.txt",
+          "sha256": "aca6a428580965d2297d1b718042dd427c2a9443ece3b0d02d758e161e0c4030",
+          "bytes": 4431,
+          "kind": "license"
+        },
+        {
+          "path": "app/src/main/assets/licenses/fonts/atkinson/METADATA.pb",
+          "sourcePath": "ofl/atkinsonhyperlegiblenext/METADATA.pb",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/atkinsonhyperlegiblenext/METADATA.pb",
+          "sha256": "9d0050e8a74b976099f69ba23a25063b60deeb91eae89388bb20dffb5b4a5669",
+          "bytes": 1639,
+          "kind": "metadata"
+        }
+      ]
+    },
+    {
+      "id": "lexend",
+      "name": "Lexend",
+      "license": "OFL-1.1",
+      "repository": "https://github.com/google/fonts",
+      "revision": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "modified": false,
+      "files": [
+        {
+          "path": "app/src/main/res/font/lexend.ttf",
+          "sourcePath": "ofl/lexend/Lexend[wght].ttf",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/lexend/Lexend%5Bwght%5D.ttf",
+          "sha256": "3add53e641fbc81da64da4bb254285e2831b52b029527bc0714e2b9610832ee6",
+          "bytes": 175756,
+          "kind": "font",
+          "fontMetadata": {
+            "copyright": [
+              "Copyright 2019 The Lexend Project Authors (https://github.com/googlefonts/lexend)"
+            ],
+            "family": [
+              "Lexend"
+            ],
+            "style": [
+              "Regular"
+            ],
+            "version": [
+              "Version 1.007"
+            ],
+            "licenseDescription": [
+              "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
+            ],
+            "licenseUrl": [
+              "https://scripts.sil.org/OFL"
+            ],
+            "axes": [
+              {
+                "tag": "wght",
+                "minimum": 100.0,
+                "default": 400.0,
+                "maximum": 900.0
+              }
+            ]
+          },
+          "glyphCheck": {
+            "sample": "Milanković’s Köppen 0123456789 $£€%–—",
+            "missingCodePoints": []
+          }
+        },
+        {
+          "path": "app/src/main/assets/licenses/fonts/lexend/OFL.txt",
+          "sourcePath": "ofl/lexend/OFL.txt",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/lexend/OFL.txt",
+          "sha256": "5da8505887d0fa7fe963445fd58852707fda34adfeb65af25c99d152bab285bd",
+          "bytes": 4436,
+          "kind": "license"
+        },
+        {
+          "path": "app/src/main/assets/licenses/fonts/lexend/METADATA.pb",
+          "sourcePath": "ofl/lexend/METADATA.pb",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/lexend/METADATA.pb",
+          "sha256": "b49d2fc75e302d8961616bb2005309a8bd76c32787f0769fcb910a8b0f10fcb0",
+          "bytes": 949,
+          "kind": "metadata"
+        }
+      ]
+    },
+    {
+      "id": "literata",
+      "name": "Literata",
+      "license": "OFL-1.1",
+      "repository": "https://github.com/google/fonts",
+      "revision": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "modified": false,
+      "files": [
+        {
+          "path": "app/src/main/res/font/literata.ttf",
+          "sourcePath": "ofl/literata/Literata[opsz,wght].ttf",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/literata/Literata%5Bopsz%2Cwght%5D.ttf",
+          "sha256": "b41138c9373112f32abb589cc22e8674b06ed4048b0c513be922bdd26f274440",
+          "bytes": 955132,
+          "kind": "font",
+          "fontMetadata": {
+            "copyright": [
+              "Copyright 2017 The Literata Project Authors (https://github.com/googlefonts/literata)"
+            ],
+            "family": [
+              "Literata"
+            ],
+            "style": [
+              "Regular"
+            ],
+            "version": [
+              "Version 3.103;gftools[0.9.29]"
+            ],
+            "licenseDescription": [
+              "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
+            ],
+            "licenseUrl": [
+              "https://scripts.sil.org/OFL"
+            ],
+            "axes": [
+              {
+                "tag": "opsz",
+                "minimum": 7.0,
+                "default": 12.0,
+                "maximum": 72.0
+              },
+              {
+                "tag": "wght",
+                "minimum": 200.0,
+                "default": 400.0,
+                "maximum": 900.0
+              }
+            ]
+          },
+          "glyphCheck": {
+            "sample": "Milanković’s Köppen 0123456789 $£€%–—",
+            "missingCodePoints": []
+          }
+        },
+        {
+          "path": "app/src/main/assets/licenses/fonts/literata/OFL.txt",
+          "sourcePath": "ofl/literata/OFL.txt",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/literata/OFL.txt",
+          "sha256": "8742963604cd89dc81437811a850018fc03b2bfad686d7422c8235967c87614e",
+          "bytes": 4389,
+          "kind": "license"
+        },
+        {
+          "path": "app/src/main/assets/licenses/fonts/literata/METADATA.pb",
+          "sourcePath": "ofl/literata/METADATA.pb",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/literata/METADATA.pb",
+          "sha256": "8dbc5c48f254be32c879f006391cb5f6781941beb1a643c13acf66fa989b6a83",
+          "bytes": 1408,
+          "kind": "metadata"
+        }
+      ]
+    },
+    {
+      "id": "source_serif",
+      "name": "Source Serif 4",
+      "license": "OFL-1.1",
+      "repository": "https://github.com/google/fonts",
+      "revision": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "modified": false,
+      "files": [
+        {
+          "path": "app/src/main/res/font/source_serif.ttf",
+          "sourcePath": "ofl/sourceserif4/SourceSerif4[opsz,wght].ttf",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/sourceserif4/SourceSerif4%5Bopsz%2Cwght%5D.ttf",
+          "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+          "bytes": 1209508,
+          "kind": "font",
+          "fontMetadata": {
+            "copyright": [
+              "© 2014 - 2021 Adobe Systems Incorporated (http://www.adobe.com/), with Reserved Font Name ‘Source’."
+            ],
+            "family": [
+              "Source Serif 4"
+            ],
+            "style": [
+              "Regular"
+            ],
+            "version": [
+              "Version 4.004;hotconv 1.0.116;makeotfexe 2.5.65601"
+            ],
+            "licenseDescription": [
+              "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL. This Font Software is distributed on an ‘AS IS’ BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the SIL Open Font License for the specific language, permissions and limitations governing your use of this Font Software."
+            ],
+            "licenseUrl": [
+              "http://scripts.sil.org/OFL"
+            ],
+            "axes": [
+              {
+                "tag": "wght",
+                "minimum": 200.0,
+                "default": 400.0,
+                "maximum": 900.0
+              },
+              {
+                "tag": "opsz",
+                "minimum": 8.0,
+                "default": 20.0,
+                "maximum": 60.0
+              }
+            ]
+          },
+          "glyphCheck": {
+            "sample": "Milanković’s Köppen 0123456789 $£€%–—",
+            "missingCodePoints": []
+          }
+        },
+        {
+          "path": "app/src/main/assets/licenses/fonts/source_serif/OFL.txt",
+          "sourcePath": "ofl/sourceserif4/OFL.txt",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/sourceserif4/OFL.txt",
+          "sha256": "5f94c3fd3a23131a417ab5a0c8452de57e70c3cfb9f604d88241f7065ebf9fd9",
+          "bytes": 4400,
+          "kind": "license"
+        },
+        {
+          "path": "app/src/main/assets/licenses/fonts/source_serif/METADATA.pb",
+          "sourcePath": "ofl/sourceserif4/METADATA.pb",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/sourceserif4/METADATA.pb",
+          "sha256": "f7b88902c1d2f41839a3f7bf6723d1e64044c7c183b82871ce770a95f24b84e3",
+          "bytes": 1132,
+          "kind": "metadata"
+        }
+      ]
+    },
+    {
+      "id": "noto_sans",
+      "name": "Noto Sans",
+      "license": "OFL-1.1",
+      "repository": "https://github.com/google/fonts",
+      "revision": "e7db6ca603fd4862010383ff17ffd6cc4ffac1c0",
+      "modified": false,
+      "files": [
+        {
+          "path": "app/src/main/res/font/noto_sans.ttf",
+          "sourcePath": "ofl/notosans/NotoSans[wdth,wght].ttf",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/notosans/NotoSans%5Bwdth%2Cwght%5D.ttf",
+          "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+          "bytes": 2049096,
+          "kind": "font",
+          "fontMetadata": {
+            "copyright": [
+              "Copyright 2022 The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic)"
+            ],
+            "family": [
+              "Noto Sans"
+            ],
+            "style": [
+              "Regular"
+            ],
+            "version": [
+              "Version 2.015"
+            ],
+            "licenseDescription": [
+              "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://openfontlicense.org"
+            ],
+            "licenseUrl": [
+              "https://openfontlicense.org"
+            ],
+            "axes": [
+              {
+                "tag": "wght",
+                "minimum": 100.0,
+                "default": 400.0,
+                "maximum": 900.0
+              },
+              {
+                "tag": "wdth",
+                "minimum": 62.5,
+                "default": 100.0,
+                "maximum": 100.0
+              }
+            ]
+          },
+          "glyphCheck": {
+            "sample": "Milanković’s Köppen 0123456789 $£€%–—",
+            "missingCodePoints": []
+          }
+        },
+        {
+          "path": "app/src/main/assets/licenses/fonts/noto_sans/OFL.txt",
+          "sourcePath": "ofl/notosans/OFL.txt",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/notosans/OFL.txt",
+          "sha256": "cee9892f9f0cc8fe882c9e9537ee6a89621d86ee7ceaf70b02e2b2b1c25c061a",
+          "bytes": 4396,
+          "kind": "license"
+        },
+        {
+          "path": "app/src/main/assets/licenses/fonts/noto_sans/METADATA.pb",
+          "sourcePath": "ofl/notosans/METADATA.pb",
+          "url": "https://raw.githubusercontent.com/google/fonts/e7db6ca603fd4862010383ff17ffd6cc4ffac1c0/ofl/notosans/METADATA.pb",
+          "sha256": "9fd9566184e9833ae3a33b8950e2782a8abb1f0a9d6fb2c51b3fb615f2d78cfe",
+          "bytes": 32340,
+          "kind": "metadata"
+        }
+      ]
+    }
+  ]
+}

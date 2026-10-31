@@ -1,0 +1,24 @@
+{
+  "okhttpCommit": "4984568367caaf359b82c452bd28b5e192824d1c",
+  "pslSourceUrl": "https://raw.githubusercontent.com/square/okhttp/4984568367caaf359b82c452bd28b5e192824d1c/okhttp/src/test/resources/okhttp3/internal/publicsuffix/public_suffix_list.dat",
+  "pslSourceSha256": "e8b273972eb5a70e888bd3e7d7c5b9b04e600a59d69def9136a74d70ae6fcdd3",
+  "pslBytes": 246016,
+  "packagedResourcePath": "base/root/okhttp3/internal/publicsuffix/publicsuffixes.gz",
+  "payloadMatch": true,
+  "generatorUrl": "https://raw.githubusercontent.com/square/okhttp/4984568367caaf359b82c452bd28b5e192824d1c/okhttp/src/test/java/okhttp3/internal/publicsuffix/PublicSuffixListGenerator.java",
+  "eigen": {
+    "ortVersion": "1.22.0",
+    "upstreamDepsUrl": "https://raw.githubusercontent.com/microsoft/onnxruntime/v1.22.0/cmake/deps.txt",
+    "upstreamDepsSha256": "468529b3ae2d75569da5002aa21d79f3e0a673ba12e5742ec77cd12fb7309510",
+    "sourceRevision": "1d8b82b0740839c0de7f1242a3585e3390ff5f33",
+    "sourceTreeUrl": "https://gitlab.com/libeigen/eigen/-/tree/1d8b82b0740839c0de7f1242a3585e3390ff5f33",
+    "sourceLicenseUrl": "https://gitlab.com/libeigen/eigen/-/raw/1d8b82b0740839c0de7f1242a3585e3390ff5f33/COPYING.MPL2",
+    "sourceLicenseSha256": "66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172",
+    "sourceArchiveUrl": "https://gitlab.com/libeigen/eigen/-/archive/1d8b82b0740839c0de7f1242a3585e3390ff5f33/eigen-1d8b82b0740839c0de7f1242a3585e3390ff5f33.zip",
+    "upstreamDeclaredArchiveSha1": "5ea4d05e62d7f954a46b3213f9b2535bdd866803",
+    "downloadedArchiveSha1": "51982be81bbe52572b54180454df11a3ece9a934",
+    "downloadedArchiveSha256": "0a11e4f71593a1335cae38c4847bb9f36e1b700148c0d257abfca9df802115c2",
+    "archiveHashMatchesUpstreamDeps": false,
+    "limitation": "Exact published source revision established. Newly fetched GitLab archive transport hash does not match the old dependency declaration; no claim that the original build input or prebuilt Android binary was reproduced. Original Microsoft source offer preserved."
+  }
+}

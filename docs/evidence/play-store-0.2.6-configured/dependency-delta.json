@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "reviewedAtUtc": "2026-10-31",
+  "scope": "Bounded dependency, model, font and notice preservation check of configured0.2.6 against configured0.2.5. Not legal clearance or a reproducible-build assertion.",
+  "workflowRunId": 41183292058,
+  "baselineArtifact": {
+    "path": "dist/play-configured-40529659238/Read-Assist-0.2.5-upload-signed.aab",
+    "sha256": "9709f780723e279cbe7cb9a09cb868374e7c158fb9e3d42a2ee32d4bfe7b6bab"
+  },
+  "finalArtifact": {
+    "path": "dist/play-configured-41183292058/Read-Assist-0.2.6-upload-signed.aab",
+    "sha256": "e222bcf1610e211093836918a7a30960c692bb43c6d4de12d23fe6b3a0579727"
+  },
+  "runtimeDependencies": {
+    "baselineEntries": 144,
+    "finalEntries": 144,
+    "allCoordinateArtifactHashesMatchIncludingDuplicates": true,
+    "allInventoryFieldsUnchanged": true
+  },
+  "allAssets": {
+    "baselineCount": 314,
+    "finalCount": 314,
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  "bundledLicenseAssets": {
+    "baselineCount": 287,
+    "finalCount": 287,
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  "modelManifests": [
+    {
+      "path": "base/assets/model-manifests.json",
+      "unchangedBytes": true,
+      "sha256": "41456f64fae42998c43121be5832fcdc5cba51586f48eeee99c5fdcd0580efe5"
+    },
+    {
+      "path": "base/assets/ocr-model-manifests.json",
+      "unchangedBytes": true,
+      "sha256": "12cdfc6c15668d613f02587ececbf5b8913c3b09a66deedf99eb4e89ec36f112"
+    }
+  ],
+  "fonts": {
+    "baselineCount": 7,
+    "finalCount": 7,
+    "added": [],
+    "removed": [],
+    "changed": []
+  },
+  "nativeLibraries": {
+    "baselineCount": 11,
+    "finalCount": 11,
+    "added": [],
+    "removed": [],
+    "changed": [
+      "base/lib/arm64-v8a/libreadflow_misaki.so"
+    ]
+  },
+  "limitations": [
+    "No new dependencies or models were introduced; existing license/source-availability obligations remain applicable.",
+    "Native code sources are unchanged; project-built native bytes may differ on clean rebuild. Exact packaged/native symbol identities checked in native-symbols.json.",
+    "No physical-device test, Firebase delivery/symbol upload or Play upload was performed."
+  ]
+}

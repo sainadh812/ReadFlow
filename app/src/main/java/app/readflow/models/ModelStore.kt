@@ -60,9 +60,9 @@ class ModelStore internal constructor(
     private val root: File,
     private val downloadRoot: File,
 ) : PackRepository {
-    constructor(context: Context) : this(
-        Json.decodeFromString(context.assets.open("model-manifests.json").bufferedReader().use { it.readText() }),
-        File(context.noBackupFilesDir, "models"), File(context.noBackupFilesDir, "downloads"),
+    constructor(context: Context, manifestAsset: String = "model-manifests.json", storageSuffix: String = "") : this(
+        Json.decodeFromString(context.assets.open(manifestAsset).bufferedReader().use { it.readText() }),
+        File(context.noBackupFilesDir, "models$storageSuffix"), File(context.noBackupFilesDir, "downloads$storageSuffix"),
     )
     private val mutex = Mutex()
     private val verifiedThisProcess = mutableSetOf<String>()
@@ -73,11 +73,14 @@ class ModelStore internal constructor(
     init {
         check(root.isDirectory || root.mkdirs()) { "Cannot create model directory" }
         check(downloadRoot.isDirectory || downloadRoot.mkdirs()) { "Cannot create download directory" }
+        packs.forEach { recoverInterruptedReplacement(it.id) }
         mutableProgress.value = packs.filter { !installed(it.id) && File(downloadRoot, "${it.id}.part").length() > 0 }
             .associate { it.id to PackProgress("Setup interrupted; ready to resume", canResume = true) }
     }
     override fun directory(id: String) = File(root, packs.first { it.id == id }.id)
     override fun installed(id: String): Boolean = File(directory(id), ".verified").readTextOrNull() == manifestHash(id)
+    /** Local setup candidate only. Call verifyInstalled before opening any model. */
+    fun hasLocalInstallation(id: String): Boolean = File(directory(id), ".verified").isFile
     private fun manifestHash(id: String) = manifestHashes.getValue(id)
     private fun update(id: String, phase: String, bytes: Long = 0, total: Long = 0, busy: Boolean = true) {
         mutableProgress.update { it + (id to PackProgress(phase, bytes, total, busy,
@@ -96,9 +99,28 @@ class ModelStore internal constructor(
     }
     suspend fun verifyInstalled(id: String) = withContext(Dispatchers.IO) {
         mutex.withLock {
-            check(installed(id)) { "Download $id first" }
+            val pack = packs.first { it.id == id }
+            if (!installed(id)) {
+                check(hasLocalInstallation(id)) { "Download ${pack.name} in Voice models first." }
+                verifiedThisProcess -= id
+                try {
+                    // An app update may change catalog metadata or remove unused
+                    // files without changing the model bytes. Playback must repair
+                    // that setup locally instead of demanding another Download tap.
+                    // Never call install here: it takes this mutex and can download.
+                    check(reuseCompatibleInstallation(id, pack)) {
+                        "Existing ${pack.name} files are incomplete or damaged. Open Voice models and update setup."
+                    }
+                } catch (cancel: CancellationException) {
+                    update(id, "Setup check cancelled; retry to continue", busy = false)
+                    throw cancel
+                } catch (error: Exception) {
+                    update(id, error.message ?: "Model setup check failed", busy = false)
+                    throw error
+                }
+            }
             if (id !in verifiedThisProcess) {
-                verify(directory(id), packs.first { it.id == id }) {}
+                verify(directory(id), pack) {}
                 verifiedThisProcess += id
             }
         }
@@ -121,33 +143,26 @@ class ModelStore internal constructor(
                 catch (cancel: CancellationException) { throw cancel }
                 catch (_: IllegalStateException) { File(directory(id), ".verified").delete(); verifiedThisProcess -= id }
             }
-            check(!staging.exists() || staging.deleteRecursively()) { "Cannot clear interrupted installation" }
+            if (reuseCompatibleInstallation(id, pack)) return@withContext
             val pending = (pack.downloadBytes - File(downloadRoot, "$id.part").length()).coerceAtLeast(0) +
                 pack.extras.sumOf { (it.bytes - extraDownload(id, it).length()).coerceAtLeast(0) }
             check(root.usableSpace > pending + pack.installedBytes + 64L * 1024 * 1024) { "Not enough free storage for download and installation" }
             val archive = download(id, pack.url, File(downloadRoot, "$id.part"), pack.sha256, pack.downloadBytes, "Downloading model")
             check(staging.mkdirs()) { "Cannot create installation directory" }
             if (pack.archiveRoot.isBlank()) {
-                copyPackAsset(archive, File(staging, "model.onnx"), reporter(id, "Installing model", pack.downloadBytes))
+                val target = pack.files.single()
+                check(target.bytes == pack.downloadBytes && target.sha256 == pack.sha256) { "Invalid single-file model manifest" }
+                copyPackAsset(archive, safeChild(staging, target.path), reporter(id, "Installing model", pack.downloadBytes))
             } else {
                 extractPack(archive.inputStream(), staging, pack, reporter(id, "Unpacking model", pack.downloadBytes))
             }
             for (extra in pack.extras) {
                 val asset = download(id, extra.url, extraDownload(id, extra), extra.sha256, extra.bytes,
-                    if (extra.path.startsWith("voices/")) "Downloading voice" else "Downloading alignment assets")
+                    if (extra.path.startsWith("voices/")) "Downloading voice" else "Downloading supporting assets")
                 val target = safeChild(staging, extra.path)
                 copyPackAsset(asset, target, reporter(id, "Installing ${extra.path.substringAfterLast('/')}", extra.bytes))
             }
-            verify(staging, pack, reporter(id, "Checking installed files", pack.installedBytes))
-            currentCoroutineContext().ensureActive()
-            update(id, "Finishing installation")
-            File(staging, ".verified").writeText(manifestHash(id))
-            check(!directory(id).exists() || directory(id).deleteRecursively())
-            check(staging.renameTo(directory(id))) { "Atomic model installation failed" }
-            verifiedThisProcess += id
-            archive.delete()
-            pack.extras.forEach { extraDownload(id, it).delete() }
-            update(id, "Installed", busy = false)
+            finishInstallation(id, pack, staging)
         } catch (cancel: CancellationException) {
             if (ownsStaging) staging.deleteRecursively()
             update(id, "Setup cancelled; ready to resume", busy = false)
@@ -158,6 +173,74 @@ class ModelStore internal constructor(
             throw error
         } finally {
             if (ownsStaging) mutex.unlock()
+        }
+    }
+    /** Caller owns mutex. Reuse is offline, hash-checked and atomically promoted. */
+    private suspend fun reuseCompatibleInstallation(id: String, pack: VoicePack): Boolean {
+        val staging = File(root, ".$id.installing")
+        check(!staging.exists() || staging.deleteRecursively()) { "Cannot clear interrupted installation" }
+        try {
+            if (!stageCompatibleInstallation(id, pack, staging)) return false
+            finishInstallation(id, pack, staging)
+            return true
+        } finally {
+            // Cancellation or an incomplete local pack must leave the previous
+            // installation available for retry, and no half-written replacement.
+            staging.deleteRecursively()
+        }
+    }
+    private suspend fun stageCompatibleInstallation(id: String, pack: VoicePack, staging: File): Boolean {
+        val existing = directory(id)
+        if (!File(existing, ".verified").isFile) return false
+        try {
+            verify(existing, pack, reporter(id, "Checking reusable model files", pack.installedBytes))
+        } catch (cancel: CancellationException) {
+            throw cancel
+        } catch (_: IllegalStateException) {
+            return false
+        }
+        check(root.usableSpace > pack.installedBytes + 64L * 1024 * 1024) { "Not enough free storage to update model installation" }
+        check(staging.mkdirs()) { "Cannot create installation directory" }
+        for (item in pack.files + pack.extras) {
+            copyPackAsset(safeChild(existing, item.path), safeChild(staging, item.path),
+                reporter(id, "Reusing ${item.path.substringAfterLast('/')}", item.bytes))
+        }
+        return true
+    }
+    private suspend fun finishInstallation(id: String, pack: VoicePack, staging: File) {
+        verify(staging, pack, reporter(id, "Checking installed files", pack.installedBytes))
+        currentCoroutineContext().ensureActive()
+        update(id, "Finishing installation")
+        File(staging, ".verified").writeText(manifestHash(id))
+        val installed = directory(id)
+        val previous = previousInstallation(id)
+        check(!previous.exists() || previous.deleteRecursively()) { "Cannot clear previous model installation" }
+        // Rename within the same directory/filesystem. Retain the old verified
+        // installation until promotion succeeds; startup recovers an interrupted
+        // swap before any model is offered to inference.
+        val replacing = installed.exists()
+        if (replacing) check(installed.renameTo(previous)) { "Cannot preserve previous model installation" }
+        if (!staging.renameTo(installed)) {
+            check(!replacing || previous.renameTo(installed)) { "Model installation failed; previous installation will be recovered on restart" }
+            error("Atomic model installation failed; previous model kept")
+        }
+        check(!previous.exists() || previous.deleteRecursively()) { "Model installed; previous files could not be removed" }
+        verifiedThisProcess += id
+        File(downloadRoot, "$id.part").delete()
+        pack.extras.forEach { extraDownload(id, it).delete() }
+        update(id, "Installed", busy = false)
+    }
+    private fun previousInstallation(id: String) = File(root, ".$id.previous")
+    private fun recoverInterruptedReplacement(id: String) {
+        val previous = previousInstallation(id)
+        if (!previous.exists()) return
+        val installed = directory(id)
+        if (!installed.exists()) {
+            check(previous.renameTo(installed)) { "Could not recover previous model installation" }
+        } else {
+            // A fully verified staging directory was already promoted. Failure
+            // to remove old files must not make a valid model unusable at startup.
+            previous.deleteRecursively()
         }
     }
     private fun extraDownload(id: String, extra: PackFile) = File(downloadRoot, "$id-${extra.path.substringAfterLast('/')}.part")
@@ -219,7 +302,7 @@ class ModelStore internal constructor(
     }
     override suspend fun delete(id: String) = withContext(Dispatchers.IO) {
         mutex.withLock {
-            directory(id).deleteRecursively(); File(root, ".$id.installing").deleteRecursively()
+            directory(id).deleteRecursively(); File(root, ".$id.installing").deleteRecursively(); previousInstallation(id).deleteRecursively()
             downloadRoot.listFiles()?.filter { it.name == "$id.part" || it.name.startsWith("$id-") }?.forEach { it.delete() }
             verifiedThisProcess -= id; update(id, "Not installed", busy = false)
         }

@@ -1,0 +1,56 @@
+{
+  "appVersion": "0.1.9-prototype",
+  "versionCode": 10,
+  "normalization": "english-5",
+  "command": "./gradlew assembleDebug testDebugUnitTest lintDebug assembleDebugAndroidTest --offline --console=plain",
+  "result": "BUILD SUCCESSFUL",
+  "jvm": {
+    "tests": 157,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 3,
+    "warningIds": [
+      "ExportedService",
+      "UsableSpace",
+      "UsableSpace"
+    ]
+  },
+  "apk": {
+    "filename": "ReadFlow-0.1.9-arm64-debug.apk",
+    "bytes": 131019984,
+    "sha256": "e591bf6a2c558e6ca5f11622a460c66d8e99f2d1bc9e0f27a81f59081bef163c",
+    "abis": [
+      "arm64-v8a"
+    ],
+    "minSdk": 35,
+    "targetSdk": 35,
+    "signingCertificateSha256": "f7313f98e9414c166f3fb2d2a9329ba1bb5dd9d76b068254522d20d1f8b109f9",
+    "signatureVerified": true,
+    "matchesPreviousReleaseCertificate": true
+  },
+  "hostAudio": {
+    "kokoro": {
+      "status": "HOST_MAPPING_CHECK_PASSED",
+      "sourceWords": 10,
+      "minimumConfidence": 0.17419389,
+      "auditoryBoundariesAudited": false,
+      "deviceVerified": false
+    },
+    "pocket": {
+      "status": "REJECTED_LOW_CONFIDENCE",
+      "tokenIndex": 28,
+      "token": "FIFTY",
+      "confidence": 0.007145812,
+      "threshold": 0.12,
+      "wordSyncAccepted": false
+    }
+  },
+  "instrumentation": "Compiled, not run: no Android device attached",
+  "deviceVerified": false,
+  "pronunciationManuallyAudited": false,
+  "gesturesRuntimeVerified": false
+}

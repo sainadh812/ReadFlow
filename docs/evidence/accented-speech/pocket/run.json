@@ -1,0 +1,18 @@
+{
+  "host": "Linux-6.8.0-1066-gcp-x86_64-with-glibc2.35",
+  "processor": "x86_64",
+  "model": "pocket",
+  "sherpa": "1.13.8",
+  "ort": "1.20.1",
+  "threads": 2,
+  "text": "Milankovitch's theory informed Koppen's work.",
+  "sampleRate": 24000,
+  "sampleCount": 44160,
+  "frames": 91,
+  "coldLoadSeconds": 3.977492559934035,
+  "synthesisSeconds": 3.847452604910359,
+  "alignmentLoadAndEmissionSeconds": 1.7159239570610225,
+  "durationSeconds": 1.84,
+  "combinedRtf": 3.023574218462707,
+  "boundaryValidation": "Not manually audited. Host emissions only; Kotlin test produces boundaries."
+}

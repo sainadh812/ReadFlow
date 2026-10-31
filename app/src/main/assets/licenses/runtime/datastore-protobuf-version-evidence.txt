@@ -1,0 +1,32 @@
+AndroidX source configuration (selected unchanged lines)
+Source: https://raw.githubusercontent.com/androidx/androidx/5dfd1dca036004067e7d96737a7c98ea19053a33/gradle/libs.versions.toml
+Source SHA256: d6bdc98d831b2f632f8cb5ab15cbdfeca8519fc7d803965dee1743416bb2cbda
+
+protobuf = "4.28.2"
+grpcProtobufCompiler = { module = "io.grpc:protoc-gen-grpc-java", version.ref = "grpc" }
+grpcProtobufLite = { module = "io.grpc:grpc-protobuf-lite", version.ref = "grpc" }
+kotlinSerializationProtobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "kotlinSerialization" }
+protobuf = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
+protobufCompiler = { module = "com.google.protobuf:protoc", version.ref = "protobuf" }
+protobufGradlePlugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version = "0.9.4" }
+protobufLite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf" }
+
+Runtime constants inspected directly from published datastore-preferences-external-protobuf 1.1.4
+Artifact SHA256: fcb3f373cf743426c85ebb0d3cc644aefaf26f39b7fa55bb90238d41b689eca7
+Command: javap -constants -classpath datastore-protobuf-1.1.4.jar androidx.datastore.preferences.protobuf.RuntimeVersion
+
+Compiled from "RuntimeVersion.java"
+public final class androidx.datastore.preferences.protobuf.RuntimeVersion {
+  public static final androidx.datastore.preferences.protobuf.RuntimeVersion$RuntimeDomain OSS_DOMAIN;
+  public static final int OSS_MAJOR = 4;
+  public static final int OSS_MINOR = 28;
+  public static final int OSS_PATCH = 2;
+  public static final java.lang.String OSS_SUFFIX = "";
+  public static final androidx.datastore.preferences.protobuf.RuntimeVersion$RuntimeDomain DOMAIN;
+  public static final int MAJOR = 4;
+  public static final int MINOR = 28;
+  public static final int PATCH = 2;
+  public static final java.lang.String SUFFIX = "";
+  public static void validateProtobufGencodeVersion(androidx.datastore.preferences.protobuf.RuntimeVersion$RuntimeDomain, int, int, int, java.lang.String, java.lang.String);
+  static {};
+}

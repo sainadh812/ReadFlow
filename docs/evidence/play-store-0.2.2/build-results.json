@@ -1,0 +1,54 @@
+{
+  "versionName": "0.2.2",
+  "versionCode": 18,
+  "sourceRef": "v0.2.2-play-candidate",
+  "date": "2026-10-26",
+  "command": "./gradlew :app:assembleRelease :app:bundleRelease :app:testReleaseUnitTest :app:lintRelease :app:compileDebugKotlin :app:testDebugUnitTest --console=plain",
+  "exitCode": 0,
+  "unitTests": {
+    "release": {
+      "tests": 335,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "debug": {
+      "tests": 334,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "releaseLint": {
+    "Error": 0,
+    "Fatal": 0,
+    "Warning": 28,
+    "Information": 0
+  },
+  "artifacts": {
+    "Read-Assit-0.2.2-play-unsigned.aab": {
+      "bytes": 71074599,
+      "sha256": "168948494f4050db9af39a990bf78c0eaf49a0c671fe1fa150a8755bed8519d4"
+    },
+    "Read-Assit-0.2.2-play-preview.apk": {
+      "bytes": 128481615,
+      "sha256": "511f78c1e96377d58b48062d1d8b5e7e102c2bb84976c83043b8acc8f6e7e69f"
+    }
+  },
+  "previewCertificateSha256": "f7313f98e9414c166f3fb2d2a9329ba1bb5dd9d76b068254522d20d1f8b109f9",
+  "previewSignatureVerified": true,
+  "previewZipalign16KiB": true,
+  "allExistingFeaturesFree": true,
+  "billingOrPaymentSdkAdded": false,
+  "supportRecipient": "readassit@ybl",
+  "recipientRegistrationVerified": false,
+  "realPaymentPerformed": false,
+  "deviceTestsPerformed": false,
+  "productionSigned": false,
+  "publicPrivacyPolicyConfigured": false,
+  "limitations": [
+    "Preview uses existing prototype test key; AAB is unsigned.",
+    "UPI ownership, intent acceptance and user-visible UI require phone verification.",
+    "Production still needs owner/contact/privacy details, upload signing and Play/device acceptance."
+  ]
+}

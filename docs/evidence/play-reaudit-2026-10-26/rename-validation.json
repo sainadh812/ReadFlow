@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-26",
+  "baseCommit": "37e78b8fc1002a72173111ac38b88c03b9df1ab9",
+  "scope": "Display-name rename compilation and notice asset integration; no new APK/AAB, billing, coupon or device validation.",
+  "commands": [
+    {
+      "command": "./gradlew :app:compileReleaseKotlin :app:compileDebugKotlin :app:processReleaseMainManifest --console=plain",
+      "exitCode": 0,
+      "result": "BUILD SUCCESSFUL",
+      "logSha256": "d16120aee1254b49bd777b65ba8f603cf77523c1ed673e73ad4c58f2afbe97ab"
+    },
+    {
+      "command": "./gradlew :app:mergeReleaseAssets --console=plain",
+      "exitCode": 0,
+      "result": "BUILD SUCCESSFUL",
+      "logSha256": "51b1d006a502eb7fef6565980fc374e18bc3bde34a1ea6f47978e45939918ddd"
+    }
+  ],
+  "staticChecks": {
+    "displayName": "Read Assit",
+    "packageRetained": "app.readflow",
+    "modelManifestsUnchanged": true,
+    "localDocumentationLinks": "passed",
+    "noticeHashes": "passed",
+    "auditJson": "passed"
+  },
+  "unitTestsRerun": false,
+  "deviceTestsPerformed": false,
+  "downloadableArtifactUpdated": false,
+  "notes": "Compile warnings are existing deprecated Compose APIs. Final commercial release requires the handoff checks. Existing 0.2.1 test counts belong to the historical artifact, not this rename."
+}

@@ -1,0 +1,49 @@
+{
+  "versionName": "0.2.3",
+  "versionCode": 19,
+  "applicationLabel": "Read Assist",
+  "supportRecipient": "readassist@ybl",
+  "sourceRef": "v0.2.3-play-candidate",
+  "date": "2026-10-26",
+  "command": "./gradlew :app:assembleRelease :app:bundleRelease :app:testReleaseUnitTest :app:lintRelease --console=plain",
+  "exitCode": 0,
+  "unitTests": {
+    "release": {
+      "tests": 335,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "debugTestsRerun": false,
+  "releaseLint": {
+    "Error": 0,
+    "Fatal": 0,
+    "Warning": 28,
+    "Information": 0
+  },
+  "artifacts": {
+    "Read-Assist-0.2.3-play-preview.apk": {
+      "bytes": 128481615,
+      "sha256": "54694f238110721d84134fa144fe58af0100453060a46def33ef1d7797ca3889"
+    },
+    "Read-Assist-0.2.3-play-unsigned.aab": {
+      "bytes": 71074192,
+      "sha256": "73f86d0591ffb374050237655b73574a338f8630cd68fb108763a0f2b66e2995"
+    }
+  },
+  "previewCertificateSha256": "f7313f98e9414c166f3fb2d2a9329ba1bb5dd9d76b068254522d20d1f8b109f9",
+  "previewSignatureVerified": true,
+  "previewZipalign16KiB": true,
+  "allExistingFeaturesFree": true,
+  "recipientRegistrationVerified": false,
+  "realPaymentPerformed": false,
+  "deviceTestsPerformed": false,
+  "productionSigned": false,
+  "publicPrivacyPolicyConfigured": false,
+  "limitations": [
+    "Owner will register/change the new UPI ID; this build does not verify registration or ownership.",
+    "Preview uses the existing prototype test certificate; AAB is unsigned.",
+    "Production needs owner/privacy details, signing and device/Play acceptance."
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "runId": 41183292058,
+  "artifactId": 13036231224,
+  "package": "app.readflow",
+  "versionCode": 22,
+  "versionName": "0.2.6",
+  "apkAndAabVersionsMatch": true,
+  "apkSignatureVerified": true,
+  "certificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+  "apk16KbZipAlignmentPassed": true,
+  "packagedFirebaseIdentifiersVerified": true,
+  "firebase": {
+    "google_app_id": "1:831366793321:android:573b80e46b55eb65103af8",
+    "project_id": "read-assist-fbd21",
+    "sender_id": "831366793321",
+    "mapping_file_id": "c727bb0905064d419e17b68df9300327"
+  },
+  "firebaseInitProviderRemoved": true,
+  "firebaseComponentRegistrarsPresent": true,
+  "aabJarSignatureVerified": true,
+  "aabSignedPayloadEntriesVerified": 1098,
+  "jarsignerStrictExitCode": 4,
+  "jarsignerNote": "Self-signed upload certificate. Manifest ZIP order also triggers a JarInputStream warning; all payloads independently verified using JarFile with the expected certificate.",
+  "deviceTestsPerformed": false,
+  "crashDeliveryVerifiedForThisVersion": false,
+  "downloadedFileChecksumsVerified": 69,
+  "artifactAllowlistPassed": true,
+  "unitTestsPassed": 372,
+  "unitTestsSkipped": 3,
+  "skipReason": "Downloaded real-model fixtures are absent from the clean CI runner.",
+  "nativeSymbolsUploaded": false,
+  "playUploadPerformed": false
+}

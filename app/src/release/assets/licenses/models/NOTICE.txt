@@ -1,0 +1,25 @@
+ReadFlow Play distribution: downloaded speech model notices
+
+Kokoro-82M v0.19 English acoustic model and voice styles
+Upstream: Hexgrad, https://huggingface.co/hexgrad/Kokoro-82M
+ONNX export: csukuangfj / k2-fsa contributors
+Source: https://huggingface.co/csukuangfj/kokoro-en-v0_19/tree/92805c485745946a0d945562d3aba19e7cbb2104
+License: Apache License 2.0, as included in this pinned export.
+The unchanged model.onnx, voices.bin and tokens.txt are downloaded separately.
+The export LICENSE is also downloaded and reproduced here as Apache-2.0.txt.
+No eSpeak runtime or eSpeak language data are included in this release model manifest.
+
+Wav2Vec2 base 960h
+Upstream: Meta/Facebook; Alexei Baevski, Henry Zhou, Abdelrahman Mohamed, Michael Auli
+Source: https://huggingface.co/facebook/wav2vec2-base-960h/tree/22aad52d435eb6dbaf354bdad9b0da84ce7d6156
+The upstream model card declares Apache License 2.0 (Apache-2.0.txt).
+Quantized ONNX conversion: ONNX Community / Felladrin
+Source: https://huggingface.co/onnx-community/wav2vec2-base-960h-ONNX/tree/729c1a6730fb549c20a1c73a3d3f96f11020225e
+The conversion card identifies the Facebook checkpoint as its base model.
+The unchanged quantized model and configuration files are downloaded separately.
+ReadFlow uses emissions from this model for known-transcript word timing.
+
+Misaki frontend, dictionary, POS, neural G2P, Go and runtime notices are under
+licenses/misaki and licenses/onnxruntime*. Optional PaddleOCR/TeleOCR models
+retain their own download-manifest notices. This notice is an inventory, not
+approval of all distribution, store-policy, training-data or voice rights.

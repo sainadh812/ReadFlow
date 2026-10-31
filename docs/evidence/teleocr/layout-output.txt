@@ -1,0 +1,4 @@
+<box:052 042 697 082><label:title><up>
+<box:050 130 804 210><label:text><up>
+<box:068 300 915 546><label:table><up>
+<box:050 660 735 694><label:text><up>

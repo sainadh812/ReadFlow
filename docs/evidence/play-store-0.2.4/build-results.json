@@ -1,0 +1,51 @@
+{
+  "versionName": "0.2.4",
+  "versionCode": 20,
+  "applicationLabel": "Read Assist",
+  "supportRecipient": "readassist@ybl",
+  "sourceRef": "v0.2.4-play-candidate",
+  "date": "2026-10-26",
+  "command": "./gradlew :app:assembleRelease :app:bundleRelease :app:testReleaseUnitTest :app:lintRelease --console=plain",
+  "exitCode": 0,
+  "unitTests": {
+    "release": {
+      "tests": 335,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "debugTestsRerun": false,
+  "releaseLint": {
+    "Error": 0,
+    "Fatal": 0,
+    "Warning": 28,
+    "Information": 0
+  },
+  "artifacts": {
+    "Read-Assist-0.2.4-play-preview.apk": {
+      "bytes": 128481615,
+      "sha256": "6c4e44515f5d42cca0ad32cb06ae7df7eba4b6f65a1859c97d37862b7cc0ec86"
+    },
+    "Read-Assist-0.2.4-play-unsigned.aab": {
+      "bytes": 71074638,
+      "sha256": "d53b37716db263b863e6e4f4b3c8578bd019eebd768859218d576b456e2b24d7"
+    }
+  },
+  "previewCertificateSha256": "f7313f98e9414c166f3fb2d2a9329ba1bb5dd9d76b068254522d20d1f8b109f9",
+  "previewSignatureVerified": true,
+  "previewZipalign16KiB": true,
+  "allExistingFeaturesFree": true,
+  "recipientRegistrationVerified": false,
+  "realPaymentPerformed": false,
+  "deviceTestsPerformed": false,
+  "productionSigned": false,
+  "publicPrivacyPolicyConfigured": true,
+  "limitations": [
+    "Owner will register/change UPI ID; ownership and payment-app acceptance remain unverified.",
+    "Preview uses the existing prototype test certificate; AAB is unsigned.",
+    "Public privacy policy is live and included in this build. Production still needs secure upload signing, final account/terms/Console details, final-artifact review and device/Play acceptance."
+  ],
+  "privacyPolicyUrl": "https://sainadh812.github.io/ReadFlow/privacy.html",
+  "privacyPolicyEvidence": "../privacy-policy/publication.json"
+}

@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-26",
+  "reviewType": "Bounded artifact/license delta against audited 0.2.1 candidate",
+  "publicationApproval": false,
+  "artifact": {
+    "path": "app/build/outputs/bundle/release/app-release.aab",
+    "bytes": 71074599,
+    "sha256": "168948494f4050db9af39a990bf78c0eaf49a0c671fe1fa150a8755bed8519d4",
+    "versionName": "0.2.2",
+    "versionCode": 18,
+    "package": "app.readflow",
+    "applicationLabel": "Read Assit",
+    "productionSigned": false
+  },
+  "baseline": {
+    "path": "dist/play-0.2.1/ReadFlow-0.2.1-play-unsigned.aab",
+    "bytes": 70975360,
+    "sha256": "84056ec99abaa69753e7f5f032ce7f3fa8b7a658ad4d9e4c4e011b91fa3fb447",
+    "versionName": "0.2.1",
+    "versionCode": 17,
+    "audit": "docs/PLAY_REAUDIT_2026-10-26.md"
+  },
+  "checks": {
+    "bundletoolAnd16KiBPackaging": "passed",
+    "fontVerification": {
+      "result": "passed",
+      "families": 6,
+      "fontFiles": 7,
+      "fontBytes": 4863856,
+      "licenseFiles": 6
+    },
+    "knownSherpaEspeakLibrariesSymbolsAndJniAbsent": true,
+    "espeakDownloadDataAbsent": true,
+    "runtimeInventory": {
+      "count": 133,
+      "byteIdenticalToBaseline": true,
+      "sha256": "973b7b1d97f25fbdf21f4f13b58144ad5d510dc8b4f2409b37416a535b299024",
+      "addedDependencies": [],
+      "removedDependencies": [],
+      "changedDependencyRecords": []
+    },
+    "permissions": {
+      "identicalToBaseline": true,
+      "billingPermissionAbsent": true,
+      "names": [
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.INTERNET",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.WAKE_LOCK",
+        "app.readflow.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      ]
+    },
+    "playBillingClientDexClassesAbsent": true,
+    "newPaymentSdkDependency": false,
+    "modelManifests": [
+      {
+        "path": "base/assets/model-manifests.json",
+        "sha256": "41456f64fae42998c43121be5832fcdc5cba51586f48eeee99c5fdcd0580efe5",
+        "bytes": 3799,
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/assets/ocr-model-manifests.json",
+        "sha256": "12cdfc6c15668d613f02587ececbf5b8913c3b09a66deedf99eb4e89ec36f112",
+        "bytes": 3547,
+        "identicalToBaseline": true
+      }
+    ],
+    "nativeLibraries": [
+      {
+        "path": "base/lib/arm64-v8a/libandroidx.graphics.path.so",
+        "sha256": "41e9a793c43a0f4fddb19e33f346bace464f30f888ba7b9eaf96294ea115bfb6",
+        "bytes": 10096,
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/lib/arm64-v8a/libdatastore_shared_counter.so",
+        "sha256": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1",
+        "bytes": 7112,
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/lib/arm64-v8a/libmlkit_google_ocr_pipeline.so",
+        "sha256": "fa41d509a661e8aa8b3e3ac1a28541f8823f308414fcad733fe26d61feea2646",
+        "bytes": 11064544,
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/lib/arm64-v8a/libonnxruntime.so",
+        "sha256": "3fc3e79539f06f67360a810e60eb5c513db5febc16f7bc71e5d9e8ce39e3d775",
+        "bytes": 18214224,
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/lib/arm64-v8a/libonnxruntime4j_jni.so",
+        "sha256": "adcaf5e11ff65ad7b54725b2869118568b14ce2f3596d1b6f082ed0c774f2539",
+        "bytes": 75720,
+        "identicalToBaseline": true
+      },
+      {
+        "path": "base/lib/arm64-v8a/libreadflow_misaki.so",
+        "sha256": "16ae6e9ab4f238cbd1c5ca1788747899799e7c7724f931938d05d69b741e99a7",
+        "bytes": 29226752,
+        "identicalToBaseline": false
+      },
+      {
+        "path": "base/lib/arm64-v8a/libreadflow_teleocr.so",
+        "sha256": "26da508649c5ed55fe99b28e4ac59367604d28596e4c16355b38a427fe3bb28f",
+        "bytes": 5606056,
+        "identicalToBaseline": true
+      }
+    ],
+    "misakiRebuild": {
+      "goVersion": "go1.26.4",
+      "dependencyVersionsAndChecksumsIdentical": true,
+      "dependencies": [
+        "dep\tgithub.com/androiddrew/go-g2p\tv0.0.0-20261008153542-ec904cda37a1\th1:BS16WKqTdvHqGbJuLSXrnyhLgut9Oz32UCH9rf2Dxos=",
+        "dep\tgithub.com/androiddrew/ortenv\tv0.2.0\th1:qYhIAAOy2HJyc4FHGmdbq3dk41RpiBQxlncMcDKAehA=",
+        "dep\tgithub.com/dlclark/regexp2\tv1.11.5\th1:Q/sSnsKerHeCkc/jSTNq1oCm7KiVgUMZRDUoRu0JQZQ=",
+        "dep\tgithub.com/yalue/onnxruntime_go\tv1.22.0\th1:SzqOfFRRrLRRAFR5VoSxABjTiQSAi8Y4ETYKrMFK1jk=",
+        "dep\tgolang.org/x/text\tv0.41.0\th1:vz/seA0lnX87Othu2f/0L24RcgrXD9/YFTSuGjj3rH8="
+      ],
+      "baselineVcsRevision": "048ae657f926233a81bdb2af1a8e2111129c17b6",
+      "currentVcsRevision": "37e78b8fc1002a72173111ac38b88c03b9df1ab9",
+      "note": "Six native libraries are byte-identical. Misaki was rebuilt: its hash differs and embedded Go build VCS metadata differs; its pinned Go dependency versions/checksums are unchanged. This is not a binary reproducibility claim."
+    },
+    "noticeAssets": {
+      "added": [
+        {
+          "path": "base/assets/licenses/runtime/MPL-2.0.txt",
+          "sha256": "66a3107d5ad6a058aab753eaac2047ccb2ed0e39465dd0fe5844da3e300d5172",
+          "bytes": 16727,
+          "identicalToBaseline": false
+        },
+        {
+          "path": "base/assets/licenses/runtime/MPL-SOURCE-AVAILABILITY.txt",
+          "sha256": "2aa5e74aeed136fb430cc69eceda8d7edfa3c296a8bb62d04811926b5e90fce0",
+          "bytes": 2784,
+          "identicalToBaseline": false
+        },
+        {
+          "path": "base/assets/licenses/runtime/mpl-source-provenance.json",
+          "sha256": "56dcc33cb3cc0c2b697a6b89bbe5de1bc6fc67b567c22920fd4a81cf1851b297",
+          "bytes": 1079,
+          "identicalToBaseline": false
+        },
+        {
+          "path": "base/assets/licenses/runtime/okhttp-4.12.0-public_suffix_list.dat",
+          "sha256": "e8b273972eb5a70e888bd3e7d7c5b9b04e600a59d69def9136a74d70ae6fcdd3",
+          "bytes": 246016,
+          "identicalToBaseline": false
+        }
+      ],
+      "changed": [
+        {
+          "path": "base/assets/licenses/misaki/readflow-provenance.json",
+          "sha256": "611063aab15bdc270f35aaba8b91977d99c2ca438748c0344b5960e160d0bf3e",
+          "bytes": 2060,
+          "identicalToBaseline": false
+        },
+        {
+          "path": "base/assets/licenses/runtime/README.txt",
+          "sha256": "fb85981bbb25a27d473f32fa3802766ee53b93fec0cfa68f1e4fcfb4475c2c22",
+          "bytes": 7217,
+          "identicalToBaseline": false
+        }
+      ],
+      "removed": [],
+      "newMplSourceAndLicenseHashesMatchProvenance": true,
+      "misakiHistoricalSherpaNoteScopedToDebug": true,
+      "originalOnnxMicrosoftSourceOfferUnchanged": true
+    },
+    "brand": {
+      "manifestLabelResource": "@string/app_name",
+      "decodedResourceValue": "Read Assit"
+    },
+    "supportUiEvidence": {
+      "ownerProvidedUpiIdFoundInDex": "readassit@ybl",
+      "privacyStatesFeaturesFreeAndNoTipBenefits": true,
+      "packagedPrivacySha256": "07791c0c3e060f7910626c62990178089e4607940883d8031e0d8c0c4c4c6be5",
+      "note": "Static text/dependency checks only. UPI invocation, recipient identity, payment success and platform policy eligibility were not established by this artifact scan."
+    }
+  },
+  "conclusion": "No new third-party runtime/model/font dependencies detected. New MPL source/license additions are packaged with matching hashes and prior notices preserved. Existing commercial-distribution obligations and audit limitations remain.",
+  "limitations": [
+    "No blanket legal clearance or Google Play approval is asserted.",
+    "Google SDK aggregated notices are preserved; a complete binary-to-source/license-exception mapping is not established. GPL/LGPL license text alone is not proof that a GPL-only implementation is linked.",
+    "Model/voice training provenance relies on upstream declarations.",
+    "TeleOCR GGUF weights Apache-2.0 versus MIT runtime labeling erratum remains documented; manifests were intentionally unchanged to preserve existing install markers.",
+    "Candidate is unsigned; repeat exact-artifact checks after production signing/final policy changes.",
+    "Physical device, Play-delivered splits, sustained playback, UPI behavior and recipient verification are outside this delta review.",
+    "Optional external support must remain voluntary, give no paid content/benefits and be checked against applicable Play payment policy separately."
+  ]
+}

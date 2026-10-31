@@ -1,0 +1,76 @@
+{
+  "firebaseReleaseReference": "5b34dd98780b50f0f07d4381042ad35230d69b57",
+  "files": [
+    {
+      "file": "firebase-Apache-2.0.txt",
+      "source": "https://raw.githubusercontent.com/firebase/firebase-android-sdk/5b34dd98780b50f0f07d4381042ad35230d69b57/LICENSE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "bytes": 11358,
+      "extraction": "Full upstream license text."
+    },
+    {
+      "file": "Crashpad-LICENSE.txt",
+      "source": "https://chromium.googlesource.com/crashpad/crashpad/+/21a20ef8adf3949de8dd65758a16f83aab344b3c/LICENSE?format=TEXT",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "bytes": 11358,
+      "extraction": "Full upstream license text."
+    },
+    {
+      "file": "mini-chromium-LICENSE.txt",
+      "source": "https://chromium.googlesource.com/chromium/mini_chromium/+/7477036e238e54f220bed206f71036db8064dd34/LICENSE?format=TEXT",
+      "sha256": "12bbc9942399b4014dac7584f3df08afb966ab92157e21e47e6a05db13c04ae0",
+      "bytes": 1542,
+      "extraction": "Full upstream license text."
+    },
+    {
+      "file": "mini-chromium-ICU-LICENSE.txt",
+      "source": "https://chromium.googlesource.com/chromium/mini_chromium/+/7477036e238e54f220bed206f71036db8064dd34/base/third_party/icu/LICENSE?format=TEXT",
+      "sha256": "5d85142a5609ad177a2d7a2e7cae060b886b8b42f25c5b9803cf0cb5ee04ad2f",
+      "bytes": 3674,
+      "extraction": "Full upstream license text."
+    },
+    {
+      "file": "linux-syscall-support-LICENSE.txt",
+      "source": "https://chromium.googlesource.com/linux-syscall-support/+/ed31caa60f20a4f6569883b2d752ef7522de51e0/linux_syscall_support.h?format=TEXT",
+      "sha256": "325b8440550179bd46d3389d9defd6cdab7bb9a3519ef38d2eda008dd02236ab",
+      "bytes": 1575,
+      "extraction": "Complete leading copyright, BSD conditions/disclaimer and author block extracted from pinned header; no code."
+    },
+    {
+      "file": "NDK27.2-libcxx-LICENSE.txt",
+      "source": "https://android.googlesource.com/toolchain/llvm-project/+/d8003a456d14a3deb8054cdaa529ffbf02d9b262/libcxx/LICENSE.TXT?format=TEXT",
+      "sha256": "539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b",
+      "bytes": 16703,
+      "extraction": "Full upstream license text."
+    },
+    {
+      "file": "NDK27.2-libcxxabi-LICENSE.txt",
+      "source": "https://android.googlesource.com/toolchain/llvm-project/+/d8003a456d14a3deb8054cdaa529ffbf02d9b262/libcxxabi/LICENSE.TXT?format=TEXT",
+      "sha256": "e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c",
+      "bytes": 16706,
+      "extraction": "Full upstream license text."
+    },
+    {
+      "file": "NDK27.2-libunwind-LICENSE.txt",
+      "source": "https://android.googlesource.com/toolchain/llvm-project/+/d8003a456d14a3deb8054cdaa529ffbf02d9b262/libunwind/LICENSE.TXT?format=TEXT",
+      "sha256": "b5efebcaca80879234098e52d1725e6d9eb8fb96a19fce625d39184b705f7b6d",
+      "bytes": 16706,
+      "extraction": "Full upstream license text."
+    },
+    {
+      "file": "NDK27.2-compiler-rt-LICENSE.txt",
+      "source": "https://android.googlesource.com/toolchain/llvm-project/+/d8003a456d14a3deb8054cdaa529ffbf02d9b262/compiler-rt/LICENSE.TXT?format=TEXT",
+      "sha256": "1a8f1058753f1ba890de984e48f0242a3a5c29a6a8f2ed9fd813f36985387e8d",
+      "bytes": 16708,
+      "extraction": "Full upstream license text."
+    },
+    {
+      "file": "NDK27.2-cpufeatures-LICENSE.txt",
+      "source": "https://dl.google.com/android/repository/android-ndk-r27c-linux.zip",
+      "archivePath": "android-ndk-r27c/sources/android/cpufeatures/cpu-features.c",
+      "sha256": "4102cd5ae35cbdeb0638c350966185e028ea9da863859f70e231c3cb273118d1",
+      "bytes": 1398,
+      "extraction": "Complete leading BSD copyright, conditions and disclaimer from installed NDK 27.2.12479018 cpu-features.c; no code."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "status": "PASSED",
+  "runtime": "ONNX Runtime 1.22.0, Linux x86_64 host",
+  "rows": [
+    {
+      "complete": true,
+      "fallbackCalls": 0,
+      "phonemes": "həlˈO wˈɜɹld.",
+      "text": "Hello world.",
+      "hostElapsedMs": 5.56
+    },
+    {
+      "complete": true,
+      "fallbackCalls": 0,
+      "phonemes": "pˈipᵊl ˈAʤd twˈɛnti tə twˈɛnti fˈɔɹ kæn kəmpˈɛɹ ˈɪnkˌʌm ænd ɪkspˈɛnsᵻz.",
+      "text": "People aged twenty to twenty four can compare income and expenses.",
+      "hostElapsedMs": 2.76
+    },
+    {
+      "complete": true,
+      "fallbackCalls": 1,
+      "phonemes": "mˈɪləŋkˌOvɪz ɪɡzˈæmpəl ɪnklˈudz ɐn əmˈɜɹʤənsi fˈʌnd.",
+      "text": "Milanković's example includes an emergency fund.",
+      "hostElapsedMs": 19.51
+    },
+    {
+      "complete": true,
+      "fallbackCalls": 0,
+      "phonemes": "ˌI ɹˈɛd ɐ bˈʊk jˈɛstəɹdˌA.",
+      "text": "I read a book yesterday.",
+      "hostElapsedMs": 2.6
+    },
+    {
+      "complete": true,
+      "fallbackCalls": 0,
+      "phonemes": "ˌI wɪl ɹˈid ɐ bˈʊk təmˈɑɹO.",
+      "text": "I will read a book tomorrow.",
+      "hostElapsedMs": 1.27
+    },
+    {
+      "complete": true,
+      "fallbackCalls": 0,
+      "phonemes": "ðə wˈɪnd wɪl wˈInd ðə klˈɑk.",
+      "text": "The wind will wind the clock.",
+      "hostElapsedMs": 5.5
+    },
+    {
+      "complete": true,
+      "fallbackCalls": 0,
+      "phonemes": "ˌI ɹˈɛd bˈʊks ˈɛvəɹi dˈA.",
+      "text": "I read books every day.",
+      "hostElapsedMs": 1.07
+    },
+    {
+      "complete": true,
+      "fallbackCalls": 1,
+      "phonemes": "ðə sˈɛkənd fɹˈʌntɛnd ɹəmˈAnz jˈuzəbᵊl.",
+      "text": "The second frontend remains usable.",
+      "hostElapsedMs": 13.84
+    },
+    {
+      "complete": true,
+      "fallbackCalls": 1,
+      "phonemes": "ɐ ɹiˈOpᵊnd fɹˈʌntɛnd ɹəmˈAnz jˈuzəbᵊl.",
+      "text": "A reopened frontend remains usable.",
+      "hostElapsedMs": 12.74
+    }
+  ],
+  "knownPronunciationLimitations": [
+    "The raw accented name Milanković's loses the final affricate in neural fallback; keep ReadFlow normalization/overrides.",
+    "Upstream dictionary maps present-tense read (VBP) to /rɛd/, so I read books every day is pronounced incorrectly."
+  ],
+  "note": "PASSED refers to lifecycle, explicit failures and checked context pairs; it is not a universal pronunciation score. Host validation only.",
+  "upstreamRaceTests": {
+    "command": "go test -race . ./fallback/neural",
+    "passed": true,
+    "note": "Pinned go-g2p module with real host ONNX inference; no Android device run."
+  }
+}

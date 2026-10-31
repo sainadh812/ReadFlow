@@ -1,0 +1,20 @@
+{
+  "runtime": "llama.cpp 2280f0fd163b03d4331d49e08460f66502e35854 + scripts/patches/teleocr-qwen2vl.patch",
+  "modelRevision": "53dcb6bfd439ccd0f552e6667592f0653270f9c4",
+  "textQuantization": "Q5_K_M",
+  "visionQuantization": "Q8_0",
+  "threads": 2,
+  "maxImageTokens": 1369,
+  "maxOutputTokens": 512,
+  "backend": "CPU",
+  "host": "Linux x86_64 with concurrent builds/inference; not a phone benchmark",
+  "text": "Preserved all words, numbers, and accents; straightened curly apostrophes and the age-range en dash.",
+  "table": "Correct four rows and three columns in OTSL, with exact cell values.",
+  "layout": "Correct title, paragraph, table, concluding paragraph; normalized 0\u20131000 boxes.",
+  "truncation": "PASS: output limit of one token raises an error instead of returning partial text.",
+  "cancellation": "PASS: cancellation from another Java thread interrupts native inference.",
+  "android": "NDK27.2 ARM64 shared library compiled; only JNI symbols exported; 16KiB ELF alignment.",
+  "limits": "Synthetic smoke coverage only. No attached S25 Ultra or real-book comparative accuracy/performance measurements.",
+  "loadingCancellation": "PASS: a handle is registered before loading, allowing another Java thread to cancel the model loader.",
+  "lifecycle": "Final API uses create/load/recognize/close. Layout/text/table computation is unchanged; normal inference and truncation/cancellation are rechecked after the lifecycle change."
+}

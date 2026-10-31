@@ -1,6 +1,12 @@
 package app.readflow.ui
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -8,13 +14,18 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.readflow.data.Preferences
+import app.readflow.speech.SpeechDistribution
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,6 +39,7 @@ import java.util.Locale
             items(vm.app.models.packs, key = { it.id }) { pack ->
                 val status = progress[pack.id]
                 val installed = remember(status, pack.id) { vm.app.models.installed(pack.id) }
+                val existingFiles = remember(status, pack.id) { vm.app.models.hasLocalInstallation(pack.id) }
                 Column(Modifier.fillMaxWidth().padding(20.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(if (pack.id == "alignment") Icons.Default.Sync else Icons.Default.RecordVoiceOver, null, tint = MaterialTheme.colorScheme.primary)
@@ -39,7 +51,8 @@ import java.util.Locale
                         Tool(Icons.Default.Info, "${pack.name} details") { details = pack.id }
                     }
                     Spacer(Modifier.height(10.dp))
-                    Text(if (installed) "Installed" else status?.phase ?: "Not installed", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary)
+                    Text(if (installed) "Installed" else status?.phase ?: if (existingFiles) "Existing files need verification" else "Not installed",
+                        style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.secondary)
                     if (status?.busy == true) {
                         if (status.total > 0) LinearProgressIndicator(progress = { (status.received.toFloat() / status.total).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp))
                         else LinearProgressIndicator(Modifier.fillMaxWidth().padding(vertical = 8.dp))
@@ -48,8 +61,35 @@ import java.util.Locale
                             style = MaterialTheme.typography.bodySmall,
                         )
                         TextButton(onClick = { vm.cancelDownload(pack.id) }) { Icon(Icons.Default.Close, null); Text("Cancel setup") }
-                    } else if (!installed) Button(onClick = { vm.download(pack.id) }) { Icon(Icons.Default.Download, null); Spacer(Modifier.width(6.dp)); Text(if (status?.canResume == true) "Resume setup" else "Download") }
+                    } else if (!installed) Button(onClick = { vm.download(pack.id) }) {
+                        Icon(if (existingFiles) Icons.Default.Sync else Icons.Default.Download, null)
+                        Spacer(Modifier.width(6.dp))
+                        Text(when {
+                            existingFiles -> "Update setup"
+                            status?.canResume == true -> "Resume setup"
+                            else -> "Download"
+                        })
+                    }
                     else {
+                        if (pack.id == "kokoro") {
+                            Text("English pronunciation", style = MaterialTheme.typography.titleSmall,
+                                modifier = Modifier.padding(top = 12.dp))
+                            (if (SpeechDistribution.IS_PLAY_BUILD) emptyList() else
+                                listOf("espeak" to "Current · eSpeak", "misaki" to "Misaki · experimental")).forEach { (value, label) ->
+                                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                    RadioButton(selected = prefs.kokoroPhonemizer == value,
+                                        onClick = { vm.chooseKokoroPhonemizer(value) },
+                                        modifier = Modifier.semantics { contentDescription = "Kokoro pronunciation: $label" })
+                                    Text(label, Modifier.weight(1f))
+                                }
+                            }
+                            Text(if (SpeechDistribution.IS_PLAY_BUILD) "Misaki prepares English pronunciation for your Kokoro voice. Preview a voice or measure speech preparation in the phone testbench." else "Misaki uses your downloaded Kokoro voice. No extra download is needed. Names, emphasis and rhythm may sound different; preview a voice or compare both in the phone testbench.",
+                                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            TextButton(enabled = vm.app.models.installed("alignment"), onClick = {
+                                val voice = pack.voices.firstOrNull { it.id == prefs.voice }?.id ?: pack.voices.first().id
+                                vm.sample("kokoro", voice, pronunciation = true)
+                            }) { Icon(Icons.Default.PlayArrow, null); Text("Try pronunciation sample") }
+                        }
                         pack.voices.forEach { voice ->
                             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                 RadioButton(selected = prefs.model == pack.id && prefs.voice == voice.id, onClick = { vm.chooseModel(pack.id, voice.id) }, modifier = Modifier.semantics { contentDescription = "Use ${voice.name}" })
@@ -59,7 +99,7 @@ import java.util.Locale
                         }
                         TextButton(onClick = { vm.deleteModel(pack.id) }) { Icon(Icons.Default.DeleteOutline, null); Spacer(Modifier.width(6.dp)); Text("Delete pack") }
                     }
-                    Text(if (pack.id == "alignment") "Required for word synchronization with either voice model." else "Experimental Android support", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(if (pack.id == "alignment") "Required for word synchronization." else if (SpeechDistribution.IS_PLAY_BUILD) "On-device English speech" else "Experimental Android support", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 HorizontalDivider()
             }
@@ -73,40 +113,212 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable internal fun Settings(vm: ReaderViewModel, prefs: Preferences) {
+    val context = LocalContext.current
     val issues by vm.issueReports.collectAsStateWithLifecycle()
+    val crashReporting by vm.crashReportingState.collectAsStateWithLifecycle()
+    var restartFeedback by remember(crashReporting.enabled, crashReporting.restartRequired) { mutableStateOf<String?>(null) }
+    var appearance by remember { mutableStateOf(false) }
+    var support by remember { mutableStateOf(false) }
+    var reportProblem by rememberSaveable { mutableStateOf(false) }
+    var crashReportingConsent by rememberSaveable { mutableStateOf(false) }
     Column(Modifier.fillMaxSize()) {
-        TopAppBar(title = { Text("Settings") }, navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.screen.value = if (vm.playback.value.document == null) "library" else "reader" } })
-        LazyColumn(contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(24.dp)) {
-            item { Row(verticalAlignment = Alignment.CenterVertically) { Text("Dark mode", Modifier.weight(1f)); Switch(prefs.dark, { vm.update(prefs.copy(dark = it)) }, Modifier.semantics { contentDescription = "Dark mode" }) } }
+        TopAppBar(title = { Text("Make it yours") }, navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.screen.value = if (vm.playback.value.document == null) "library" else "reader" } })
+        LazyColumn(contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item {
-                Text("Reader font size · ${prefs.fontSize}")
-                Slider(prefs.fontSize.toFloat(), { vm.update(prefs.copy(fontSize = it.toInt())) }, valueRange = 16f..34f, steps = 17, modifier = Modifier.semantics { contentDescription = "Reader font size" })
+                Text("SETTINGS", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(start = 4.dp, top = 8.dp))
             }
+            item { SettingsDestination(Icons.Default.DocumentScanner, "Text recognition", "${modelDisplayName(prefs.ocrEngine)} · ${ocrQualityLabel(prefs.ocrQuality)}") { vm.screen.value = "ocr" } }
+            item { SettingsDestination(Icons.Default.RecordVoiceOver, "Voice models", "Choose a voice and manage downloaded models") { vm.screen.value = "voices" } }
             item {
-                Row(verticalAlignment = Alignment.CenterVertically) { Text("Skip page margins", Modifier.weight(1f)); Switch(prefs.skipMargins, { vm.app.playback.stop(); vm.update(prefs.copy(skipMargins = it)) }, Modifier.semantics { contentDescription = "Skip page margins" }) }
-                Text("Excludes detected top and bottom margin words from speech. Original text remains available.", style = MaterialTheme.typography.bodySmall)
-            }
-            item {
-                Text("Audio cache · ${prefs.cacheMb} MB")
-                Slider(prefs.cacheMb.toFloat(), { vm.update(prefs.copy(cacheMb = (it / 128).toInt() * 128)) }, valueRange = 128f..2048f, steps = 14, modifier = Modifier.semantics { contentDescription = "Audio cache size" })
-                TextButton(onClick = { vm.clearCache() }) { Icon(Icons.Default.DeleteSweep, null); Spacer(Modifier.width(8.dp)); Text("Clear audio cache") }
-            }
-            item {
-                Text("Highlight output delay · ${prefs.latencyMs} ms")
-                Slider(prefs.latencyMs.toFloat(), { vm.update(prefs.copy(latencyMs = (it / 10).toInt() * 10)) }, valueRange = 0f..500f, steps = 49, modifier = Modifier.semantics { contentDescription = "Highlight audio output delay" })
-                Text("Manual calibration for your audio route. Bluetooth delay varies; automatic latency measurement is not available.", style = MaterialTheme.typography.bodySmall)
-            }
-            item {
-                TextButton(onClick = vm::showIssues) {
-                    Icon(Icons.Default.BugReport, null); Spacer(Modifier.width(8.dp)); Text("Issue logs (${issues.size})")
+                SettingsCard("Performance", Icons.Default.Speed) {
+                    SettingsSwitch("Show reading metrics", "Speech speed, prepared audio and buffering gaps while you read.", prefs.showPerformance) {
+                        vm.update(prefs.copy(showPerformance = it))
+                    }
+                    Text("Speech processing effort", style = MaterialTheme.typography.bodyMedium)
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        listOf(Triple("Low", 1, 1), Triple("Medium", 2, 2), Triple("High", 4, 2)).forEach { (label, speech, alignment) ->
+                            FilterChip(selected = prefs.speechThreads == speech && prefs.alignmentThreads == alignment,
+                                onClick = { vm.updateSpeechPerformance(prefs.copy(speechThreads = speech, alignmentThreads = alignment)) },
+                                label = { Text(label) }, modifier = Modifier.weight(1f))
+                        }
+                    }
+                    Text("Uses ${prefs.speechThreads} speech and ${prefs.alignmentThreads} timing threads. More threads may finish faster but can increase heat. Voice quality stays the same; compare sustained results on your phone.",
+                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    SettingsSwitch("Keep CPU workers active", "Experimental: may reduce brief waits, with higher battery use. Off is recommended for long reading.", prefs.allowSpinning) {
+                        vm.updateSpeechPerformance(prefs.copy(allowSpinning = it))
+                    }
+                    HorizontalDivider(Modifier.padding(vertical = 4.dp))
+                    FilledTonalButton(onClick = { vm.screen.value = "benchmark" }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                        Icon(Icons.Default.Science, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Open phone testbench")
+                    }
+                    Text("Measure OCR, speech and word timing with repeatable samples on this phone.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                TextButton(onClick = vm::copyPlaybackDiagnostics) {
-                    Icon(Icons.Default.ContentCopy, null)
-                    Spacer(Modifier.width(8.dp))
-                    Text("Copy playback diagnostics")
+            }
+            item {
+                SettingsCard("Appearance", Icons.Default.Palette) {
+                    SettingsSwitch("App dark mode", "For your library and settings. Reader paper has its own choice.", prefs.dark) { vm.update(prefs.copy(dark = it)) }
+                    val paper = ReaderPapers.selected(prefs.readerTheme)
+                    val font = ReaderFonts.options.firstOrNull { it.id == prefs.readerFont } ?: ReaderFonts.options.first()
+                    Surface(color = paper.paper, shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, paper.outline)) {
+                        Column(Modifier.fillMaxWidth().readerPaper(paper).padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text("A little more time to read.", color = paper.ink, fontFamily = font.family,
+                                style = MaterialTheme.typography.bodyLarge)
+                            Text("${paper.label} · ${font.label} · ${prefs.fontSize}", color = paper.muted,
+                                style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                    FilledTonalButton(onClick = { appearance = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                        Icon(Icons.Default.TextFields, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Paper, font and size")
+                    }
                 }
             }
-            item { Text("ReadFlow ${app.readflow.BuildConfig.VERSION_NAME} · Android 15+\nDocument processing and speech stay on this device.", style = MaterialTheme.typography.bodySmall) }
+            item {
+                SettingsCard("Pages and reading", Icons.Default.AutoStories) {
+                    SettingsSwitch("Swipe to turn pages", "Swipe sideways to change page. In the original view, pinch to zoom.", prefs.swipePages) { vm.update(prefs.copy(swipePages = it)) }
+                    SettingsSwitch("Swipe right for next page", if (prefs.swipeRightAdvances) "Right: next · Left: previous" else "Left: next · Right: previous",
+                        prefs.swipeRightAdvances, enabled = prefs.swipePages) { vm.update(prefs.copy(swipeRightAdvances = it)) }
+                    HorizontalDivider(Modifier.padding(vertical = 4.dp))
+                    SettingsSwitch("Skip page margins", "Skip detected headers and footers in speech. The page remains complete.", prefs.skipMargins) {
+                        vm.app.playback.stop(); vm.update(prefs.copy(skipMargins = it))
+                    }
+                }
+            }
+            item {
+                SettingsCard("Audio and storage", Icons.Default.Headphones) {
+                    Text("Audio cache · ${prefs.cacheMb} MB", style = MaterialTheme.typography.bodyMedium)
+                    Slider(prefs.cacheMb.toFloat(), { vm.update(prefs.copy(cacheMb = (it / 128).toInt() * 128)) }, valueRange = 128f..2048f, steps = 14, modifier = Modifier.semantics { contentDescription = "Audio cache size" })
+                    Text("Saved audio makes repeat listening faster.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    TextButton(onClick = { vm.clearCache() }) { Icon(Icons.Default.DeleteSweep, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text("Clear audio cache") }
+                    HorizontalDivider()
+                    Text("Highlight output delay · ${prefs.latencyMs} ms", style = MaterialTheme.typography.bodyMedium)
+                    Slider(prefs.latencyMs.toFloat(), { vm.update(prefs.copy(latencyMs = (it / 10).toInt() * 10)) }, valueRange = 0f..500f, steps = 49, modifier = Modifier.semantics { contentDescription = "Highlight audio output delay" })
+                    Text("Adjust word highlighting to your headphones. Bluetooth delay varies; it is not measured automatically.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+            item {
+                SettingsCard("Help and diagnostics", Icons.Default.HelpOutline) {
+                    SettingsSwitch("Automatic crash reports", if (crashReporting.configured)
+                        "Optional: send technical device and error data to Google Firebase to help fix failures. Off by default."
+                        else "Automatic crash reporting is unavailable in this build.",
+                        crashReporting.enabled, enabled = crashReporting.configured) { enabled ->
+                        if (enabled) crashReportingConsent = true else vm.setCrashReportingEnabled(false)
+                    }
+                    if (crashReporting.configured && crashReporting.enabled) {
+                        Text(when {
+                            !crashReporting.active -> "Reporting is not active yet"
+                            crashReporting.submissionFailed -> "A report could not be passed to Firebase"
+                            else -> "Reporting is active"
+                        }, style = MaterialTheme.typography.bodyMedium,
+                            color = if (crashReporting.submissionFailed) MaterialTheme.colorScheme.error
+                                else MaterialTheme.colorScheme.onSurface)
+                        if (crashReporting.active) {
+                            Text("Reports handed to the on-device Firebase service this session: ${crashReporting.submittedThisSession}. Upload is not confirmed here.",
+                                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            crashReporting.lastFailureCode?.let { code ->
+                                Text("Last report: $code", style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                            Text(if (crashReporting.submissionFailed)
+                                "Your local issue log is kept. A later occurrence can try reporting again."
+                                else "Sentence errors are normally uploaded after the app restarts. Keep reporting on and reopen the app with internet access.",
+                                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                    if (crashReporting.restartRequired) {
+                        Text(if (crashReporting.enabled) "Restart Read Assist to start automatic reporting."
+                            else "Restart Read Assist to finish turning off crash reporting. Reports already being sent may still finish.",
+                            style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("Use Android App info → Force stop, then reopen Read Assist. This stops current playback.",
+                            style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        TextButton(onClick = {
+                            restartFeedback = null
+                            try {
+                                context.startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    Uri.fromParts("package", context.packageName, null)))
+                            } catch (_: ActivityNotFoundException) {
+                                restartFeedback = "App info could not be opened. Go to Android Settings → Apps → Read Assist → Force stop, then reopen the app."
+                            } catch (_: SecurityException) {
+                                restartFeedback = "Android blocked opening App info. Go to Android Settings → Apps → Read Assist → Force stop, then reopen the app."
+                            }
+                        }) {
+                            Icon(Icons.Default.Settings, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Open app info")
+                        }
+                        restartFeedback?.let { Text(it, style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    }
+                    crashReporting.message?.let { Text(it, style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    TextButton(onClick = { reportProblem = true }) {
+                        Icon(Icons.Default.Feedback, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Report a problem")
+                    }
+                    TextButton(onClick = vm::showIssues) { Icon(Icons.Default.BugReport, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Issue logs (${issues.size})") }
+                    TextButton(onClick = vm::copyPlaybackDiagnostics) {
+                        Icon(Icons.Default.ContentCopy, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Copy playback diagnostics")
+                    }
+                }
+            }
+            item { SettingsDestination(Icons.Default.LocalCafe, "Buy me a coffee", "Optional support · all current features stay free") { support = true } }
+            item { SettingsDestination(Icons.Default.Info, "Privacy and licenses", "How data is handled and third-party acknowledgments") { vm.screen.value = "legal" } }
+            item { Text("Read Assist ${app.readflow.BuildConfig.VERSION_NAME} · Android 15+\nDocument processing and speech stay on this device.",
+                Modifier.padding(horizontal = 4.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+        }
+    }
+    if (appearance) ReaderTheme(prefs.readerTheme) { ReaderAppearanceSheet(prefs, vm::update) { appearance = false } }
+    if (support) SupportTipDialog { support = false }
+    if (reportProblem) ReportProblemDialog(vm, onDismiss = { reportProblem = false })
+    if (crashReportingConsent) AlertDialog(
+        onDismissRequest = { crashReportingConsent = false },
+        title = { Text("Help improve Read Assist?") },
+        text = { Column(Modifier.heightIn(max = 420.dp).verticalScroll(androidx.compose.foundation.rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text("Allow automatic crash and failure reports to Google Firebase Crashlytics. Reports include device/app details, installation identifiers, failure stages and technical stack traces.")
+            Text("Read Assist does not attach your documents, reading text, filenames or audio. Native crash reports can contain low-level memory/register data that the crash SDK captures; we cannot guarantee that it never contains fragments of data being processed.")
+            Text("Reporting is optional and all features work without it. You can turn it off here. Reports already sent are not removed by turning this switch off.")
+            Text("Previously saved crash reports may be sent when reporting is enabled again.")
+        } },
+        confirmButton = { TextButton(onClick = { crashReportingConsent = false; vm.setCrashReportingEnabled(true) }) { Text("Allow reports") } },
+        dismissButton = { TextButton(onClick = { crashReportingConsent = false }) { Text("Not now") } },
+    )
+}
+
+@Composable internal fun SettingsCard(title: String, icon: ImageVector, content: @Composable ColumnScope.() -> Unit) {
+    Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = .6f))) {
+        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Icon(icon, null, Modifier.size(21.dp), tint = MaterialTheme.colorScheme.primary)
+                Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+            }
+            content()
+        }
+    }
+}
+
+@Composable internal fun SettingsSwitch(title: String, description: String, checked: Boolean, enabled: Boolean = true, onChange: (Boolean) -> Unit) {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            Text(title, style = MaterialTheme.typography.bodyMedium)
+            Text(description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Switch(checked, onChange, Modifier.semantics { contentDescription = title }, enabled = enabled)
+    }
+}
+
+@Composable internal fun SettingsDestination(icon: ImageVector, title: String, summary: String, onClick: () -> Unit) {
+    Card(onClick = onClick, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = .6f))) {
+        Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(12.dp)) {
+                Icon(icon, null, Modifier.padding(10.dp).size(22.dp), tint = MaterialTheme.colorScheme.onPrimaryContainer)
+            }
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(title, style = MaterialTheme.typography.titleMedium)
+                Text(summary, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Icon(Icons.Default.ChevronRight, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

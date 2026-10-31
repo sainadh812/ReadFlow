@@ -1,0 +1,105 @@
+{
+  "versionName": "0.2.2",
+  "versionCode": "18",
+  "aab": "app-release.aab",
+  "bytes": 71074599,
+  "sha256": "168948494f4050db9af39a990bf78c0eaf49a0c671fe1fa150a8755bed8519d4",
+  "targetSdk": "36",
+  "minSdk": "35",
+  "debuggable": false,
+  "signatureEntries": [],
+  "bundletoolValidation": "passed",
+  "apkPageAlignment": "16 KB",
+  "nativeLibraries": [
+    {
+      "path": "base/lib/arm64-v8a/libandroidx.graphics.path.so",
+      "bytes": 10096,
+      "sha256": "41e9a793c43a0f4fddb19e33f346bace464f30f888ba7b9eaf96294ea115bfb6",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libdatastore_shared_counter.so",
+      "bytes": 7112,
+      "sha256": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libmlkit_google_ocr_pipeline.so",
+      "bytes": 11064544,
+      "sha256": "fa41d509a661e8aa8b3e3ac1a28541f8823f308414fcad733fe26d61feea2646",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libonnxruntime.so",
+      "bytes": 18214224,
+      "sha256": "3fc3e79539f06f67360a810e60eb5c513db5febc16f7bc71e5d9e8ce39e3d775",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libonnxruntime4j_jni.so",
+      "bytes": 75720,
+      "sha256": "adcaf5e11ff65ad7b54725b2869118568b14ce2f3596d1b6f082ed0c774f2539",
+      "loadAlignments": [
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libreadflow_misaki.so",
+      "bytes": 29226752,
+      "sha256": "16ae6e9ab4f238cbd1c5ca1788747899799e7c7724f931938d05d69b741e99a7",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libreadflow_teleocr.so",
+      "bytes": 5606056,
+      "sha256": "26da508649c5ed55fe99b28e4ac59367604d28596e4c16355b38a427fe3bb28f",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ]
+    }
+  ],
+  "fontResources": [
+    "base/res/font/atkinson_next.ttf",
+    "base/res/font/lexend.ttf",
+    "base/res/font/literata.ttf",
+    "base/res/font/noto_sans.ttf",
+    "base/res/font/opendyslexic_bold.otf",
+    "base/res/font/opendyslexic_regular.otf",
+    "base/res/font/source_serif.ttf"
+  ],
+  "fontNoticeFiles": 13,
+  "speechModelIds": [
+    "kokoro",
+    "alignment"
+  ],
+  "sherpaNativeAndJniClassesAbsent": true,
+  "legacyEspeakModelDataAbsent": true,
+  "runtimeDependencies": 133,
+  "licenseAuditStillRequired": true,
+  "deviceTestsPerformed": false
+}

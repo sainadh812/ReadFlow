@@ -16,6 +16,7 @@ import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import app.readflow.BuildConfig
 import app.readflow.diagnostics.IssueReport
 import app.readflow.diagnostics.GitHubDestination
 import java.time.Instant
@@ -39,7 +41,7 @@ private val issueDisplayJson = Json { prettyPrint = true; encodeDefaults = true 
     val reports by vm.issueReports.collectAsStateWithLifecycle()
     val selected by vm.selectedIssue.collectAsStateWithLifecycle()
     val storageFailure by vm.app.issues.storageFailure.collectAsStateWithLifecycle()
-    val github by vm.githubConfiguration.collectAsStateWithLifecycle()
+    val github = if (BuildConfig.DEBUG) vm.githubConfiguration.collectAsStateWithLifecycle().value else null
     val sending by vm.sendingIssues.collectAsStateWithLifecycle()
     val githubUrl by vm.githubIssueUrl.collectAsStateWithLifecycle()
     val uriHandler = LocalUriHandler.current
@@ -47,6 +49,7 @@ private val issueDisplayJson = Json { prettyPrint = true; encodeDefaults = true 
     var deleteConsent by remember { mutableStateOf(false) }
     var uploadConsent by remember { mutableStateOf(false) }
     var githubSettings by remember { mutableStateOf(false) }
+    var reportProblem by rememberSaveable { mutableStateOf(false) }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
         val id = vm.pendingIssueExport; vm.pendingIssueExport = null
         if (uri != null && id != null) vm.exportIssue(uri, id)
@@ -62,14 +65,19 @@ private val issueDisplayJson = Json { prettyPrint = true; encodeDefaults = true 
             })
         Text("Private logs may contain document text, source URLs and generated speech.",
             Modifier.padding(horizontal = 20.dp, vertical = 8.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
-        Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            TextButton(onClick = { uploadConsent = true }, enabled = !sending && reports.isNotEmpty(), modifier = Modifier.weight(1f)) {
-                Icon(Icons.Default.CloudUpload, null); Spacer(Modifier.width(8.dp)); Text(if (sending) "Sending errors" else "Send new errors")
-            }
-            if (!sending) Tool(Icons.Default.Settings, "GitHub settings") { githubSettings = true }
-            githubUrl?.let { url -> Tool(Icons.AutoMirrored.Filled.OpenInNew, "Open GitHub error history") { uriHandler.openUri(url) } }
+        TextButton(onClick = { reportProblem = true }, modifier = Modifier.padding(horizontal = 12.dp)) {
+            Icon(Icons.Default.Feedback, null); Spacer(Modifier.width(8.dp)); Text("Report a problem")
         }
-        if (sending) LinearProgressIndicator(Modifier.fillMaxWidth())
+        if (BuildConfig.DEBUG) {
+            Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = { uploadConsent = true }, enabled = !sending && reports.isNotEmpty(), modifier = Modifier.weight(1f)) {
+                    Icon(Icons.Default.CloudUpload, null); Spacer(Modifier.width(8.dp)); Text(if (sending) "Sending errors" else "Send new errors")
+                }
+                if (!sending) Tool(Icons.Default.Settings, "GitHub settings") { githubSettings = true }
+                githubUrl?.let { url -> Tool(Icons.AutoMirrored.Filled.OpenInNew, "Open GitHub error history") { uriHandler.openUri(url) } }
+            }
+            if (sending) LinearProgressIndicator(Modifier.fillMaxWidth())
+        }
         storageFailure?.let { Text(it, Modifier.padding(20.dp), color = MaterialTheme.colorScheme.error) }
         val report = selected
         if (report != null) {
@@ -95,19 +103,20 @@ private val issueDisplayJson = Json { prettyPrint = true; encodeDefaults = true 
             else "The ZIP includes captured input, error details and any retained speech audio. Review it before sharing. Nothing is uploaded automatically.") },
         confirmButton = { TextButton(onClick = {
             val id = selected?.id ?: "history"
-            vm.pendingIssueExport = id; exportConsent = false; picker.launch(if (id == "history") "ReadFlow-error-history.zip" else "ReadFlow-issue-${id.take(8)}.zip")
+            vm.pendingIssueExport = id; exportConsent = false; picker.launch(if (id == "history") "Read-Assist-error-history.zip" else "Read-Assist-issue-${id.take(8)}.zip")
         }) { Text("Choose destination") } }, dismissButton = { TextButton(onClick = { exportConsent = false }) { Text("Cancel") } })
     if (deleteConsent) AlertDialog(onDismissRequest = { deleteConsent = false }, title = { Text(if (selected == null) "Delete all issue logs?" else "Delete this issue log?") },
-        text = { Text("Previously exported copies and GitHub uploads are not deleted.") },
+        text = { Text("Previously exported copies and reports already shared are not deleted.") },
         confirmButton = { TextButton(onClick = { val id = selected?.id; deleteConsent = false; if (id == null) vm.clearIssues() else vm.deleteIssue(id) }) { Text("Delete") } },
         dismissButton = { TextButton(onClick = { deleteConsent = false }) { Text("Cancel") } })
-    if (uploadConsent) AlertDialog(onDismissRequest = { uploadConsent = false }, title = { Text("Send retained errors to GitHub?") },
+    if (BuildConfig.DEBUG && uploadConsent && github != null) AlertDialog(onDismissRequest = { uploadConsent = false }, title = { Text("Send retained errors to GitHub?") },
         text = { Text("Destination: ${github.destination.repository}\n\n" + if (github.destination.includeInput)
             "Includes failing text excerpts and error messages. A private repository is required. No audio or original files. Uploaded copies remain on GitHub."
             else "Sanitized technical metadata only. Document text, titles, URLs, error messages and audio are excluded. Uploaded copies remain on GitHub.") },
         confirmButton = { TextButton(onClick = { uploadConsent = false; vm.sendIssues() }) { Text("Send") } },
         dismissButton = { TextButton(onClick = { uploadConsent = false }) { Text("Cancel") } })
-    if (githubSettings) GitHubSettingsDialog(vm) { githubSettings = false }
+    if (BuildConfig.DEBUG && githubSettings) GitHubSettingsDialog(vm) { githubSettings = false }
+    if (reportProblem) ReportProblemDialog(vm, selected, onDismiss = { reportProblem = false })
 }
 
 @Composable private fun GitHubSettingsDialog(vm: ReaderViewModel, close: () -> Unit) {

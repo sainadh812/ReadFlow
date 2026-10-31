@@ -1,0 +1,74 @@
+{
+  "status": "PASSED",
+  "scope": "Static Android ARM64 APK inspection; no device execution",
+  "versionCode": 15,
+  "signatureSha256": "f7313f98e9414c166f3fb2d2a9329ba1bb5dd9d76b068254522d20d1f8b109f9",
+  "zipalign16K": true,
+  "nativeLibraries": [
+    {
+      "library": "lib/arm64-v8a/libandroidx.graphics.path.so",
+      "loadSegmentAlignment": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "library": "lib/arm64-v8a/libdatastore_shared_counter.so",
+      "loadSegmentAlignment": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "library": "lib/arm64-v8a/libmlkit_google_ocr_pipeline.so",
+      "loadSegmentAlignment": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "library": "lib/arm64-v8a/libonnxruntime.so",
+      "loadSegmentAlignment": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "library": "lib/arm64-v8a/libonnxruntime4j_jni.so",
+      "loadSegmentAlignment": [
+        16384,
+        16384
+      ]
+    },
+    {
+      "library": "lib/arm64-v8a/libreadflow_misaki.so",
+      "loadSegmentAlignment": [
+        16384,
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "library": "lib/arm64-v8a/libreadflow_teleocr.so",
+      "loadSegmentAlignment": [
+        16384,
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "library": "lib/arm64-v8a/libsherpa-onnx-jni.so",
+      "loadSegmentAlignment": [
+        16384,
+        16384,
+        16384
+      ]
+    }
+  ]
+}

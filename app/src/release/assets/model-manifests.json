@@ -1,0 +1,103 @@
+[
+  {
+    "id": "kokoro",
+    "name": "Kokoro-82M",
+    "version": "v0.19",
+    "runtime": "onnxruntime-android-1.22.0; Misaki English pronunciation",
+    "archiveRoot": "",
+    "url": "https://huggingface.co/csukuangfj/kokoro-en-v0_19/resolve/92805c485745946a0d945562d3aba19e7cbb2104/model.onnx",
+    "sha256": "10ff414106a038ce7e9e0126c6461e4dc8a86efaa89dc91d2009d69fe635e339",
+    "downloadBytes": 345555491,
+    "installedBytes": 351323831,
+    "files": [
+      {
+        "path": "model.onnx",
+        "bytes": 345555491,
+        "sha256": "10ff414106a038ce7e9e0126c6461e4dc8a86efaa89dc91d2009d69fe635e339"
+      }
+    ],
+    "extras": [
+      {
+        "path": "tokens.txt",
+        "bytes": 1078,
+        "sha256": "4f31c71282d14af4e926cd12462078fe9d20d00c589e63fe2750a8f56d6d7f7b",
+        "url": "https://huggingface.co/csukuangfj/kokoro-en-v0_19/resolve/92805c485745946a0d945562d3aba19e7cbb2104/tokens.txt"
+      },
+      {
+        "path": "voices.bin",
+        "bytes": 5755904,
+        "sha256": "a372c67b056ef0b695c375d39b99630d23fb07ad4c8d87aa32a19a62fca523ad",
+        "url": "https://huggingface.co/csukuangfj/kokoro-en-v0_19/resolve/92805c485745946a0d945562d3aba19e7cbb2104/voices.bin"
+      },
+      {
+        "path": "LICENSE",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "url": "https://huggingface.co/csukuangfj/kokoro-en-v0_19/resolve/92805c485745946a0d945562d3aba19e7cbb2104/LICENSE"
+      }
+    ],
+    "licenses": [
+      "Apache-2.0 (Kokoro weights, voice styles and ONNX export)"
+    ],
+    "voices": [
+      {
+        "id": "0",
+        "name": "Default (af)"
+      },
+      {
+        "id": "1",
+        "name": "Bella"
+      },
+      {
+        "id": "2",
+        "name": "Nicole"
+      }
+    ],
+    "alignment": "wav2vec2-729c1a6-ctc-v1",
+    "support": "English reading with Misaki pronunciation. Four verified files; no eSpeak runtime or data download."
+  },
+  {
+    "id": "alignment",
+    "name": "Word alignment",
+    "version": "729c1a6730fb549c20a1c73a3d3f96f11020225e",
+    "runtime": "onnxruntime-android-1.22.0",
+    "archiveRoot": "",
+    "url": "https://huggingface.co/onnx-community/wav2vec2-base-960h-ONNX/resolve/729c1a6730fb549c20a1c73a3d3f96f11020225e/onnx/model_quantized.onnx",
+    "sha256": "1d9a366c27b2966625cd5035ac3db8847c53bba617169912bb251b42975a3a22",
+    "downloadBytes": 95212816,
+    "installedBytes": 95215546,
+    "files": [
+      {
+        "path": "model.onnx",
+        "bytes": 95212816,
+        "sha256": "1d9a366c27b2966625cd5035ac3db8847c53bba617169912bb251b42975a3a22"
+      }
+    ],
+    "extras": [
+      {
+        "path": "vocab.json",
+        "bytes": 358,
+        "sha256": "4178db26b3c7570f6a47f14ac6a1c7b32950b8c2800fb097287e53776934f1c5",
+        "url": "https://huggingface.co/onnx-community/wav2vec2-base-960h-ONNX/resolve/729c1a6730fb549c20a1c73a3d3f96f11020225e/vocab.json"
+      },
+      {
+        "path": "config.json",
+        "bytes": 2157,
+        "sha256": "15c7cf6378153bdcb33fce27780ab9aae37fd154fbb674cacc3347992055d323",
+        "url": "https://huggingface.co/onnx-community/wav2vec2-base-960h-ONNX/resolve/729c1a6730fb549c20a1c73a3d3f96f11020225e/config.json"
+      },
+      {
+        "path": "preprocessor_config.json",
+        "bytes": 215,
+        "sha256": "8cdfd65ff4115423185a1512bdae100e2e0cd744f5b322417429944aaafd0827",
+        "url": "https://huggingface.co/onnx-community/wav2vec2-base-960h-ONNX/resolve/729c1a6730fb549c20a1c73a3d3f96f11020225e/preprocessor_config.json"
+      }
+    ],
+    "licenses": [
+      "Apache-2.0 (facebook/wav2vec2-base-960h)"
+    ],
+    "voices": [],
+    "alignment": "",
+    "support": "Shared word-synchronization dependency; 95.2 MB download. Known-transcript alignment runs on this device."
+  }
+]

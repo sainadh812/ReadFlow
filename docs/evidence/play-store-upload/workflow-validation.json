@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-27",
+  "workflow": ".github/workflows/read-assist-release.yml",
+  "manualDispatchOnly": true,
+  "sourceBranch": "fix/reader-playback-and-pdf-space",
+  "actionlintVersion": "1.7.12",
+  "actionlintPassed": true,
+  "helperTests": {
+    "tests": 13,
+    "failures": 0
+  },
+  "actualUploadKeyMatchesPin": true,
+  "firebaseConfigAvailableInThisWorkspace": false,
+  "configuredBuildExecuted": true,
+  "nativeSymbolsUploaded": false,
+  "playUploadPerformed": false,
+  "preferredFirebaseSecret": "READASSIST_FIREBASE_CONFIG_BASE64",
+  "existingFirebaseSecret": "READASSIT_FIREBASE_CONFIG_BASE64",
+  "firebaseSecretFallbackAccepted": true,
+  "repositorySecretNamesVerified": true,
+  "storedFirebaseContentsValidated": true,
+  "configuredBuildPassed": true,
+  "successfulRunId": 40529659238,
+  "androidSdkSetupExplicit": true
+}
