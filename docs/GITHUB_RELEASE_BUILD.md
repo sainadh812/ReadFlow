@@ -22,32 +22,52 @@ It does not publish to Play Console.
   configured build validated its project/app IDs, and the downloaded APK resources
   independently match those identifiers.
 
-## Verified configured build — 27 October 2026
+## Verified configured build — 31 October 2026
 
-[Successful run](https://github.com/sainadh812/ReadFlow/actions/runs/40529659238) · [signed APK/AAB and verification files](https://github.com/sainadh812/ReadFlow/actions/runs/40529659238/artifacts/12745713255).
-Source commit: `f025430e9e18d65fc317afe06e5bde06acb7fb47`; version **0.2.5/code 21**.
+[Successful run](https://github.com/sainadh812/ReadFlow/actions/runs/41183292058) · [signed APK/AAB and verification files](https://github.com/sainadh812/ReadFlow/actions/runs/41183292058/artifacts/13036231224) · [published 0.2.6 prerelease](https://github.com/sainadh812/ReadFlow/releases/tag/v0.2.6-play-candidate).
+Source commit: `25944d402312adf69e44f5e3d6f5b42a2e6b179f`; version **0.2.6/code 22**.
 Artifacts expire after 14 days; preserve the downloaded files and their checksums.
 
+- Normalization `english-6` handles a numeric sentence ending followed by an
+  attached reference, such as `2019.)71`, while retaining its source-word mapping.
+  Reporting settings now distinguish saved consent from an active service and
+  show local SDK submission status. A synchronous submission failure allows a
+  later occurrence to retry within the hourly limit; an SDK return is not delivery confirmation.
 - Firebase project/app, upload certificate, bundle/APK signatures, fonts, policy,
-  16 KB compatibility and matching native build IDs passed.
-- 360 release tests passed; three real-model tests were skipped because the clean
+  16 KB compatibility and matching native build IDs passed the CI checks.
+- **372 release tests passed**; three real-model tests were skipped because the clean
   runner has no downloaded model fixtures. Lint: zero errors, 34 warnings.
-- All 68 downloaded artifact file hashes matched; every AAB payload entry was
-  independently signature-verified. The APK's packaged Firebase IDs also match.
+- All **69 downloaded artifact file hashes** matched. The AAB SHA-256 is
+  `e222bcf1610e211093836918a7a30960c692bb43c6d4de12d23fe6b3a0579727`;
+  the APK SHA-256 is `b4bddf9865623d8ec4d3c374eaac9ee399a964c215d87bfec28964742fb8fddb`.
+- Signatures and packaged Firebase identifiers passed independent local checks.
+  All 144 runtime dependency hashes, 314 assets (287 license assets) and seven
+  fonts match 0.2.5; only the app-owned Misaki native binary changed. This comparison
+  does not establish legal clearance.
 - Native symbols were generated and retained, but not uploaded. No phone crash
-  delivery, device testing or Play upload was performed.
+  delivery or device testing was verified. **0.2.6/code 22 has not been uploaded to Play.**
 
-Evidence: [release](evidence/play-store-0.2.5-configured/release-evidence.json),
-[local verification](evidence/play-store-0.2.5-configured/local-verification.json),
-[dependency delta](evidence/play-store-0.2.5-configured/dependency-delta.json).
+Evidence: [release](evidence/play-store-0.2.6-configured/release-evidence.json),
+[checksums](evidence/play-store-0.2.6-configured/SHA256SUMS.json),
+[local verification](evidence/play-store-0.2.6-configured/local-verification.json),
+[dependency delta](evidence/play-store-0.2.6-configured/dependency-delta.json),
+[GitHub publication](evidence/play-store-0.2.6-configured/github-release.json).
 Use this exact candidate for further checks; rebuild only if a change is needed.
+
+The historical configured **0.2.5/code 21** build remains documented in
+[run 40529659238](https://github.com/sainadh812/ReadFlow/actions/runs/40529659238)
+and its [release evidence](evidence/play-store-0.2.5-configured/release-evidence.json).
+Its checks and the owner-reported Play draft below apply to that older artifact.
 
 ## Play upload handoff
 
 The owner reports Muse Spark uploaded the verified AAB as **0.2.5/code 21** to the
 new free Read Assist app (**4975999632955979701**) and saved an internal-test draft.
-No rollout was performed. Reuse that draft; code 21 is already uploaded. This is
-owner-reported Console evidence, separate from the independently verified CI build.
+No rollout was performed. Preserve that existing app and draft; code 21 is already
+used. For a subsequently authorized update, use the verified **0.2.6/code 22 AAB**
+with the existing upload key and Play App Signing. Uploading or rolling out code 22
+is not part of this build workflow. The code 21 draft is owner-reported Console
+evidence, separate from the independently verified CI builds.
 See [current handoff](PLAY_STORE_HANDOFF.md#current-play-console-state--owner-reported).
 
 ## Firebase config secret
@@ -94,7 +114,7 @@ artifact/hash if a later workflow run rebuilds anything. Follow
 Do not claim crash delivery until controlled test reports appear in the existing
 Firebase app. Keep reporting off by default. Use a dedicated test installation;
 the new upload-signed APK cannot update an older prototype signed with the debug
-certificate, and Play-delivered APKs use the separate Play signing certificate.
+certificate or a Play-installed copy signed with the separate Play signing certificate.
 Do not uninstall the owner's reading installation without preserving its data.
 
 ## Key custody

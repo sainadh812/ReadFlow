@@ -1,0 +1,150 @@
+{
+  "versionName": "0.2.6",
+  "versionCode": "22",
+  "aab": "app-release.aab",
+  "bytes": 72201078,
+  "sha256": "e222bcf1610e211093836918a7a30960c692bb43c6d4de12d23fe6b3a0579727",
+  "targetSdk": "36",
+  "minSdk": "35",
+  "debuggable": false,
+  "signatureEntries": [
+    "META-INF/READ-ASS.RSA"
+  ],
+  "bundletoolValidation": "passed",
+  "apkPageAlignment": "16 KB",
+  "nativeLibraries": [
+    {
+      "path": "base/lib/arm64-v8a/libandroidx.graphics.path.so",
+      "bytes": 10096,
+      "sha256": "41e9a793c43a0f4fddb19e33f346bace464f30f888ba7b9eaf96294ea115bfb6",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libcrashlytics-common.so",
+      "bytes": 864920,
+      "sha256": "fb4a3190e4669455b66e40af74a6a246e957969a9a9c1db1e209da024314a912",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libcrashlytics-handler.so",
+      "bytes": 222248,
+      "sha256": "f8d77113b80d7017b05e8f12e594f64be3e593fa5c39d13f956f61cdac362e53",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libcrashlytics-trampoline.so",
+      "bytes": 4928,
+      "sha256": "cda75d75e16763de7eeda2240cef0f0465a81437c9d14c456b6907f22091f8b2",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libcrashlytics.so",
+      "bytes": 232152,
+      "sha256": "e081f8e49f3093e41767f51d7d82ef8ce05d101b83dc658de27d270ad611a0b0",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libdatastore_shared_counter.so",
+      "bytes": 7112,
+      "sha256": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libmlkit_google_ocr_pipeline.so",
+      "bytes": 11064544,
+      "sha256": "fa41d509a661e8aa8b3e3ac1a28541f8823f308414fcad733fe26d61feea2646",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libonnxruntime.so",
+      "bytes": 18214224,
+      "sha256": "3fc3e79539f06f67360a810e60eb5c513db5febc16f7bc71e5d9e8ce39e3d775",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libonnxruntime4j_jni.so",
+      "bytes": 75720,
+      "sha256": "adcaf5e11ff65ad7b54725b2869118568b14ce2f3596d1b6f082ed0c774f2539",
+      "loadAlignments": [
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libreadflow_misaki.so",
+      "bytes": 29227048,
+      "sha256": "4fe6ce970aeffdffbd7e2b0a7dc78adc015cbb36cd5e331c7d6fdb4721721578",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ]
+    },
+    {
+      "path": "base/lib/arm64-v8a/libreadflow_teleocr.so",
+      "bytes": 5607160,
+      "sha256": "17a73f10a3e26ecd4880d481dc821e51ad745793058ffe77d457473322d63953",
+      "loadAlignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ]
+    }
+  ],
+  "fontResources": [
+    "base/res/font/atkinson_next.ttf",
+    "base/res/font/lexend.ttf",
+    "base/res/font/literata.ttf",
+    "base/res/font/noto_sans.ttf",
+    "base/res/font/opendyslexic_bold.otf",
+    "base/res/font/opendyslexic_regular.otf",
+    "base/res/font/source_serif.ttf"
+  ],
+  "fontNoticeFiles": 13,
+  "speechModelIds": [
+    "kokoro",
+    "alignment"
+  ],
+  "sherpaNativeAndJniClassesAbsent": true,
+  "legacyEspeakModelDataAbsent": true,
+  "runtimeDependencies": 144,
+  "firebaseAutoInitializationDisabled": true,
+  "crashReportingDefaultOff": true,
+  "firebaseAnalyticsNotBundled": true,
+  "licenseAuditStillRequired": true,
+  "deviceTestsPerformed": false
+}

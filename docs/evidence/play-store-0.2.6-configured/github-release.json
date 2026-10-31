@@ -1,0 +1,36 @@
+{
+  "html_url": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.2.6-play-candidate",
+  "tag_name": "v0.2.6-play-candidate",
+  "target_commitish": "25944d402312adf69e44f5e3d6f5b42a2e6b179f",
+  "draft": false,
+  "prerelease": true,
+  "published_at": "2026-10-31T08:19:04Z",
+  "assets": [
+    {
+      "name": "Read-Assist-0.2.6-upload-signed.aab",
+      "size": 72201078,
+      "digest": "sha256:e222bcf1610e211093836918a7a30960c692bb43c6d4de12d23fe6b3a0579727",
+      "browser_download_url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.6-play-candidate/Read-Assist-0.2.6-upload-signed.aab"
+    },
+    {
+      "name": "Read-Assist-0.2.6-upload-signed.apk",
+      "size": 130803112,
+      "digest": "sha256:b4bddf9865623d8ec4d3c374eaac9ee399a964c215d87bfec28964742fb8fddb",
+      "browser_download_url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.6-play-candidate/Read-Assist-0.2.6-upload-signed.apk"
+    },
+    {
+      "name": "release-evidence.json",
+      "size": 827,
+      "digest": "sha256:e76bde870c28e70eb46bf50fc109c44b49aa8ee4c9b96f94dd0a290652805a93",
+      "browser_download_url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.6-play-candidate/release-evidence.json"
+    },
+    {
+      "name": "RELEASE_SHA256SUMS.txt",
+      "size": 292,
+      "digest": "sha256:a4f0bc334b7e5751061177b51b3b66cb53f90eb615eb242c3592d6e4e7a3f4dd",
+      "browser_download_url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.6-play-candidate/RELEASE_SHA256SUMS.txt"
+    }
+  ],
+  "allReleaseAssetHashesVerified": true,
+  "apkDownloadHttpStatus": 200
+}

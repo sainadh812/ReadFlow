@@ -1,0 +1,189 @@
+[
+  {
+    "name": "libandroidx.graphics.path.so",
+    "unstripped": {
+      "gnuBuildId": "a7846ae06d6bf6cf63fa7c5e056b5de493c71567",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "41e9a793c43a0f4fddb19e33f346bace464f30f888ba7b9eaf96294ea115bfb6",
+      "bytes": 10096
+    },
+    "packaged": {
+      "gnuBuildId": "a7846ae06d6bf6cf63fa7c5e056b5de493c71567",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "41e9a793c43a0f4fddb19e33f346bace464f30f888ba7b9eaf96294ea115bfb6",
+      "bytes": 10096
+    }
+  },
+  {
+    "name": "libcrashlytics-common.so",
+    "unstripped": {
+      "gnuBuildId": "2d94672e5de51cbb3cca32fb23847114694a7d11",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "fb4a3190e4669455b66e40af74a6a246e957969a9a9c1db1e209da024314a912",
+      "bytes": 864920
+    },
+    "packaged": {
+      "gnuBuildId": "2d94672e5de51cbb3cca32fb23847114694a7d11",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "fb4a3190e4669455b66e40af74a6a246e957969a9a9c1db1e209da024314a912",
+      "bytes": 864920
+    }
+  },
+  {
+    "name": "libcrashlytics-handler.so",
+    "unstripped": {
+      "gnuBuildId": "f02a3e85d68f72121358a90d8f9b2d72f5df8e8e",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "f8d77113b80d7017b05e8f12e594f64be3e593fa5c39d13f956f61cdac362e53",
+      "bytes": 222248
+    },
+    "packaged": {
+      "gnuBuildId": "f02a3e85d68f72121358a90d8f9b2d72f5df8e8e",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "f8d77113b80d7017b05e8f12e594f64be3e593fa5c39d13f956f61cdac362e53",
+      "bytes": 222248
+    }
+  },
+  {
+    "name": "libcrashlytics-trampoline.so",
+    "unstripped": {
+      "gnuBuildId": "1d12b552f1d603506e13dbf51d40dfbe48b24446",
+      "symbolTable": true,
+      "dwarf": true,
+      "sha256": "9322d4956c09fdbb647951ef626b633f607ae61ba097321d78e190ef3b76ab30",
+      "bytes": 9408
+    },
+    "packaged": {
+      "gnuBuildId": "1d12b552f1d603506e13dbf51d40dfbe48b24446",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "cda75d75e16763de7eeda2240cef0f0465a81437c9d14c456b6907f22091f8b2",
+      "bytes": 4928
+    }
+  },
+  {
+    "name": "libcrashlytics.so",
+    "unstripped": {
+      "gnuBuildId": "012df348f8c6344ddf9592abf181fd813513d169",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "e081f8e49f3093e41767f51d7d82ef8ce05d101b83dc658de27d270ad611a0b0",
+      "bytes": 232152
+    },
+    "packaged": {
+      "gnuBuildId": "012df348f8c6344ddf9592abf181fd813513d169",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "e081f8e49f3093e41767f51d7d82ef8ce05d101b83dc658de27d270ad611a0b0",
+      "bytes": 232152
+    }
+  },
+  {
+    "name": "libdatastore_shared_counter.so",
+    "unstripped": {
+      "gnuBuildId": "17db37bd6770ac00dd2d1d2828839fd23a7959a3",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1",
+      "bytes": 7112
+    },
+    "packaged": {
+      "gnuBuildId": "17db37bd6770ac00dd2d1d2828839fd23a7959a3",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1",
+      "bytes": 7112
+    }
+  },
+  {
+    "name": "libmlkit_google_ocr_pipeline.so",
+    "unstripped": {
+      "gnuBuildId": "dda3fa6fd714a2427bcbb5fa672d4d14",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "fa41d509a661e8aa8b3e3ac1a28541f8823f308414fcad733fe26d61feea2646",
+      "bytes": 11064544
+    },
+    "packaged": {
+      "gnuBuildId": "dda3fa6fd714a2427bcbb5fa672d4d14",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "fa41d509a661e8aa8b3e3ac1a28541f8823f308414fcad733fe26d61feea2646",
+      "bytes": 11064544
+    }
+  },
+  {
+    "name": "libonnxruntime.so",
+    "unstripped": {
+      "gnuBuildId": "c3b77e8b1f5d988f59094b66325830fe6e6d3af4",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "999ecfdb5b5a13e4097487773b6d71ce8a075408a237daab072e8f5e817bd78e",
+      "bytes": 18214224
+    },
+    "packaged": {
+      "gnuBuildId": "c3b77e8b1f5d988f59094b66325830fe6e6d3af4",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "3fc3e79539f06f67360a810e60eb5c513db5febc16f7bc71e5d9e8ce39e3d775",
+      "bytes": 18214224
+    }
+  },
+  {
+    "name": "libonnxruntime4j_jni.so",
+    "unstripped": {
+      "gnuBuildId": "5f5c0e523160b39bf689996eb969bcf541548f2c",
+      "symbolTable": true,
+      "dwarf": false,
+      "sha256": "5614bd018cca9031c4dbcfc2a3bece42fae52861a92ff09c4bd2491bd93ac758",
+      "bytes": 100600
+    },
+    "packaged": {
+      "gnuBuildId": "5f5c0e523160b39bf689996eb969bcf541548f2c",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "adcaf5e11ff65ad7b54725b2869118568b14ce2f3596d1b6f082ed0c774f2539",
+      "bytes": 75720
+    }
+  },
+  {
+    "name": "libreadflow_misaki.so",
+    "unstripped": {
+      "gnuBuildId": "c9e19bad2e5610b920e8f67b31bfad26c7ccb11a",
+      "symbolTable": true,
+      "dwarf": true,
+      "sha256": "e7a91cef73397854879d8b90e01221e13c2c30872a77b4fa022355a4c73e336a",
+      "bytes": 30815848
+    },
+    "packaged": {
+      "gnuBuildId": "c9e19bad2e5610b920e8f67b31bfad26c7ccb11a",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "4fe6ce970aeffdffbd7e2b0a7dc78adc015cbb36cd5e331c7d6fdb4721721578",
+      "bytes": 29227048
+    }
+  },
+  {
+    "name": "libreadflow_teleocr.so",
+    "unstripped": {
+      "gnuBuildId": "4f41c86b6832f25a074caaf6a46204d2a1e28ded",
+      "symbolTable": true,
+      "dwarf": true,
+      "sha256": "e13933b697e5a1d0ed257d3887f042597d856bc9dfe191a085bc6f844966154c",
+      "bytes": 74031136
+    },
+    "packaged": {
+      "gnuBuildId": "4f41c86b6832f25a074caaf6a46204d2a1e28ded",
+      "symbolTable": false,
+      "dwarf": false,
+      "sha256": "17a73f10a3e26ecd4880d481dc821e51ad745793058ffe77d457473322d63953",
+      "bytes": 5607160
+    }
+  }
+]

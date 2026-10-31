@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "families": 6,
+  "fontFiles": 7,
+  "fontBytes": 4863856,
+  "licenses": 6,
+  "artifact": "app/build/outputs/bundle/release/app-release.aab"
+}

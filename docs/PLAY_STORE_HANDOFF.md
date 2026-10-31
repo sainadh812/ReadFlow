@@ -1,8 +1,8 @@
 # Read Assist publishing handoff for Muse Spark
 
-**FREE DISTRIBUTION FIRST. Updated 2026-10-27.** All existing features remain free. Paid tiers, INR 10 / USD 0.99 prices, quotas and coupons are deferred. Optional **Buy me a coffee** support to `readassist@ybl` grants no benefit. Package `app.readflow` and repository `sainadh812/ReadFlow` remain unchanged; work from branch `fix/reader-playback-and-pdf-space`.
+**FREE DISTRIBUTION FIRST. Updated 2026-10-31.** All existing features remain free. Paid tiers, INR 10 / USD 0.99 prices, quotas and coupons are deferred. Optional **Buy me a coffee** support to `readassist@ybl` grants no benefit. Package `app.readflow` and repository `sainadh812/ReadFlow` remain unchanged; work from branch `fix/reader-playback-and-pdf-space`.
 
-The current source is **Read Assist 0.2.5, versionCode 21**, Android 15+ ARM64, target API 36. It adds optional Firebase Crashlytics and a previewed support-email flow; production hides GitHub upload/token entry. **Muse Spark reports that the Firebase project is created. The Firebase config secret is stored under the earlier spelling `READASSIT_FIREBASE_CONFIG_BASE64`, which the workflow accepts. The configured signed build has now passed; real-device report delivery remains unverified. The new upload key and four GitHub signing secrets are prepared.** Do not treat historical 0.2.4 tests or artifacts as validation of this build.
+The current candidate is **Read Assist 0.2.6, versionCode 22**, Android 15+ ARM64, target API 36. Normalization `english-6` fixes numeric sentence endings with attached reference numbers, including `2019.)71`. Reporting settings distinguish saved consent, active reporting and local SDK submission outcomes; failed synchronous submissions allow a later occurrence to retry within the hourly limit. Optional Crashlytics remains off by default, and the previewed support-email flow remains available. **The configured build passed in run 41183292058 using the existing Firebase configuration and upload key. Code 22 has not been uploaded to Play. Phone playback and remote report delivery remain unverified for this candidate.** Historical 0.2.5 artifacts and Console evidence remain separate below.
 
 Public developer display name: **Oh My Pi**. Support/privacy contact: **xperimenting.ai@gmail.com**. Policy URL: **https://sainadh812.github.io/ReadFlow/privacy.html**. The **27 October 2026 policy revision is live and verified** with HTTP 200 and exact matching bytes; it covers optional Crashlytics and manual support email. Check [publication status](PRIVACY_PUBLICATION.md), [Data safety worksheet](PRIVACY_AND_STORE_DRAFT.md), [free distribution plan](FREE_DISTRIBUTION_PLAN.md) and [license re-audit](PLAY_REAUDIT_2026-10-26.md).
 
@@ -11,7 +11,7 @@ Public developer display name: **Oh My Pi**. Support/privacy contact: **xperimen
 The owner relayed Muse Spark's successful draft upload on 27 October 2026.
 This workspace has not independently accessed Play Console. The existing free
 Read Assist app is now **app.readflow**, Play app ID **4975999632955979701**.
-Version **0.2.5/code 21** was accepted and is already used; reuse its existing
+Version **0.2.5/code 21** was accepted and is already used; preserve its existing
 release/library entry instead of creating another app or uploading code 21 again.
 The release is **Draft**, Internal testing **Inactive**; nothing was rolled out.
 Google-managed Play App Signing is configured. Preserve it and automatic protection.
@@ -22,8 +22,11 @@ No upload errors were reported; release notes are missing. Play's attached nativ
 debug symbols do not establish a Firebase Crashlytics symbol upload.
 See the [reported Console evidence](evidence/play-store-0.2.5-configured/play-console-draft-reported.json).
 
-The next small task is release notes, the owner's explicitly confirmed Google Play
-tester account and internal-test availability. Do not infer the tester account
+The new **0.2.6/code 22 candidate has not been uploaded**. For the next authorized
+upload, use its verified AAB in this existing app with the existing upload key and
+Play App Signing. Do not roll it out automatically. Release notes, the owner's
+explicitly confirmed Google Play tester account and internal-test availability
+remain to be completed. Do not infer the tester account
 from the public support address or put tester email addresses in this public repo.
 Keep public production release and its remaining policy, license and device gates
 separate from this limited test. Do not treat internal-test acceptance as policy
@@ -33,9 +36,9 @@ approval or verified crash delivery.
 
 Copy the quoted prompt into Muse Spark. This [current handoff](https://github.com/sainadh812/ReadFlow/blob/fix/reader-playback-and-pdf-space/docs/PLAY_STORE_HANDOFF.md) supersedes release attachments and earlier paid/free-Pro prompts.
 
-> You are Muse Spark, the publishing assistant for **Read Assist** (double “s”), package `app.readflow`, repository `sainadh812/ReadFlow`. Work from the current `fix/reader-playback-and-pdf-space` branch and this handoff. The candidate is **0.2.5/code 21**. Record the exact final commit and evidence; never transfer test results from an older artifact. Use **Oh My Pi** as the approved public developer display name and **xperimenting.ai@gmail.com** for public support/privacy contact. Preserve existing app data and model identities.
+> You are Muse Spark, the publishing assistant for **Read Assist** (double “s”), package `app.readflow`, repository `sainadh812/ReadFlow`. Work from the current `fix/reader-playback-and-pdf-space` branch and this handoff. The candidate is **0.2.6/code 22**, built from `25944d402312adf69e44f5e3d6f5b42a2e6b179f` in run **41183292058**, artifact **13036231224**. It has not been uploaded to Play. Record its exact evidence; never transfer test results from an older artifact. Use **Oh My Pi** as the approved public developer display name and **xperimenting.ai@gmail.com** for public support/privacy contact. Preserve existing app data and model identities.
 >
-> Use the **existing** Firebase Spark project **Read Assist**, ID `read-assist-fbd21`, Android package `app.readflow`, Firebase app ID `1:831366793321:android:573b80e46b55eb65103af8`. Muse Spark reports project creation, Spark/no-cost plan, Analytics disabled and the client JSON downloaded. Do not create another project or regenerate the upload key. Four upload-signing secrets are already stored in `sainadh812/ReadFlow`; the public certificate/fingerprint are in `docs/evidence/play-store-upload/`. The config is already stored as **`READASSIT_FIREBASE_CONFIG_BASE64`** (earlier spelling), and the workflow accepts it as a fallback for **`READASSIST_FIREBASE_CONFIG_BASE64`**. No repeat transfer is needed. Do not submit the pending New secret form. Run 40529659238 validated the stored config and built the signed candidate. Do not repeat setup or rebuild merely to obtain these files. Do not paste its contents in chat, commit it, overwrite the signing secrets, create a service-account key, enable Analytics or upgrade to Blaze. See `docs/GITHUB_RELEASE_BUILD.md` for the manual workflow and verification steps.
+> Use the **existing** Firebase Spark project **Read Assist**, ID `read-assist-fbd21`, Android package `app.readflow`, Firebase app ID `1:831366793321:android:573b80e46b55eb65103af8`. Muse Spark reports project creation, Spark/no-cost plan, Analytics disabled and the client JSON downloaded. Do not create another project or regenerate the upload key. Four upload-signing secrets are already stored in `sainadh812/ReadFlow`; the public certificate/fingerprint are in `docs/evidence/play-store-upload/`. The config is already stored as **`READASSIT_FIREBASE_CONFIG_BASE64`** (earlier spelling), and the workflow accepts it as a fallback for **`READASSIST_FIREBASE_CONFIG_BASE64`**. No repeat transfer is needed. Run 41183292058 validated the stored config and built the signed 0.2.6 candidate. Do not repeat setup or rebuild merely to obtain these files. Do not paste its contents in chat, commit it, overwrite the signing secrets, create a service-account key, enable Analytics or upgrade to Blaze. See `docs/GITHUB_RELEASE_BUILD.md` for the manual workflow and verification steps.
 >
 > Reporting is **off by default** and Firebase initializes only at startup with valid configuration and saved consent. Full enable/disable takes effect on the next app launch; our handled-error reports stop immediately on opt-out, while queued work may finish and stored reports may send after re-enabling. Test fresh install/off, consent/on/restart, opt-out/restart and re-enable with pending reports. Verify real sanitized nonfatal, Java fatal, ANR where practical and native-crash delivery in the correct Firebase project after restarting the test app. Use a dedicated test installation and development-only test triggers; do not crash the owner's reading session or expose forced-crash controls in production. Upload matching native symbols for the exact release, follow `docs/NATIVE_CRASH_SYMBOLS.md`, and document any remaining vendor-library or Go unwinding/symbolication limits. A build pass or a visible switch does not prove delivery. Unconfigured review builds cannot send Crashlytics reports and are not this feature's production-ready package.
 >
@@ -45,7 +48,7 @@ Copy the quoted prompt into Muse Spark. This [current handoff](https://github.co
 >
 > Audit licensing again for the exact final signed AAB, including newly added Firebase/transport dependencies and native binaries. Use `docs/PLAY_REAUDIT_2026-10-26.md` as the baseline, not blanket clearance. Preserve notices, font licenses, MPL sources/offers and the eSpeak/Sherpa-free release. Check model/runtime inventories and hashes; do not change serialized model IDs casually. Record unresolved findings for technical review.
 >
-> Build with the owner's secure upload key and use Play App Signing, never the prototype/debug certificate. Code 21 is now accepted in the existing Play draft. Reuse that bundle; any future rebuilt upload needs a higher unused code and fresh artifact checks. Keep configuration, keys and passwords outside Git/chat. Complete release tests/lint, notices/license inventory, 16 KB/native/font/bundle checks, current public-policy verification, Firebase symbol upload and real-device crash-delivery checks. Repeat final checks after configuration or signing changes. Prior unsigned AABs and prototype-signed APKs are review artifacts, not production uploads.
+> Reuse the existing Play app **4975999632955979701**, upload key and Google-managed Play App Signing. Code 21 is already accepted in its historical draft. For a subsequently authorized upload, use the exact **Read-Assist-0.2.6-upload-signed.aab**, code **22**, SHA-256 **e222bcf1610e211093836918a7a30960c692bb43c6d4de12d23fe6b3a0579727**. Do not upload code 21 again, create another app/key, or roll out code 22 automatically. If Console already contains code 22 when you begin, stop to reconcile that state instead of blindly re-uploading or rebuilding. Keep configuration, keys and passwords outside Git/chat. This candidate passed 372 release tests with three fixture skips, lint, and CI packaging checks; complete its remaining exact-artifact review, Firebase symbol upload and real-device checks. Repeat final checks after configuration or signing changes. Prior unsigned AABs and prototype-signed APKs are review artifacts, not production uploads.
 >
 > Complete developer/account verification, approved application terms, audience/territories, content rating, app access, Data safety and media-playback foreground-service declarations from verified facts. Use real final-app screenshots and a service-use video. Test model setup, retained documents on updates, OCR/speech/offline reading, sustained playback, swipes, themes/fonts, notification controls, privacy/deletion, the email preview/no-email-app fallback, diagnostics consent and UPI cancellation/no-handler behavior on the S25 Ultra and a 16 KB environment. Complete applicable internal/closed testing. Do not publish with required checks or owner facts unresolved. Report final version, commit, AAB hash, certificate fingerprint, Firebase app/project identifiers (not secrets), delivery/symbol evidence and actual track/tester URL. Claim publication only when Console confirms it.
 
@@ -61,28 +64,52 @@ After verifying the configured signed release, explicitly run:
 
 Keep the exact build outputs and GNU build IDs. The Misaki build now retains GNU build ID, full DWARF and symbol-table information in its generated unstripped library, validated by the preparation script. Verify the final packaged copy has the same GNU build ID; retain that exact original for upload. See [native crash symbols](NATIVE_CRASH_SYMBOLS.md). The upload task searches merged native libraries; pre-stripped third-party libraries still require matching supplier symbols for complete frames. Real-device native/Go stack unwinding and symbolication remain to be demonstrated; successful symbol generation/upload alone does not prove complete coverage. Confirm mapping requirements if minification is enabled later. [Firebase NDK setup](https://firebase.google.com/docs/crashlytics/android/get-started-ndk).
 
-The new consent/network flow requires device tests. No claim of Firebase project creation, successful upload, production signing or Play approval follows from local compilation. Record the 0.2.5 artifact's own validation evidence when those checks complete.
+The consent/network flow requires device tests. A local SDK submission count is not proof of report persistence or server delivery. Record the 0.2.6 artifact's own device, delivery and Console evidence when those checks complete.
 
 ## Current configured, upload-signed candidate
 
-[Verified build](https://github.com/sainadh812/ReadFlow/actions/runs/40529659238) · [download APK/AAB and reports](https://github.com/sainadh812/ReadFlow/actions/runs/40529659238/artifacts/12745713255) (14-day artifact retention).
-Version **0.2.5/code 21**, source `f025430e9e18d65fc317afe06e5bde06acb7fb47`.
-The exact AAB SHA-256 is `9709f780723e279cbe7cb9a09cb868374e7c158fb9e3d42a2ee32d4bfe7b6bab`.
-The APK SHA-256 is `723fd50d4a68fc8ddfa73032d721d9415000c6cd51c5ec5be68e30c04659fb2f`.
+[Verified build](https://github.com/sainadh812/ReadFlow/actions/runs/41183292058) · [download APK/AAB and reports](https://github.com/sainadh812/ReadFlow/actions/runs/41183292058/artifacts/13036231224) (14-day artifact retention) · [published 0.2.6 prerelease](https://github.com/sainadh812/ReadFlow/releases/tag/v0.2.6-play-candidate).
+Version **0.2.6/code 22**, source `25944d402312adf69e44f5e3d6f5b42a2e6b179f`.
+The exact AAB SHA-256 is `e222bcf1610e211093836918a7a30960c692bb43c6d4de12d23fe6b3a0579727` (72,201,078 bytes).
+The APK SHA-256 is `b4bddf9865623d8ec4d3c374eaac9ee399a964c215d87bfec28964742fb8fddb` (130,803,112 bytes).
 The public upload certificate pin is unchanged. Firebase is configured for the
-approved app; reports remain off by default. Tests: **360 passed, three skipped**
-(real-model files absent on CI); lint: **0 errors / 34 warnings**. Packaging,
-signatures, fonts, public policy and 16 KB checks passed. Dependency/model/notice
-preservation was checked against the earlier 0.2.5 review artifact; this is not
-blanket legal clearance. See [evidence](evidence/play-store-0.2.5-configured/release-evidence.json)
-and [dependency delta](evidence/play-store-0.2.5-configured/dependency-delta.json).
+approved app; reports remain off by default. Tests: **372 passed, three skipped**
+(real-model files absent on CI); lint: **0 errors / 34 warnings**. CI packaging,
+signatures, fonts, public policy and 16 KB checks passed, and all 69 downloaded
+artifact hashes matched. Independent local checks verified signatures and packaged
+Firebase identifiers. All 144 runtime dependency hashes, 314 assets (287 license
+assets) and seven fonts match 0.2.5; only the app-owned Misaki native binary changed.
+See [release evidence](evidence/play-store-0.2.6-configured/release-evidence.json),
+[checksums](evidence/play-store-0.2.6-configured/SHA256SUMS.json),
+[local verification](evidence/play-store-0.2.6-configured/local-verification.json)
+and [dependency delta](evidence/play-store-0.2.6-configured/dependency-delta.json).
+The [GitHub publication record](evidence/play-store-0.2.6-configured/github-release.json)
+confirms the prerelease assets; it is separate from a Play upload.
+These checks do not establish legal clearance or phone acceptance.
 
 Continue in small tasks. Preserve the exact artifact and reports first. Native
 symbols are retained in the download but have not been uploaded; real device
-consent/crash delivery, final publishing/license review, production readiness remain pending. The owner reports the draft upload was accepted;
-no internal rollout or production submission has been performed.
-The upload-signed APK cannot update a prototype signed with the old debug key;
-use a separate test installation and preserve the owner's reading data.
+consent/crash delivery, final publishing/license review and production readiness
+remain pending. **0.2.6/code 22 has not been uploaded to Play.** The owner-reported
+accepted draft is 0.2.5/code 21; no automatic internal rollout or production
+submission follows from the new build.
+The upload-signed APK cannot update a prototype signed with the old debug key or
+a Play-installed copy signed with the separate Play app-signing key. Use the
+appropriate Play test track for that installation, or a separate test device;
+preserve the owner's reading data.
+
+## Historical configured 0.2.5 candidate
+
+[Run 40529659238](https://github.com/sainadh812/ReadFlow/actions/runs/40529659238)
+built **0.2.5/code 21** from `f025430e9e18d65fc317afe06e5bde06acb7fb47`.
+Its AAB SHA-256 is `9709f780723e279cbe7cb9a09cb868374e7c158fb9e3d42a2ee32d4bfe7b6bab`;
+APK SHA-256 is `723fd50d4a68fc8ddfa73032d721d9415000c6cd51c5ec5be68e30c04659fb2f`.
+That build passed 360 tests with three fixture skips and lint at 0 errors/34 warnings.
+Its [release evidence](evidence/play-store-0.2.5-configured/release-evidence.json),
+[local verification](evidence/play-store-0.2.5-configured/local-verification.json)
+and [dependency delta](evidence/play-store-0.2.5-configured/dependency-delta.json)
+remain historical records. The owner-reported Play draft above contains code 21;
+it does not contain the 0.2.6 normalization or reporting fixes.
 
 ## Historical unconfigured 0.2.5 review artifacts
 
