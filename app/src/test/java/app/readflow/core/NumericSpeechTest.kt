@@ -31,6 +31,57 @@ class NumericSpeechTest {
         assertEquals("\"nine point three million dollars,\"", speech("“$9.3 million,”").text)
     }
 
+    @Test fun attachedNumeralsAfterClosingPunctuationKeepNumericValuesAndSourceMapping() {
+        val examples = mapOf(
+            "(Sales ended in 2019.)71" to "(Sales ended in two thousand nineteen.) seventy one",
+            "[Sales ended in 2019.]71" to "(Sales ended in two thousand nineteen.) seventy one",
+            "“Sales ended in 2019.”71" to "\"Sales ended in two thousand nineteen.\" seventy one",
+            "(Sales ended in 2019.)[71]" to "(Sales ended in two thousand nineteen.) (seventy one)",
+            "(Sales ended in 2019.)71," to "(Sales ended in two thousand nineteen.) seventy one,",
+            "(Return was -0.5%.)12" to "(Return was minus zero point five percent.) twelve",
+            "(Cost was $1,234.56.)12" to "(Cost was one thousand two hundred thirty four point five six dollars.) twelve",
+        )
+        examples.forEach { (raw, expected) ->
+            val source = page(raw)
+            val before = source.copy(words = source.words.map { it.copy(boxes = it.boxes.toList()) })
+            val result = EnglishNormalizer().normalize(source.words)
+            assertEquals(raw, expected, result.text)
+            assertEquals(before, source)
+            assertEquals(source.words.map { it.id }, result.sourceIds)
+            val ending = source.words.last()
+            val owned = result.tokens.filter { ending.id in it.sourceIds }
+            assertTrue(owned.isNotEmpty())
+            assertTrue(owned.all { it.sourceIds == listOf(ending.id) })
+            assertEquals(ending.text, source.original.substring(ending.sourceStart, ending.sourceEnd))
+            assertEquals(ending.text, source.reading.substring(ending.start, ending.end))
+        }
+        assertEquals(listOf("TWO", "THOUSAND", "NINETEEN", "SEVENTY", "ONE"), speech("2019.)71").tokens.map { it.text })
+    }
+
+    @Test fun financialSentenceWithAnAttachedReferenceCanBePreparedAndSelected() {
+        // Synthetic prose reproduces the reported percentage, index name and year/reference boundary.
+        val source = page("(We compared 85% of funds with the S&P 500 through 2019.)71")
+        val prepared = SpeechPlanner(maxCharacters = 60).prepare(source.words).toList()
+        assertEquals("(We compared eighty five percent of funds with the S and P five hundred through two thousand nineteen.) seventy one",
+            prepared.joinToString(" ") { it.speech.text })
+        assertEquals(source.words, prepared.flatMap { it.words })
+        assertEquals(source.words.map { it.id }, prepared.flatMap { it.speech.sourceIds })
+        assertTrue(prepared.all { it.speech.text.length <= 60 })
+        val selected = SpeechPlanner().prepare(source.words, source.words.last().id, fromSelectedWord = true).single()
+        assertEquals("two thousand nineteen.) seventy one", selected.speech.text)
+        assertEquals(listOf(source.words.last()), selected.words)
+        assertTrue(selected.speech.tokens.all { it.sourceIds == listOf(source.words.last().id) })
+    }
+
+    @Test fun closingReferenceRuleDoesNotReinterpretDecimalsOrUnsupportedExpressions() {
+        assertEquals("two thousand nineteen point seven one", speech("2019.71").text)
+        assertEquals("one thousand two hundred thirty four", speech("1,234").text)
+        for (raw in listOf("1,2", "v1.2", "1.2.3.)71", "v1.2.)71", "1,2.)71", "2+3.)71",
+            "2019.)71+2", "2019.)9999999999999999", "9999999999999999.)71")) {
+            assertThrows(raw, NormalizationException::class.java) { speech(raw) }
+        }
+    }
+
     @Test fun ageRangesAndTypographyVariantsReadAsRanges() {
         for (dash in listOf("-", "–", "—", "‑")) {
             assertEquals("he is twenty to twenty four years old", speech("he is 20${dash}24 years old").text)
@@ -83,6 +134,12 @@ class NumericSpeechTest {
         val result = EnglishNormalizer().normalize(source.words)
         assertNotEquals(result.tokens.first().sourceIds, result.tokens.last().sourceIds)
         assertNotEquals(cacheKey("doc", result, "model", "voice", "settings", "align", "english-4"),
+            cacheKey("doc", result, "model", "voice", "settings", "align"))
+    }
+
+    @Test fun newClosingReferenceRulesInvalidateEnglishFiveAudio() {
+        val result = speech("An unchanged sentence.")
+        assertNotEquals(cacheKey("doc", result, "model", "voice", "settings", "align", "english-5"),
             cacheKey("doc", result, "model", "voice", "settings", "align"))
     }
 }

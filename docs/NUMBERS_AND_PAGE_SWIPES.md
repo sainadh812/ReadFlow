@@ -2,6 +2,23 @@
 
 The reported stops occurred during speech normalization, after text extraction. `english-5` recognizes additional numeric forms without changing the displayed document, OCR geometry or source IDs. Existing audio caches regenerate under the new normalization revision; no model download or document reimport is required.
 
+## Read Assist 0.2.6: numerals after closing punctuation
+
+`english-6` fixes a further preparation failure on tokens such as `2019.)71`.
+The old attached-numeral rule accepted word bases but rejected a year followed by
+sentence punctuation, a closing bracket, and a numeral. The new rule recursively
+expands both parts: `two thousand nineteen.) seventy one`. It preserves the numeral
+without assuming it is a footnote, and retains the original source text, IDs and
+highlight mapping. Closing quotes, bracketed numerals, amounts and percentages use
+the same bounded rule. Decimals and unsupported expressions keep their existing
+behavior. The normalization revision invalidates old audio cache keys automatically.
+
+Regression coverage includes a synthetic financial sentence containing a percentage,
+`S&P 500`, and this year/reference boundary, selected-word playback, chunking, source
+mapping, and rejection of malformed expressions. Version 0.2.6 also includes visible
+reporting status and retry eligibility after synchronous Firebase submission failures;
+see [production diagnostics](PRODUCTION_DIAGNOSTICS.md).
+
 | Source | Speech text |
 | --- | --- |
 | `inflation,16` | `inflation, sixteen` |

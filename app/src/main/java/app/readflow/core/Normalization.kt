@@ -6,7 +6,7 @@ class NormalizationException(val sourceIds: List<String>, val sourceText: String
     IllegalArgumentException(reason)
 
 class EnglishNormalizer : TextNormalizer {
-    companion object { const val VERSION = "english-5" }
+    companion object { const val VERSION = "english-6" }
     private val small = listOf("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen")
     private val tens = listOf("", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety")
     fun number(n: Long): String = when {
@@ -160,6 +160,13 @@ class EnglishNormalizer : TextNormalizer {
         val attachedNumeral = Regex("^([A-Za-z]+(?:['-][A-Za-z]+)*[,.!?]+[\"')]*)(\\(?[0-9]+)$").matchEntire(bare)
         if (attachedNumeral != null) {
             return prefix + expandToken(attachedNumeral.groupValues[1]) + " " + expandToken(attachedNumeral.groupValues[2]) + suffix
+        }
+        // A closing quote/bracket after sentence punctuation separates an attached numeral,
+        // even when the preceding token is a year, amount or percentage (e.g. "2019.)71").
+        // Read both parts literally; the explicit boundary leaves decimals and numeric commas alone.
+        val closingNumeral = Regex("""^(.+[,.!?]["')]+)(\(?[0-9]+)$""").matchEntire(bare)
+        if (closingNumeral != null) {
+            return prefix + expandToken(closingNumeral.groupValues[1]) + " " + expandToken(closingNumeral.groupValues[2]) + suffix
         }
         // A year attached to a named entry is a timeline label, not a numeric compound.
         val timeline = Regex("^((?:1[0-9]{3}|2[01][0-9]{2}))-([A-Z][A-Za-z]*(?:['-][A-Za-z]+)*)$").matchEntire(bare)
