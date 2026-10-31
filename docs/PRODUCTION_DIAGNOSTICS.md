@@ -26,6 +26,13 @@ paid Firebase services are not needed. Muse Spark reports the owner’s project 
   most eight reduced events; repeated failure signatures are suppressed for ten
   minutes, and app-submitted reports are capped at 32 per hour per process.
   SDK fatal/ANR reporting has separate behavior. No account user ID or Analytics is set.
+- Settings distinguishes the saved opt-in switch from a reporting service that
+  actually started. It shows the number of reports handed to the on-device Firebase
+  service in this process, the last reduced failure code, and synchronous submission
+  failures. These are not server acknowledgments: the SDK saves and uploads
+  asynchronously, usually after a process restart. Existing local logs are not replayed.
+  If a submission throws, a later occurrence of that signature can retry immediately
+  within the hourly attempt limit; successful signatures retain duplicate suppression.
 - Firebase receives installation/session identifiers and technical diagnostics.
   This is optional data collection, not anonymous or wholly offline operation.
 

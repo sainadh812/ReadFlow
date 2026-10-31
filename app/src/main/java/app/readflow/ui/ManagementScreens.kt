@@ -204,6 +204,27 @@ import java.util.Locale
                         crashReporting.enabled, enabled = crashReporting.configured) { enabled ->
                         if (enabled) crashReportingConsent = true else vm.setCrashReportingEnabled(false)
                     }
+                    if (crashReporting.configured && crashReporting.enabled) {
+                        Text(when {
+                            !crashReporting.active -> "Reporting is not active yet"
+                            crashReporting.submissionFailed -> "A report could not be passed to Firebase"
+                            else -> "Reporting is active"
+                        }, style = MaterialTheme.typography.bodyMedium,
+                            color = if (crashReporting.submissionFailed) MaterialTheme.colorScheme.error
+                                else MaterialTheme.colorScheme.onSurface)
+                        if (crashReporting.active) {
+                            Text("Reports handed to the on-device Firebase service this session: ${crashReporting.submittedThisSession}. Upload is not confirmed here.",
+                                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            crashReporting.lastFailureCode?.let { code ->
+                                Text("Last report: $code", style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                            Text(if (crashReporting.submissionFailed)
+                                "Your local issue log is kept. A later occurrence can try reporting again."
+                                else "Sentence errors are normally uploaded after the app restarts. Keep reporting on and reopen the app with internet access.",
+                                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
                     if (crashReporting.restartRequired) {
                         Text(if (crashReporting.enabled) "Restart Read Assist to start automatic reporting."
                             else "Restart Read Assist to finish turning off crash reporting. Reports already being sent may still finish.",

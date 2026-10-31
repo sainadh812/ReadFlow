@@ -72,7 +72,7 @@ class CrashReportingConsentTest {
         assertFalse(consent.canRecord)
         repeat(3) { consent.start() }
         assertEquals(1, backend.starts); assertTrue(consent.sdkStarted); assertTrue(consent.canRecord)
-        assertEquals(CrashReportingState(true, true, false), consent.state.value)
+        assertEquals(CrashReportingState(true, true, false, active = true), consent.state.value)
         consent.setEnabled(true)
         assertEquals(1, backend.starts); assertTrue(consent.canRecord)
         assertFalse(consent.state.value.restartRequired)
@@ -85,6 +85,7 @@ class CrashReportingConsentTest {
         consent.start(); consent.setEnabled(true); consent.start()
         assertTrue(preference.enabled); assertTrue(consent.state.value.enabled)
         assertTrue(consent.state.value.restartRequired); assertFalse(consent.canRecord)
+        assertFalse(consent.state.value.active)
         assertFalse(consent.sdkStarted); assertEquals(0, backend.starts)
         val nextProcess = CrashReportingConsent(true, preference, backend)
         nextProcess.start()
@@ -181,6 +182,7 @@ class CrashReportingConsentTest {
         consent.start(); consent.start()
         assertTrue(consent.sdkStarted); assertFalse(consent.canRecord)
         assertTrue(consent.state.value.enabled); assertTrue(consent.state.value.restartRequired)
+        assertFalse(consent.state.value.active)
         assertEquals(1, backend.starts); assertEquals(1, backend.deletions)
         assertTrue(consent.state.value.message!!.contains("could not start"))
         assertFalse(consent.state.value.message!!.contains("private"))
@@ -222,5 +224,32 @@ class CrashReportingConsentTest {
         } finally { release.countDown(); first.join(5000); second.join(5000) }
         assertFalse(first.isAlive); assertFalse(second.isAlive)
         assertEquals(1, calls.get()); assertTrue(consent.canRecord)
+    }
+
+    @Test fun submissionStatusDistinguishesSdkAcceptanceFromEnabledPreference() {
+        val consent = CrashReportingConsent(true, Preference(true), Backend())
+        consent.onSubmissionAccepted("SYNTHESIZE_IllegalArgumentException")
+        consent.onSubmissionFailed()
+        assertEquals(0, consent.state.value.submittedThisSession)
+        assertFalse(consent.state.value.submissionFailed)
+        consent.start()
+        consent.onSubmissionFailed()
+        assertTrue(consent.state.value.enabled)
+        assertTrue(consent.state.value.active)
+        assertTrue(consent.state.value.submissionFailed)
+        assertEquals(0, consent.state.value.submittedThisSession)
+        consent.onSubmissionAccepted("SYNTHESIZE_IllegalArgumentException")
+        assertFalse(consent.state.value.submissionFailed)
+        assertEquals(1, consent.state.value.submittedThisSession)
+        assertEquals("SYNTHESIZE_IllegalArgumentException", consent.state.value.lastFailureCode)
+        consent.setEnabled(true)
+        assertEquals(1, consent.state.value.submittedThisSession)
+        consent.setEnabled(false)
+        consent.onSubmissionAccepted("NORMALIZE_TEXT_NormalizationException")
+        consent.onSubmissionFailed()
+        assertFalse(consent.state.value.active)
+        assertFalse(consent.state.value.submissionFailed)
+        assertEquals(0, consent.state.value.submittedThisSession)
+        assertNull(consent.state.value.lastFailureCode)
     }
 }

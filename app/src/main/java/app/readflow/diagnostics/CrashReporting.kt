@@ -18,7 +18,7 @@ class CrashReporting(context: Context, scope: CoroutineScope) {
     private val consent = CrashReportingConsent(BuildConfig.FIREBASE_CONFIGURED,
         AndroidReportingPreference(context.applicationContext), backend)
     val state = consent.state
-    private val limiter = DiagnosticRateLimiter()
+    private val submissions = DiagnosticSubmission(backend::record)
     // Never retain IssueReport or reading contents in the reporting queue.
     private val events = Channel<TechnicalDiagnosticEvent>(8, BufferOverflow.DROP_OLDEST)
     private val fallbackFatal = ReportedFailure("UNCAUGHT_JAVA_OtherFailure").apply { stackTrace = emptyArray() }
@@ -28,7 +28,11 @@ class CrashReporting(context: Context, scope: CoroutineScope) {
             for (event in events) {
                 synchronized(submissionLock) {
                     if (consent.canRecord) {
-                        try { backend.record(event) } catch (_: Exception) { /* Optional reporting cannot break reading. */ }
+                        when (submissions.submit(event, SystemClock.elapsedRealtime())) {
+                            DiagnosticSubmissionOutcome.Accepted -> consent.onSubmissionAccepted(event.code)
+                            DiagnosticSubmissionOutcome.Failed -> consent.onSubmissionFailed()
+                            DiagnosticSubmissionOutcome.Suppressed -> Unit
+                        }
                     }
                 }
             }
@@ -41,7 +45,7 @@ class CrashReporting(context: Context, scope: CoroutineScope) {
         consent.setEnabled(enabled)
         if (!consent.canRecord) {
             while (events.tryReceive().isSuccess) { /* Discard queued app reports on opt-out. */ }
-            limiter.clear()
+            submissions.clear()
         }
     }
 
@@ -49,7 +53,7 @@ class CrashReporting(context: Context, scope: CoroutineScope) {
         // Fatal Java exceptions are handled by the SDK's uncaught handler, once.
         if (!consent.canRecord || report.stage == "UNCAUGHT_JAVA") return
         val event = TechnicalDiagnostics.from(report)
-        if (limiter.shouldReport(event, SystemClock.elapsedRealtime()) && consent.canRecord) events.trySend(event)
+        if (consent.canRecord) events.trySend(event)
     }
 
     /** Preserve the full local report, but strip messages/input before forwarding to the SDK handler. */
@@ -91,6 +95,6 @@ private class FirebaseReportingBackend(private val context: Context) : Reporting
             .putString("severity", event.severity)
         event.environment.forEach { (key, value) -> keys.putString("environment_$key", value) }
         event.configuration.forEach { (key, value) -> keys.putString("configuration_$key", value) }
-        sdk?.recordException(event.asReportedFailure(), keys.build())
+        checkNotNull(sdk) { "Crash reporting is not initialized" }.recordException(event.asReportedFailure(), keys.build())
     }
 }

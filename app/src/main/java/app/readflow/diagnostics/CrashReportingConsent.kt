@@ -9,6 +9,11 @@ data class CrashReportingState(
     val enabled: Boolean,
     val restartRequired: Boolean,
     val message: String? = null,
+    val active: Boolean = false,
+    /** SDK calls that returned normally; this is not an upload acknowledgment. */
+    val submittedThisSession: Int = 0,
+    val lastFailureCode: String? = null,
+    val submissionFailed: Boolean = false,
 )
 
 interface ReportingPreference {
@@ -61,7 +66,7 @@ class CrashReportingConsent(
         try {
             backend.start()
             recordingAllowed = true
-            mutable.value = CrashReportingState(true, true, false)
+            mutable.value = CrashReportingState(true, true, false, active = true)
         } catch (_: Throwable) {
             recordingAllowed = false
             disableBackendOnce()
@@ -84,8 +89,9 @@ class CrashReportingConsent(
                 mutable.value = mutable.value.copy(message = "Could not save your diagnostics choice. Try again.")
                 return@synchronized
             }
-            mutable.value = CrashReportingState(true, true, !recordingAllowed,
-                if (recordingAllowed) null else "Restart the app to enable automatic diagnostics.")
+            mutable.value = mutable.value.copy(configured = true, enabled = true, restartRequired = !recordingAllowed,
+                message = if (recordingAllowed) null else "Restart the app to enable automatic diagnostics.",
+                active = recordingAllowed)
         } else {
             // Gate before persistence/SDK calls, including when either operation fails.
             recordingAllowed = false
@@ -103,6 +109,17 @@ class CrashReportingConsent(
             }
             mutable.value = CrashReportingState(true, false, backendAttempted, message)
         }
+    }
+
+    /** A returned SDK call does not confirm disk persistence or delivery to Firebase. */
+    fun onSubmissionAccepted(code: String) = synchronized(lock) {
+        if (recordingAllowed) mutable.value = mutable.value.copy(
+            submittedThisSession = mutable.value.submittedThisSession + 1,
+            lastFailureCode = code, submissionFailed = false)
+    }
+
+    fun onSubmissionFailed() = synchronized(lock) {
+        if (recordingAllowed) mutable.value = mutable.value.copy(submissionFailed = true)
     }
 
     /** Caller holds lock. A partial start needs cleanup too; repeated toggles never re-enter the SDK. */

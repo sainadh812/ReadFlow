@@ -166,13 +166,18 @@ class DiagnosticRateLimiter(
         lastClock = nowMs
         while (accepted.isNotEmpty() && nowMs - accepted.first() >= budgetWindowMs) accepted.removeFirst()
         recent.entries.removeAll { nowMs - it.value >= duplicateWindowMs }
-        val key = listOf(event.stage, event.category, event.code, event.configuration["model"],
-            event.failures.firstOrNull()?.frames?.firstOrNull()?.display()).joinToString("|")
+        val key = signature(event)
         if (key in recent || accepted.size >= maxEvents) return false
         if (recent.size >= 128) recent.remove(recent.keys.first())
         recent[key] = nowMs; accepted.addLast(nowMs)
         return true
     }
 
+    /** Release only duplicate suppression after a synchronous submission failure, retaining its budget cost. */
+    @Synchronized fun forget(event: TechnicalDiagnosticEvent) { recent.remove(signature(event)) }
+
     @Synchronized fun clear() { recent.clear(); accepted.clear(); lastClock = null }
+
+    private fun signature(event: TechnicalDiagnosticEvent) = listOf(event.stage, event.category, event.code,
+        event.configuration["model"], event.failures.firstOrNull()?.frames?.firstOrNull()?.display()).joinToString("|")
 }
