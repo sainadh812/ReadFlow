@@ -6,7 +6,7 @@ class NormalizationException(val sourceIds: List<String>, val sourceText: String
     IllegalArgumentException(reason)
 
 class EnglishNormalizer : TextNormalizer {
-    companion object { const val VERSION = "english-6" }
+    companion object { const val VERSION = "english-7" }
     private val small = listOf("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen")
     private val tens = listOf("", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety")
     fun number(n: Long): String = when {
@@ -22,11 +22,18 @@ class EnglishNormalizer : TextNormalizer {
     override fun normalize(words: List<SourceWord>): SpeechText {
         val tokens = mutableListOf<SpokenToken>()
         val spoken = mutableListOf<String>()
+        val punctuationOnly = words.none { word -> typography(word.text).any { it.isLetterOrDigit() } }
         for (group in sourceGroups(words)) {
             for ((raw, owners) in speechParts(group)) {
                 val sourceText = owners.joinToString(" ") { it.text }
                 val ids = owners.map { it.id }
-                val expansion = LatinPronunciation.forSpeech(raw).trim().split(Regex("\\s+")).joinToString(" ", transform = ::expandToken)
+                val prepared = LatinPronunciation.forSpeech(raw).trim()
+                // Standalone punctuation has a real source word and selection target. Reading its
+                // name keeps punctuation-only sentences playable instead of passing empty phones.
+                val expansion = if (punctuationOnly && prepared.none { it.isLetterOrDigit() } && prepared.all { it.isWhitespace() || it in punctuationNames }) {
+                    val literal = if (prepared.isEmpty()) sourceText else prepared
+                    literal.mapNotNull { punctuationNames[it] }.joinToString(" ")
+                } else prepared.split(Regex("\\s+")).joinToString(" ", transform = ::expandToken)
                 // The same expansion feeds synthesis and alignment, never a second guessed transcript.
                 if (expansion.any { it.isDigit() || (it.isLetter() && it !in 'A'..'Z' && it !in 'a'..'z') })
                     throw NormalizationException(ids, sourceText, expansion, "This sentence needs an explicit English pronunciation.")
@@ -45,6 +52,11 @@ class EnglishNormalizer : TextNormalizer {
     private fun speechParts(group: List<SourceWord>): List<Pair<String, List<SourceWord>>> {
         val raw = typography(group[0].text)
         if (group.size == 1) return listOf(raw to group)
+        if (separatedCurrency(group[0], group[1])) {
+            val amount = raw + typography(group[1].text)
+            return listOf((if (group.size == 3) scaledCurrency(amount, typography(group[2].text)) else amount) to group)
+        }
+        if (separatedPercent(group[0], group[1])) return listOf((raw + typography(group[1].text)) to group)
         if (timelineMeasurement(group[0], group[1])) {
             val match = timelineNumber.matchEntire(raw)!!
             // Keep the unit's own highlight and tap target, even though its context classifies the dash.
@@ -70,8 +82,16 @@ class EnglishNormalizer : TextNormalizer {
                 next.paragraphId == word.paragraphId && next.text.firstOrNull()?.isLowerCase() == true &&
                 next.sourceStart > word.sourceEnd && word.boxes.isNotEmpty() && next.boxes.isNotEmpty() &&
                 next.boxes.first().top > word.boxes.first().bottom - 2
-            val count = if (joins || (next != null && next.paragraphId == word.paragraphId &&
-                next.sentenceId == word.sentenceId && (currencyScale(word, next) || timelineMeasurement(word, next)))) 2 else 1
+            val sameSentence = next != null && next.paragraphId == word.paragraphId && next.sentenceId == word.sentenceId
+            val separated = sameSentence && separatedCurrency(word, next!!)
+            val scale = words.getOrNull(i + 2)
+            val count = when {
+                separated && scale != null && scale.paragraphId == word.paragraphId && scale.sentenceId == word.sentenceId &&
+                    currencyAmount.matches(typography(word.text).trimStart('"', '\'', '(') + typography(next!!.text)) &&
+                    scaleWord.matches(typography(scale.text)) -> 3
+                joins || (sameSentence && (separated || separatedPercent(word, next!!) || currencyScale(word, next) || timelineMeasurement(word, next))) -> 2
+                else -> 1
+            }
             groups += words.subList(i, i + count)
             i += count
         }
@@ -79,12 +99,33 @@ class EnglishNormalizer : TextNormalizer {
     }
 
     private val currencyAmount = Regex("^[£$€₹][-+]?(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\\.[0-9]+)?$")
+    private val separatedAmount = Regex("""^[-+]?(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\.[0-9]+)?[,.;:!?"')]*$""")
     private val scaleWord = Regex("""^(thousand|million|billion)([,.;:!?"')]*?)$""", RegexOption.IGNORE_CASE)
     private val timelineNumber = Regex("^((?:1[0-9]{3}|2[01][0-9]{2}))-([0-9]{1,3}(?:\\.[0-9]+)?)$")
     private val storageUnit = Regex("^(gigs|gigabytes?|megabytes?|terabytes?|GB|MB|TB)[,.;:!?]*$", RegexOption.IGNORE_CASE)
 
     private fun currencyScale(first: SourceWord, second: SourceWord) =
         currencyAmount.matches(typography(first.text).trimStart('\"', '\'', '(')) && scaleWord.matches(typography(second.text))
+
+    private fun separatedCurrency(first: SourceWord, second: SourceWord) =
+        typography(first.text).trimStart('"', '\'', '(') in listOf("£", "$", "€", "₹") && separatedAmount.matches(typography(second.text))
+
+    private fun separatedPercent(first: SourceWord, second: SourceWord) =
+        Regex("^[\\\"'(]*[-+]?(?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)(?:\\.[0-9]+)?$").matches(typography(first.text)) &&
+            Regex("""^%[,.;:!?"')]*$""").matches(typography(second.text))
+
+    private val symbolNames = mapOf(
+        '*' to "asterisk", '₹' to "rupee", '$' to "dollar", '£' to "pound", '€' to "euro", '%' to "percent",
+        '+' to "plus", '=' to "equals", '<' to "less than", '>' to "greater than", '≤' to "less than or equal to",
+        '≥' to "greater than or equal to", '≠' to "not equal to", '×' to "times", '÷' to "divided by", '−' to "minus",
+        '±' to "plus or minus", '#' to "hash", '†' to "dagger", '‡' to "double dagger", '^' to "caret", '~' to "tilde",
+        '\\' to "backslash", '{' to "open brace", '}' to "close brace",
+    )
+    private val punctuationNames = symbolNames + mapOf(
+        '.' to "period", ',' to "comma", ';' to "semicolon", ':' to "colon", '!' to "exclamation mark", '?' to "question mark",
+        '(' to "open parenthesis", ')' to "close parenthesis", '\'' to "apostrophe", '"' to "quote", '-' to "dash",
+        '\u00ad' to "soft hyphen", '\ufeff' to "byte order mark", '\uf0c1' to "heading link", '\u200b' to "zero width space",
+    )
 
     private fun timelineMeasurement(first: SourceWord, second: SourceWord) =
         timelineNumber.matches(typography(first.text)) && storageUnit.matches(typography(second.text))
@@ -207,6 +248,26 @@ class EnglishNormalizer : TextNormalizer {
                 else part.value
             }.joinToString(" ")
             return prefix + expanded + suffix
+        }
+        if (bare == "C#" || bare == "c#") return prefix + bare.take(1) + " sharp" + suffix
+        // Expand known symbols only after complete numeric formats and references have had a
+        // chance to match. Each fragment is normalized once more; unknown fragments still fail.
+        // This is literal speech, not an attempt to solve or repair an expression.
+        if (bare.any { it in symbolNames }) {
+            val pieces = mutableListOf<String>()
+            var start = 0
+            val expression = bare.any { it in "=<>≤≥≠×÷+*" }
+            for ((index, symbol) in bare.withIndex()) {
+                val subtraction = expression && symbol == '-' && index > 0 && index < bare.lastIndex &&
+                    bare[index - 1].isLetterOrDigit() && bare[index + 1].isLetterOrDigit()
+                if (symbol !in symbolNames && !subtraction) continue
+                if (index > start) pieces += expandToken(bare.substring(start, index))
+                pieces += if (subtraction) "minus" else if (symbol == '*' && index > 0 && index < bare.lastIndex &&
+                    bare[index - 1].isLetterOrDigit() && bare[index + 1].isLetterOrDigit()) "times" else symbolNames.getValue(symbol)
+                start = index + 1
+            }
+            if (start < bare.length) pieces += expandToken(bare.substring(start))
+            return prefix + pieces.joinToString(" ") + suffix
         }
         return mapOf("Dr." to "Doctor", "Mr." to "Mister", "Mrs." to "Missus", "Ms." to "Miz", "e.g." to "for example", "i.e." to "that is",
             "kg" to "kilograms", "km" to "kilometers", "cm" to "centimeters", "mg" to "milligrams")[raw] ?: raw

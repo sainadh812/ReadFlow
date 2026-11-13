@@ -244,6 +244,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         refreshingText.value = true
         ocrRefresh = viewModelScope.launch {
             val request = app.playback.stop()
+            app.playback.invalidateFailedPage(document.id, index)
             try {
                 val previous = app.documents.dao.page(document.id, index)?.rotation ?: 0
                 app.documents.loadPage(document, index, if (rotate) (previous + 90) % 360 else previous)

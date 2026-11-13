@@ -137,8 +137,10 @@ internal val LocalReaderPaper = staticCompositionLocalOf { ReaderPapers.options.
 } })
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable internal fun ReaderAppearanceSheet(prefs: Preferences, update: (Preferences) -> Unit, dismiss: () -> Unit) {
+@Composable internal fun ReaderAppearanceSheet(prefs: Preferences, update: (Preferences) -> Unit,
+    lighting: app.readflow.data.ReaderLightingSettings? = null, dismiss: () -> Unit) {
     ModalBottomSheet(onDismissRequest = dismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
+        lighting?.let { ReaderBrightnessEffect(it) }
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 28.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {

@@ -9,6 +9,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -23,9 +25,12 @@ import kotlinx.serialization.json.Json
 /** Prefetch two saved neighbours, retaining the incoming page until its live content is ready. */
 @Composable internal fun rememberAdjacentReaderPages(
     vm: ReaderViewModel, document: DocumentEntity?, pageIndex: Int, enabled: Boolean,
+    failureRevision: Set<app.readflow.playback.FailedSentence> = emptySet(),
 ): Map<Int, PageContent> {
     var pages by remember(document?.id) { mutableStateOf<Map<Int, PageContent>>(emptyMap()) }
-    LaunchedEffect(document?.id, pageIndex, enabled) {
+    // Preparation may save a neighbour after our first query. A newly failed sentence
+    // needs that saved page's source boxes before its incoming curl can show the mark.
+    LaunchedEffect(document?.id, pageIndex, enabled, failureRevision) {
         if (!enabled || document == null) { pages = emptyMap(); return@LaunchedEffect }
         val retained = pages.filterKeys { it in pageIndex - 1..pageIndex + 1 }
         pages = retained
@@ -47,7 +52,8 @@ import kotlinx.serialization.json.Json
 }
 
 /** A noninteractive first-screen preview, using the same type and spacing as ReaderText. */
-@Composable internal fun ReaderTextTurnPreview(page: PageContent?, prefs: Preferences, pageIndex: Int) {
+@Composable internal fun ReaderTextTurnPreview(page: PageContent?, prefs: Preferences, pageIndex: Int,
+    failedSentenceIds: Set<String> = emptySet()) {
     val paper = LocalReaderPaper.current
     Box(Modifier.fillMaxSize().readerPaper(paper).clearAndSetSemantics {}, contentAlignment = Alignment.TopCenter) {
         if (page == null) Column(Modifier.align(Alignment.Center).padding(28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -61,7 +67,14 @@ import kotlinx.serialization.json.Json
             verticalArrangement = Arrangement.spacedBy(22.dp),
         ) {
             items(page.paragraphs, key = { it.id }) { paragraph ->
-                Text(page.reading.substring(paragraph.start, paragraph.end),
+                val text = buildAnnotatedString {
+                    append(page.reading.substring(paragraph.start, paragraph.end))
+                    page.words.filter { it.paragraphId == paragraph.id && it.sentenceId in failedSentenceIds }.forEach { word ->
+                        addStyle(SpanStyle(color = ReaderFailureInk, background = ReaderFailureBackground),
+                            word.start - paragraph.start, word.end - paragraph.start)
+                    }
+                }
+                Text(text,
                     fontSize = (prefs.fontSize + if (paragraph.heading) 3 else 0).sp,
                     lineHeight = (prefs.fontSize * 1.65f).sp,
                     fontFamily = ReaderFonts.family(prefs.readerFont), color = paper.ink,

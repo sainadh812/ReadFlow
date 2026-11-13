@@ -33,8 +33,8 @@ class WebSpeechTest {
         assertEquals("Read and slash or listen twenty four slash seven.", normalize("Read and/or listen 24/7.").text)
         assertEquals(", A list item.", normalize("\u2022 A list item.").text)
     }
-    @Test fun actualEquationsUnsupportedScriptsAndEmojiStillFailClosed() {
-        for (text in listOf("x = y", "a + b", "x \u2264 y", "x\u00b2", "\uD83D\uDE00 hello", "\u4f60\u597d", "Value 1,2.")) {
+    @Test fun unsupportedNotationScriptsAndEmojiStillFailClosed() {
+        for (text in listOf("x\u00b2", "\uD83D\uDE00 hello", "\u4f60\u597d", "Value 1,2.")) {
             assertThrows("Must not invent speech for $text", IllegalArgumentException::class.java) { normalize(text) }
         }
     }

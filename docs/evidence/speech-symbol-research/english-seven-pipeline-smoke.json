@@ -1,0 +1,368 @@
+{
+  "schemaVersion": 1,
+  "normalizationVersion": "english-7",
+  "scope": "Host functional smoke only. Current Kotlin DocumentPipeline, SpeechPlanner, EnglishNormalizer and the exact current KokoroV019Codec source were compiled for this fixture. Their normalized text was passed into the existing native Misaki frontend, then the resulting codec token chunks were passed to the checksum-verified Kokoro v0.19 model via host ONNX Runtime. Existing host smoke silence shortening policy was applied. No Android engine/UI/device test, listening assessment, alignment test or pronunciation quality score is claimed.",
+  "sourceSha256": {
+    "app/src/main/java/app/readflow/core/Normalization.kt": "f277b9500c9edc57f51e05026c8a322e2003a20a859116b5e20fbe75c43caec0",
+    "app/src/main/java/app/readflow/core/SpeechPlanning.kt": "72fc2ef4ba3e38ef2376173bfe2fdfe8983148955f0aa6aab648d2a6b6056e85",
+    "app/src/main/java/app/readflow/core/LatinPronunciation.kt": "aa7509f122b7e0a99e0ae229ad8a286abcf5bff5c2ca7c695bf905201f0527e5",
+    "app/src/main/java/app/readflow/core/Document.kt": "f04c2d8d31da9ea23c8a5d5c9b8251ee414da78d6e9629ff120107cdea519a73",
+    "app/src/main/java/app/readflow/speech/MisakiKokoroEngine.kt": "4e0e97cb7b68af03dbe292638a5102661c967d1f963c10fd6357d3faccb33bea",
+    "exactKotlinCodecExtractSha256": "5f1cf3416cbd4ecd7bb408a4f5c998793556405baabe7e7cd3a16556be9ffe2e"
+  },
+  "modelSha256": {
+    "model.onnx": "10ff414106a038ce7e9e0126c6461e4dc8a86efaa89dc91d2009d69fe635e339",
+    "tokens.txt": "4f31c71282d14af4e926cd12462078fe9d20d00c589e63fe2750a8f56d6d7f7b",
+    "voices.bin": "a372c67b056ef0b695c375d39b99630d23fb07ad4c8d87aa32a19a62fca523ad"
+  },
+  "nativeFrontend": {
+    "binarySha256": "d4470d0205475509ed025578b3dded3f14f87b6d35289b1601c82d5ad02d2302",
+    "sourceMatchesCurrent": [
+      "app/src/main/misaki/main.go",
+      "app/src/main/misaki/bridge.c",
+      "app/src/main/misaki/go.mod",
+      "app/src/main/misaki/go.sum"
+    ],
+    "note": "Existing host binary has matching adapter/module source hashes. Its retained build stamp predates later linker/symbol metadata and provenance-file updates."
+  },
+  "hostRuntime": {
+    "pythonOnnxruntimeVersion": "1.20.1",
+    "provider": "CPUExecutionProvider",
+    "threads": 2,
+    "nativeFrontendOnnxruntime": "1.22.0"
+  },
+  "rows": [
+    {
+      "input": "he is good boy*",
+      "normalizedChunks": [
+        "he is good boy asterisk"
+      ],
+      "sourceWordCount": 4,
+      "sourceIdsUnchanged": true,
+      "allSourceIdsHaveSpokenTokens": true,
+      "originalTextAndOffsetsUnchanged": true,
+      "frontend": [
+        {
+          "complete": true,
+          "fallbackCalls": 0,
+          "phonemes": "hi ɪz ɡˈʊd bˈY ˈæstəɹˌɪsk"
+        }
+      ],
+      "audio": [
+        {
+          "codec": "Compiled current Kotlin KokoroV019Codec.encodeChunks",
+          "adaptedPhones": "hi ɪz ɡˈʊd bˈɔɪ ˈæstəɹˌɪsk",
+          "phonemeCount": 26,
+          "acousticChunkCount": 1,
+          "chunkPhonemeCounts": [
+            26
+          ],
+          "phoneSequencePreserved": true,
+          "rawChunkSampleCounts": [
+            69000
+          ],
+          "postPauseChunkSampleCounts": [
+            40523
+          ],
+          "audioSamples": 40523,
+          "audioSeconds": 1.6884583333333334,
+          "allFinite": true,
+          "sampleRate": 24000,
+          "withinCumulative40SecondLimit": true,
+          "voiceIndex": 0
+        }
+      ]
+    },
+    {
+      "input": "he is a good boy₹%&",
+      "normalizedChunks": [
+        "he is a good boy rupee percent and"
+      ],
+      "sourceWordCount": 5,
+      "sourceIdsUnchanged": true,
+      "allSourceIdsHaveSpokenTokens": true,
+      "originalTextAndOffsetsUnchanged": true,
+      "frontend": [
+        {
+          "complete": true,
+          "fallbackCalls": 0,
+          "phonemes": "hi ɪz ɐ ɡˈʊd bˈY ɹupˈi pəɹsˈɛnt ænd"
+        }
+      ],
+      "audio": [
+        {
+          "codec": "Compiled current Kotlin KokoroV019Codec.encodeChunks",
+          "adaptedPhones": "hi ɪz ɐ ɡˈʊd bˈɔɪ ɹupˈi pəɹsˈɛnt ænd",
+          "phonemeCount": 36,
+          "acousticChunkCount": 1,
+          "chunkPhonemeCounts": [
+            36
+          ],
+          "phoneSequencePreserved": true,
+          "rawChunkSampleCounts": [
+            84600
+          ],
+          "postPauseChunkSampleCounts": [
+            55338
+          ],
+          "audioSamples": 55338,
+          "audioSeconds": 2.30575,
+          "allFinite": true,
+          "sampleRate": 24000,
+          "withinCumulative40SecondLimit": true,
+          "voiceIndex": 0
+        }
+      ]
+    },
+    {
+      "input": "he paid ₹ 50 and earned 20 %.",
+      "normalizedChunks": [
+        "he paid fifty rupees and earned twenty percent."
+      ],
+      "sourceWordCount": 8,
+      "sourceIdsUnchanged": true,
+      "allSourceIdsHaveSpokenTokens": true,
+      "originalTextAndOffsetsUnchanged": true,
+      "frontend": [
+        {
+          "complete": true,
+          "fallbackCalls": 0,
+          "phonemes": "hi pˈAd fˈɪfti ɹupˈiz ænd ˈɜɹnd twˈɛnti pəɹsˈɛnt."
+        }
+      ],
+      "audio": [
+        {
+          "codec": "Compiled current Kotlin KokoroV019Codec.encodeChunks",
+          "adaptedPhones": "hi pˈeɪd fˈɪfti ɹupˈiz ænd ˈɜɹnd twˈɛnti pəɹsˈɛnt.",
+          "phonemeCount": 50,
+          "acousticChunkCount": 1,
+          "chunkPhonemeCounts": [
+            50
+          ],
+          "phoneSequencePreserved": true,
+          "rawChunkSampleCounts": [
+            102600
+          ],
+          "postPauseChunkSampleCounts": [
+            69332
+          ],
+          "audioSamples": 69332,
+          "audioSeconds": 2.8888333333333334,
+          "allFinite": true,
+          "sampleRate": 24000,
+          "withinCumulative40SecondLimit": true,
+          "voiceIndex": 0
+        }
+      ]
+    },
+    {
+      "input": "He paid ₹ 9.3 million.",
+      "normalizedChunks": [
+        "He paid nine point three million rupees."
+      ],
+      "sourceWordCount": 5,
+      "sourceIdsUnchanged": true,
+      "allSourceIdsHaveSpokenTokens": true,
+      "originalTextAndOffsetsUnchanged": true,
+      "frontend": [
+        {
+          "complete": true,
+          "fallbackCalls": 0,
+          "phonemes": "hˌi pˈAd nˈIn pˈYnt θɹˈi mˈɪljᵊn ɹupˈiz."
+        }
+      ],
+      "audio": [
+        {
+          "codec": "Compiled current Kotlin KokoroV019Codec.encodeChunks",
+          "adaptedPhones": "hˌi pˈeɪd nˈaɪn pˈɔɪnt θɹˈi mˈɪljən ɹupˈiz.",
+          "phonemeCount": 43,
+          "acousticChunkCount": 1,
+          "chunkPhonemeCounts": [
+            43
+          ],
+          "phoneSequencePreserved": true,
+          "rawChunkSampleCounts": [
+            85800
+          ],
+          "postPauseChunkSampleCounts": [
+            58891
+          ],
+          "audioSamples": 58891,
+          "audioSeconds": 2.4537916666666666,
+          "allFinite": true,
+          "sampleRate": 24000,
+          "withinCumulative40SecondLimit": true,
+          "voiceIndex": 0
+        }
+      ]
+    },
+    {
+      "input": "C++ and C#; 5*3=15.",
+      "normalizedChunks": [
+        "C plus plus and C sharp; five times three equals fifteen."
+      ],
+      "sourceWordCount": 4,
+      "sourceIdsUnchanged": true,
+      "allSourceIdsHaveSpokenTokens": true,
+      "originalTextAndOffsetsUnchanged": true,
+      "frontend": [
+        {
+          "complete": true,
+          "fallbackCalls": 0,
+          "phonemes": "sˈi plˈʌs plˈʌs ænd sˈi ʃˈɑɹp; fˈIv tˈImz θɹˈi ˈikwᵊlz fˌɪftˈin."
+        }
+      ],
+      "audio": [
+        {
+          "codec": "Compiled current Kotlin KokoroV019Codec.encodeChunks",
+          "adaptedPhones": "sˈi plˈʌs plˈʌs ænd sˈi ʃˈɑɹp; fˈaɪv tˈaɪmz θɹˈi ˈikwəlz fˌɪftˈin.",
+          "phonemeCount": 66,
+          "acousticChunkCount": 1,
+          "chunkPhonemeCounts": [
+            66
+          ],
+          "phoneSequencePreserved": true,
+          "rawChunkSampleCounts": [
+            129000
+          ],
+          "postPauseChunkSampleCounts": [
+            92791
+          ],
+          "audioSamples": 92791,
+          "audioSeconds": 3.8662916666666667,
+          "allFinite": true,
+          "sampleRate": 24000,
+          "withinCumulative40SecondLimit": true,
+          "voiceIndex": 0
+        }
+      ]
+    },
+    {
+      "input": "20-24=4 but ages 20-24.",
+      "normalizedChunks": [
+        "twenty minus twenty four equals four but ages twenty to twenty four."
+      ],
+      "sourceWordCount": 4,
+      "sourceIdsUnchanged": true,
+      "allSourceIdsHaveSpokenTokens": true,
+      "originalTextAndOffsetsUnchanged": true,
+      "frontend": [
+        {
+          "complete": true,
+          "fallbackCalls": 0,
+          "phonemes": "twˈɛnti mˈInəs twˈɛnti fˈɔɹ ˈikwᵊlz fˈɔɹ bˌʌt ˈAʤᵻz twˈɛnti tə twˈɛnti fˈɔɹ."
+        }
+      ],
+      "audio": [
+        {
+          "codec": "Compiled current Kotlin KokoroV019Codec.encodeChunks",
+          "adaptedPhones": "twˈɛnti mˈaɪnəs twˈɛnti fˈɔɹ ˈikwəlz fˈɔɹ bˌʌt ˈeɪdʒᵻz twˈɛnti tə twˈɛnti fˈɔɹ.",
+          "phonemeCount": 79,
+          "acousticChunkCount": 1,
+          "chunkPhonemeCounts": [
+            79
+          ],
+          "phoneSequencePreserved": true,
+          "rawChunkSampleCounts": [
+            125400
+          ],
+          "postPauseChunkSampleCounts": [
+            100105
+          ],
+          "audioSamples": 100105,
+          "audioSeconds": 4.1710416666666665,
+          "allFinite": true,
+          "sampleRate": 24000,
+          "withinCumulative40SecondLimit": true,
+          "voiceIndex": 0
+        }
+      ]
+    },
+    {
+      "input": "***.",
+      "normalizedChunks": [
+        "asterisk asterisk asterisk period"
+      ],
+      "sourceWordCount": 1,
+      "sourceIdsUnchanged": true,
+      "allSourceIdsHaveSpokenTokens": true,
+      "originalTextAndOffsetsUnchanged": true,
+      "frontend": [
+        {
+          "complete": true,
+          "fallbackCalls": 0,
+          "phonemes": "ˈæstəɹˌɪsk ˈæstəɹˌɪsk ˈæstəɹˌɪsk pˈɪɹiəd"
+        }
+      ],
+      "audio": [
+        {
+          "codec": "Compiled current Kotlin KokoroV019Codec.encodeChunks",
+          "adaptedPhones": "ˈæstəɹˌɪsk ˈæstəɹˌɪsk ˈæstəɹˌɪsk pˈɪɹiəd",
+          "phonemeCount": 40,
+          "acousticChunkCount": 1,
+          "chunkPhonemeCounts": [
+            40
+          ],
+          "phoneSequencePreserved": true,
+          "rawChunkSampleCounts": [
+            88200
+          ],
+          "postPauseChunkSampleCounts": [
+            60120
+          ],
+          "audioSamples": 60120,
+          "audioSeconds": 2.505,
+          "allFinite": true,
+          "sampleRate": 24000,
+          "withinCumulative40SecondLimit": true,
+          "voiceIndex": 0
+        }
+      ]
+    },
+    {
+      "input": "W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W",
+      "normalizedChunks": [
+        "W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W W"
+      ],
+      "sourceWordCount": 60,
+      "sourceIdsUnchanged": true,
+      "allSourceIdsHaveSpokenTokens": true,
+      "originalTextAndOffsetsUnchanged": true,
+      "frontend": [
+        {
+          "complete": true,
+          "fallbackCalls": 0,
+          "phonemes": "dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju dˈʌbᵊlju"
+        }
+      ],
+      "audio": [
+        {
+          "codec": "Compiled current Kotlin KokoroV019Codec.encodeChunks",
+          "adaptedPhones": "dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju dˈʌbəlju",
+          "phonemeCount": 539,
+          "acousticChunkCount": 2,
+          "chunkPhonemeCounts": [
+            503,
+            35
+          ],
+          "phoneSequencePreserved": true,
+          "rawChunkSampleCounts": [
+            477600,
+            69600
+          ],
+          "postPauseChunkSampleCounts": [
+            456646,
+            41022
+          ],
+          "audioSamples": 497668,
+          "audioSeconds": 20.736166666666666,
+          "allFinite": true,
+          "sampleRate": 24000,
+          "withinCumulative40SecondLimit": true,
+          "voiceIndex": 0
+        }
+      ]
+    }
+  ],
+  "status": "PASSED"
+}

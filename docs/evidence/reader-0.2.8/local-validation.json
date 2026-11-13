@@ -1,0 +1,35 @@
+{
+  "version": "0.2.8",
+  "versionCode": 24,
+  "dateUtc": "2026-11-13T17:16:11.878473+00:00",
+  "releaseAssembly": "passed",
+  "lint": {
+    "Warning": 23
+  },
+  "initialFullSuite": {
+    "tests": 429,
+    "failures": 2,
+    "errors": 0,
+    "skipped": 0,
+    "explanation": "Lighting contrast tests were compiled after the final cap change while production classes still contained the prior0.24 cap. Recompiled final source uses0.22; both failures pass in the final focused run."
+  },
+  "finalFocusedSuite": {
+    "tests": 28,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "classes": [
+      "ReaderLightingPreferencesTest",
+      "ReaderLightingTest",
+      "ReaderFailureContrastTest",
+      "SentenceFailuresTest"
+    ]
+  },
+  "hostSpeechSmoke": {
+    "cases": 8,
+    "status": "passed",
+    "record": "../speech-symbol-research/english-seven-pipeline-smoke.json"
+  },
+  "deviceUiValidation": "Not performed: no physical device; prior software Android35 emulator attempts did not finish package/activity-service startup.",
+  "distribution": "Local APK unsigned and not for publication; signed CI build runs full suite before GitHub prerelease."
+}

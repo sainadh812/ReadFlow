@@ -1,0 +1,259 @@
+{
+  "title": "Read Assist speech reliability research",
+  "date": "2026-11-13",
+  "status": "Research completed against 0.2.7; findings implemented in the approved 0.2.8 feature batch.",
+  "appSourceCommit": "058f67c13a1d33e098de9fc71f35439527785266",
+  "userRequirements": {
+    "batch": [
+      "Approved brightness and warm-light controls",
+      "Mark failed sentences red only, without new messages, icons, cards or actions",
+      "Improve speech generation reliability"
+    ],
+    "comparison": "User observed successful reading in Chrome on a laptop. Desktop Reading Mode is the main comparison; the exact installed voice and Chrome version were not supplied.",
+    "originalText": "Keep document text, source offsets and reading position unchanged."
+  },
+  "conclusions": [
+    "Both reported inputs fail in the app's current EnglishNormalizer before Misaki or Kokoro synthesis is called.",
+    "The existing normalizer already handles ampersands and complete numeric currency/percent tokens, but rejects residual symbols and whitespace-separated forms such as rupee sign followed by a separate amount token.",
+    "Bounded host experiments show the existing voice model can produce finite PCM for explicit symbol-name expansions. Replacing the voice model is not the first fix supported by these results.",
+    "Removing the validation guard alone would permit omissions or spurious pronunciations. Improve context-sensitive normalization and retain validation after explicit recovery.",
+    "Chrome's public code supports adopting sentence/word boundary handling and error-specific recovery. It does not reveal a universal proprietary symbol-normalization algorithm or prove the exact cause of the user's Chrome/app difference."
+  ],
+  "localEvidence": {
+    "files": [
+      "../docs/evidence/speech-symbol-research/normalization-results.tsv",
+      "../docs/evidence/speech-symbol-research/native-frontend-results.json",
+      "../docs/evidence/speech-symbol-research/host-audio-results.json"
+    ],
+    "code": [
+      {
+        "path": "app/src/main/java/app/readflow/core/Normalization.kt",
+        "line": 29,
+        "finding": "Rejects residual digits, unsupported letters and symbols after expansion; symbol guard is at line 31."
+      },
+      {
+        "path": "app/src/main/java/app/readflow/core/Normalization.kt",
+        "line": 132,
+        "finding": "Ampersand already expands to and."
+      },
+      {
+        "path": "app/src/main/java/app/readflow/core/Normalization.kt",
+        "line": 149,
+        "finding": "Numeric currency and percentage handling matches complete tokens."
+      },
+      {
+        "path": "app/src/main/java/app/readflow/core/SpeechPlanning.kt",
+        "line": 20,
+        "finding": "Existing planner chunks source groups and normalized text at 220 characters."
+      },
+      {
+        "path": "app/src/main/java/app/readflow/speech/MisakiKokoroEngine.kt",
+        "line": 245,
+        "finding": "Adapter separately rejects over 510 expanded phonemes; no automatic resplitting at this boundary."
+      },
+      {
+        "path": "app/src/main/java/app/readflow/core/Normalization.kt",
+        "line": 231,
+        "finding": "Cache key incorporates EnglishNormalizer.VERSION, currently english-6."
+      },
+      {
+        "path": "app/src/main/java/app/readflow/playback/ReadingCoordinator.kt",
+        "line": 627,
+        "finding": "blockedSentence currently derives from SpeechPreparationException; genuine frontend/model errors also need sentence ownership for red marking."
+      },
+      {
+        "path": "app/src/main/java/app/readflow/core/PlaybackAlignment.kt",
+        "line": 9,
+        "finding": "Alignment-confidence rejection permits audio-only playback and is not itself failed voice generation."
+      }
+    ],
+    "observedCases": [
+      {
+        "input": "he is good boy*",
+        "result": "SpeechPreparationException caused by NormalizationException; rejected expansion boy*"
+      },
+      {
+        "input": "he is a good boy₹%&",
+        "result": "SpeechPreparationException caused by NormalizationException; rejected expansion boy₹% and"
+      },
+      {
+        "input": "he is a good boy&",
+        "result": "Succeeds; speech text is he is a good boy and"
+      },
+      {
+        "input": "he paid ₹50 and earned 20%.",
+        "result": "Succeeds; speech text is he paid fifty rupees and earned twenty percent."
+      },
+      {
+        "input": "he paid ₹ 50 and earned 20 %.",
+        "result": "Fails at the separate rupee sign"
+      },
+      {
+        "input": "he is good boy asterisk",
+        "result": "Normalizes successfully; host model produces finite PCM"
+      },
+      {
+        "input": "he is a good boy rupee percent and",
+        "result": "Normalizes successfully; host model produces finite PCM"
+      }
+    ],
+    "hostScope": {
+      "model": "Existing checksum-verified Kokoro v0.19 files with native Misaki host adapter",
+      "outputs": "All four raw/explicit-word test sentences produced finite 24 kHz PCM. This is a functional synthesis observation, not a pronunciation-quality score.",
+      "rawInputIssue": "Bypassing app normalization omitted the asterisk/standalone rupee and produced an extraneous phone sequence for boy₹%& despite complete=true.",
+      "adapterProvenance": "Host adapter main.go, bridge.c, go.mod and go.sum hashes match current sources; cached provenance/build-script stamp differs due to later metadata changes.",
+      "notTested": [
+        "Listening quality",
+        "Android device performance",
+        "Full playback and alignment with the proposed normalization",
+        "The user's installed Chrome voice"
+      ]
+    }
+  },
+  "chrome": {
+    "snapshot": "55502e058a86f2b5fd1ee41d60d638fad53e779d",
+    "findings": [
+      {
+        "source": "chrome-help",
+        "finding": "Desktop Reading Mode downloads Google natural voices and uses a system voice if that download fails."
+      },
+      {
+        "source": "chrome-segmenter",
+        "finding": "Uses language-aware Intl.Segmenter sentence and word boundaries, including safe shortening at word boundaries. Punctuation-only sentence filtering is still a TODO."
+      },
+      {
+        "source": "chrome-controller",
+        "finding": "Uses a 175-character cap for remote voices to work around a particular timeout issue; this number should not replace our model-specific limits."
+      },
+      {
+        "source": "chrome-controller",
+        "finding": "Handles text-too-long by splitting, invalid speech-rate arguments by resetting rate, and intentional interruptions separately from real errors; tracks stalls."
+      }
+    ],
+    "interpretation": "Useful robustness patterns are public. Exact Google voice normalization and the user's observed output have not been reproduced."
+  },
+  "otherMethodologies": [
+    {
+      "name": "Deterministic normalization with semantic token classes",
+      "sources": [
+        "nemo",
+        "sparrowhawk",
+        "nemo-paper"
+      ],
+      "application": "Extend the existing normalizer to classify money, percentages, operators, references and ordinary punctuation before verbalization. Use compact rules for the English Android app first.",
+      "tradeoff": "A full finite-state grammar runtime is a larger integration. Sparrowhawk is archived; adopt the approach rather than assuming a maintained drop-in Android dependency."
+    },
+    {
+      "name": "Semantic pronunciation hints",
+      "sources": [
+        "google-ssml"
+      ],
+      "application": "Google Cloud documents explicit interpretations for dates, numbers, currencies and aliases. Apply the same idea by generating explicit spoken text for Kokoro.",
+      "tradeoff": "Our raw model pipeline does not accept SSML; do not pass markup through as if it did."
+    },
+    {
+      "name": "Unicode normalization with preserved meaning",
+      "sources": [
+        "unicode-normalization"
+      ],
+      "application": "Normalize known equivalent typography in the speech representation while retaining original source text. Handle superscripts, fractions and mathematical notation before destructive compatibility folding.",
+      "tradeoff": "Unicode warns that indiscriminate NFKC/NFKD can erase semantic distinctions."
+    },
+    {
+      "name": "Locale-aware number spellout",
+      "sources": [
+        "icu-numbers"
+      ],
+      "application": "Evaluate ICU number spellout for future locale rules and INR, paise, decimals and Indian grouping after expressions have been classified.",
+      "tradeoff": "Number formatting does not identify the intended meaning of an arbitrary expression; retain explicit parsing and tests for ambiguous separators."
+    },
+    {
+      "name": "Upstream Misaki comparison",
+      "sources": [
+        "misaki-english"
+      ],
+      "application": "Upstream exposes some symbol mappings and dollar/pound/euro currency handling. This reinforces explicit front-end rules; it does not cover every symbol or replace our INR handling.",
+      "tradeoff": "Upstream Python main is not identical to the app's pinned native port. Local experiments are the evidence for this app."
+    },
+    {
+      "name": "Optional platform-voice comparison",
+      "sources": [
+        "android-voice"
+      ],
+      "application": "Benchmark an installed offline Android voice if failures remain after improving normalization.",
+      "tradeoff": "Voice availability and network requirements vary. A voice change and matching alignment path require separate product and engineering evaluation; not required to fix the reported gate."
+    }
+  ],
+  "recommendedBatchWork": [
+    {
+      "priority": 1,
+      "change": "Extend current source-mapped normalization",
+      "details": "Recognize complete currency/percentage expressions first, including symbols separated by spaces. Parse attached symbol runs separately from the ordinary word. Keep sentence grammar and document text unchanged."
+    },
+    {
+      "priority": 2,
+      "change": "Add an explicit literal-symbol fallback",
+      "details": "Use spoken names for common ambiguous residual symbols instead of rejecting the whole sentence. Omit a marker only when source structure or an explicit deterministic rule identifies decorative markup; do not blindly delete money, operators, negatives or technical names."
+    },
+    {
+      "priority": 3,
+      "change": "Preserve alignment and cache correctness",
+      "details": "Retain SourceWord IDs and original offsets for every spoken expansion; normalization and alignment share one transcript. Bump normalization/recovery recipe versions so cached audio matches the new rules."
+    },
+    {
+      "priority": 4,
+      "change": "Add bounded, typed recovery",
+      "details": "Keep existing 220-character chunking. Add resplitting at safe source boundaries for actual post-G2P phoneme-budget excess, with progress checks and bounded attempts. Do not retry deterministic bad input unchanged or treat cancellation/alignment-only failures as model failures."
+    },
+    {
+      "priority": 5,
+      "change": "Implement the requested red sentence mark",
+      "details": "Track actual failed document/page/sentence through prefetch and chunking. Mark only that sentence red after genuine unrecovered failure; clear it after later success. Add no new recovery UI."
+    },
+    {
+      "priority": 6,
+      "change": "Implement the approved reading-light controls",
+      "details": "Use the approved Quick-settings card, reader-scoped brightness and independent warm overlay, with failure red styling still legible."
+    }
+  ],
+  "proposedRegressionCorpus": [
+    "he is good boy*",
+    "he is a good boy₹%&",
+    "he is a good boy&",
+    "he paid ₹50 and earned 20%.",
+    "he paid ₹ 50 and earned 20 %.",
+    "₹50.25, -20%, and 20–30%",
+    "5*3=15",
+    "x = y",
+    "C++ and C#",
+    "Version v1.2 is ready.",
+    "Footnote markers *, † and superscript digits with and without structural evidence",
+    "Accents, smart punctuation, OCR spacing and line-end hyphens",
+    "Long sentences and large spoken expansions near actual model limits",
+    "Repeated words and source spans across chunks",
+    "Cancellation, missing model, synthesis error, and alignment-only rejection"
+  ],
+  "acceptanceCriteria": [
+    "Both user examples generate audio without a preparation exception under a documented, deterministic symbol policy.",
+    "Common currencies and percentages work with or without intervening spaces; existing successful cases remain correct.",
+    "No silent loss of ordinary words, numbers or meaningful operators; listening review checks fidelity in addition to successful PCM generation.",
+    "Original text, PDF geometry, tap targets and word/sentence IDs remain stable.",
+    "Retries cannot loop indefinitely, duplicate already-played audio or block unrelated earlier sentences.",
+    "Failure marking is red only, identifies the correct sentence, and remains legible with warm light enabled.",
+    "Phone checks validate playback, alignment, cancellation and latency before publishing the combined build."
+  ],
+  "sources": {
+    "chrome-help": "https://support.google.com/chrome/answer/14218344?hl=en",
+    "chrome-segmenter": "https://github.com/chromium/chromium/blob/55502e058a86f2b5fd1ee41d60d638fad53e779d/chrome/browser/resources/side_panel/read_anything/read_aloud/text_segmenter.ts",
+    "chrome-controller": "https://github.com/chromium/chromium/blob/55502e058a86f2b5fd1ee41d60d638fad53e779d/chrome/browser/resources/side_panel/read_anything/read_aloud/speech_controller.ts",
+    "nemo": "https://github.com/NVIDIA/NeMo-text-processing",
+    "sparrowhawk": "https://github.com/google/sparrowhawk",
+    "google-ssml": "https://docs.cloud.google.com/text-to-speech/docs/ssml",
+    "unicode-normalization": "https://www.unicode.org/reports/tr15/",
+    "misaki-english": "https://github.com/hexgrad/misaki/blob/main/misaki/en.py",
+    "android-voice": "https://developer.android.com/reference/android/speech/tts/Voice",
+    "nemo-paper": "https://www.isca-archive.org/interspeech_2021/zhang21ja_interspeech.pdf",
+    "icu-numbers": "https://unicode-org.github.io/icu/userguide/format_parse/numbers/rbnf.html"
+  },
+  "evidenceScope": "Conclusions and original localEvidence describe the pre-fix commit. Post-fix evidence is recorded separately under docs/evidence/speech-symbol-research."
+}

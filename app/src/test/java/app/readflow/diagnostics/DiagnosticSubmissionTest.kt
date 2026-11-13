@@ -115,7 +115,7 @@ class DiagnosticSubmissionTest {
     }
 
     @Test fun realSentenceRejectionReachesTheSinkOnlyAfterDurableStorageAndSanitizing() = runBlocking {
-        val reading = "Private reading x = y."
+        val reading = "Private reading x² now."
         val page = DocumentPipeline().process("private-document", 0,
             ExtractedPage(listOf(TextElement(reading, emptyList())), 0f, 0f, "test"))
         val failure = assertThrows(SpeechPreparationException::class.java) {
@@ -143,7 +143,7 @@ class DiagnosticSubmissionTest {
         assertEquals(DiagnosticSubmissionOutcome.Accepted, outcome)
         val local = store.read(id)!!
         assertEquals(reading, local.input.originalText)
-        assertEquals("=", local.normalization!!.sourceText)
+        assertEquals("x²", local.normalization!!.sourceText)
         val sent = received.single()
         assertEquals("NORMALIZATION", sent.category)
         assertEquals("NORMALIZE_TEXT_SpeechPreparationException", sent.code)

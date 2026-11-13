@@ -47,7 +47,7 @@ class IntegrityTest {
         assertFalse(committed); assertTrue(gate.current(latest))
     }
     @Test fun unknownSymbolsNeverBecomeInventedSpeech() {
-        val page = DocumentPipeline().process("equation", 0, ExtractedPage(listOf(TextElement("x = y", emptyList())), 0f, 0f, "fixture"))
-        try { EnglishNormalizer().normalize(page.words); fail("Equation should require explicit skipping") } catch (_: IllegalArgumentException) { }
+        val page = DocumentPipeline().process("equation", 0, ExtractedPage(listOf(TextElement("x²", emptyList())), 0f, 0f, "fixture"))
+        try { EnglishNormalizer().normalize(page.words); fail("Unsupported notation should remain explicit") } catch (_: IllegalArgumentException) { }
     }
 }

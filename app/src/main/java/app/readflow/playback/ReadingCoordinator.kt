@@ -31,7 +31,11 @@ data class ReaderPlayback(
     val fillingBuffer: Boolean = false,
     val bufferTargetSentences: Int = 4,
     val prepareAheadProgress: PrepareAheadProgress? = null,
+    val failedSentences: Set<FailedSentence> = emptySet(),
 )
+fun ReaderPlayback.failedSentenceIds(page: PageContent): Set<String> =
+    if (document?.id == page.documentId) failedSentenceIds(page, failedSentences) else emptySet()
+
 data class BlockedSentence(val pageIndex: Int, val wordId: String, val resume: SpeechTarget?)
 class GenerationGate {
     private val counter = AtomicLong()
@@ -51,13 +55,16 @@ class ReadingCoordinator(
     private val gate = GenerationGate()
     private val mutable = MutableStateFlow(ReaderPlayback())
     val state = mutable.asStateFlow()
+    private val sentenceFailures = SentenceFailureTracker()
     private var engine: TtsEngine = if (SpeechDistribution.IS_PLAY_BUILD) newMisakiEngine() else newLegacyEngine()
     private var misakiFrontend: MisakiFrontend? = null
     private fun newLegacyEngine() = SpeechDistribution.newLegacyEngine(models::directory) { id -> models.packs.first { it.id == id }.voices }
     private fun newMisakiEngine() = MisakiKokoroEngine(models::directory,
         { id -> models.packs.first { it.id == id }.voices }) { text ->
-        val frontend = misakiFrontend ?: MisakiFrontend(misakiOrtLibraryPath, threads = 1)
-            .also { misakiFrontend = it }
+        val frontend = misakiFrontend ?: try {
+            MisakiFrontend(misakiOrtLibraryPath, threads = 1).also { misakiFrontend = it }
+        } catch (cancel: CancellationException) { throw cancel }
+        catch (error: Exception) { throw SpeechRuntimeInitializationException(error) }
         frontend.phonemize(text)
     }
     private val aligner = OnnxForcedAligner { java.io.File(models.directory("alignment"), "model.onnx") }
@@ -106,6 +113,7 @@ class ReadingCoordinator(
                         "model" to chunk?.model.orEmpty(), "voice" to chunk?.voice.orEmpty(), "sampleRate" to chunk?.sampleRate.toString())) } ?: IssueInput()
                 scope.launch { issues.record("MEDIA_PLAYBACK", error, input, audio = chunk?.audioPath?.let { java.io.File(it) }) }
                 startupPending = false; producerFinished = true; gate.next(); work?.cancel()
+                sentenceFailures.cancelAttempt()
                 recoveringReserve = false; pendingMediaItems.clear()
                 player.pause()
                 mutable.value = current.copy(preparing = false, fillingBuffer = false, playing = false,
@@ -158,7 +166,9 @@ class ReadingCoordinator(
         if (benchmarkActive()) return
         val old = work
         val generation = invalidate()
-        mutable.value = ReaderPlayback(document = document, preparing = true, status = "Extracting page", viewPageIndex = pageIndex ?: 0)
+        sentenceFailures.openDocument(document.id, stableId(document.hash, document.processingVersion))
+        mutable.value = ReaderPlayback(document = document, preparing = true, status = "Extracting page", viewPageIndex = pageIndex ?: 0,
+            failedSentences = sentenceFailures.snapshot)
         work = scope.launch {
             try {
                 old?.join()
@@ -167,8 +177,10 @@ class ReadingCoordinator(
                 mutable.value = mutable.value.copy(viewPageIndex = requestedPage)
                 val page = documents.loadPage(document, requestedPage)
                 if (!gate.current(generation)) return@launch
+                sentenceFailures.observePage(page)
                 durableWord = position?.wordId?.takeIf { id -> page.words.any { it.id == id } }
-                mutable.value = ReaderPlayback(document, page, selectedWordId = durableWord, status = if (page.words.isEmpty()) "No readable text on this page" else "Paused")
+                mutable.value = ReaderPlayback(document, page, selectedWordId = durableWord, viewPageIndex = requestedPage,
+                    status = if (page.words.isEmpty()) "No readable text on this page" else "Paused", failedSentences = sentenceFailures.snapshot)
             } catch (cancel: CancellationException) { throw cancel }
             catch (e: Exception) { if (gate.current(generation)) {
                 issues.record("EXTRACT_PAGE", e, documentIssueInput(document, pageIndex = state.value.viewPageIndex))
@@ -179,6 +191,7 @@ class ReadingCoordinator(
     private fun invalidate(): Long {
         val generation = gate.next()
         work?.cancel()
+        sentenceFailures.cancelAttempt()
         startupPending = false; firstReadyAtMs = null; producerFinished = true; recoveringReserve = false
         pendingMediaItems.clear()
         issues.activeInput = IssueInput()
@@ -197,6 +210,23 @@ class ReadingCoordinator(
         return generation
     }
     fun isCurrentRequest(generation: Long) = gate.current(generation)
+    fun invalidateFailedPage(documentId: String, pageIndex: Int) {
+        if (sentenceFailures.invalidatePage(documentId, pageIndex)) publishSentenceFailures()
+    }
+    private fun publishSentenceFailures() {
+        val failed = sentenceFailures.snapshot
+        if (mutable.value.failedSentences != failed) mutable.value = mutable.value.copy(failedSentences = failed)
+    }
+    private fun observeFailurePage(page: PageContent) {
+        if (sentenceFailures.observePage(page)) publishSentenceFailures()
+    }
+    private fun recordSentenceFailure(attempt: Long, page: PageContent?, words: List<SourceWord>, stage: String, error: Exception) {
+        if (page != null && sentenceFailures.failed(attempt, page, words, stage, error)) publishSentenceFailures()
+    }
+    private fun recordSentenceSuccess(attempt: Long, page: PageContent, words: List<SourceWord>,
+        skipMargins: Boolean, selectedWordId: String? = null) {
+        if (sentenceFailures.succeeded(attempt, page, words, skipMargins, selectedWordId)) publishSentenceFailures()
+    }
     fun select(wordId: String) {
         if (player?.playWhenReady == true || startupPending) start(wordId = wordId)
         else mutable.value = mutable.value.copy(selectedWordId = wordId)
@@ -266,12 +296,14 @@ class ReadingCoordinator(
         val old = work
         val pendingSettings = settingsTransition
         val generation = invalidate()
+        sentenceFailures.openDocument(document.id, stableId(document.hash, document.processingVersion))
+        val failureAttempt = sentenceFailures.beginAttempt()
         var chosen = settings
         val limit = chosen.cacheMb * 1024L * 1024L
         val budget = PreparedRangeBudget(limit)
         var progress = PrepareAheadProgress(startPage, endPageInclusive)
         mutable.value = mutable.value.copy(preparing = true, error = null, status = "Preparing pages for later",
-            prepareAheadProgress = progress)
+            prepareAheadProgress = progress, failedSentences = sentenceFailures.snapshot)
         work = scope.launch {
             var page: PageContent? = null
             var words = emptyList<SourceWord>()
@@ -302,7 +334,9 @@ class ReadingCoordinator(
                     publish("Preparing page ${index + 1} of ${endPageInclusive + 1}")
                     issues.activeInput = input()
                     val extractedPage = documents.loadPage(document, index)
+                    if (!gate.current(generation)) return@launch
                     page = extractedPage
+                    observeFailurePage(extractedPage)
                     val pageWords = extractedPage.words.filter { !chosen.skipMargins || !it.marginal }
                     stage = "NORMALIZE_TEXT"
                     for (prepared in planner.prepare(pageWords)) {
@@ -316,6 +350,7 @@ class ReadingCoordinator(
                         val started = SystemClock.elapsedRealtime()
                         var synthesisMs = 0L; var alignmentMs = 0L
                         val cached = cache.get(chunkKey)
+                        if (cached != null) recordSentenceSuccess(failureAttempt, extractedPage, prepared.words, chosen.skipMargins)
                         val audio = cached ?: run {
                             var committed = false
                             try {
@@ -325,6 +360,8 @@ class ReadingCoordinator(
                                 val synthesisStarted = SystemClock.elapsedRealtime()
                                 val generated = engine.synthesize(prepared.speech.text) { gate.current(generation) }
                                 synthesisMs = SystemClock.elapsedRealtime() - synthesisStarted
+                                stage = "CHECK_AUDIO_STORAGE"
+                                recordSentenceSuccess(failureAttempt, extractedPage, prepared.words, chosen.skipMargins)
                                 val requiredBytes = 44L + generated.samples.size.toLong() * 2
                                 if (!budget.canAdd(chunkKey, requiredBytes)) throw PrepareAheadLimit(
                                     "Audio cache limit reached · prepared pages kept. Increase the cache limit or choose fewer pages.")
@@ -380,6 +417,8 @@ class ReadingCoordinator(
                 publish(limitReached.message ?: "Preparation stopped · completed audio kept")
             } catch (error: Exception) {
                 if (gate.current(generation)) {
+                    if (error is SpeechPreparationException) { words = error.sentence; speech = null; key = null }
+                    recordSentenceFailure(failureAttempt, page, words, stage, error)
                     issues.record(stage, error, input(), audio = key?.let(cache::file))
                     progress = progress.copy(running = false)
                     publish("${error.message ?: "Preparation failed"} · completed audio kept")
@@ -448,9 +487,12 @@ class ReadingCoordinator(
         val old = work
         val pendingSettings = settingsTransition
         val generation = invalidate()
+        sentenceFailures.openDocument(document.id, stableId(document.hash, document.processingVersion))
+        val failureAttempt = sentenceFailures.beginAttempt()
         startupPending = true; producerFinished = false
         mutable.value = mutable.value.copy(document = document, preparing = true, fillingBuffer = true, wantsToPlay = true,
-            status = "Preparing speech", selectedWordId = null, error = null, viewPageIndex = pageIndex)
+            status = "Preparing speech", selectedWordId = null, error = null, viewPageIndex = pageIndex,
+            failedSentences = sentenceFailures.snapshot)
         var chosen = settings
         durableWord = wordId
         work = scope.launch {
@@ -493,13 +535,14 @@ class ReadingCoordinator(
                     issues.activeInput = input()
                     val page = documents.loadPage(document, index)
                     if (!gate.current(generation)) return@launch
+                    observeFailurePage(page)
                     if (first && requested != null && page.words.none { it.id == requested }) {
                         // A selected word can become obsolete while a concurrent OCR retry
                         // finishes. Show the refreshed page instead of failing speech planning.
                         durableWord = null
                         startupPending = false
                         mutable.value = ReaderPlayback(document = document, page = page, viewPageIndex = index,
-                            status = "Text has changed. Select a word to read.")
+                            status = "Text has changed. Select a word to read.", failedSentences = sentenceFailures.snapshot)
                         return@launch
                     }
                     val words = page.words.filter { !chosen.skipMargins || !it.marginal || it.id == requested }
@@ -529,6 +572,7 @@ class ReadingCoordinator(
                         var synthesisMs = 0L
                         var alignmentMs = 0L
                         val cached = cache.get(key)
+                        if (cached != null) recordSentenceSuccess(failureAttempt, page, prepared.words, chosen.skipMargins, wordId)
                         val audio = cached ?: run {
                             var committed = false
                             try {
@@ -544,6 +588,7 @@ class ReadingCoordinator(
                                 synthesisMs = SystemClock.elapsedRealtime() - synthesisStarted
                                 sampleRate = generated.sampleRate; sampleCount = generated.samples.size
                                 stage = "WRITE_AUDIO"
+                                recordSentenceSuccess(failureAttempt, page, prepared.words, chosen.skipMargins, wordId)
                                 val quantized = cache.writePcm(key, generated)
                                 mutable.value = mutable.value.copy(status = "Aligning words")
                                 diagnostics.record(speechIdentity(chosen), PlaybackStage.ALIGNING)
@@ -619,7 +664,9 @@ class ReadingCoordinator(
             } catch (cancel: CancellationException) { throw cancel }
             catch (error: Exception) {
                 if (gate.current(generation)) {
-                    if (!loggedFailure) issues.record(stage, error, input(if (error is SpeechPreparationException) error.sentence else currentWords),
+                    if (error is SpeechPreparationException) { currentWords = error.sentence; currentSpeech = null; audioKey = null }
+                    recordSentenceFailure(failureAttempt, processingPage, currentWords, stage, error)
+                    if (!loggedFailure) issues.record(stage, error, input(),
                         audio = audioKey?.let(cache::file))
                     diagnostics.record(speechIdentity(chosen), PlaybackStage.FAILED, error)
                     if (!gate.current(generation)) return@launch
@@ -741,6 +788,9 @@ class ReadingCoordinator(
     suspend fun deleteDocument(document: DocumentEntity) {
         val old = work; stop(); old?.join()
         cache.deleteDocument(document.id); documents.delete(document)
-        if (state.value.document?.id == document.id) mutable.value = ReaderPlayback()
+        if (state.value.document?.id == document.id) {
+            sentenceFailures.openDocument(null)
+            mutable.value = ReaderPlayback()
+        }
     }
 }

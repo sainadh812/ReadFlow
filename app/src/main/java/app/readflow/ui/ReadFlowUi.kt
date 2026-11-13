@@ -43,6 +43,7 @@ import app.readflow.core.*
 import app.readflow.data.Preferences
 import app.readflow.data.DocumentEntity
 import app.readflow.playback.ReaderPlayback
+import app.readflow.playback.failedSentenceIds
 import java.util.Locale
 
 private val Accent = Color(0xFF126D63)
@@ -190,6 +191,8 @@ private val Accent = Color(0xFF126D63)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable private fun Reader(vm: ReaderViewModel, state: ReaderPlayback, prefs: Preferences, requestNotifications: () -> Unit) {
     KeepReaderScreenAwake()
+    val lighting = rememberReaderLighting(vm, prefs)
+    ReaderBrightnessEffect(lighting.settings)
     val refreshingText by vm.refreshingText.collectAsStateWithLifecycle()
     val ocrProgress by vm.ocrProgress.collectAsStateWithLifecycle()
     val hasOriginal = state.document?.mime == "application/pdf" || state.document?.mime?.startsWith("image/") == true
@@ -211,7 +214,7 @@ private val Accent = Color(0xFF126D63)
     val pageTurn = rememberPageTurnState((state.document?.id to original) to pageIndex, pageIndex,
         state.document?.pageCount ?: 1, prefs.pageTurnStyle, enabled = !readerControls && !appearance && !contents && !details && !speeds && !preparePages,
         rightAdvances = prefs.swipeRightAdvances, onTurn = { delta -> follow = false; vm.page(pageIndex + delta) })
-    val adjacentPages = rememberAdjacentReaderPages(vm, state.document, pageIndex, !original && prefs.pageTurnStyle != "off")
+    val adjacentPages = rememberAdjacentReaderPages(vm, state.document, pageIndex, prefs.pageTurnStyle != "off", state.failedSentences)
     var rotation by remember(state.document?.id, pageIndex) { mutableIntStateOf(0) }
     var fitWidth by remember(state.document?.id, pageIndex) { mutableStateOf(true) }
     val selected = page?.words?.firstOrNull { it.id == state.selectedWordId }
@@ -294,9 +297,13 @@ private val Accent = Color(0xFF126D63)
         if (searching) OutlinedTextField(query, { query = it }, label = { Text("Find on page") }, trailingIcon = { Tool(Icons.Default.Close, "Close search") { query = ""; searching = false } }, singleLine = true, modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp))
         Box(Modifier.weight(1f).fillMaxWidth().readerPaper(LocalReaderPaper.current)) {
             PageTurnViewport(pageTurn, contentReady = if (original) originalReady else page != null || state.error != null,
-                modifier = Modifier.fillMaxSize(), preview = { target ->
-                    if (original) OriginalPageTurnPreview(pageTurn, target, rotation, fitWidth)
-                    else ReaderTextTurnPreview(adjacentPages[target], prefs, target)
+                modifier = Modifier.fillMaxSize().readerWarmLight(lighting.settings), preview = { target ->
+                    val previewPage = adjacentPages[target]
+                    val failedIds = remember(previewPage, state.failedSentences) {
+                        previewPage?.let { state.failedSentenceIds(it) }.orEmpty()
+                    }
+                    if (original) OriginalPageTurnPreview(pageTurn, target, rotation, fitWidth, previewPage, failedIds)
+                    else ReaderTextTurnPreview(previewPage, prefs, target, failedIds)
                 }) {
                 if (original) OriginalPage(vm, state, Modifier.fillMaxSize(), follow, rotation, fitWidth,
                     prefs.swipePages && !readerControls, prefs.swipeRightAdvances,
@@ -338,12 +345,13 @@ private val Accent = Color(0xFF126D63)
             showDetails = { details = true }, copySelection = { selected?.let { clipboard.setText(AnnotatedString(it.text)) } },
             showControls = { readerControls = true })
     }
-    if (readerControls) ReaderControlsSheet(vm, state, prefs, dismiss = { readerControls = false }, notifications = requestNotifications)
-    if (appearance) ReaderAppearanceSheet(prefs, vm::update) { appearance = false }
+    if (readerControls) ReaderControlsSheet(vm, state, prefs, lighting = lighting, dismiss = { readerControls = false }, notifications = requestNotifications)
+    if (appearance) ReaderAppearanceSheet(prefs, vm::update, lighting.settings) { appearance = false }
     if (preparePages && state.document != null) {
         var endPage by remember(state.document.id, pageIndex) { mutableStateOf(minOf(pageIndex + 10, state.document.pageCount).toString()) }
         val end = endPage.toIntOrNull()?.takeIf { it in pageIndex + 1..state.document.pageCount }
         AlertDialog(onDismissRequest = { preparePages = false }, title = { Text("Prepare pages before listening") }, text = {
+            ReaderBrightnessEffect(lighting.settings)
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("Save speech from page ${pageIndex + 1} through the page you choose. For a chapter, enter its last page. Listening starts when you press Play.")
                 OutlinedTextField(endPage, { endPage = it.filter(Char::isDigit).take(5) }, singleLine = true,
@@ -357,6 +365,7 @@ private val Accent = Color(0xFF126D63)
             dismissButton = { TextButton(onClick = { preparePages = false }) { Text("Cancel") } })
     }
     if (details) AlertDialog(onDismissRequest = { details = false }, title = { Text("Reading details") }, text = {
+        ReaderBrightnessEffect(lighting.settings)
         Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(status, color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
             if (state.bufferedListeningMs > 0) {
@@ -371,6 +380,7 @@ private val Accent = Color(0xFF126D63)
         }
     }, confirmButton = { TextButton(onClick = { details = false }) { Text("Close") } })
     if (speeds) AlertDialog(onDismissRequest = { speeds = false }, title = { Text("Playback speed") }, text = {
+        ReaderBrightnessEffect(lighting.settings)
         Column(Modifier.verticalScroll(rememberScrollState())) {
             listOf(.75f, 1f, 1.25f, 1.5f, 1.75f, 2f, 2.5f).forEach { speed ->
                 Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).selectable(selected = prefs.speed == speed, role = androidx.compose.ui.semantics.Role.RadioButton, onClick = { vm.update(prefs.copy(speed = speed)); speeds = false }).padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -385,7 +395,7 @@ private val Accent = Color(0xFF126D63)
         var goToPage by remember { mutableStateOf((pageIndex + 1).toString()) }
         val targetPage = goToPage.toIntOrNull()?.takeIf { it in 1..state.document.pageCount }
         AlertDialog(onDismissRequest = { contents = false }, title = { Text("Contents") },
-            text = { Column {
+            text = { ReaderBrightnessEffect(lighting.settings); Column {
                 OutlinedTextField(goToPage, { goToPage = it.filter(Char::isDigit).take(5) }, label = { Text("Page") },
                     singleLine = true, keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number),
                     suffix = { Text("/ ${state.document.pageCount}") })
@@ -401,6 +411,7 @@ private val Accent = Color(0xFF126D63)
 @Composable private fun ReaderText(page: PageContent, state: ReaderPlayback, prefs: Preferences, query: String, follow: Boolean, manualScroll: () -> Unit,
     tap: (String) -> Unit, bookmark: (SourceWord) -> Unit, modifier: Modifier) {
     val paper = LocalReaderPaper.current
+    val failedIds = remember(page, state.failedSentences) { state.failedSentenceIds(page) }
     val readerFont = ReaderFonts.family(prefs.readerFont)
     val list = rememberLazyListState()
     val dragging by list.interactionSource.collectIsDraggedAsState()
@@ -439,6 +450,8 @@ private val Accent = Color(0xFF126D63)
                         if (query.isNotBlank() && word.text.contains(query, true)) addStyle(SpanStyle(background = Color(0xFFFFDB75), color = Color(0xFF202020)), start, end)
                         if (word.id in state.activeWordIds) addStyle(SpanStyle(background = paper.accent, color = paper.onAccent), start, end)
                         else if (word.id == state.selectedWordId) addStyle(SpanStyle(background = paper.sentence), start, end)
+                        if (word.sentenceId in failedIds) addStyle(SpanStyle(color = ReaderFailureInk,
+                            background = ReaderFailureBackground), start, end)
                     }
                 }
                 fun hit(position: androidx.compose.ui.geometry.Offset): SourceWord? {

@@ -32,7 +32,7 @@ class MisakiKokoroEngine(
 ) : TtsEngine {
     companion object {
         const val MODEL_ID = "kokoro-misaki"
-        const val ADAPTER_VERSION = "kokoro-v019-ipa-1"
+        const val ADAPTER_VERSION = "kokoro-v019-ipa-2"
     }
 
     override val timingCapability = "PCM only; separate known-transcript CTC alignment required"
@@ -119,17 +119,22 @@ class MisakiKokoroEngine(
                 checkCurrent()
                 val loaded = checkNotNull(session) { "No Misaki Kokoro model loaded" }
                 require(text.isNotBlank()) { "No spoken text to synthesize" }
-                val ids = KokoroV019Codec.encode(phonemize(text), tokens)
-                val style = checkNotNull(styles).forTokenCount(ids.size - 2)
+                // Validate the whole pronunciation before any inference. Long pronunciations
+                // are split only at word boundaries, never truncated or retried unchanged.
+                val chunks = KokoroV019Codec.encodeChunks(phonemize(text), tokens)
                 phonemizerNs = System.nanoTime() - started
-                checkCurrent()
-                speechNativeCall { OnnxTensor.createTensor(environment, LongBuffer.wrap(ids), longArrayOf(1, ids.size.toLong())) }.use { tokenInput ->
+                val parts = mutableListOf<FloatArray>()
+                var totalSamples = 0
+                for (ids in chunks) {
+                  checkCurrent()
+                  val style = checkNotNull(styles).forTokenCount(ids.size - 2)
+                  val part = speechNativeCall { OnnxTensor.createTensor(environment, LongBuffer.wrap(ids), longArrayOf(1, ids.size.toLong())) }.use { tokenInput ->
                     speechNativeCall { OnnxTensor.createTensor(environment, FloatBuffer.wrap(style), longArrayOf(1, 256)) }.use { styleInput ->
                         // Reading speed is applied by the player, as in the existing local engines.
                         speechNativeCall { OnnxTensor.createTensor(environment, FloatBuffer.wrap(floatArrayOf(1f)), longArrayOf(1)) }.use { speedInput ->
                             val inferenceStart = System.nanoTime()
                             speechNativeCall { loaded.run(mapOf("tokens" to tokenInput, "style" to styleInput, "speed" to speedInput)) }.use { output ->
-                                inferenceNs = System.nanoTime() - inferenceStart
+                                inferenceNs += System.nanoTime() - inferenceStart
                                 checkCurrent()
                                 val outputStart = System.nanoTime()
                                 val tensor = output[0] as? OnnxTensor ?: error("Kokoro returned an unsupported audio output")
@@ -142,12 +147,26 @@ class MisakiKokoroEngine(
                                 tensor.floatBuffer.get(samples)
                                 require(samples.all(Float::isFinite)) { "Kokoro returned invalid audio samples" }
                                 val paused = KokoroV019Pauses.shorten(samples)
-                                outputNs = System.nanoTime() - outputStart
-                                PcmAudio(paused, 24_000)
+                                outputNs += System.nanoTime() - outputStart
+                                paused
                             }
                         }
                     }
+                  }
+                  require(totalSamples.toLong() + part.size <= 24_000L * 40) {
+                      "Generated speech exceeds the 40-second alignment limit"
+                  }
+                  parts += part
+                  totalSamples += part.size
                 }
+                checkCurrent()
+                val joinStarted = System.nanoTime()
+                val combined = if (parts.size == 1) parts.single() else FloatArray(totalSamples).also { output ->
+                    var offset = 0
+                    for (part in parts) { part.copyInto(output, offset); offset += part.size }
+                }
+                outputNs += System.nanoTime() - joinStarted
+                PcmAudio(combined, 24_000)
             } catch (failure: LinkageError) {
                 throw IllegalStateException("Misaki Kokoro runtime failed. Copy playback diagnostics from Settings.", failure)
             } finally {
@@ -214,6 +233,8 @@ data class MisakiSpeechTimings(
 
 /** Misaki's compressed alphabet must be expanded for the older v0.19 acoustic model. */
 internal object KokoroV019Codec {
+    private const val MAX_PHONES = 510
+    private const val MAX_CHUNKS = 8
     // Representation mapping documented in hexgrad/misaki/EN_PHONES.md (to_espeak).
     // This is a string conversion; it does not load or call the eSpeak library.
     fun legacyPhones(phones: String): String = buildString {
@@ -242,7 +263,43 @@ internal object KokoroV019Codec {
         val expanded = legacyPhones(phones)
         require(expanded.any(Char::isLetter)) { "Misaki returned no spoken phonemes" }
         val symbols = expanded.codePoints().toArray()
-        require(symbols.size <= 510) { "This pronunciation exceeds Kokoro's 510-token limit; it was not truncated" }
+        require(symbols.size <= MAX_PHONES) { "This pronunciation exceeds Kokoro's 510-token limit; it was not truncated" }
+        return encodeSymbols(symbols, tokens)
+    }
+
+    /** Preserve all spoken phones, with a finite number of complete-word acoustic calls. */
+    fun encodeChunks(phones: String, tokens: Map<Int, Long>): List<LongArray> {
+        val expanded = legacyPhones(phones)
+        require(expanded.any(Char::isLetter)) { "Misaki returned no spoken phonemes" }
+        val symbols = expanded.codePoints().toArray()
+        require(symbols.size <= MAX_CHUNKS * (MAX_PHONES + 1)) { "This pronunciation exceeds the bounded speech budget" }
+        // Reject unknown phones even if they appear after the first otherwise-valid chunk.
+        encodeSymbols(symbols, tokens)
+        val result = mutableListOf<LongArray>()
+        var start = 0
+        while (start < symbols.size) {
+            require(result.size < MAX_CHUNKS) { "This pronunciation exceeds the bounded speech budget" }
+            var end = minOf(start + MAX_PHONES, symbols.size)
+            if (end < symbols.size) {
+                // A space is a safe word boundary. Prefer a nearby clause boundary when possible.
+                val wordEnd = (end downTo start + 1).firstOrNull { symbols[it] == ' '.code }
+                require(wordEnd != null) { "One pronunciation exceeds Kokoro's 510-token limit; it was not truncated" }
+                end = wordEnd
+                val clauseEnd = (end downTo start + MAX_PHONES / 2).firstOrNull { index ->
+                    symbols[index] == ' '.code && symbols[index - 1] in intArrayOf('.'.code, ','.code, ';'.code, ':'.code, '!'.code, '?'.code)
+                }
+                if (clauseEnd != null) end = clauseEnd
+            }
+            val part = symbols.copyOfRange(start, end)
+            require(part.any(Character::isLetter)) { "Misaki returned a chunk without spoken phonemes" }
+            result += encodeSymbols(part, tokens)
+            start = end
+            while (start < symbols.size && symbols[start] == ' '.code) start++
+        }
+        return result
+    }
+
+    private fun encodeSymbols(symbols: IntArray, tokens: Map<Int, Long>): LongArray {
         return LongArray(symbols.size + 2).also { ids ->
             for ((index, symbol) in symbols.withIndex()) {
                 val token = tokens[symbol]

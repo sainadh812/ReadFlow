@@ -42,6 +42,7 @@ import kotlinx.coroutines.launch
     vm: ReaderViewModel,
     state: ReaderPlayback,
     prefs: Preferences,
+    lighting: ReaderLightingState,
     dismiss: () -> Unit,
     notifications: () -> Unit = {},
 ) {
@@ -53,12 +54,14 @@ import kotlinx.coroutines.launch
     val feedback by vm.message.collectAsStateWithLifecycle()
     var advanced by rememberSaveable { mutableStateOf(false) }
     var roomy by rememberSaveable { mutableStateOf(false) }
+    DisposableEffect(lighting) { onDispose { lighting.saveDraft() } }
     ModalBottomSheet(
         onDismissRequest = dismiss,
         sheetState = sheetState,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
+        ReaderBrightnessEffect(lighting.settings)
         Column(Modifier.fillMaxWidth().fillMaxHeight(if (advanced || roomy) .94f else .88f)) {
             Row(Modifier.fillMaxWidth().padding(start = 24.dp, end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
@@ -83,6 +86,7 @@ import kotlinx.coroutines.launch
                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
+                item { ReaderLightingControl(lighting) }
                 item { ReaderEffortControl(vm, prefs) }
                 item { ReaderRecognitionDetail(vm, prefs) }
                 item { ReaderVoiceControls(vm, prefs) {
@@ -108,6 +112,52 @@ import kotlinx.coroutines.launch
             }
             HorizontalDivider()
             ReaderSheetTransport(vm, state, notifications)
+        }
+    }
+}
+
+@Composable private fun ReaderLightingControl(lighting: ReaderLightingState) {
+    val settings = lighting.settings
+    ReaderControlCard("Reading light", Icons.Default.LightMode, compact = true) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Text("Brightness", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+            Text(if (settings.usePhoneBrightness) "Phone" else "${settings.brightnessPercent}%",
+                style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+        }
+        Slider(value = settings.brightnessPercent.toFloat(),
+            onValueChange = { lighting.previewBrightness(it.roundToInt()) },
+            onValueChangeFinished = lighting::commit, valueRange = 1f..100f,
+            enabled = !settings.usePhoneBrightness,
+            modifier = Modifier.semantics {
+                contentDescription = "Reader brightness"
+                stateDescription = if (settings.usePhoneBrightness) "Using phone brightness" else "${settings.brightnessPercent} percent"
+            })
+        Row(Modifier.fillMaxWidth().heightIn(min = 48.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text("Use phone brightness", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+            Switch(checked = settings.usePhoneBrightness, onCheckedChange = lighting::usePhoneBrightness,
+                modifier = Modifier.semantics { contentDescription = "Use phone brightness" })
+        }
+        HorizontalDivider()
+        Row(Modifier.fillMaxWidth().heightIn(min = 48.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Default.WbSunny, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary)
+            Spacer(Modifier.width(8.dp))
+            Text("Warm light", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+            Switch(checked = settings.warmLightEnabled, onCheckedChange = lighting::enableWarmLight,
+                modifier = Modifier.semantics { contentDescription = "Warm light" })
+        }
+        if (settings.warmLightEnabled) {
+            Text("Strength · ${settings.warmLightStrength}%", style = MaterialTheme.typography.labelLarge)
+            Slider(value = settings.warmLightStrength.toFloat(),
+                onValueChange = { lighting.previewWarmth(it.roundToInt()) },
+                onValueChangeFinished = lighting::commit, valueRange = 0f..100f,
+                modifier = Modifier.semantics {
+                    contentDescription = "Warm light strength"
+                    stateDescription = "${settings.warmLightStrength} percent"
+                })
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Neutral", style = MaterialTheme.typography.labelSmall)
+                Text("Warm", style = MaterialTheme.typography.labelSmall)
+            }
         }
     }
 }

@@ -76,8 +76,8 @@ class NumericSpeechTest {
     @Test fun closingReferenceRuleDoesNotReinterpretDecimalsOrUnsupportedExpressions() {
         assertEquals("two thousand nineteen point seven one", speech("2019.71").text)
         assertEquals("one thousand two hundred thirty four", speech("1,234").text)
-        for (raw in listOf("1,2", "v1.2", "1.2.3.)71", "v1.2.)71", "1,2.)71", "2+3.)71",
-            "2019.)71+2", "2019.)9999999999999999", "9999999999999999.)71")) {
+        for (raw in listOf("1,2", "v1.2", "1.2.3.)71", "v1.2.)71", "1,2.)71",
+            "2019.)9999999999999999", "9999999999999999.)71")) {
             assertThrows(raw, NormalizationException::class.java) { speech(raw) }
         }
     }
@@ -107,7 +107,7 @@ class NumericSpeechTest {
         assertEquals("one thousand two hundred thirty four point five six dollars", speech("$1,234.56").text)
         assertEquals("minus zero point five percent three point one four two point five kilograms", speech("-0.5% 3.14 2.5kg").text)
         assertEquals("Milankovitch's", speech("Milankovićʼs").text)
-        for (raw in listOf("1,2", "v1.2", "word,16+2", "word,9999999999999999", "20-24=4", "1000000000000-2000000000000")) {
+        for (raw in listOf("1,2", "v1.2", "word,9999999999999999", "1000000000000-2000000000000")) {
             assertThrows(raw, NormalizationException::class.java) { speech(raw) }
         }
     }

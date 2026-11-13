@@ -102,7 +102,7 @@ class AccentedSpeechTest {
     }
 
     @Test fun unsupportedScriptsSymbolsAndOrphanAccentsAreNotSilentlyRemoved() {
-        val examples = listOf("café東京", "caféα", "caf\u0435\u0301", "\u0301café", "3\u0301", ".\u0301", "x\u20d7", "Milanković=2", "café²", "café📖")
+        val examples = listOf("café東京", "caféα", "caf\u0435\u0301", "\u0301café", "3\u0301", ".\u0301", "x\u20d7", "Milanković²", "café²", "café📖")
         examples.forEach { input ->
             val original = page(input)
             val error = assertThrows(input, NormalizationException::class.java) {

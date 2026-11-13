@@ -22,8 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import app.readflow.core.Transform
+import app.readflow.core.PageContent
 import app.readflow.diagnostics.documentIssueInput
 import app.readflow.playback.ReaderPlayback
+import app.readflow.playback.failedSentenceIds
 import kotlinx.coroutines.CancellationException
 import kotlin.math.abs
 
@@ -32,6 +34,10 @@ import kotlin.math.abs
     pageTurn: PageTurnState? = null, onReady: (Boolean) -> Unit = {}, manual: () -> Unit) {
     val page = state.page
     val document = state.document ?: return
+    val failedIds = remember(page, state.failedSentences, document.id) {
+        if (page != null && page.documentId == document.id) failedSentenceIds(page, state.failedSentences) else emptySet()
+    }
+    val failedWords = remember(page, failedIds) { page?.words.orEmpty().filter { it.sentenceId in failedIds } }
     val pageIndex = page?.index ?: state.viewPageIndex
     val pageKey = document.id to pageIndex
     var bitmap by remember(pageKey) { mutableStateOf<Bitmap?>(null) }
@@ -156,13 +162,16 @@ import kotlin.math.abs
                 val fill = Paint().apply { color = 0x304883DF }
                 val activeFill = Paint().apply { color = 0x701554D1 }
                 val stroke = Paint().apply { color = 0xFF1554D1.toInt(); style = Paint.Style.STROKE; strokeWidth = 2 / scale }
-                words.filter { it.sentenceId == sentence || it.id == currentState.selectedWordId }.forEach { word ->
+                words.filter { it.sentenceId !in failedIds &&
+                    (it.sentenceId == sentence || it.id == currentState.selectedWordId) }.forEach { word ->
                     word.boxes.forEach { box ->
                         val rect = RectF(box.left, box.top, box.right, box.bottom)
                         native.drawRect(rect, if (word.id in currentState.activeWordIds) activeFill else fill)
                         if (word.id in currentState.activeWordIds || word.id == currentState.selectedWordId) native.drawRect(rect, stroke)
                     }
                 }
+                // A failed sentence remains red while retrying, including its active/selected word.
+                native.drawFailedSentenceMarks(failedWords, scale, 2.dp.toPx())
                 native.restore()
             }
         }
@@ -171,12 +180,19 @@ import kotlin.math.abs
 }
 
 /** A prefetched PDF surface under the turning sheet; it has no hit targets or OCR work. */
-@Composable internal fun OriginalPageTurnPreview(pageTurn: PageTurnState, pageIndex: Int, rotation: Int, fitWidth: Boolean) {
+@Composable internal fun OriginalPageTurnPreview(pageTurn: PageTurnState, pageIndex: Int, rotation: Int, fitWidth: Boolean,
+    page: PageContent? = null, failedSentenceIds: Set<String> = emptySet()) {
     val image = pageTurn.originalPreviews[pageIndex]
-    Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainerHighest), contentAlignment = Alignment.Center) {
+    val sourcePage = page?.takeIf { it.index == pageIndex }
+    val failedWords = remember(sourcePage, failedSentenceIds) {
+        sourcePage?.words.orEmpty().filter { it.sentenceId in failedSentenceIds }
+    }
+    Box(Modifier.fillMaxSize().clipToBounds().background(MaterialTheme.colorScheme.surfaceContainerHighest), contentAlignment = Alignment.Center) {
         if (image == null) CircularProgressIndicator()
         else Canvas(Modifier.fillMaxSize()) {
-            val width = image.width.toFloat(); val height = image.height.toFloat()
+            // Preview bitmaps are reduced in size; source OCR/PDF boxes retain page coordinates.
+            val width = sourcePage?.width?.takeIf { it.isFinite() && it > 0f } ?: image.width.toFloat()
+            val height = sourcePage?.height?.takeIf { it.isFinite() && it > 0f } ?: image.height.toFloat()
             val swapped = rotation % 180 != 0
             val viewport = PageViewport(if (swapped) height else width, if (swapped) width else height, size.width, size.height, fitWidth)
             val scale = viewport.fit
@@ -191,6 +207,7 @@ import kotlin.math.abs
             drawIntoCanvas { canvas ->
                 canvas.nativeCanvas.save(); canvas.nativeCanvas.concat(matrix)
                 canvas.nativeCanvas.drawBitmap(image, null, RectF(0f, 0f, width, height), Paint(Paint.FILTER_BITMAP_FLAG))
+                canvas.nativeCanvas.drawFailedSentenceMarks(failedWords, scale, 2.dp.toPx())
                 canvas.nativeCanvas.restore()
             }
         }

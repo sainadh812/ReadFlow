@@ -12,7 +12,7 @@ class SpeechPlanningTest {
         }, 200f, 300f, "fixture")).words
 
     @Test fun laterEquationDoesNotPreventEarlierSentencePreparation() {
-        val words = page("Read this first. Next x = y. Read this later.").words
+        val words = page("Read this first. Next x² y. Read this later.").words
         val plans = SpeechPlanner().prepare(words).iterator()
         assertEquals("Read this first.", plans.next().speech.text)
         val error = assertThrows(SpeechPreparationException::class.java) { plans.hasNext() }
@@ -20,7 +20,7 @@ class SpeechPlanningTest {
         assertEquals("y.", error.sentence.last().text)
     }
     @Test fun jumpingPastAnEquationDoesNotNormalizeIt() {
-        val words = page("First x = y. Read read again.").words
+        val words = page("First x² y. Read read again.").words
         val requested = words.first { it.text == "read" }
         val chunks = SpeechPlanner().prepare(words, requested.id).toList()
         assertEquals("Read read again.", chunks.single().speech.text)
@@ -68,7 +68,7 @@ class SpeechPlanningTest {
         assertFalse(chunks.any { words.first().id in it.speech.sourceIds })
     }
     @Test fun exactPlaybackJumpBypassesUnsupportedEarlierTextInTheSameSentence() {
-        val words = page("x = y then read here.").words
+        val words = page("x² y then read here.").words
         val requested = words.first { it.text == "read" }
         val chunks = SpeechPlanner().prepare(words, requested.id, fromSelectedWord = true).toList()
         assertEquals("read here.", chunks.single().speech.text)
@@ -119,14 +119,14 @@ class SpeechPlanningTest {
         assertTrue(error.message!!.contains("not truncated"))
     }
     @Test fun skipUsesFailedSentenceNotCurrentlyPlayingSentence() {
-        val words = page("Read first. Then x = y. Read last.").words
+        val words = page("Read first. Then x² y. Read last.").words
         val failed = words.first { it.text == "Then" }
         val target = afterSentence(words, failed.id, 0, 1)!!
-        assertEquals(words[6].id, target.wordId)
+        assertEquals(words[5].id, target.wordId)
         assertEquals("Read last.", SpeechPlanner().prepare(words, target.wordId).first().speech.text)
     }
     @Test fun skipAtPageBoundaryGoesToNextPageOrEnd() {
-        val words = page("Read first. Then x = y.").words
+        val words = page("Read first. Then x² y.").words
         assertEquals(SpeechTarget(1, null), afterSentence(words, words.last().id, 0, 2))
         assertNull(afterSentence(words, words.last().id, 1, 2))
         assertNull(afterSentence(words, "stale-word", 0, 2))

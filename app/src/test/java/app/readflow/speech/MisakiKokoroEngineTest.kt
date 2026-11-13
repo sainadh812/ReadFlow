@@ -51,6 +51,33 @@ class MisakiKokoroEngineTest {
         }
     }
 
+    @Test fun chunksLongPronunciationsAtWordsWithoutDroppingOrRepeatingPhones() {
+        val phones = List(150) { "hˈA" }.joinToString(" ")
+        val tokens = minimalTokens() + mapOf('e'.code to 47L, 'ɪ'.code to 102L, 'ˈ'.code to 156L)
+        val chunks = KokoroV019Codec.encodeChunks(phones, tokens)
+        assertTrue(chunks.size > 1)
+        assertTrue(chunks.all { it.size in 3..512 && it.first() == 0L && it.last() == 0L })
+        val restored = chunks.map { it.drop(1).dropLast(1) }.reduce { first, next -> first + 16L + next }
+        val expected = KokoroV019Codec.legacyPhones(phones).codePoints().toArray().map { tokens.getValue(it) }
+        assertEquals(expected, restored)
+        assertTrue(chunks.all { it[1] == 50L && it[it.lastIndex - 1] == 102L })
+    }
+
+    @Test fun shortPronunciationsRetainTheExactOriginalTokens() {
+        val tokens = minimalTokens() + mapOf('e'.code to 47L, 'ɪ'.code to 102L)
+        assertArrayEquals(KokoroV019Codec.encode("h A h", tokens), KokoroV019Codec.encodeChunks("h A h", tokens).single())
+        assertEquals(512, KokoroV019Codec.encodeChunks("A".repeat(255), tokens).single().size)
+    }
+
+    @Test fun chunkRecoveryRejectsUnsplitWordsUnknownPhonesAndUnboundedWork() {
+        val tokens = minimalTokens() + mapOf('e'.code to 47L, 'ɪ'.code to 102L)
+        for (phones in listOf("A".repeat(256), List(150) { "hhhh" }.joinToString(" ") + " ❓",
+            List(9) { "h".repeat(470) }.joinToString(" "), "!?", "h$")) {
+            assertThrows(IllegalArgumentException::class.java) { KokoroV019Codec.encodeChunks(phones, tokens) }
+        }
+        assertEquals(8, KokoroV019Codec.encodeChunks(List(8) { "h".repeat(470) }.joinToString(" "), tokens).size)
+    }
+
     @Test fun matchesExistingPauseLengthWithoutChangingSpeechSamples() {
         val first = floatArrayOf(.2f, -.3f, .7f)
         val second = floatArrayOf(-.6f, .2f)

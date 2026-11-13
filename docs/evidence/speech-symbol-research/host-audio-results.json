@@ -1,0 +1,53 @@
+{
+  "scope": "Local host smoke using pinned model files. Raw inputs intentionally bypass app normalization. Finite audio does not certify pronunciation accuracy; no Android device or listening test.",
+  "rows": [
+    {
+      "input": "he is good boy*",
+      "complete": true,
+      "fallbackCalls": 1,
+      "phonemes": "hi ɪz ɡˈʊd bˈY",
+      "phonemeCount": 15,
+      "audioSamples": 54000,
+      "audioSeconds": 2.25,
+      "allFinite": true,
+      "sampleRate": 24000,
+      "voiceIndex": 0
+    },
+    {
+      "input": "he is a good boy₹%&",
+      "complete": true,
+      "fallbackCalls": 1,
+      "phonemes": "hi ɪz ɐ ɡˈʊd bˈYkˌɑɹ",
+      "phonemeCount": 21,
+      "audioSamples": 57000,
+      "audioSeconds": 2.375,
+      "allFinite": true,
+      "sampleRate": 24000,
+      "voiceIndex": 0
+    },
+    {
+      "input": "he is good boy asterisk",
+      "complete": true,
+      "fallbackCalls": 0,
+      "phonemes": "hi ɪz ɡˈʊd bˈY ˈæstəɹˌɪsk",
+      "phonemeCount": 26,
+      "audioSamples": 69000,
+      "audioSeconds": 2.875,
+      "allFinite": true,
+      "sampleRate": 24000,
+      "voiceIndex": 0
+    },
+    {
+      "input": "he is a good boy rupee percent and",
+      "complete": true,
+      "fallbackCalls": 0,
+      "phonemes": "hi ɪz ɐ ɡˈʊd bˈY ɹupˈi pəɹsˈɛnt ænd",
+      "phonemeCount": 36,
+      "audioSamples": 84600,
+      "audioSeconds": 3.525,
+      "allFinite": true,
+      "sampleRate": 24000,
+      "voiceIndex": 0
+    }
+  ]
+}

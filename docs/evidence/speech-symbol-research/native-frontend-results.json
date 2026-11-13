@@ -1,0 +1,80 @@
+[
+  {
+    "input": "he is good boy*",
+    "complete": true,
+    "fallbackCalls": 1,
+    "phonemes": "hi ɪz ɡˈʊd bˈY"
+  },
+  {
+    "input": "he is a good boy₹%&",
+    "complete": true,
+    "fallbackCalls": 1,
+    "phonemes": "hi ɪz ɐ ɡˈʊd bˈYkˌɑɹ"
+  },
+  {
+    "input": "he is a good boy&",
+    "complete": true,
+    "fallbackCalls": 0,
+    "phonemes": "hi ɪz ɐ ɡˈʊd bˈY ænd"
+  },
+  {
+    "input": "he is a good boy₹",
+    "complete": true,
+    "fallbackCalls": 1,
+    "phonemes": "hi ɪz ɐ ɡˈʊd bˈY"
+  },
+  {
+    "input": "he is a good boy%",
+    "complete": true,
+    "fallbackCalls": 0,
+    "phonemes": "hi ɪz ɐ ɡˈʊd bˈY pəɹsˈɛnt"
+  },
+  {
+    "input": "he is good boy asterisk",
+    "complete": true,
+    "fallbackCalls": 0,
+    "phonemes": "hi ɪz ɡˈʊd bˈY ˈæstəɹˌɪsk"
+  },
+  {
+    "input": "he is a good boy rupee percent and",
+    "complete": true,
+    "fallbackCalls": 0,
+    "phonemes": "hi ɪz ɐ ɡˈʊd bˈY ɹupˈi pəɹsˈɛnt ænd"
+  },
+  {
+    "input": "he paid fifty rupees and earned twenty percent.",
+    "complete": true,
+    "fallbackCalls": 0,
+    "phonemes": "hi pˈAd fˈɪfti ɹupˈiz ænd ˈɜɹnd twˈɛnti pəɹsˈɛnt."
+  },
+  {
+    "input": "he is a good boy",
+    "complete": true,
+    "fallbackCalls": 0,
+    "phonemes": "hi ɪz ɐ ɡˈʊd bˈY"
+  },
+  {
+    "input": "x = y",
+    "complete": true,
+    "fallbackCalls": 1,
+    "phonemes": "ˈɛks ˈɛks wˈI"
+  },
+  {
+    "input": "5*3=15",
+    "complete": true,
+    "fallbackCalls": 1,
+    "phonemes": "ˈækbˌæks"
+  },
+  {
+    "input": "C++ and C#",
+    "complete": true,
+    "fallbackCalls": 0,
+    "phonemes": "sˈi plˈʌs plˈʌs ænd sˈi"
+  },
+  {
+    "input": "Version v1.2 is ready.",
+    "complete": true,
+    "fallbackCalls": 0,
+    "phonemes": "vˈɜɹʒən vˈi wˈʌn tˈu ɪz ɹˈɛdi."
+  }
+]

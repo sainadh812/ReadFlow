@@ -1,13 +1,13 @@
 {
   "title": "Read Assist reader experience design backlog",
   "updated": "2026-11-13",
-  "scope": "Approved reader features implemented together in Read Assist 0.2.7",
+  "scope": "Approved reader features: page curl and bottom panel in 0.2.7; reading light, red failed sentences and speech reliability in 0.2.8",
   "implementation": {
-    "status": "implemented; local release build, unit tests and lint passed",
+    "status": "implemented; local release build, final focused tests and lint passed; signed CI validation pending",
     "delivery": "User authorized implementation, GitHub push and a downloadable APK.",
     "appCodeChangesAuthorizedByThisPlan": true,
-    "version": "0.2.7",
-    "versionCode": 23
+    "version": "0.2.8",
+    "versionCode": 24
   },
   "pageTurn": {
     "visual": "Paper curl",
@@ -247,15 +247,68 @@
     "Test model availability, voice and effort playback impacts, explicit OCR reruns, and slow recognition without losing document position.",
     "Verify frame stability and memory use on Android hardware; browser or generated-image previews do not establish native performance."
   ],
+  "upcomingDesigns": {
+    "implementationStatus": "User authorized all three features, GitHub push and signed APK delivery; implemented for 0.2.8, validation in progress.",
+    "readingLight": {
+      "status": "Implemented for 0.2.8",
+      "approval": "User approved the reading-light preview and asked to retain it for the combined feature batch.",
+      "placement": "Reading light is the first card in Reader controls > Quick.",
+      "brightness": {
+        "controls": [
+          "Brightness slider with percentage",
+          "Use phone brightness toggle"
+        ],
+        "scope": "A manual brightness override applies while reading; leaving the reader restores phone-controlled brightness.",
+        "designExample": "60% with Use phone brightness off"
+      },
+      "warmLight": {
+        "controls": [
+          "Warm light toggle",
+          "Warmth slider from Neutral to Warm with percentage"
+        ],
+        "appearance": "A restrained translucent yellow overlay across the document viewport, including PDF images, extracted text and page-turn previews. Keep text readable and reader controls untinted.",
+        "behavior": "Preview changes immediately and retain the chosen strength when toggled off. Keep warmth independent of brightness and paper theme.",
+        "designExample": "Warmth 35%"
+      }
+    },
+    "failedSpeechSentence": {
+      "status": "Implemented for 0.2.8 with red marking only",
+      "interpretation": "Highlight the sentence whose voice-model audio generation failed. This interpretation has been stated to the user; OCR or missing-text failure is a separate case.",
+      "appearance": "Mark the exact failed sentence red, keeping the words legible and the mark distinguishable over the warm-light overlay.",
+      "additionalUi": "None. No new warning icon, error label, explanatory card, popup, retry button or skip button. The earlier recovery mockup is superseded by this explicit user correction.",
+      "behavior": "Retain existing playback controls and failure behavior. Clear the red mark if audio for that sentence is successfully generated later. Do not mark user cancellation as a synthesis failure.",
+      "preparationAhead": "Track the affected sentence without moving the reader away from the currently spoken sentence or adding a new status treatment.",
+      "implementationNotes": "Revision-aware document/page/sentence tracking covers normalization and synthesis failures. Text spans and PDF word boxes remain red under bounded warmth; no new recovery UI. Complete successful sentence coverage clears marks; cancellation, global initialization, alignment and storage failures are excluded."
+    },
+    "speechReliability": {
+      "status": "Implemented for 0.2.8: english-7 normalization and kokoro-v019-ipa-2 bounded pronunciation chunks",
+      "reportedInputs": [
+        "he is good boy*",
+        "he is a good boy₹%&"
+      ],
+      "researchScope": "Compare the relevant Chrome read-aloud pipeline with our normalization, speech planning, Misaki pronunciation and Kokoro synthesis. Evaluate other published methodologies for symbol handling and recovery.",
+      "constraints": "Preserve document content, word mapping and highlighting. Distinguish contextual currency, percentage and mathematical symbols from stray markers; retain explicit validation for unsupported content.",
+      "comparisonClarification": "User observed desktop/laptop Chrome, not Android Chrome.",
+      "researchRecord": "speech-reliability-research.json",
+      "confirmedCause": "Both exact samples are rejected by EnglishNormalizer before Misaki/Kokoro. Explicit symbol-word expansions succeed in bounded host synthesis checks."
+    }
+  },
   "validation": {
     "localReleaseBuild": "passed",
     "releaseUnitTests": {
-      "tests": 388,
+      "tests": 28,
       "failures": 0,
-      "errors": 0
+      "errors": 0,
+      "scope": "Final focused lighting and sentence-recovery rerun; full suite runs again in signed CI."
     },
     "releaseLintErrors": 0,
     "deviceUiTests": "not performed: Android 35 software emulator did not finish booting or register package/activity services; hardware acceleration unavailable",
-    "releaseDistribution": "GitHub signed release candidate, using the existing upload certificate"
+    "releaseDistribution": "GitHub signed release candidate, using the existing upload certificate",
+    "appliesToVersion": "0.2.8",
+    "hostSpeechSmoke": {
+      "cases": 8,
+      "status": "passed",
+      "evidence": "../docs/evidence/speech-symbol-research/english-seven-pipeline-smoke.json"
+    }
   }
 }

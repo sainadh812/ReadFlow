@@ -45,14 +45,14 @@ class IssueLogsTest {
         assertEquals(2, report.alignment!!.tokenIndex)
     }
     @Test fun normalizationFailureIdentifiesTheRejectedTokenInsideItsSentence() = runBlocking {
-        val page = DocumentPipeline().process("doc", 0, ExtractedPage(listOf(TextElement("Read x = y.", emptyList())), 0f, 0f, "test"))
+        val page = DocumentPipeline().process("doc", 0, ExtractedPage(listOf(TextElement("Read x² now.", emptyList())), 0f, 0f, "test"))
         val error = assertThrows(SpeechPreparationException::class.java) { SpeechPlanner().prepare(page.words).toList() }
         val store = store()
         val report = store.read(store.record("NORMALIZE_TEXT", error, IssueInput(words = page.words))!!)!!
         val rejected = report.normalization!!
-        assertEquals("=", rejected.sourceText)
-        assertEquals("=", rejected.attemptedExpansion)
-        assertEquals(listOf(page.words.first { it.text == "=" }.id), rejected.sourceIds)
+        assertEquals("x²", rejected.sourceText)
+        assertEquals("x²", rejected.attemptedExpansion)
+        assertEquals(listOf(page.words.first { it.text == "x²" }.id), rejected.sourceIds)
         assertNull(report.alignment)
         assertFalse(report.audio.included)
     }
