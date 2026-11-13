@@ -3,11 +3,12 @@
   "updated": "2026-11-13",
   "scope": "Approved reader features: page curl and bottom panel in 0.2.7; reading light, red failed sentences and speech reliability in 0.2.8",
   "implementation": {
-    "status": "implemented; local release build, final focused tests and lint passed; signed CI validation pending",
+    "status": "implemented and published as signed GitHub prerelease 0.2.8",
     "delivery": "User authorized implementation, GitHub push and a downloadable APK.",
     "appCodeChangesAuthorizedByThisPlan": true,
     "version": "0.2.8",
-    "versionCode": 24
+    "versionCode": 24,
+    "releaseUrl": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.2.8-play-candidate"
   },
   "pageTurn": {
     "visual": "Paper curl",
@@ -248,7 +249,7 @@
     "Verify frame stability and memory use on Android hardware; browser or generated-image previews do not establish native performance."
   ],
   "upcomingDesigns": {
-    "implementationStatus": "User authorized all three features, GitHub push and signed APK delivery; implemented for 0.2.8, validation in progress.",
+    "implementationStatus": "All three approved additions were implemented and released together in 0.2.8.",
     "readingLight": {
       "status": "Implemented for 0.2.8",
       "approval": "User approved the reading-light preview and asked to retain it for the combined feature batch.",
@@ -296,19 +297,24 @@
   "validation": {
     "localReleaseBuild": "passed",
     "releaseUnitTests": {
-      "tests": 28,
+      "tests": 429,
       "failures": 0,
       "errors": 0,
-      "scope": "Final focused lighting and sentence-recovery rerun; full suite runs again in signed CI."
+      "skipped": 3,
+      "passed": 426,
+      "scope": "Signed GitHub build from 94bb489b6826b17f651bdd8b7400b24b7cd833c1"
     },
     "releaseLintErrors": 0,
     "deviceUiTests": "not performed: Android 35 software emulator did not finish booting or register package/activity services; hardware acceleration unavailable",
-    "releaseDistribution": "GitHub signed release candidate, using the existing upload certificate",
+    "releaseDistribution": "Public signed GitHub prerelease v0.2.8-play-candidate",
     "appliesToVersion": "0.2.8",
     "hostSpeechSmoke": {
       "cases": 8,
       "status": "passed",
       "evidence": "../docs/evidence/speech-symbol-research/english-seven-pipeline-smoke.json"
-    }
+    },
+    "releaseLintWarnings": 35,
+    "signedBuild": "passed",
+    "evidence": "../docs/evidence/reader-0.2.8/release-evidence.json"
   }
 }

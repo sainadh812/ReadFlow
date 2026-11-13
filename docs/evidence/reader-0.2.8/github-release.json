@@ -1,0 +1,41 @@
+{
+  "version": "0.2.8",
+  "versionCode": 24,
+  "sourceCommit": "94bb489b6826b17f651bdd8b7400b24b7cd833c1",
+  "tag": "v0.2.8-play-candidate",
+  "releaseUrl": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.2.8-play-candidate",
+  "publishedAt": "2026-11-13T17:29:18Z",
+  "verifiedAtUtc": "2026-11-13T17:29:30.677532+00:00",
+  "tagCommitMatches": true,
+  "assets": [
+    {
+      "name": "Read-Assist-0.2.8-upload-signed.aab",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.8-play-candidate/Read-Assist-0.2.8-upload-signed.aab",
+      "bytes": 72305031,
+      "sha256": "d06fca6e3bbc9fef1da68859794210d44ad1bad791dc7d0e276673da1706815e"
+    },
+    {
+      "name": "Read-Assist-0.2.8-upload-signed.apk",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.8-play-candidate/Read-Assist-0.2.8-upload-signed.apk",
+      "bytes": 131098024,
+      "sha256": "5c4c934085473cebbe2500755b50c91fad189c90d3bc50168c79efc1d048bb5a"
+    },
+    {
+      "name": "release-evidence.json",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.8-play-candidate/release-evidence.json",
+      "bytes": 827,
+      "sha256": "b4d847b884a4dec1990cb12a4d147d9685b4f40a9896778104468a02cf290608"
+    },
+    {
+      "name": "RELEASE_SHA256SUMS.txt",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.8-play-candidate/RELEASE_SHA256SUMS.txt",
+      "bytes": 292,
+      "sha256": "cbf0ff47c6bb8be2a70c2a1a879ec6e2ffe1666587685c45d808954e67ad13fa"
+    }
+  ],
+  "publicApkDownload": {
+    "httpStatus": 200,
+    "sha256MatchesSignedArtifact": true,
+    "explicitCredentialsSent": false
+  }
+}

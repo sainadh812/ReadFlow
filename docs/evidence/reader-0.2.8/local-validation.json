@@ -11,7 +11,7 @@
     "failures": 2,
     "errors": 0,
     "skipped": 0,
-    "explanation": "Lighting contrast tests were compiled after the final cap change while production classes still contained the prior0.24 cap. Recompiled final source uses0.22; both failures pass in the final focused run."
+    "explanation": "Lighting contrast tests were compiled after the final cap change while production classes still contained the prior 0.24 cap. Recompiled final source uses 0.22; both failures pass in the final focused run."
   },
   "finalFocusedSuite": {
     "tests": 28,
@@ -30,6 +30,6 @@
     "status": "passed",
     "record": "../speech-symbol-research/english-seven-pipeline-smoke.json"
   },
-  "deviceUiValidation": "Not performed: no physical device; prior software Android35 emulator attempts did not finish package/activity-service startup.",
+  "deviceUiValidation": "Not performed: no physical device; prior software Android 35 emulator attempts did not finish package/activity-service startup.",
   "distribution": "Local APK unsigned and not for publication; signed CI build runs full suite before GitHub prerelease."
 }

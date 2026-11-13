@@ -1,0 +1,36 @@
+{
+  "verifiedAtUtc": "2026-11-13T17:29:47.257189+00:00",
+  "sourceCommit": "94bb489b6826b17f651bdd8b7400b24b7cd833c1",
+  "workflowUrl": "https://github.com/sainadh812/ReadFlow/actions/runs/43471138788",
+  "artifactName": "Read-Assist-signed-candidate-43471138788-1",
+  "manifestFilesVerified": 76,
+  "allHashesAndSizesMatched": true,
+  "apkCertificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+  "apkManifest": {
+    "package": "app.readflow",
+    "versionName": "0.2.8",
+    "versionCode": 24,
+    "minSdk": 35,
+    "targetSdk": 36,
+    "abis": [
+      "arm64-v8a"
+    ],
+    "debuggable": false
+  },
+  "aabSignatureVerified": true,
+  "aabStrictSignatureNote": "Expected self-signed upload-certificate warning (exit4); ordinary signature verification passed.",
+  "bundletoolValidation": "passed",
+  "apk16kbAlignment": "passed",
+  "nativeLibrariesAndBuildIdsVerified": 11,
+  "fontFilesVerified": 7,
+  "unitTests": {
+    "tests": 429,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "lintErrors": 0,
+  "lintWarnings": 35,
+  "deviceTestsPerformed": false,
+  "playUploadPerformed": false
+}
