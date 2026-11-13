@@ -19,6 +19,7 @@ internal class PageSwipeGesture(private val touchSlop: Float) {
     private var travel = Offset.Zero
 
     val horizontal: Boolean get() = axis == Axis.HORIZONTAL && !multiTouch
+    val displacement: Offset get() = travel
 
     fun move(delta: Offset, pointerCount: Int) {
         multiTouch = multiTouch || pointerCount > 1
@@ -34,10 +35,12 @@ internal class PageSwipeGesture(private val touchSlop: Float) {
 
 /** Claim horizontal drags before the text list scrolls, leaving taps and vertical drags to it. */
 internal fun Modifier.readerPageSwipes(pageKey: Any, enabled: Boolean, rightAdvances: Boolean,
-    manualScroll: () -> Unit, turn: (Int) -> Unit): Modifier = pointerInput(pageKey, enabled, rightAdvances) {
+    manualScroll: () -> Unit, turn: (Int) -> Unit,
+    onDrag: (Offset) -> Unit = {}, onRelease: ((Int) -> Unit)? = null,
+    onCancel: () -> Unit = {}): Modifier = pointerInput(pageKey, enabled, rightAdvances) {
     if (!enabled) return@pointerInput
     val threshold = maxOf(64.dp.toPx(), minOf(size.width * .18f, 120.dp.toPx()))
-    awaitEachGesture {
+    try { awaitEachGesture {
         awaitFirstDown(requireUnconsumed = false)
         val swipe = PageSwipeGesture(viewConfiguration.touchSlop)
         var claimed = false
@@ -49,7 +52,11 @@ internal fun Modifier.readerPageSwipes(pageKey: Any, enabled: Boolean, rightAdva
                 swipe.move(event.calculatePan(), event.changes.count { it.pressed || it.previousPressed })
                 if (swipe.horizontal) {
                     if (!claimed) { claimed = true; manualScroll() }
+                    onDrag(swipe.displacement)
                     event.changes.forEach { if (it.positionChanged()) it.consume() }
+                } else if (claimed) {
+                    // A second finger permanently cancels this turn, even after it lifts.
+                    onCancel()
                 }
                 val final = awaitPointerEvent(PointerEventPass.Final)
                 if (!claimed && final.changes.any { it.isConsumed }) cancelled = true
@@ -57,7 +64,7 @@ internal fun Modifier.readerPageSwipes(pageKey: Any, enabled: Boolean, rightAdva
         } while (!cancelled && event.changes.any { it.pressed })
         if (!cancelled) {
             val delta = swipe.pageDelta(threshold, enabled, rightAdvances)
-            if (delta != 0) turn(delta)
-        }
-    }
+            if (onRelease != null) onRelease(delta) else if (delta != 0) turn(delta)
+        } else onCancel()
+    } } finally { onCancel() }
 }

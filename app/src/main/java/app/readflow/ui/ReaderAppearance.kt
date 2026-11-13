@@ -159,6 +159,17 @@ internal val LocalReaderPaper = staticCompositionLocalOf { ReaderPapers.options.
     val paper = ReaderPapers.selected(prefs.readerTheme)
     val font = ReaderFonts.family(prefs.readerFont)
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text("Page turn", style = MaterialTheme.typography.titleSmall)
+        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+            listOf("curl" to "Curl", "slide" to "Slide", "off" to "Off").forEachIndexed { index, (id, label) ->
+                SegmentedButton(selected = prefs.pageTurnStyle == id,
+                    onClick = { update(prefs.copy(pageTurnStyle = id)) },
+                    shape = SegmentedButtonDefaults.itemShape(index, 3)) { Text(label) }
+            }
+        }
+        Text(if (prefs.swipeRightAdvances) "Swipe right for the next page. Motion follows your system animation setting."
+            else "Swipe left for the next page, like a book. Motion follows your system animation setting.",
+            style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Paper", style = MaterialTheme.typography.titleSmall)
         Row(Modifier.fillMaxWidth().selectableGroup(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             ReaderPapers.options.forEach { option ->

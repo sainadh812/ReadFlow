@@ -1,0 +1,261 @@
+{
+  "title": "Read Assist reader experience design backlog",
+  "updated": "2026-11-13",
+  "scope": "Approved reader features implemented together in Read Assist 0.2.7",
+  "implementation": {
+    "status": "implemented; local release build, unit tests and lint passed",
+    "delivery": "User authorized implementation, GitHub push and a downloadable APK.",
+    "appCodeChangesAuthorizedByThisPlan": true,
+    "version": "0.2.7",
+    "versionCode": 23
+  },
+  "pageTurn": {
+    "visual": "Paper curl",
+    "visualApproval": "approved by user",
+    "direction": {
+      "status": "explicit user requirement",
+      "rightToLeft": {
+        "action": "Next page",
+        "pageIndexDelta": 1
+      },
+      "leftToRight": {
+        "action": "Previous page",
+        "pageIndexDelta": -1
+      },
+      "precedence": "This book-like direction supersedes the app's existing swipe-right-for-next default and the older direction shown in the page-turn design preview."
+    },
+    "behavior": [
+      "Only the page viewport curls; the title bar and playback controls stay fixed.",
+      "The curl follows a deliberate one-finger horizontal drag, settles after a committed turn, and returns after a cancelled short drag.",
+      "Commit page navigation exactly once and update the page counter only after commitment.",
+      "Do not wrap past the first or last document page.",
+      "Preserve vertical scrolling, word selection, bookmarks, pinch-to-zoom, and zoomed PDF panning.",
+      "Animate existing document-page changes; screenful pagination for single-page articles is outside the currently proposed scope."
+    ],
+    "proposedPreference": [
+      "Curl",
+      "Slide",
+      "Off"
+    ],
+    "previousPreviewStatus": "Visual reference remains useful; its old swipe direction is superseded by the explicit book-like direction above."
+  },
+  "bottomControlPanel": {
+    "status": "approved by user; implemented",
+    "location": "Within the PDF reader",
+    "entry": {
+      "control": "Visible in-app drag handle in the bottom reader dock",
+      "actions": [
+        "Swipe upward from the handle or its dock region",
+        "Tap the handle or its labelled controls target"
+      ],
+      "placement": "Above the Android system navigation inset",
+      "gestureOwnership": [
+        "Only gestures starting in the handle or dock region open the panel.",
+        "Upward gestures starting on the PDF continue to pan or scroll the document.",
+        "The open sheet intercepts its own gestures and prevents page turns beneath it.",
+        "Respect Android system gestures and preserve PDF pinch-to-zoom and zoomed panning."
+      ]
+    },
+    "states": [
+      {
+        "name": "closed",
+        "description": "Reader content and compact playback dock remain visible, with the panel handle accessible."
+      },
+      {
+        "name": "quick",
+        "description": "An 88%-height modal sheet opens fully within the visible window, with a scrolling quick-controls area and fixed playback transport."
+      },
+      {
+        "name": "expanded",
+        "description": "A 94%-height expanded sheet exposes advanced settings and downloads while retaining the document position."
+      }
+    ],
+    "quickControls": [
+      {
+        "label": "Speech processing effort",
+        "supportedOptions": [
+          "Low",
+          "Medium",
+          "High"
+        ],
+        "designExample": "Medium",
+        "currentDefault": "Medium",
+        "meaning": "Controls speech and word-timing worker counts; does not change voice quality.",
+        "currentPresets": {
+          "Low": {
+            "speechThreads": 1,
+            "alignmentThreads": 1
+          },
+          "Medium": {
+            "speechThreads": 2,
+            "alignmentThreads": 2
+          },
+          "High": {
+            "speechThreads": 4,
+            "alignmentThreads": 2
+          }
+        }
+      },
+      {
+        "label": "Recognition detail",
+        "proposedCompactLabel": "Text recognition",
+        "supportedOptions": [
+          {
+            "value": "fast",
+            "label": "Low · Fast",
+            "compactLabel": "Fast"
+          },
+          {
+            "value": "balanced",
+            "label": "Medium · Balanced",
+            "compactLabel": "Balanced"
+          },
+          {
+            "value": "high",
+            "label": "High · Accuracy",
+            "compactLabel": "High"
+          }
+        ],
+        "designExample": "Balanced",
+        "currentDefault": "Balanced",
+        "meaning": "Controls recognition image detail and retries independently of speech processing. High detail can take longer and consume more battery; it is not a guaranteed accuracy score."
+      },
+      {
+        "label": "Voice model",
+        "designExample": "Kokoro",
+        "currentDefault": "Kokoro",
+        "modelDisplayName": "Kokoro",
+        "packName": "Kokoro-82M",
+        "releaseSupport": "Release builds support Kokoro with Misaki pronunciation only.",
+        "availability": "Show only model choices supported by the installed build and their actual installation state.",
+        "debugOnlyAlternative": "Pocket TTS with Alba MacKenna is present in the debug manifest and must not be presented as universally available in release builds."
+      },
+      {
+        "label": "Voice",
+        "supportedKokoroVoices": [
+          {
+            "id": "0",
+            "label": "Default (af)"
+          },
+          {
+            "id": "1",
+            "label": "Bella"
+          },
+          {
+            "id": "2",
+            "label": "Nicole"
+          }
+        ],
+        "designExample": "Bella",
+        "currentDefault": "Default (af)",
+        "exampleIsActualDeviceSelection": false
+      },
+      {
+        "label": "Playback speed",
+        "supportedOptions": [
+          "0.75×",
+          "1×",
+          "1.25×",
+          "1.5×",
+          "1.75×",
+          "2×",
+          "2.5×"
+        ],
+        "designExample": "1×",
+        "currentDefault": "1×"
+      }
+    ],
+    "advancedControls": [
+      {
+        "label": "Recognition model",
+        "supportedOptions": [
+          "ML Kit · Original",
+          "PaddleOCR",
+          "TeleOCR"
+        ],
+        "designExample": "ML Kit · Original",
+        "availability": "ML Kit is built in. PaddleOCR and TeleOCR require completed model installation before selection."
+      },
+      {
+        "label": "Apply to current page",
+        "meaning": "Explicitly rerun recognition for the saved current page using the selected settings.",
+        "states": [
+          "available",
+          "recognizing",
+          "cancel",
+          "failed with retry"
+        ]
+      },
+      {
+        "label": "Show reading metrics",
+        "meaning": "Expose actual measured speech generation, prepared listening buffer, buffering gaps, and extraction details. Do not invent live metrics or interpret speed as accuracy."
+      },
+      {
+        "label": "Voice models",
+        "meaning": "Manage supported downloads and installation state while retaining the reader position."
+      },
+      {
+        "label": "Advanced performance",
+        "existingControls": [
+          "Keep CPU workers active",
+          "Audio cache",
+          "Highlight output delay",
+          "Open phone testbench"
+        ],
+        "meaning": "Keep technical tuning and benchmark actions out of the quick controls. Benchmarks remain a separate workflow."
+      }
+    ],
+    "currentSettingImpacts": [
+      {
+        "change": "Speech processing effort",
+        "currentBehavior": "Stops playback, then writes the new preference. More threads can change speed, heat, and battery use; voice quality remains unchanged."
+      },
+      {
+        "change": "Voice model or voice",
+        "currentBehavior": "Stops playback, waits for active speech work, releases speech models, and then saves the new settings. Seamless uninterrupted speech is not currently supported by this settings path."
+      },
+      {
+        "change": "Recognition detail",
+        "currentBehavior": "Saves the preference without automatically rerunning the current saved page."
+      },
+      {
+        "change": "Recognition model",
+        "currentBehavior": "Stops playback, cancels OCR refresh, closes OCR engines, and saves the selected model. Saved page text remains unchanged until explicit recognition is applied again."
+      },
+      {
+        "change": "Voice preview",
+        "currentBehavior": "The existing preview opens a separate sample document.",
+        "proposedRequirementIfIncluded": "An in-panel preview must use new handling that preserves the PDF document, page, selection, and reading position. Do not reuse the existing navigation-changing sample action unchanged."
+      }
+    ],
+    "savedTextBehavior": "New pages use selected recognition settings. Previously saved pages retain their text and bookmarks until explicit Apply to current page. Reliable embedded PDF text continues to be used when available."
+  },
+  "accessibilityAndMotion": [
+    "Provide labelled tap controls as alternatives to swipe-only actions.",
+    "Use large touch targets, readable text, adequate contrast, and support for larger text sizes.",
+    "Give the sheet accessible dialog semantics and predictable focus; restore focus to its opener when closed.",
+    "Support dismissal through the close control, Android Back, and an appropriate downward sheet gesture.",
+    "Prevent hidden reader controls from receiving accessibility or pointer focus while the modal sheet is open.",
+    "Respect system reduced-motion settings with instant page changes or a minimal transition and reduced sheet motion.",
+    "Announce committed page and setting changes without announcing every drag frame.",
+    "Preserve page position, PDF zoom, and reading context when the panel opens or closes."
+  ],
+  "futureValidation": [
+    "Test book-like next and previous direction, cancelled turns, first and last page boundaries, and exactly-once navigation.",
+    "Test dock opening against Android navigation gestures, PDF scrolling, pinch-to-zoom, zoomed panning, and horizontal page turns.",
+    "Test closed, quick, and expanded sheet states, Back dismissal, focus restoration, and large text.",
+    "Test model availability, voice and effort playback impacts, explicit OCR reruns, and slow recognition without losing document position.",
+    "Verify frame stability and memory use on Android hardware; browser or generated-image previews do not establish native performance."
+  ],
+  "validation": {
+    "localReleaseBuild": "passed",
+    "releaseUnitTests": {
+      "tests": 388,
+      "failures": 0,
+      "errors": 0
+    },
+    "releaseLintErrors": 0,
+    "deviceUiTests": "not performed: Android 35 software emulator did not finish booting or register package/activity services; hardware acceleration unavailable",
+    "releaseDistribution": "GitHub signed release candidate, using the existing upload certificate"
+  }
+}

@@ -35,4 +35,15 @@ class ReaderAppearancePreferencesTest {
             }
         }
     }
+
+    @Test fun bookDirectionAndCurlAreDefaultsWhileExplicitMotionChoicesSurviveNormalization() {
+        assertFalse(Preferences().swipeRightAdvances)
+        assertEquals("curl", ReaderAppearancePreferences.pageTurn(null))
+        assertEquals("curl", ReaderAppearancePreferences.pageTurn("removed"))
+        for (style in listOf("curl", "slide", "off")) {
+            val saved = Preferences(pageTurnStyle = style, swipeRightAdvances = true,
+                model = "kokoro", voice = "1", speed = 1.5f, readerFont = "lexend")
+            assertEquals(saved, ReaderAppearancePreferences.normalize(saved))
+        }
+    }
 }

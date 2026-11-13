@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -200,11 +201,17 @@ private val Accent = Color(0xFF126D63)
     var speeds by remember { mutableStateOf(false) }
     var preparePages by remember { mutableStateOf(false) }
     var appearance by remember { mutableStateOf(false) }
+    var readerControls by remember(state.document?.id) { mutableStateOf(false) }
     var pageOnly by rememberSaveable(state.document?.id) { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
     var follow by remember(state.document?.id) { mutableStateOf(true) }
     val page = state.page
     val pageIndex = page?.index ?: state.viewPageIndex
+    var originalReady by remember(state.document?.id, pageIndex, original) { mutableStateOf(false) }
+    val pageTurn = rememberPageTurnState((state.document?.id to original) to pageIndex, pageIndex,
+        state.document?.pageCount ?: 1, prefs.pageTurnStyle, enabled = !readerControls && !appearance && !contents && !details && !speeds && !preparePages,
+        rightAdvances = prefs.swipeRightAdvances, onTurn = { delta -> follow = false; vm.page(pageIndex + delta) })
+    val adjacentPages = rememberAdjacentReaderPages(vm, state.document, pageIndex, !original && prefs.pageTurnStyle != "off")
     var rotation by remember(state.document?.id, pageIndex) { mutableIntStateOf(0) }
     var fitWidth by remember(state.document?.id, pageIndex) { mutableStateOf(true) }
     val selected = page?.words?.firstOrNull { it.id == state.selectedWordId }
@@ -235,6 +242,7 @@ private val Accent = Color(0xFF126D63)
                 Box {
                     Tool(Icons.Default.MoreVert, "Reader menu") { menu = true }
                     DropdownMenu(menu, { menu = false }) {
+                        DropdownMenuItem(text = { Text("Reader controls") }, onClick = { readerControls = true; menu = false }, leadingIcon = { Icon(Icons.Default.Tune, null) })
                         DropdownMenuItem(text = { Text("Paper, font and size") }, onClick = { appearance = true; menu = false }, leadingIcon = { Icon(Icons.Default.TextFields, null) })
                         DropdownMenuItem(text = { Text("Hide controls for more page space") }, onClick = { searching = false; pageOnly = true; menu = false }, leadingIcon = { Icon(Icons.Default.Fullscreen, null) })
                         if (ocrProgress != null || refreshingText) {
@@ -250,14 +258,14 @@ private val Accent = Color(0xFF126D63)
                             enabled = state.document != null && !state.preparing && !refreshingText,
                             leadingIcon = { Icon(Icons.Default.Download, null) })
                         if ((state.document?.pageCount ?: 0) > 1) {
-                            DropdownMenuItem(text = { Text("Previous page") }, onClick = { vm.page(pageIndex - 1); menu = false }, enabled = pageIndex > 0, leadingIcon = { Icon(Icons.Default.ChevronLeft, null) })
-                            DropdownMenuItem(text = { Text("Next page") }, onClick = { vm.page(pageIndex + 1); menu = false }, enabled = pageIndex + 1 < (state.document?.pageCount ?: 1), leadingIcon = { Icon(Icons.Default.ChevronRight, null) })
+                            DropdownMenuItem(text = { Text("Previous page") }, onClick = { pageTurn.requestTurn(-1); menu = false }, enabled = pageIndex > 0, leadingIcon = { Icon(Icons.Default.ChevronLeft, null) })
+                            DropdownMenuItem(text = { Text("Next page") }, onClick = { pageTurn.requestTurn(1); menu = false }, enabled = pageIndex + 1 < (state.document?.pageCount ?: 1), leadingIcon = { Icon(Icons.Default.ChevronRight, null) })
                         }
                         if (hasOriginal) {
                             DropdownMenuItem(text = { Text(if (original) "Show reader text" else "Show original page") }, onClick = { original = !original; if (original) searching = false; menu = false }, leadingIcon = { Icon(if (original) Icons.Default.TextFields else Icons.Default.Description, null) })
                             if (original) {
-                                DropdownMenuItem(text = { Text(if (fitWidth) "Fit whole page" else "Fit page width") }, onClick = { fitWidth = !fitWidth; menu = false }, leadingIcon = { Icon(Icons.Default.FitScreen, null) })
-                                DropdownMenuItem(text = { Text("Rotate page view") }, onClick = { rotation = (rotation + 90) % 360; menu = false }, leadingIcon = { Icon(Icons.Default.RotateRight, null) })
+                                DropdownMenuItem(text = { Text(if (fitWidth) "Fit whole page" else "Fit page width") }, onClick = { pageTurn.reset(); fitWidth = !fitWidth; menu = false }, leadingIcon = { Icon(Icons.Default.FitScreen, null) })
+                                DropdownMenuItem(text = { Text("Rotate page view") }, onClick = { pageTurn.reset(); rotation = (rotation + 90) % 360; menu = false }, leadingIcon = { Icon(Icons.Default.RotateRight, null) })
                             }
                         }
                         if ((state.document?.pageCount ?: 0) > 1) {
@@ -285,12 +293,24 @@ private val Accent = Color(0xFF126D63)
         }
         if (searching) OutlinedTextField(query, { query = it }, label = { Text("Find on page") }, trailingIcon = { Tool(Icons.Default.Close, "Close search") { query = ""; searching = false } }, singleLine = true, modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp))
         Box(Modifier.weight(1f).fillMaxWidth().readerPaper(LocalReaderPaper.current)) {
-            if (original) OriginalPage(vm, state, Modifier.fillMaxSize(), follow, rotation, fitWidth, prefs.swipePages, prefs.swipeRightAdvances) { follow = false }
-            else if (page == null) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { if (state.preparing) CircularProgressIndicator() }
-            else key(page.id) {
-                ReaderText(page, state, prefs, query, follow, { follow = false }, { vm.app.playback.select(it) }, { vm.bookmark(it) },
-                    Modifier.fillMaxSize().readerPageSwipes(page.id, prefs.swipePages, prefs.swipeRightAdvances,
-                        manualScroll = { follow = false }, turn = { vm.page(pageIndex + it) }))
+            PageTurnViewport(pageTurn, contentReady = if (original) originalReady else page != null || state.error != null,
+                modifier = Modifier.fillMaxSize(), preview = { target ->
+                    if (original) OriginalPageTurnPreview(pageTurn, target, rotation, fitWidth)
+                    else ReaderTextTurnPreview(adjacentPages[target], prefs, target)
+                }) {
+                if (original) OriginalPage(vm, state, Modifier.fillMaxSize(), follow, rotation, fitWidth,
+                    prefs.swipePages && !readerControls, prefs.swipeRightAdvances,
+                    pageTurn = pageTurn, onReady = { originalReady = it }) { follow = false }
+                else if (page == null) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    if (state.error != null) Text(state.error, Modifier.padding(24.dp), color = MaterialTheme.colorScheme.error)
+                    else CircularProgressIndicator()
+                }
+                else key(page.id) {
+                    ReaderText(page, state, prefs, query, follow, { follow = false }, { vm.app.playback.select(it) }, { vm.bookmark(it) },
+                        Modifier.fillMaxSize().readerPageSwipes(page.id, prefs.swipePages && !readerControls, prefs.swipeRightAdvances,
+                            manualScroll = { follow = false }, turn = { vm.page(pageIndex + it) },
+                            onDrag = pageTurn::drag, onRelease = pageTurn::release, onCancel = pageTurn::cancel))
+                }
             }
             if (pageOnly) Surface(Modifier.align(Alignment.TopEnd).padding(4.dp), shape = MaterialTheme.shapes.large, tonalElevation = 1.dp) {
                 Tool(Icons.Default.FullscreenExit, "Show reader controls") { pageOnly = false }
@@ -315,8 +335,10 @@ private val Accent = Color(0xFF126D63)
         if (!pageOnly && prefs.showPerformance) PerformancePanel(vm, prefs)
         if (!pageOnly) PlaybackPanel(vm, state, requestNotifications, prefs.speed, { speeds = true }, hasOriginal, original,
             { original = !original; if (original) searching = false }, selected, status,
-            showDetails = { details = true }, copySelection = { selected?.let { clipboard.setText(AnnotatedString(it.text)) } })
+            showDetails = { details = true }, copySelection = { selected?.let { clipboard.setText(AnnotatedString(it.text)) } },
+            showControls = { readerControls = true })
     }
+    if (readerControls) ReaderControlsSheet(vm, state, prefs, dismiss = { readerControls = false }, notifications = requestNotifications)
     if (appearance) ReaderAppearanceSheet(prefs, vm::update) { appearance = false }
     if (preparePages && state.document != null) {
         var endPage by remember(state.document.id, pageIndex) { mutableStateOf(minOf(pageIndex + 10, state.document.pageCount).toString()) }
@@ -439,7 +461,8 @@ private val Accent = Color(0xFF126D63)
 
 @Composable private fun PlaybackPanel(vm: ReaderViewModel, state: ReaderPlayback, notifications: () -> Unit,
     speed: Float, changeSpeed: () -> Unit, hasOriginal: Boolean, original: Boolean, toggleOriginal: () -> Unit,
-    selectedWord: SourceWord?, status: String, showDetails: () -> Unit, copySelection: () -> Unit) {
+    selectedWord: SourceWord?, status: String, showDetails: () -> Unit, copySelection: () -> Unit, showControls: () -> Unit) {
+    val openControls by rememberUpdatedState(showControls)
     val selected = selectedWord != null && !state.wantsToPlay && !state.preparing
     val preparingPlayback = state.fillingBuffer || (state.preparing && state.currentChunk == null)
     val ready = "${state.bufferedSentences} ${if (state.bufferedSentences == 1) "sentence" else "sentences"} ready"
@@ -456,8 +479,26 @@ private val Accent = Color(0xFF126D63)
         state.bufferedSentences > 0 -> "Paused · $ready"
         else -> status
     }
-    Surface(color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp), tonalElevation = 1.dp, shadowElevation = 6.dp) {
+    Surface(modifier = Modifier.pointerInput(Unit) {
+        var travel = 0f
+        var opened = false
+        detectVerticalDragGestures(onDragStart = { travel = 0f; opened = false }, onVerticalDrag = { change, amount ->
+            travel += amount
+            if (!opened && travel < -28.dp.toPx()) { opened = true; openControls() }
+            change.consume()
+        })
+    }, color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp), tonalElevation = 1.dp, shadowElevation = 6.dp) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
+            Column(Modifier.fillMaxWidth().heightIn(min = 44.dp)
+                .clickable(role = androidx.compose.ui.semantics.Role.Button, onClickLabel = "Open reader controls", onClick = showControls)
+                .semantics { contentDescription = "Reader controls. Swipe up or tap to adjust voice, speed, performance and text recognition." },
+                horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                Box(Modifier.width(32.dp).height(3.dp).background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(2.dp)))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.KeyboardArrowUp, null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.primary)
+                    Text("Reader controls", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                }
+            }
             if (selected) Surface(color = MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(12.dp), modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     TextButton(onClick = { notifications(); vm.app.playback.start(wordId = selectedWord?.id) }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp)) {

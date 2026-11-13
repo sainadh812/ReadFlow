@@ -28,7 +28,8 @@ import kotlinx.coroutines.CancellationException
 import kotlin.math.abs
 
 @Composable internal fun OriginalPage(vm: ReaderViewModel, state: ReaderPlayback, modifier: Modifier, follow: Boolean,
-    rotation: Int, fitWidth: Boolean, swipePages: Boolean, rightAdvances: Boolean, manual: () -> Unit) {
+    rotation: Int, fitWidth: Boolean, swipePages: Boolean, rightAdvances: Boolean,
+    pageTurn: PageTurnState? = null, onReady: (Boolean) -> Unit = {}, manual: () -> Unit) {
     val page = state.page
     val document = state.document ?: return
     val pageIndex = page?.index ?: state.viewPageIndex
@@ -38,6 +39,8 @@ import kotlin.math.abs
     var zoom by remember(pageKey, rotation, fitWidth) { mutableFloatStateOf(1f) }
     var pan by remember(pageKey, rotation, fitWidth) { mutableStateOf(Offset.Zero) }
     var size by remember { mutableStateOf(IntSize.Zero) }
+    val readyCallback by rememberUpdatedState(onReady)
+    LaunchedEffect(pageKey, bitmap, error) { readyCallback(bitmap != null || error != null) }
     LaunchedEffect(pageKey, document.localPath) {
         try { bitmap = vm.app.documents.extractor.render(document.localPath, pageIndex) }
         catch (cancel: CancellationException) { throw cancel }
@@ -46,7 +49,25 @@ import kotlin.math.abs
             vm.captureIssue("RENDER_PAGE", e, documentIssueInput(document, page, pageIndex = pageIndex))
         }
     }
-    DisposableEffect(pageKey) { onDispose { bitmap?.recycle(); bitmap = null } }
+    // A captured graphics layer can still own this image during a turn. Drop our reference;
+    // Android releases its pixels when both the live canvas and the bounded preview cache do.
+    DisposableEffect(pageKey) { onDispose { bitmap = null } }
+    LaunchedEffect(pageKey, bitmap, pageTurn, pageTurn?.style) {
+        val turn = pageTurn ?: return@LaunchedEffect
+        if (turn.style == "off") { turn.originalPreviews.clear(); return@LaunchedEffect }
+        val image = bitmap ?: return@LaunchedEffect
+        turn.originalPreviews.keys.filter { it !in maxOf(0, pageIndex - 1)..minOf(document.pageCount - 1, pageIndex + 1) }
+            .forEach { turn.originalPreviews.remove(it) }
+        turn.originalPreviews[pageIndex] = image
+        // Rendering is independent of OCR. Cache only the two adjacent page surfaces.
+        listOf(pageIndex + 1, pageIndex - 1).filter { it in 0 until document.pageCount }.forEach { adjacent ->
+            if (turn.originalPreviews[adjacent] == null) {
+                try { turn.originalPreviews[adjacent] = vm.app.documents.extractor.render(document.localPath, adjacent, targetWidth = 900) }
+                catch (cancel: CancellationException) { throw cancel }
+                catch (_: Exception) { /* The live page reports a render error if this page is opened. */ }
+            }
+        }
+    }
     val width = page?.width?.takeIf { it > 0 } ?: bitmap?.width?.toFloat() ?: 1f
     val height = page?.height?.takeIf { it > 0 } ?: bitmap?.height?.toFloat() ?: 1f
     val swapped = rotation % 180 != 0
@@ -77,7 +98,7 @@ import kotlin.math.abs
         Canvas(Modifier.fillMaxSize().onSizeChanged { size = it }
             .pointerInput(pageKey, rotation, fitWidth, swipePages, rightAdvances, size) {
                 val threshold = maxOf(64.dp.toPx(), minOf(size.width * .18f, 120.dp.toPx()))
-                awaitEachGesture {
+                try { awaitEachGesture {
                     awaitFirstDown(requireUnconsumed = false)
                     val swipe = PageSwipeGesture(viewConfiguration.touchSlop)
                     var travel = Offset.Zero
@@ -100,18 +121,23 @@ import kotlin.math.abs
                                 if (dragging) onManual()
                             }
                             if (dragging && event.changes.any { it.pressed && it.previousPressed }) {
-                                val next = (zoom * factor).coerceIn(1f, 6f)
-                                pan = currentViewport.zoomPan(pan, zoom, next, event.calculateCentroid(useCurrent = false), delta)
-                                zoom = next
+                                if (swipe.horizontal && maxOf(initialZoom, zoom) <= 1.01f && swipePages && pageTurn != null) {
+                                    pageTurn.drag(swipe.displacement)
+                                } else {
+                                    pageTurn?.cancel()
+                                    val next = (zoom * factor).coerceIn(1f, 6f)
+                                    pan = currentViewport.zoomPan(pan, zoom, next, event.calculateCentroid(useCurrent = false), delta)
+                                    zoom = next
+                                }
                                 event.changes.forEach { if (it.positionChanged()) it.consume() }
                             }
                         }
                     } while (!cancelled && event.changes.any { it.pressed })
                     if (!cancelled && dragging) {
                         val delta = swipe.pageDelta(threshold, swipePages, rightAdvances, maxOf(initialZoom, zoom))
-                        if (delta != 0) vm.page(pageIndex + delta)
-                    }
-                }
+                        if (pageTurn != null) pageTurn.release(delta) else if (delta != 0) vm.page(pageIndex + delta)
+                    } else pageTurn?.cancel()
+                } } finally { pageTurn?.cancel() }
             }
             .pointerInput(pageKey) { detectTapGestures(onTap = { point ->
                 val mapped = currentTransform.inverse().map(point.x, point.y)
@@ -141,5 +167,32 @@ import kotlin.math.abs
             }
         }
         if (bitmap == null) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { if (error == null) CircularProgressIndicator() else Text(error.orEmpty()) }
+    }
+}
+
+/** A prefetched PDF surface under the turning sheet; it has no hit targets or OCR work. */
+@Composable internal fun OriginalPageTurnPreview(pageTurn: PageTurnState, pageIndex: Int, rotation: Int, fitWidth: Boolean) {
+    val image = pageTurn.originalPreviews[pageIndex]
+    Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainerHighest), contentAlignment = Alignment.Center) {
+        if (image == null) CircularProgressIndicator()
+        else Canvas(Modifier.fillMaxSize()) {
+            val width = image.width.toFloat(); val height = image.height.toFloat()
+            val swapped = rotation % 180 != 0
+            val viewport = PageViewport(if (swapped) height else width, if (swapped) width else height, size.width, size.height, fitWidth)
+            val scale = viewport.fit
+            val x = viewport.base.x; val y = viewport.base.y
+            val t = when (rotation) {
+                90 -> Transform(0f, scale, -scale, 0f, x + height * scale, y)
+                180 -> Transform(-scale, 0f, 0f, -scale, x + width * scale, y + height * scale)
+                270 -> Transform(0f, -scale, scale, 0f, x, y + width * scale)
+                else -> Transform(scale, 0f, 0f, scale, x, y)
+            }
+            val matrix = Matrix().apply { setValues(floatArrayOf(t.a, t.c, t.tx, t.b, t.d, t.ty, 0f, 0f, 1f)) }
+            drawIntoCanvas { canvas ->
+                canvas.nativeCanvas.save(); canvas.nativeCanvas.concat(matrix)
+                canvas.nativeCanvas.drawBitmap(image, null, RectF(0f, 0f, width, height), Paint(Paint.FILTER_BITMAP_FLAG))
+                canvas.nativeCanvas.restore()
+            }
+        }
     }
 }
