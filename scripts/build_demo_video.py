@@ -267,12 +267,15 @@ def audio_input(directory: Path, clip: dict, adjustment: float) -> tuple[Path | 
     return input_file(directory, name), lead + adjustment
 
 
-def render_scene(ff: FFmpeg, source: Path, audio: Path | None, lead: float, cut: dict, bg: Path, destination: Path) -> None:
+def render_scene(ff: FFmpeg, source: Path, audio: Path | None, lead: float, cut: dict, bg: Path, destination: Path,
+                 *, embedded: bool = False) -> None:
     duration, start = cut["duration"], cut["start"]
     args = ["-y", "-v", "error", "-loop", "1", "-framerate", str(FPS), "-i", str(bg),
             "-i", str(source)]
     audio_start = start + lead
-    if audio is not None:
+    if embedded:
+        args += ["-i", str(source)]
+    elif audio is not None:
         args += ["-ss", str(max(0, audio_start)), "-i", str(audio)]
     else:
         args += ["-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo"]
@@ -283,8 +286,13 @@ def render_scene(ff: FFmpeg, source: Path, audio: Path | None, lead: float, cut:
           f"trim=start={start}:duration={duration},setpts=PTS-STARTPTS,"
           f"scale={width}:{height}:force_original_aspect_ratio=decrease:flags=lanczos,"
           f"pad={width}:{height}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1[app];"
-          f"[bg][app]overlay={x}:{y}:eof_action=repeat,fps={FPS},format=yuv420p[v];"
-          "[2:a]asetpts=PTS-STARTPTS")
+          f"[bg][app]overlay={x}:{y}:eof_action=repeat,fps={FPS},format=yuv420p[v];")
+    if embedded:
+        # AAC can begin after the first video frame. Put decoded audio on the
+        # same t=0 timeline before trimming, preserving that recorded silence.
+        vf += f"[2:a]aresample=48000:first_pts=0,atrim=start={start}:duration={duration},asetpts=PTS-STARTPTS"
+    else:
+        vf += "[2:a]asetpts=PTS-STARTPTS"
     if audio is not None and audio_start < 0:
         vf += f",adelay={round(-audio_start * 1000)}:all=1"
     vf += f",apad,atrim=duration={duration},aresample=48000[a]"
@@ -425,7 +433,7 @@ def build(directory: Path, output: Path, recipe_path: Path | None) -> dict:
             bg, part = work / f"background-{index:02d}.png", work / f"scene-{index:02d}.mp4"
             background(bg, cut.get("title", ""), cut.get("caption", ""), index, len(segments))
             source = input_file(directory, cut["file"])
-            render_scene(ff, source, audio, lead, cut, bg, part)
+            render_scene(ff, source, audio, lead, cut, bg, part, embedded=clip.get("embeddedDeviceAudio") is True)
             report["segments"].append({**cut, "sourceSha256": digest(source), "measuredSource": probes[cut["file"]],
                                        "sourceCapture": clip.get("sourceCapture"),
                                        "sourceAudio": audio.relative_to(directory).as_posix() if audio else None,
