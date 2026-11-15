@@ -115,7 +115,10 @@ internal fun dictionaryQuery(raw: String): DictionaryQuery {
         }
     }.joinToString("").trim { !it.isLetterOrDigit() && Character.getType(it) !in setOf(
         Character.NON_SPACING_MARK.toInt(), Character.COMBINING_SPACING_MARK.toInt(), Character.ENCLOSING_MARK.toInt(),
-    ) }.replace(Regex("(?U)\\s+"), " ")
+    ) }
+        // Android's ICU regex rejects the JVM-only (?U) flag. Include Unicode
+        // separators and NEL explicitly so Android and desktop tests agree.
+        .replace(Regex("[\\s\\p{Z}\\u0085]+"), " ")
     require(normalized.length <= 256) { "Search for a shorter word or phrase." }
     return DictionaryQuery(normalized, normalized.lowercase(Locale.ROOT))
 }

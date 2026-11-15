@@ -10,6 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import app.readflow.data.Preferences
 import app.readflow.dictionary.DictionaryPackPhase
+import app.readflow.dictionary.dictionaryQuery
 import app.readflow.models.fileHash
 import app.readflow.speech.SpeechDistribution
 import java.io.File
@@ -43,6 +44,12 @@ class StoreDemoSeedTest {
             .put("androidFingerprint", Build.FINGERPRINT).put("abi", Build.SUPPORTED_ABIS.joinToString())
             .put("setupStartedAt", System.currentTimeMillis())
         try {
+            // Exercise Android's actual regex/Unicode implementation before any
+            // expensive OCR or downloads; host JVM tests use a different engine.
+            check(dictionaryQuery("curiosity").key == "curiosity") { "Dictionary plain-word normalization failed" }
+            check(dictionaryQuery("  “curiosity,”  ").key == "curiosity") { "Dictionary punctuation normalization failed" }
+            check(dictionaryQuery("a\u0085\u2028\u2029few").key == "a few") { "Dictionary Unicode whitespace normalization failed" }
+            report.put("androidDictionaryNormalizationVerified", true)
             app.preferences.set(Preferences(showPerformance = false, kokoroPhonemizer = "misaki"))
             app.preferences.setAppTheme("warm_library")
             val records = JSONArray()
@@ -97,7 +104,16 @@ class StoreDemoSeedTest {
                     app.dictionary.install()
                     val state = app.dictionary.state.first { it.installed || it.phase == DictionaryPackPhase.ERROR }
                     check(state.installed) { state.error ?: "Dictionary installation failed" }
-                    check(app.dictionary.lookup("curiosity").entries.isNotEmpty()) { "Dictionary lookup failed" }
+                    report.put("dictionaryInstalled", true)
+                    val lookup = app.dictionary.lookup("curiosity")
+                    val afterLookup = app.dictionary.state.value
+                    report.put("dictionaryLookup", JSONObject().put("query", lookup.query)
+                        .put("entryCount", lookup.entries.size).put("error", lookup.error ?: JSONObject.NULL)
+                        .put("phase", afterLookup.phase.name).put("installed", afterLookup.installed)
+                        .put("stateError", afterLookup.error ?: JSONObject.NULL))
+                    check(lookup.entries.isNotEmpty()) {
+                        "Dictionary lookup failed: ${lookup.error ?: "no entries"}; phase=${afterLookup.phase}; installed=${afterLookup.installed}; stateError=${afterLookup.error}"
+                    }
                 }
                 report.put("dictionaryInstalledAndLookupVerified", true)
             }

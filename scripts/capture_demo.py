@@ -284,6 +284,8 @@ class Capture:
             # Hide the search row to give the actual definition its normal space.
             if self.find("Hide dictionary search") is not None:
                 self.tap("Hide dictionary search")
+            # With the input hidden, this can only be the result headword.
+            self.wait("curiosity", timeout=30)
             self.screenshot("10-dictionary")
             time.sleep(4)
             self.tap("Close dictionary")
@@ -363,7 +365,7 @@ class Capture:
                 if name not in ("library", "reader") and (self.report["errors"] or len(sections) == 1):
                     self.recover_reader()
                     self.tap("Text view")
-                if name == "reader" and len(sections) == 1:
+                if name == "reader" and (self.report["errors"] or len(sections) == 1):
                     self.recover_reader()
                     self.tap("Back")
                 actions[name]()

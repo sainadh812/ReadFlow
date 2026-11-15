@@ -21,6 +21,21 @@ class DictionaryQueryTest {
         assertEquals("a few", dictionaryQuery("a\u0085\u2028\u2029few").key)
     }
 
+    @Test fun unicodeWhitespaceSeparatesWordsLikeOrdinarySpaces() {
+        val whitespace = ('\u0009'..'\u000d') + listOf('\u0020', '\u0085', '\u00a0', '\u1680') +
+            ('\u2000'..'\u200a') + listOf('\u2028', '\u2029', '\u202f', '\u205f', '\u3000')
+        for (separator in whitespace) {
+            assertEquals("Whitespace U+${separator.code.toString(16)}",
+                DictionaryQuery("well-being matters", "well-being matters"),
+                dictionaryQuery("well-being$separator${separator}matters"))
+        }
+    }
+
+    @Test fun mixedPdfWhitespaceCollapsesWithoutChangingWordPunctuation() {
+        assertEquals(DictionaryQuery("café mother-in-law's rock 'n' roll", "café mother-in-law's rock 'n' roll"),
+            dictionaryQuery("  café\t\r\nmother‐in‐law’s\u0085\u2003rock 'n' roll\u2028\u2029 "))
+    }
+
     @Test fun caseSensitiveSpellingSurvivesAndKeysIgnorePhoneLocale() {
         val originalLocale = Locale.getDefault()
         try {
