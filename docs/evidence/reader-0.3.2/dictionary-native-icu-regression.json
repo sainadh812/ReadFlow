@@ -1,0 +1,146 @@
+{
+  "engine": "native ICU 70 on host, not an Android device execution",
+  "androidDocumentation": "https://developer.android.com/reference/java/util/regex/Pattern#UNICODE_CHARACTER_CLASS",
+  "patterns": [
+    {
+      "pattern": "(?U)\\s+",
+      "compiled": false,
+      "status": 66305,
+      "errorName": "U_REGEX_RULE_SYNTAX"
+    },
+    {
+      "pattern": "[\\s\\p{Z}\\u0085]+",
+      "compiled": true,
+      "status": 0,
+      "errorName": "U_ZERO_ERROR",
+      "whitespaceChecks": [
+        {
+          "codePoint": "U+0009",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+000A",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+000B",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+000C",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+000D",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+0020",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+0085",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+00A0",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+1680",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+2000",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+2001",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+2002",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+2003",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+2004",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+2005",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+2006",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+2007",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+2008",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+2009",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+200A",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+2028",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+2029",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+202F",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+205F",
+          "output": "well-being matters",
+          "passed": true
+        },
+        {
+          "codePoint": "U+3000",
+          "output": "well-being matters",
+          "passed": true
+        }
+      ],
+      "allWhitespaceChecksPassed": true
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "applicationFixCommit": "a6c99f33f6e8934f4a304355a3e093b1b569dfa8",
+  "previousAndroidRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43748181904",
+  "previousVersion": "0.3.1",
+  "fixedVersion": "0.3.2",
+  "cause": "The JVM-only embedded (?U) regex flag is rejected by Android ICU during dictionary query normalization.",
+  "fix": "Use an explicit portable whitespace class, preserving Unicode separators and NEL.",
+  "targetedHostUnitTests": {
+    "name": "app.readflow.dictionary.DictionaryQueryTest",
+    "tests": "10",
+    "skipped": "0",
+    "failures": "0",
+    "errors": "0",
+    "timestamp": "2026-11-15T18:59:34"
+  },
+  "hostUnitXmlSha256": "ac624355dd04c6efd0ecda8e68641be5f6db097f15f66465fe88ff1db630603a",
+  "testNames": [
+    "unicodeFormsNormalizeWithoutDestroyingAccentsOrInternalPunctuation",
+    "unicodeWhitespaceSeparatesWordsLikeOrdinarySpaces",
+    "excessiveQueriesAreRejectedInsteadOfLookingUpATruncatedWord",
+    "caseSensitiveSpellingSurvivesAndKeysIgnorePhoneLocale",
+    "inflectionsAreNotGuessedByDestructiveSuffixStripping",
+    "manyNounSensesCannotHideTheVerbBehindAnInflectedWord",
+    "quotesAndPagePunctuationDoNotPreventLookup",
+    "spellingSuggestionsAreBoundedDistinctAndNeverUnrelatedDefinitions",
+    "mixedPdfWhitespaceCollapsesWithoutChangingWordPunctuation",
+    "senseSelectionPreservesPrioritizedCaseAndBoundsResultsEvenWithDuplicateForms"
+  ],
+  "evidenceFiles": {
+    "previous-0.3.1-dictionary-device-failure.json": "6597d26880b8f33c853b1a495ddf0f7bec6677f67825872d68509f932fbaefee",
+    "dictionary-native-icu-regression.json": "7929d641ca9fde11bb93ad9a04827638f5291cca49e99666bd693cea22201f6b"
+  },
+  "androidFixVerification": "Pending new capture instrumentation; host checks do not establish device success."
+}

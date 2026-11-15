@@ -1,0 +1,35 @@
+{
+  "contentLicense": "CC0-1.0",
+  "description": "Original demonstration documents authored for Read Assist; no user documents.",
+  "playSpeechDistribution": true,
+  "versionName": "0.3.1",
+  "versionCode": 27,
+  "androidFingerprint": "google\/sdk_gphone64_x86_64\/emu64xa:15\/AE3A.240806.043\/12960925:userdebug\/dev-keys",
+  "abi": "x86_64, arm64-v8a",
+  "setupStartedAt": 1794768744023,
+  "documents": [
+    {
+      "title": "Field notes",
+      "pages": 1,
+      "sha256": "30541282c1d1689f180d1db428cdd66c64099c2e940cdb1f8093bc3fafbdedb7",
+      "documentId": "7c369a8b17136768b21da9d6b44640ca"
+    },
+    {
+      "title": "Everyday curiosity",
+      "pages": 1,
+      "sha256": "4f601625217436915c4e46857fc3bbac6b164fbe7c7cc59c64f955cfd5da51e4",
+      "documentId": "3af6cefa6019c172abe5c44280f24704"
+    },
+    {
+      "title": "A quiet space for thought",
+      "pages": 3,
+      "sha256": "377fd98713d86e5ceb04d5cdcd0c8fe8e17e40199a0e12ffb334e0b9564a1da0",
+      "documentId": "711b1789e7a0d6ba08fc3f30f86144b1"
+    }
+  ],
+  "kokoroInstalledAndVerified": true,
+  "alignmentInstalledAndVerified": true,
+  "status": "failed",
+  "error": "IllegalStateException: Dictionary lookup failed",
+  "setupFinishedAt": 1794768952337
+}
