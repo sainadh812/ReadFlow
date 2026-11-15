@@ -109,10 +109,16 @@ class FFmpeg:
             raise MediaError(f"Decode reported errors for {path.name}: {result.stderr[-1800:]}")
 
     def video_stream_hash(self, path: Path) -> str:
-        result = self.call(["-v", "error", "-i", str(path), "-map", "0:v:0", "-c", "copy", "-f", "hash", "-hash", "sha256", "-"])
+        return self.encoded_stream_hash(path, "v")
+
+    def audio_stream_hash(self, path: Path) -> str:
+        return self.encoded_stream_hash(path, "a")
+
+    def encoded_stream_hash(self, path: Path, kind: str) -> str:
+        result = self.call(["-v", "error", "-i", str(path), "-map", f"0:{kind}:0", "-c", "copy", "-f", "hash", "-hash", "sha256", "-"])
         match = re.search(r"SHA256=([a-f0-9]{64})", result.stdout)
         if not match:
-            raise MediaError(f"Could not hash encoded video stream: {path.name}")
+            raise MediaError(f"Could not hash encoded {kind} stream: {path.name}")
         return match[1]
 
     def audio_stats(self, path: Path) -> dict:
@@ -250,6 +256,10 @@ def choose_segments(recipe: dict, clips: dict[str, dict], probes: dict[str, dict
 
 
 def audio_input(directory: Path, clip: dict, adjustment: float) -> tuple[Path | None, float]:
+    if clip.get("embeddedDeviceAudio") is True:
+        if clip.get("hostAudioFile") or adjustment != 0:
+            raise MediaError("Device-synchronized audio cannot use a replacement WAV or a manual offset.")
+        return input_file(directory, clip["file"]), 0.0
     name = clip.get("hostAudioFile")
     if not name:
         return None, 0.0
@@ -316,24 +326,36 @@ def foreground_service(ff: FFmpeg, directory: Path, output: Path, capture: dict,
     adjustment = number(settings.get("audioOffsetAdjustmentSeconds", 0), "FGS audio offset adjustment", -30)
     audio, lead = audio_input(directory, clip, adjustment)
     if audio is None:
-        return dict(result, unavailable="Actual host audio capture is missing; no substitute audio was added.")
+        return dict(result, unavailable="Actual live audio capture is missing; no substitute audio was added.")
     source = input_file(directory, FGS_FILE)
+    embedded = clip.get("embeddedDeviceAudio") is True
     duration = probes[FGS_FILE]["durationSeconds"]
     audio_probe = ff.probe(audio)
+    if not audio_probe["hasAudio"]:
+        raise MediaError("The declared audio source contains no audio stream.")
     if audio_probe["durationSeconds"] - max(lead, 0) + max(-lead, 0) < duration - .5:
         raise MediaError("Captured FGS audio ends more than half a second before the video; investigate synchronization.")
     destination = output / "Read-Assist-0.3.2-foreground-service.mp4"
-    af = f"atrim=start={max(0, lead)},asetpts=PTS-STARTPTS"
-    if lead < 0:
-        af += f",adelay={round(-lead * 1000)}:all=1"
-    af += f",apad,atrim=duration={duration}"
-    ff.call(["-y", "-v", "error", "-i", str(source), "-i", str(audio), "-map", "0:v:0", "-map", "1:a:0",
-             "-c:v", "copy", "-af", af, "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
-             "-t", str(duration), "-movflags", "+faststart", str(destination)])
+    if embedded:
+        # Preserve the recorder's original device timestamps, encoded streams,
+        # and container bytes for uncut foreground-service evidence.
+        shutil.copyfile(source, destination)
+    else:
+        af = f"atrim=start={max(0, lead)},asetpts=PTS-STARTPTS"
+        if lead < 0:
+            af += f",adelay={round(-lead * 1000)}:all=1"
+        af += f",apad,atrim=duration={duration}"
+        ff.call(["-y", "-v", "error", "-i", str(source), "-i", str(audio), "-map", "0:v:0", "-map", "1:a:0",
+                 "-c:v", "copy", "-af", af, "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
+                 "-t", str(duration), "-movflags", "+faststart", str(destination)])
     ff.decode_check(destination)
     raw_hash, output_hash = ff.video_stream_hash(source), ff.video_stream_hash(destination)
     if raw_hash != output_hash:
         raise MediaError("FGS output video stream differs from the original capture; evidence was not preserved.")
+    source_audio_hash = ff.audio_stream_hash(audio)
+    output_audio_hash = ff.audio_stream_hash(destination)
+    if embedded and (digest(source) != digest(destination) or source_audio_hash != output_audio_hash):
+        raise MediaError("FGS output differs from the original device-synchronized capture.")
     stats = ff.audio_stats(destination)
     playing = session_state(directory, "background-media-session.txt", 3)
     paused = session_state(directory, "playback-session-paused.txt", 2)
@@ -346,10 +368,16 @@ def foreground_service(ff: FFmpeg, directory: Path, output: Path, capture: dict,
                    "sourceVideo": FGS_FILE, "sourceVideoSha256": digest(source),
                    "sourceCapture": clip.get("sourceCapture"),
                    "sourceAudio": audio.relative_to(directory).as_posix(), "sourceAudioSha256": digest(audio),
-                   "recordedHostAudioLeadSecondsApprox": clip["hostAudioLeadSecondsApprox"],
+                   "embeddedDeviceAudio": embedded, "rawContainerUnchanged": embedded,
+                   "encodedAudioStreamSha256": output_audio_hash, "sourceAudioStreamSha256": source_audio_hash,
+                   "audioCaptureMethod": clip.get("audioCaptureMethod", "Separate host monitor recording"),
+                   "recorder": clip.get("recorder"), "recordedAudioSynchronization": clip.get("audioSynchronization"),
+                   "recorderArchiveSha256": clip.get("recorderArchiveSha256"),
+                   "deviceSpeakerOutputRedirectedDuringRecording": clip.get("deviceSpeakerOutputRedirectedDuringRecording") is True,
+                   "recordedHostAudioLeadSecondsApprox": clip.get("hostAudioLeadSecondsApprox"),
                    "operatorOffsetAdjustmentSeconds": adjustment, "appliedAudioLeadSeconds": lead,
-                   "audioAlignmentRule": "Output t=0 uses source WAV t=appliedAudioLeadSeconds; negative lead adds initial silence.",
-                   "audioTailPaddingLimitSeconds": .5, "audioStatistics": stats,
+                   "audioAlignmentRule": "Original device timestamps and container preserved unchanged." if embedded else "Output t=0 uses source WAV t=appliedAudioLeadSeconds; negative lead adds initial silence.",
+                   "audioTailPaddingLimitSeconds": 0 if embedded else .5, "audioStatistics": stats,
                    "capturePlaybackEvidenceFlag": evidence_flag, "backgroundPlaying": playing, "notificationPaused": paused,
                    "usesPreviouslyPreparedAudio": capture.get("playbackClipUsesPreviouslyPreparedAudio") is True,
                    "preparationBeforeRecording": capture.get("playbackPreparation"),
@@ -383,6 +411,8 @@ def build(directory: Path, output: Path, recipe_path: Path | None) -> dict:
         probes = {name: ff.probe(input_file(directory, name)) for name in clips}
         if any(not item["hasVideo"] or not item["width"] or not item["height"] for item in probes.values()):
             raise MediaError("Every capture clip must contain a decodable video stream.")
+        if any(clip.get("embeddedDeviceAudio") is True and not probes[name]["hasAudio"] for name, clip in clips.items()):
+            raise MediaError("A device-audio capture is missing its declared embedded audio stream.")
         segments = choose_segments(recipe, clips, probes)
         work = output / "render-parts"
         work.mkdir(exist_ok=True)
@@ -400,6 +430,11 @@ def build(directory: Path, output: Path, recipe_path: Path | None) -> dict:
                                        "sourceCapture": clip.get("sourceCapture"),
                                        "sourceAudio": audio.relative_to(directory).as_posix() if audio else None,
                                        "sourceAudioSha256": digest(audio) if audio else None,
+                                       "embeddedDeviceAudio": clip.get("embeddedDeviceAudio") is True,
+                                       "audioCaptureMethod": clip.get("audioCaptureMethod"), "recorder": clip.get("recorder"),
+                                       "recorderArchiveSha256": clip.get("recorderArchiveSha256"),
+                                       "deviceSpeakerOutputRedirectedDuringRecording": clip.get("deviceSpeakerOutputRedirectedDuringRecording") is True,
+                                       "recordedAudioSynchronization": clip.get("audioSynchronization"),
                                        "appliedAudioLeadSeconds": lead, "output": part.relative_to(output).as_posix()})
         concat = work / "concat.txt"
         concat.write_text("".join(f"file 'scene-{index:02d}.mp4'\n" for index in range(len(segments))))

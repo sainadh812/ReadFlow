@@ -6,7 +6,7 @@ These credits accompany Read Assist screenshots, the product demonstration and t
 
 The app footage is captured from the actual Read Assist Android interface on an isolated emulator. Its emulator ABI/signing and capture source are recorded in the provenance report; this is not represented as a physical-device or Play-delivered ARM64 recording. Product-video titles and backgrounds surround the complete app frame. Retained footage plays at its original speed; editorial cuts omit time between scenes. Models and sample audio may already be prepared. No loading-time or benchmark claim is made.
 
-The foreground-service clip keeps the complete original video stream. When real host audio was captured, the build records its measured start offset and any explicitly reviewed synchronization adjustment. No replacement soundtrack, simulated narration, stock music, synthetic controls or artificial word highlights are added. A signal-level audio check is distinct from playback and synchronization review.
+The foreground-service clip keeps the complete original video stream. When synchronized Android audio and video are captured together with scrcpy, the foreground-service file preserves the original MP4 bytes, both encoded streams and their device timestamps. The report identifies the recorder, version and live audio source. Earlier recordings may use a separate real host audio capture; for those, the build records the approximate host start offset and any explicitly reviewed synchronization adjustment. No replacement soundtrack, simulated narration, stock music, synthetic controls or artificial word highlights are added. A signal-level audio check is distinct from playback and synchronization review.
 
 ## Original documents and graphics
 
