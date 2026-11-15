@@ -50,11 +50,24 @@ fi
 pulseaudio --start --exit-idle-time=-1
 pactl load-module module-null-sink sink_name=readassist_demo sink_properties=device.description=ReadAssistDemo
 pactl set-default-sink readassist_demo
+pactl --format=json info > "$demo_dir/pulse-server.json"
+pactl list short sinks > "$demo_dir/pulse-sinks-before.txt"
+export PULSE_SERVER
+PULSE_SERVER="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["server_string"])' "$demo_dir/pulse-server.json")"
 export PULSE_SINK=readassist_demo
 export QEMU_AUDIO_DRV=pa
+export QEMU_PA_SERVER="$PULSE_SERVER"
+export QEMU_PA_SINK=readassist_demo
+export QT_QPA_PLATFORM=xcb
+command -v xvfb-run > "$demo_dir/xvfb-run-path.txt"
+# -no-window selects Android's headless emulator binary, whose PulseAudio
+# functions are stubs. A real X display keeps the normal audio backend active.
+printf '%s\n' 'Normal emulator under Xvfb; PulseAudio output to readassist_demo.' \
+  > "$demo_dir/emulator-audio-backend.txt"
 adb start-server
 demo_phase 'launch-emulator'
-emulator -avd readassist_store_demo -no-window -no-snapshot -no-boot-anim \
+xvfb-run -a -e "$demo_dir/xvfb.log" -s '-screen 0 1280x1024x24' \
+  emulator -avd readassist_store_demo -no-snapshot -no-boot-anim \
   -gpu swiftshader_indirect -accel on -cores 2 -memory 4096 \
   -camera-back none -camera-front none > "$demo_dir/emulator.log" 2>&1 &
 emulator_pid=$!
@@ -65,6 +78,8 @@ cleanup_demo() {
   printf '%s\n' "$(date -u +%FT%TZ)" > "$demo_dir/wrapper-finished-at.txt"
   kill -0 "$emulator_pid" 2>/dev/null
   printf '%s\n' "$?" > "$demo_dir/emulator-alive-check-exit-code.txt"
+  timeout 10 pactl list short sink-inputs > "$demo_dir/pulse-inputs-at-exit.txt" 2>&1
+  timeout 10 pactl list short sinks > "$demo_dir/pulse-sinks-at-exit.txt" 2>&1
   if [[ "$demo_exit" != 0 ]]; then
     timeout 15 adb devices -l > "$demo_dir/failure-adb-devices.txt" 2>&1
     timeout 15 adb -s emulator-5554 logcat -d > "$demo_dir/failure-logcat.txt" 2>&1

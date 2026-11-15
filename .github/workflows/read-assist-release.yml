@@ -311,7 +311,7 @@ jobs:
             sdkmanager "platforms;android-36" "build-tools;35.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
           fi
           sudo apt-get update -qq
-          sudo apt-get install -y ffmpeg pulseaudio
+          sudo apt-get install -y ffmpeg pulseaudio xvfb xauth libxkbcommon-x11-0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0
           sudo chmod a+rw /dev/kvm
       - name: Build the release runtime for emulator capture only
         if: inputs.reuse_capture_build != true
