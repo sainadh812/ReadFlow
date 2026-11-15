@@ -42,6 +42,12 @@ if (firebaseConfigured) {
     logger.lifecycle("Firebase is unconfigured: automatic crash reporting is unavailable; local and email diagnostics still work.")
 }
 val playPublication = providers.gradleProperty("playPublication").orNull == "true"
+// Capture the release UI/runtime on x86_64 without using the production upload key.
+// This locally signed emulator artifact must never be distributed as a Play build.
+val storeDemo = providers.gradleProperty("storeDemo").orNull == "true"
+require(!storeDemo || (!playPublication && providers.gradleProperty("emulator").orNull == "true")) {
+    "storeDemo is only for emulator captures and cannot be combined with playPublication."
+}
 val misakiAbi = if (providers.gradleProperty("emulator").orNull == "true") "x86_64" else "arm64-v8a"
 val prepareMisaki by tasks.registering(Exec::class) {
     workingDir(rootProject.projectDir)
@@ -95,6 +101,10 @@ val prepareReleaseNotices by tasks.registering {
 tasks.matching { it.name == "preReleaseBuild" }.configureEach { dependsOn(prepareReleaseNotices) }
 android {
     namespace = "app.readflow"
+    if (storeDemo) {
+        testBuildType = "release"
+        sourceSets["androidTest"].java.setSrcDirs(listOf("src/storeDemoAndroidTest/java"))
+    }
     compileSdk = 36
     buildToolsVersion = "35.0.0"
     ndkVersion = "27.2.12479018"
@@ -131,7 +141,7 @@ android {
             isDebuggable = false
             // Keep the validated JNI names and reflection paths intact for the first store candidate.
             isMinifyEnabled = false
-            signingConfig = signingConfigs.findByName("upload")
+            signingConfig = if (storeDemo) signingConfigs.getByName("debug") else signingConfigs.findByName("upload")
             if (firebaseConfigured) configure<CrashlyticsExtension> {
                 // Ordinary review builds do not upload mapping files. Native symbols
                 // require an explicit :app:uploadCrashlyticsSymbolFileRelease command.
