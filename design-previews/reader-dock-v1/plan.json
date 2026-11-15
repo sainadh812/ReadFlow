@@ -1,7 +1,7 @@
 {
   "title": "Restore Text/PDF switching and balance the reader bottom panel",
   "date": "2026-11-15",
-  "status": "Approved and implemented; release validation in progress.",
+  "status": "Approved, implemented and released in Read Assist 0.3.1. Build, signed-artifact and public-download verification passed; physical-device validation remains pending.",
   "baseline": {
     "version": "0.3.0",
     "sourceCommit": "f40664444ccc8ec4e691188dd3e0eaa94b77ebd5"
@@ -83,7 +83,8 @@
       "change": "Connect the dock segmented selector to existing reader view state and retain current-page viewport state across switches.",
       "files": [
         "app/src/main/java/app/readflow/ui/ReadFlowUi.kt",
-        "app/src/main/java/app/readflow/ui/OriginalPage.kt"
+        "app/src/main/java/app/readflow/ui/OriginalPage.kt",
+        "app/src/main/java/app/readflow/ui/ReaderViewportState.kt (new)"
       ]
     },
     {
@@ -134,6 +135,51 @@
     "versionName": "0.3.1",
     "versionCode": 27,
     "performed": true,
-    "releaseValidation": "in progress"
+    "releaseValidation": "Local and CI checks, signed artifacts and public APK download verified; physical-device validation pending",
+    "sourceCommit": "94006546634355658abfba7ce1a7a442d8825828"
+  },
+  "release": {
+    "status": "published and verified",
+    "sourceCommit": "94006546634355658abfba7ce1a7a442d8825828",
+    "githubRunId": 43736870521,
+    "githubRunUrl": "https://github.com/sainadh812/ReadFlow/actions/runs/43736870521",
+    "validation": {
+      "localUnitTests": {
+        "passed": 460,
+        "skipped": 0,
+        "failed": 0
+      },
+      "ciUnitTests": {
+        "total": 460,
+        "passed": 457,
+        "skipped": 3,
+        "failed": 0,
+        "errors": 0,
+        "skipReason": "Model fixtures unavailable in CI"
+      },
+      "signedArtifacts": "APK and AAB signatures verified against the approved upload certificate, matching the 0.3.0 release",
+      "publicApkDownload": {
+        "status": "verified",
+        "httpStatus": 200,
+        "bytes": 131451123,
+        "sha256": "f8afeffa6a90fcd546ecf74b81a437c9647a76697a8b6eae83cd05c6566f9485",
+        "matchesSignedArtifact": true
+      },
+      "physicalDeviceValidation": "Not performed; phone layout, TalkBack, install/upgrade and runtime playback remain unverified",
+      "evidenceDirectory": "../../docs/evidence/reader-0.3.1",
+      "lint": {
+        "errors": 0,
+        "existingWarnings": 38
+      },
+      "artifactChecksumsVerified": 83,
+      "artifactIdentity": "Source commit, app.readflow package, version 0.3.1 and version code 27 verified",
+      "apk16KbAlignment": "passed",
+      "retainedAssets": "Dictionary, fonts and license assets unchanged"
+    },
+    "tag": "v0.3.1-play-candidate",
+    "url": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.1-play-candidate",
+    "apkUrl": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.1-play-candidate/Read-Assist-0.3.1-upload-signed.apk",
+    "apkBytes": 131451123,
+    "apkSha256": "f8afeffa6a90fcd546ecf74b81a437c9647a76697a8b6eae83cd05c6566f9485"
   }
 }

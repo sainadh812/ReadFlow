@@ -1,0 +1,49 @@
+{
+  "verifiedAt": "2026-11-15T16:51:04.854478+00:00",
+  "repository": "sainadh812/ReadFlow",
+  "releaseId": 446209135,
+  "tag": "v0.3.1-play-candidate",
+  "releaseUrl": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.1-play-candidate",
+  "sourceCommit": "94006546634355658abfba7ce1a7a442d8825828",
+  "publishedAt": "2026-11-15T16:50:52Z",
+  "prerelease": true,
+  "workflowRunUrl": "https://github.com/sainadh812/ReadFlow/actions/runs/43736870521",
+  "assets": [
+    {
+      "name": "Read-Assist-0.3.1-upload-signed.aab",
+      "size": 72436099,
+      "state": "uploaded",
+      "browser_download_url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.1-play-candidate/Read-Assist-0.3.1-upload-signed.aab",
+      "digest": "sha256:a247863362aec730e6c50ebe85a403de8cb572821276077d38a3c0b2f8e7e1f6"
+    },
+    {
+      "name": "Read-Assist-0.3.1-upload-signed.apk",
+      "size": 131451123,
+      "state": "uploaded",
+      "browser_download_url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.1-play-candidate/Read-Assist-0.3.1-upload-signed.apk",
+      "digest": "sha256:f8afeffa6a90fcd546ecf74b81a437c9647a76697a8b6eae83cd05c6566f9485"
+    },
+    {
+      "name": "release-evidence.json",
+      "size": 827,
+      "state": "uploaded",
+      "browser_download_url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.1-play-candidate/release-evidence.json",
+      "digest": "sha256:978a756fd6ff57a2de3091ff0c3a1702de9f3d73a127a5f3de33660ed1354092"
+    },
+    {
+      "name": "RELEASE_SHA256SUMS.txt",
+      "size": 292,
+      "state": "uploaded",
+      "browser_download_url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.1-play-candidate/RELEASE_SHA256SUMS.txt",
+      "digest": "sha256:ee94dafaae06a76261e939c00c1e63293840bfb651e0c69940fe641ce2e802f2"
+    }
+  ],
+  "publicApkDownload": {
+    "authenticated": false,
+    "status": 200,
+    "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.1-play-candidate/Read-Assist-0.3.1-upload-signed.apk",
+    "bytes": 131451123,
+    "sha256": "f8afeffa6a90fcd546ecf74b81a437c9647a76697a8b6eae83cd05c6566f9485",
+    "matchesVerifiedSignedArtifact": true
+  }
+}

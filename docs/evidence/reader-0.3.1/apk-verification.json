@@ -1,0 +1,438 @@
+{
+  "audit": "Independent signed Read Assist 0.3.1 APK verification and asset retention",
+  "auditedAtUtc": "2026-11-15T16:50:18.948706+00:00",
+  "scope": "Downloaded upload-key-signed 0.3.1 CI APK compared with signed 0.3.0. AAB and public download checks are separate root audits.",
+  "ci": {
+    "runId": 43736870521,
+    "runUrl": "https://github.com/sainadh812/ReadFlow/actions/runs/43736870521",
+    "expectedSourceCommit": "94006546634355658abfba7ce1a7a442d8825828",
+    "recordedSourceCommit": "94006546634355658abfba7ce1a7a442d8825828",
+    "evidencePath": "build/release-0.3.1/signed-ci/release-evidence.json",
+    "evidenceSha256": "978a756fd6ff57a2de3091ff0c3a1702de9f3d73a127a5f3de33660ed1354092"
+  },
+  "tools": {
+    "aapt2": "Android SDK build-tools 35.0.0 dump badging",
+    "apksigner": "Android SDK build-tools 35.0.0 verify --verbose --print-certs",
+    "zipalign": "Android SDK build-tools 35.0.0 -c -P 16 4",
+    "assetComparison": "SHA-256 of every uncompressed ZIP entry; aggregate hashes use sorted compact JSON maps of path to size/SHA-256."
+  },
+  "current": {
+    "path": "build/release-0.3.1/signed-ci/Read-Assist-0.3.1-upload-signed.apk",
+    "bytes": 131451123,
+    "sha256": "f8afeffa6a90fcd546ecf74b81a437c9647a76697a8b6eae83cd05c6566f9485",
+    "metadata": {
+      "package": "app.readflow",
+      "versionName": "0.3.1",
+      "versionCode": 27,
+      "minSdkVersion": 35,
+      "targetSdkVersion": 36,
+      "nativeCode": [
+        "arm64-v8a"
+      ],
+      "permissions": [
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.INTERNET",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.WAKE_LOCK",
+        "app.readflow.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      ],
+      "applicationLabel": "Read Assist"
+    },
+    "signature": {
+      "verified": true,
+      "exitCode": 0,
+      "signerCount": 1,
+      "certificateSha256": [
+        "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2"
+      ],
+      "v2Verified": true,
+      "output": "Verifies\nVerified using v1 scheme (JAR signing): false\nVerified using v2 scheme (APK Signature Scheme v2): true\nVerified using v3 scheme (APK Signature Scheme v3): false\nVerified using v3.1 scheme (APK Signature Scheme v3.1): false\nVerified using v4 scheme (APK Signature Scheme v4): false\nVerified for SourceStamp: false\nNumber of signers: 1\nSigner #1 certificate DN: CN=Read Assist upload, O=Oh My Pi\nSigner #1 certificate SHA-256 digest: b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2\nSigner #1 certificate SHA-1 digest: ad63ac810d5b682eecbfbea3a930b6e7e5ba96d1\nSigner #1 certificate MD5 digest: 98768ce58258e454f7a943242a4a93c8\nSigner #1 key algorithm: RSA\nSigner #1 key size (bits): 3072\nSigner #1 public key SHA-256 digest: cba8619c336bf733f7168c58f98e78b882396dd0d41edb1ebd940ac638b1def1\nSigner #1 public key SHA-1 digest: f20f69a7b57a670ca51a2947983986fb75da310f\nSigner #1 public key MD5 digest: 62ea44f4eb976b3aa2de4bf9f4cc8106",
+      "error": ""
+    }
+  },
+  "previous": {
+    "path": "build/release-0.3.0/signed-ci/Read-Assist-0.3.0-upload-signed.apk",
+    "bytes": 131434739,
+    "sha256": "fa6ce8fbb3ff2b97ac750446cbbada7a94d8cee500f90ad02c0b4355410432af",
+    "metadata": {
+      "package": "app.readflow",
+      "versionName": "0.3.0",
+      "versionCode": 26,
+      "minSdkVersion": 35,
+      "targetSdkVersion": 36,
+      "nativeCode": [
+        "arm64-v8a"
+      ],
+      "permissions": [
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.INTERNET",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.WAKE_LOCK",
+        "app.readflow.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      ],
+      "applicationLabel": "Read Assist"
+    },
+    "signature": {
+      "verified": true,
+      "exitCode": 0,
+      "signerCount": 1,
+      "certificateSha256": [
+        "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2"
+      ],
+      "v2Verified": true,
+      "output": "Verifies\nVerified using v1 scheme (JAR signing): false\nVerified using v2 scheme (APK Signature Scheme v2): true\nVerified using v3 scheme (APK Signature Scheme v3): false\nVerified using v3.1 scheme (APK Signature Scheme v3.1): false\nVerified using v4 scheme (APK Signature Scheme v4): false\nVerified for SourceStamp: false\nNumber of signers: 1\nSigner #1 certificate DN: CN=Read Assist upload, O=Oh My Pi\nSigner #1 certificate SHA-256 digest: b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2\nSigner #1 certificate SHA-1 digest: ad63ac810d5b682eecbfbea3a930b6e7e5ba96d1\nSigner #1 certificate MD5 digest: 98768ce58258e454f7a943242a4a93c8\nSigner #1 key algorithm: RSA\nSigner #1 key size (bits): 3072\nSigner #1 public key SHA-256 digest: cba8619c336bf733f7168c58f98e78b882396dd0d41edb1ebd940ac638b1def1\nSigner #1 public key SHA-1 digest: f20f69a7b57a670ca51a2947983986fb75da310f\nSigner #1 public key MD5 digest: 62ea44f4eb976b3aa2de4bf9f4cc8106",
+      "error": ""
+    }
+  },
+  "alignment": {
+    "nativePageAlignmentBytes": 16384,
+    "ordinaryAlignmentBytes": 4,
+    "verified": true,
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "retention": {
+    "allAssets": {
+      "count": 320,
+      "unchanged": 318,
+      "changed": [
+        "assets/dexopt/baseline.prof",
+        "assets/dexopt/baseline.profm"
+      ],
+      "added": [],
+      "removed": [],
+      "aggregateCurrentSha256": "e9d67785388365870cebca087d35f17d0a99f5f12e6596659750ce3dc424b1ae",
+      "aggregatePreviousSha256": "97930b842dc53957de3acb9a9d57820b5a8aed18cedd158aaeff55be9dbf3f39"
+    },
+    "licenses": {
+      "count": 290,
+      "unchanged": 290,
+      "changed": [],
+      "added": [],
+      "removed": [],
+      "aggregateCurrentSha256": "bd2fde625d224f65acb976c7afcc74b43fd94e3e08ed3daadc6a4f7d119fd744",
+      "aggregatePreviousSha256": "bd2fde625d224f65acb976c7afcc74b43fd94e3e08ed3daadc6a4f7d119fd744"
+    },
+    "dictionary": {
+      "count": 4,
+      "unchanged": 4,
+      "changed": [],
+      "added": [],
+      "removed": [],
+      "aggregateCurrentSha256": "8362caa52ace4d8d95539caf18a4737c5f10a3389f68b571756f7e9ab4534d8c",
+      "aggregatePreviousSha256": "8362caa52ace4d8d95539caf18a4737c5f10a3389f68b571756f7e9ab4534d8c",
+      "manifest": {
+        "id": "english-dictionary",
+        "version": "2026.10-v1",
+        "name": "English dictionary",
+        "url": "https://github.com/sainadh812/ReadFlow/releases/download/english-dictionary-2026.10-v1/english-dictionary-2026.10-v1.sqlite.gz",
+        "downloadBytes": 96929395,
+        "downloadSha256": "ad8c3f0f26216ed1ea84228cc4135d0ab9fd49827f8687a19d501a2f412ac40e",
+        "installedBytes": 280727552,
+        "installedSha256": "2abc472051994a9b8109119291d89d51bd44a0ad94041c6768dfa30075785ad8",
+        "schemaVersion": 1,
+        "source": "English Wiktionary via Kaikki / Wiktextract, 2026-10-01 dump",
+        "credits": "English Wiktionary contributors; extracted by Kaikki / Wiktextract (Tatu Ylonen and contributors). Read Assist filtered English text, selected definitions and authored examples, normalized lookup keys, resolved word forms, and converted the data to SQLite. Adapted dictionary data: CC BY-SA 4.0. Each definition links to its Wiktionary source and contributor history.",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+      },
+      "files": [
+        {
+          "path": "assets/dictionary/manifest.json",
+          "bytes": 1017,
+          "sha256": "b8f8ddacd505402194d25f0d9a55f136655e2fa3bad66a50f3f2a99fafeaee2b"
+        },
+        {
+          "path": "assets/licenses/dictionary/ATTRIBUTION.txt",
+          "bytes": 2387,
+          "sha256": "b53907baf6c8e26928235ac9b573bce956b0aa0b4379572e73505c7b77694435"
+        },
+        {
+          "path": "assets/licenses/dictionary/CC-BY-SA-4.0.txt",
+          "bytes": 20137,
+          "sha256": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2"
+        },
+        {
+          "path": "assets/licenses/dictionary/source-lock.json",
+          "bytes": 486,
+          "sha256": "ccd96d4714f953e333f0c9f1c653ab0d8dfc09178a605a1e75b0f25dcb5d6c35"
+        }
+      ]
+    },
+    "fonts": {
+      "count": 7,
+      "unchanged": 7,
+      "changed": [],
+      "added": [],
+      "removed": [],
+      "aggregateCurrentSha256": "c684a458e152f4d07be366d5b1dc809887bc6dce8f821a34edf0a4e50d50ca2b",
+      "aggregatePreviousSha256": "c684a458e152f4d07be366d5b1dc809887bc6dce8f821a34edf0a4e50d50ca2b",
+      "files": [
+        {
+          "path": "res/QM.ttf",
+          "bytes": 175756,
+          "sha256": "3add53e641fbc81da64da4bb254285e2831b52b029527bc0714e2b9610832ee6"
+        },
+        {
+          "path": "res/Sg.ttf",
+          "bytes": 1209508,
+          "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b"
+        },
+        {
+          "path": "res/TR.ttf",
+          "bytes": 955132,
+          "sha256": "b41138c9373112f32abb589cc22e8674b06ed4048b0c513be922bdd26f274440"
+        },
+        {
+          "path": "res/YW.ttf",
+          "bytes": 2049096,
+          "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d"
+        },
+        {
+          "path": "res/j3.otf",
+          "bytes": 184004,
+          "sha256": "ee7a8b9590a78e183826d16d6a22a50f6253c62e2f7f5e0e01ef44eb0676a9e0"
+        },
+        {
+          "path": "res/le.ttf",
+          "bytes": 114552,
+          "sha256": "5a455d1cfa099b601ab70751bb9673e8fe1854dc4500c80e1a220d0d75e31745"
+        },
+        {
+          "path": "res/uV.otf",
+          "bytes": 175808,
+          "sha256": "215f0b29780dbafa8c02f2f22118fb9e2ab6b27b6686e3f13c8754041a035f64"
+        }
+      ]
+    },
+    "nativeLibraries": [
+      {
+        "path": "lib/arm64-v8a/libandroidx.graphics.path.so",
+        "current": {
+          "bytes": 10096,
+          "sha256": "41e9a793c43a0f4fddb19e33f346bace464f30f888ba7b9eaf96294ea115bfb6"
+        },
+        "previous": {
+          "bytes": 10096,
+          "sha256": "41e9a793c43a0f4fddb19e33f346bace464f30f888ba7b9eaf96294ea115bfb6"
+        },
+        "unchanged": true,
+        "elfMagicValid": true,
+        "elfClass": 2,
+        "elfMachine": 183
+      },
+      {
+        "path": "lib/arm64-v8a/libcrashlytics-common.so",
+        "current": {
+          "bytes": 864920,
+          "sha256": "fb4a3190e4669455b66e40af74a6a246e957969a9a9c1db1e209da024314a912"
+        },
+        "previous": {
+          "bytes": 864920,
+          "sha256": "fb4a3190e4669455b66e40af74a6a246e957969a9a9c1db1e209da024314a912"
+        },
+        "unchanged": true,
+        "elfMagicValid": true,
+        "elfClass": 2,
+        "elfMachine": 183
+      },
+      {
+        "path": "lib/arm64-v8a/libcrashlytics-handler.so",
+        "current": {
+          "bytes": 222248,
+          "sha256": "f8d77113b80d7017b05e8f12e594f64be3e593fa5c39d13f956f61cdac362e53"
+        },
+        "previous": {
+          "bytes": 222248,
+          "sha256": "f8d77113b80d7017b05e8f12e594f64be3e593fa5c39d13f956f61cdac362e53"
+        },
+        "unchanged": true,
+        "elfMagicValid": true,
+        "elfClass": 2,
+        "elfMachine": 183
+      },
+      {
+        "path": "lib/arm64-v8a/libcrashlytics-trampoline.so",
+        "current": {
+          "bytes": 4928,
+          "sha256": "cda75d75e16763de7eeda2240cef0f0465a81437c9d14c456b6907f22091f8b2"
+        },
+        "previous": {
+          "bytes": 4928,
+          "sha256": "cda75d75e16763de7eeda2240cef0f0465a81437c9d14c456b6907f22091f8b2"
+        },
+        "unchanged": true,
+        "elfMagicValid": true,
+        "elfClass": 2,
+        "elfMachine": 183
+      },
+      {
+        "path": "lib/arm64-v8a/libcrashlytics.so",
+        "current": {
+          "bytes": 232152,
+          "sha256": "e081f8e49f3093e41767f51d7d82ef8ce05d101b83dc658de27d270ad611a0b0"
+        },
+        "previous": {
+          "bytes": 232152,
+          "sha256": "e081f8e49f3093e41767f51d7d82ef8ce05d101b83dc658de27d270ad611a0b0"
+        },
+        "unchanged": true,
+        "elfMagicValid": true,
+        "elfClass": 2,
+        "elfMachine": 183
+      },
+      {
+        "path": "lib/arm64-v8a/libdatastore_shared_counter.so",
+        "current": {
+          "bytes": 7112,
+          "sha256": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1"
+        },
+        "previous": {
+          "bytes": 7112,
+          "sha256": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1"
+        },
+        "unchanged": true,
+        "elfMagicValid": true,
+        "elfClass": 2,
+        "elfMachine": 183
+      },
+      {
+        "path": "lib/arm64-v8a/libmlkit_google_ocr_pipeline.so",
+        "current": {
+          "bytes": 11064544,
+          "sha256": "fa41d509a661e8aa8b3e3ac1a28541f8823f308414fcad733fe26d61feea2646"
+        },
+        "previous": {
+          "bytes": 11064544,
+          "sha256": "fa41d509a661e8aa8b3e3ac1a28541f8823f308414fcad733fe26d61feea2646"
+        },
+        "unchanged": true,
+        "elfMagicValid": true,
+        "elfClass": 2,
+        "elfMachine": 183
+      },
+      {
+        "path": "lib/arm64-v8a/libonnxruntime.so",
+        "current": {
+          "bytes": 18214224,
+          "sha256": "3fc3e79539f06f67360a810e60eb5c513db5febc16f7bc71e5d9e8ce39e3d775"
+        },
+        "previous": {
+          "bytes": 18214224,
+          "sha256": "3fc3e79539f06f67360a810e60eb5c513db5febc16f7bc71e5d9e8ce39e3d775"
+        },
+        "unchanged": true,
+        "elfMagicValid": true,
+        "elfClass": 2,
+        "elfMachine": 183
+      },
+      {
+        "path": "lib/arm64-v8a/libonnxruntime4j_jni.so",
+        "current": {
+          "bytes": 75720,
+          "sha256": "adcaf5e11ff65ad7b54725b2869118568b14ce2f3596d1b6f082ed0c774f2539"
+        },
+        "previous": {
+          "bytes": 75720,
+          "sha256": "adcaf5e11ff65ad7b54725b2869118568b14ce2f3596d1b6f082ed0c774f2539"
+        },
+        "unchanged": true,
+        "elfMagicValid": true,
+        "elfClass": 2,
+        "elfMachine": 183
+      },
+      {
+        "path": "lib/arm64-v8a/libreadflow_misaki.so",
+        "current": {
+          "bytes": 29227048,
+          "sha256": "d39497fb73d139e39fee4384ee1601acc40ee4177c41b71326ed75d059c3f787"
+        },
+        "previous": {
+          "bytes": 29227048,
+          "sha256": "748acda1d6ad8ae3c669f6ffc34e36d93f1c4c610ab74036edfcd3f94cebf156"
+        },
+        "unchanged": false,
+        "elfMagicValid": true,
+        "elfClass": 2,
+        "elfMachine": 183
+      },
+      {
+        "path": "lib/arm64-v8a/libreadflow_teleocr.so",
+        "current": {
+          "bytes": 5607160,
+          "sha256": "17a73f10a3e26ecd4880d481dc821e51ad745793058ffe77d457473322d63953"
+        },
+        "previous": {
+          "bytes": 5607160,
+          "sha256": "17a73f10a3e26ecd4880d481dc821e51ad745793058ffe77d457473322d63953"
+        },
+        "unchanged": true,
+        "elfMagicValid": true,
+        "elfClass": 2,
+        "elfMachine": 183
+      }
+    ],
+    "dependencyManifest": {
+      "path": "assets/licenses/dependencies/resolved-runtime.json",
+      "byteForByteUnchanged": true,
+      "parsedJsonUnchanged": true,
+      "currentEntries": 144,
+      "previousEntries": 144,
+      "currentUniqueCoordinates": 141,
+      "previousUniqueCoordinates": 141,
+      "currentEmptyDeclaredLicenses": 7,
+      "previousEmptyDeclaredLicenses": 7,
+      "current": {
+        "bytes": 71994,
+        "sha256": "5e45bfde4363b2c59721c03aa6d602fd35da0f9f95f2a20cb5e57fd3c8cb2e25"
+      },
+      "previous": {
+        "bytes": 71994,
+        "sha256": "5e45bfde4363b2c59721c03aa6d602fd35da0f9f95f2a20cb5e57fd3c8cb2e25"
+      }
+    }
+  },
+  "archiveDelta": {
+    "currentEntryCount": 1092,
+    "previousEntryCount": 1092,
+    "addedEntries": [],
+    "removedEntries": [],
+    "changedEntries": [
+      "AndroidManifest.xml",
+      "META-INF/version-control-info.textproto",
+      "assets/dexopt/baseline.prof",
+      "assets/dexopt/baseline.profm",
+      "classes3.dex",
+      "classes4.dex",
+      "lib/arm64-v8a/libreadflow_misaki.so",
+      "resources.arsc"
+    ],
+    "apkBytesChange": 16384
+  },
+  "limitations": [
+    "No device installation, visual layout, TalkBack, or runtime playback test was performed by this audit.",
+    "The verified certificate is the approved upload certificate, distinct from a Play App Signing certificate.",
+    "Retained notice assets are a byte comparison, not a new legal license audit."
+  ],
+  "checks": {
+    "sourceEvidenceMatchesExpectedCommit": true,
+    "approvedSingleSigner": true,
+    "sameCertificateAsPrevious": true,
+    "previousReleaseIdentity": true,
+    "package": true,
+    "version": true,
+    "sdk": true,
+    "arm64Only": true,
+    "permissionsUnchanged": true,
+    "zipAlignment16KiB": true,
+    "dictionaryUnchanged": true,
+    "sevenFontsUnchanged": true,
+    "allLicenseAssetsUnchanged": true,
+    "resolvedDependencyManifestUnchanged": true
+  },
+  "result": "passed"
+}

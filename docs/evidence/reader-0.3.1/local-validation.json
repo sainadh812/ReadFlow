@@ -1,0 +1,22 @@
+{
+  "version": "0.3.1",
+  "versionCode": 27,
+  "verifiedAtUtc": "2026-11-15T16:41:31.169725+00:00",
+  "sourceCommit": "94006546634355658abfba7ce1a7a442d8825828",
+  "releaseAssembly": "passed",
+  "releaseUnitTests": {
+    "tests": 460,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "Fatal": 0,
+    "Error": 0,
+    "Warning": 38
+  },
+  "historyMigrationHostTests": 9,
+  "codeReview": "No blockers found in independent integration review.",
+  "deviceUiValidation": "Not performed: no connected Android device or hardware-accelerated emulator. Native layout, TalkBack, install/upgrade and gestures remain unverified on a phone.",
+  "distribution": "Local APK unsigned; distribution uses the separately verified GitHub signed artifact."
+}
