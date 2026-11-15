@@ -41,7 +41,7 @@ emulator -version > "$demo_dir/emulator-version.txt" 2>&1
 printf 'no\n' | avdmanager create avd --name readassist_store_demo --package 'system-images;android-35;google_apis;x86_64' --device pixel_2 --force --path "$ANDROID_AVD_HOME/readassist_store_demo.avd"
 emulator -list-avds > "$demo_dir/emulator-avds.txt" 2>&1
 avdmanager list avd > "$demo_dir/avdmanager-avds.txt" 2>&1
-if ! rg -q '^readassist_store_demo$' "$demo_dir/emulator-avds.txt"; then
+if ! grep -Fxq 'readassist_store_demo' "$demo_dir/emulator-avds.txt"; then
   demo_phase 'failed-avd-not-visible-to-emulator'
   cat "$demo_dir/emulator-avds.txt" "$demo_dir/avdmanager-avds.txt"
   exit 1
@@ -125,7 +125,7 @@ timeout --signal=INT --kill-after=15s 2250 adb shell am instrument -w -r \
   -e class app.readflow.StoreDemoSeedTest \
   -e demo true -e models true -e dictionary true \
   app.readflow.test/androidx.test.runner.AndroidJUnitRunner | tee "$demo_dir/seed-instrumentation.txt"
-if ! rg -q 'OK \([0-9]+ tests?\)' "$demo_dir/seed-instrumentation.txt"; then
+if ! grep -Eq 'OK \([0-9]+ tests?\)' "$demo_dir/seed-instrumentation.txt"; then
   timeout 15 adb logcat -d > "$demo_dir/seed-logcat.txt" || true
   exit 1
 fi

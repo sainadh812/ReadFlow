@@ -83,6 +83,15 @@ recordings are not physical-device or Play-installed ARM64 verification. Review
 the capture report, footage and real audio before generating or publishing media;
 a capture dispatch alone does not establish that usable media was produced.
 
+For capture-script retries, `reuse_capture_build=true` downloads only the two
+SHA-256-pinned emulator APKs from run `43745021098`, whose compilation passed.
+The app, release, seed and Gradle source objects must still match that build.
+The first run's emulator failed to find its AVD and produced no app media;
+the wrapper now uses an explicit shared AVD path and bounded startup waits.
+Reused APK build provenance and the current capture-script commit are recorded
+separately. If those artifacts expire or source guards differ, build normally
+with `reuse_capture_build=false`.
+
 Store and production commits use `ERROR_IF_IN_REVIEW`; ambiguous commit responses
 require reconciliation rather than automatic retries. Validation failures and
 Console requirements are retained as evidence. An empty production track or an
