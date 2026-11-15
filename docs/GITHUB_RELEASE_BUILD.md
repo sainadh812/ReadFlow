@@ -5,7 +5,7 @@ manual only. Its default `build` operation builds the approved
 `fix/reader-playback-and-pdf-space` branch. Separate `inspect_play` and
 `publish_play` operations use the Google Play Developer API for the existing
 `app.readflow` app. The authorized publishing target is **0.3.1/code 27 on Internal
-testing only**. API publication has not yet been verified in this document.
+testing only**. [Publication run 43743340573](https://github.com/sainadh812/ReadFlow/actions/runs/43743340573) confirmed code 27 published on 15 November 2026; see the [release evidence](evidence/reader-0.3.1/play-publication.json).
 
 ## Current setup
 
@@ -31,7 +31,7 @@ testing only**. API publication has not yet been verified in this document.
   JSON credential as the repository Actions secret
   `READFLOW_PLAY_SERVICE_ACCOUNT_JSON`. The API operations read that secret only
   in their execution step; it is not an artifact, repository file, or command-line
-  argument. Successful authentication and publication require separate API evidence.
+  argument. Successful authentication and Internal testing publication are recorded in the [current release handoff](PLAY_UPLOAD_0.3.1.md).
 
 ## Current Google Play API operations
 

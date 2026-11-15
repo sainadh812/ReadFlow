@@ -1,0 +1,66 @@
+{
+  "action": "inspect",
+  "package": "app.readflow",
+  "versionName": "0.3.1",
+  "versionCode": 27,
+  "track": "internal",
+  "aabSha256": "a247863362aec730e6c50ebe85a403de8cb572821276077d38a3c0b2f8e7e1f6",
+  "aabBytes": 72436099,
+  "status": "inspected",
+  "testersModified": false,
+  "startedAt": "2026-11-15T17:49:54.132494+00:00",
+  "inspectionEditId": "12495127443615776784",
+  "inspection": {
+    "tracks": [
+      {
+        "track": "production"
+      },
+      {
+        "track": "beta"
+      },
+      {
+        "track": "alpha"
+      },
+      {
+        "track": "internal",
+        "releases": [
+          {
+            "name": "Read Assist 0.2.6 \u2014 internal test",
+            "versionCodes": [
+              "22"
+            ],
+            "status": "completed"
+          }
+        ]
+      }
+    ],
+    "bundles": [
+      {
+        "versionCode": 22,
+        "sha1": "4fa7f856758bfda9ed47036bc93f8c6da4fe958c",
+        "sha256": "e222bcf1610e211093836918a7a30960c692bb43c6d4de12d23fe6b3a0579727"
+      }
+    ],
+    "lifecycles": {
+      "alpha": {},
+      "beta": {},
+      "internal": {
+        "releases": [
+          {
+            "releaseName": "Read Assist 0.2.6 \u2014 internal test",
+            "activeArtifacts": [
+              {
+                "versionCode": 22
+              }
+            ],
+            "releaseLifecycleState": "RELEASE_LIFECYCLE_STATE_PUBLISHED",
+            "track": "internal"
+          }
+        ]
+      },
+      "production": {}
+    }
+  },
+  "inspectionEditDeleted": true,
+  "finishedAt": "2026-11-15T17:49:56.293544+00:00"
+}

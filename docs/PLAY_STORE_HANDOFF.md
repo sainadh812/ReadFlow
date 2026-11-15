@@ -1,6 +1,6 @@
 # Read Assist publishing handoff for Muse Spark
 
-**Latest upload preparation — 15 November 2026:** use the verified **Read Assist 0.3.1 / versionCode 27** bundle in [the current Play upload handoff](PLAY_UPLOAD_0.3.1.md). The owner has requested an **Internal testing** release. Opening the existing Console app redirected to Google sign-in; publishing access is being resolved and no upload or rollout has been confirmed from this workspace. The older candidate and Console details below are historical context.
+**Latest release — 15 November 2026:** Read Assist **0.3.1 / versionCode 27** is published on **Internal testing**, confirmed by Google's release lifecycle after commit. See [the current release handoff](PLAY_UPLOAD_0.3.1.md) and [publication evidence](evidence/reader-0.3.1/play-publication.json). [Join the internal test](https://play.google.com/apps/testing/app.readflow) using an eligible tester account. Production and tester membership were unchanged. The older candidate and Console details below are historical context.
 
 **FREE DISTRIBUTION FIRST. Updated 2026-10-31.** All existing features remain free. Paid tiers, INR 10 / USD 0.99 prices, quotas and coupons are deferred. Optional **Buy me a coffee** support to `readassist@ybl` grants no benefit. Package `app.readflow` and repository `sainadh812/ReadFlow` remain unchanged; work from branch `fix/reader-playback-and-pdf-space`.
 

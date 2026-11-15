@@ -1,0 +1,26 @@
+{
+  "package": "app.readflow",
+  "versionName": "0.3.1",
+  "versionCode": 27,
+  "track": "internal",
+  "status": "published",
+  "confirmedAt": "2026-11-15T17:51:32.260375+00:00",
+  "lifecycle": "RELEASE_LIFECYCLE_STATE_PUBLISHED",
+  "publisherSource": "24d7d425ab8a2cfb7497298eb554c2b45f5bb3e7",
+  "appSource": "94006546634355658abfba7ce1a7a442d8825828",
+  "aabSha256": "a247863362aec730e6c50ebe85a403de8cb572821276077d38a3c0b2f8e7e1f6",
+  "aabBytes": 72436099,
+  "inspectionRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43743287816",
+  "publicationRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43743340573",
+  "testingOptInUrl": "https://play.google.com/apps/testing/app.readflow",
+  "testingUrlCheck": "Unauthenticated request redirects to Google sign-in. Tester membership and device installation were not checked.",
+  "testersModified": false,
+  "otherTracksUnchanged": true,
+  "publisherSafeguardTests": {
+    "passed": 16,
+    "failed": 0,
+    "localPython": "3.10",
+    "ciPython": "3.12"
+  },
+  "credentialHandling": "Repository Actions secret used in memory inside publishing steps; no credential exported into repository or reports."
+}

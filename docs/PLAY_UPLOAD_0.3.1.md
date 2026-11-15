@@ -1,14 +1,18 @@
-# Read Assist 0.3.1 — Google Play upload handoff
+# Read Assist 0.3.1 — Google Play Internal testing release
 
-Prepared 15 November 2026 for the owner's request to push the latest app to Google Play. Use the verified **0.3.1 / versionCode 27** bundle below. This handoff records the available artifact and prior Console evidence; it does not establish a successful Play upload, rollout or production publication.
+**Published to Internal testing on 15 November 2026 at 17:51 UTC:** Read Assist **0.3.1 / versionCode 27**. Google accepted the verified bundle and the release commit; a fresh API read confirmed Internal testing `completed` and `RELEASE_LIFECYCLE_STATE_PUBLISHED`. Production, alpha and beta remained unchanged.
 
 ## Current access status
 
-The owner selected **Internal testing**. This session has no connected Play publisher plugin or interactive browser tools, no authenticated `gcloud` account or Application Default Credentials, and no discovered Play publishing credential in environment variables or GitHub secrets. The discovered repository secrets support signing and Firebase configuration. The owner reports that publishing credentials exist securely, but their accessible location has not been provided. No Play upload has been performed from this session.
+The owner selected **Internal testing** and authorized uploading and releasing this exact candidate. On 15 November 2026, the owner enabled the Android Publisher API in `read-assist-fbd21`, created `play-publisher@read-assist-fbd21.iam.gserviceaccount.com`, and granted access to Read Assist with app-information and testing-track release permissions. The owner stored its JSON credential as the repository Actions secret `READFLOW_PLAY_SERVICE_ACCOUNT_JSON`; the secret's presence was verified without reading or exporting its contents.
 
-At the owner's request, the existing Internal testing URL was opened. The HTTP request redirected to `accounts.google.com/v3/signin/identifier`; the authenticated app was not visible. The web reader also could not access the Console page. TinyFish was found as an available browser integration and suggested, but installation, connection and a signed-in Play profile have not been confirmed. Either working publisher API credentials or an authenticated browser connection is needed to continue.
+The registered release workflow now supports `inspect_play` and `publish_play` operations. Credentials are used only inside the relevant GitHub Actions step. The publisher pins package `app.readflow`, Internal testing, version code 27, the artifact size/hash, and the approved service-account identity. It preserves other tracks and testers, refuses to cancel an existing review, and checks Google's release lifecycle before claiming publication. See [workflow instructions](GITHUB_RELEASE_BUILD.md).
 
-API publishing requires an authorized OAuth client or service account with suitable Play Console permissions; bundle upload uses the `https://www.googleapis.com/auth/androidpublisher` scope. See Google's [API setup guide](https://developers.google.com/android-publisher/getting_started) and [bundle upload authorization](https://developers.google.com/android-publisher/api-ref/rest/v3/edits.bundles/upload). Once access is available, inspect the live release state and follow [Google's release preparation and rollout procedure](https://support.google.com/googleplay/android-developer/answer/9859348?hl=en) for the selected Internal testing track.
+The credential authenticated successfully. [Inspection run 43743287816](https://github.com/sainadh812/ReadFlow/actions/runs/43743287816) found 0.2.6/code 22 published on Internal testing with other tracks empty. [Publishing run 43743340573](https://github.com/sainadh812/ReadFlow/actions/runs/43743340573) uploaded the approved bundle, committed code 27, and confirmed its published lifecycle and exact SHA-256 from a fresh edit. Both runs used publisher source `24d7d425ab8a2cfb7497298eb554c2b45f5bb3e7`; all 16 publishing safeguard tests passed locally and in CI. The Android app was not rebuilt.
+
+Evidence: [inspection](evidence/reader-0.3.1/play-inspection.json), [publication](evidence/reader-0.3.1/play-publication.json), and [release summary](evidence/reader-0.3.1/play-release-summary.json).
+
+**Tester link:** [Join the Read Assist internal test](https://play.google.com/apps/testing/app.readflow). Sign in with a Google account already included in the test. The link redirects unauthenticated requests to Google sign-in; tester membership and phone installation were not checked or changed. Supported devices remain Android 15+ / ARM64.
 
 ## Exact bundle
 
@@ -44,7 +48,7 @@ Open the [existing Internal testing track](https://play.google.com/console/u/0/d
 
 The last recorded Console state is **historical and owner-reported**: on 27 October, 0.2.5/code 21 had been accepted into a draft, Internal testing was inactive, and no rollout was reported. [Recorded report](evidence/play-store-0.2.5-configured/play-console-draft-reported.json) · [Historical draft URL](https://play.google.com/console/u/0/developers/9173169759090733636/app/4975999632955979701/tracks/4701509931226024011/releases/1/prepare).
 
-The current Console state, accepted version codes, available tracks and release status must be read from the live account. Do not treat the old draft as current. If code 27 already exists, reconcile its artifact and release state instead of uploading it again. Record the actual track, release status and tester/store link after the Console operation; uploading a bundle alone does not make it available to users.
+The live 15 November API inspection superseded that old draft: code 22 was published before this operation. The post-commit read now confirms code 27 published on Internal testing with the exact approved AAB hash. Future runs must reconcile code 27 instead of blindly uploading it again; the publisher performs that check.
 
 ## Copy-paste release notes
 
@@ -62,6 +66,6 @@ The reader now has a Text/PDF switch in the bottom panel, with evenly spaced pla
 - All 83 downloaded artifact hashes matched. AAB validation and upload-certificate verification passed. Packaging checks recorded 16 KB alignment. See [release evidence](evidence/reader-0.3.1/release-evidence.json), [local validation](evidence/reader-0.3.1/local-validation.json), [artifact verification](evidence/reader-0.3.1/signed-artifact-verification.json), [AAB verification](evidence/reader-0.3.1/aab-verification.json) and [packaging](evidence/reader-0.3.1/packaging.json).
 - No connected Android device was available. Physical-phone layout, TalkBack, gestures, playback, install/upgrade, Play-delivered split APKs and a real 16 KB device environment remain unverified for this version.
 - The signed artifact contains the approved Firebase configuration, with crash reporting off by default. Native symbols were retained but not uploaded to Firebase; remote crash delivery remains unverified. The evidence still marks final license review as outstanding.
-- Live Console access is needed to determine account verification, declarations, store assets, testing/production eligibility, tester membership and any actual upload or submission errors. The older [store handoff](PLAY_STORE_HANDOFF.md) supplies historical configuration context; its 0.2.6 artifact details are superseded by this exact 0.3.1 bundle.
+- API access, bundle acceptance and Internal testing publication are now verified. Account declarations, production eligibility, tester membership and installation on a physical device were not audited by this operation. The older [store handoff](PLAY_STORE_HANDOFF.md) supplies historical configuration context; its 0.2.6 artifact details are superseded by this exact 0.3.1 bundle.
 
-If this workspace cannot access the Play account, the AAB, checksum, app link and release notes above are ready for an authenticated publisher to use. Record that access limitation accurately; do not describe the GitHub release as a Google Play release.
+The GitHub candidate and the Google Play Internal testing release now refer to the same approved AAB. This operation did not publish a production release.

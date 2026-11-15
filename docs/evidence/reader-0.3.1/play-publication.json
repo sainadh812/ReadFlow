@@ -1,0 +1,141 @@
+{
+  "action": "publish",
+  "package": "app.readflow",
+  "versionName": "0.3.1",
+  "versionCode": 27,
+  "track": "internal",
+  "aabSha256": "a247863362aec730e6c50ebe85a403de8cb572821276077d38a3c0b2f8e7e1f6",
+  "aabBytes": 72436099,
+  "status": "published",
+  "testersModified": false,
+  "startedAt": "2026-11-15T17:50:30.037584+00:00",
+  "artifactVerified": true,
+  "editId": "11873384135912492562",
+  "editMayBePending": false,
+  "before": {
+    "tracks": [
+      {
+        "track": "production"
+      },
+      {
+        "track": "beta"
+      },
+      {
+        "track": "alpha"
+      },
+      {
+        "track": "internal",
+        "releases": [
+          {
+            "name": "Read Assist 0.2.6 \u2014 internal test",
+            "versionCodes": [
+              "22"
+            ],
+            "status": "completed"
+          }
+        ]
+      }
+    ],
+    "bundles": [
+      {
+        "versionCode": 22,
+        "sha1": "4fa7f856758bfda9ed47036bc93f8c6da4fe958c",
+        "sha256": "e222bcf1610e211093836918a7a30960c692bb43c6d4de12d23fe6b3a0579727"
+      }
+    ],
+    "lifecycles": {
+      "alpha": {},
+      "beta": {},
+      "internal": {
+        "releases": [
+          {
+            "releaseName": "Read Assist 0.2.6 \u2014 internal test",
+            "activeArtifacts": [
+              {
+                "versionCode": 22
+              }
+            ],
+            "releaseLifecycleState": "RELEASE_LIFECYCLE_STATE_PUBLISHED",
+            "track": "internal"
+          }
+        ]
+      },
+      "production": {}
+    }
+  },
+  "uploadAttempted": true,
+  "uploadedBundle": {
+    "versionCode": 27,
+    "sha1": "62c9d07d0e483828a0d6b215ddaea79b00ed5b75",
+    "sha256": "a247863362aec730e6c50ebe85a403de8cb572821276077d38a3c0b2f8e7e1f6"
+  },
+  "requestedReleaseStatus": "completed",
+  "commit": {
+    "id": "11873384135912492562",
+    "expiryTimeSeconds": "1794772233"
+  },
+  "commitAccepted": true,
+  "afterEditId": "12186412937489431323",
+  "after": {
+    "tracks": [
+      {
+        "track": "production"
+      },
+      {
+        "track": "beta"
+      },
+      {
+        "track": "alpha"
+      },
+      {
+        "track": "internal",
+        "releases": [
+          {
+            "name": "Read Assist 0.3.1",
+            "versionCodes": [
+              "27"
+            ],
+            "releaseNotes": [
+              {
+                "language": "en-US",
+                "text": "The reader now has a Text/PDF switch in the bottom panel, with evenly spaced playback controls and a centered Play/Pause button. Use the up arrow or swipe up to open reader settings, and the down arrow to close them. Switching views keeps your reading position, PDF zoom and text scroll. Playback speed is easier to reach from the expanded controls."
+              }
+            ],
+            "status": "completed"
+          }
+        ]
+      }
+    ],
+    "bundles": [
+      {
+        "versionCode": 27,
+        "sha1": "62c9d07d0e483828a0d6b215ddaea79b00ed5b75",
+        "sha256": "a247863362aec730e6c50ebe85a403de8cb572821276077d38a3c0b2f8e7e1f6"
+      }
+    ],
+    "lifecycles": {
+      "alpha": {},
+      "beta": {},
+      "internal": {
+        "releases": [
+          {
+            "releaseName": "Read Assist 0.3.1",
+            "activeArtifacts": [
+              {
+                "versionCode": 27
+              }
+            ],
+            "releaseLifecycleState": "RELEASE_LIFECYCLE_STATE_PUBLISHED",
+            "track": "internal"
+          }
+        ]
+      },
+      "production": {}
+    }
+  },
+  "afterEditDeleted": true,
+  "otherTracksUnchanged": true,
+  "verifiedVersionCode": 27,
+  "verifiedSha256": "a247863362aec730e6c50ebe85a403de8cb572821276077d38a3c0b2f8e7e1f6",
+  "finishedAt": "2026-11-15T17:51:32.260375+00:00"
+}
