@@ -328,6 +328,49 @@ class StoreMediaTests(unittest.TestCase):
         self.assertEqual(api.live, before)
         self.assertFalse(any(path.endswith(":commit") for _, path, _ in api.calls))
 
+    def test_post_upload_denial_identifies_exact_call_after_cleanup(self):
+        cases = [("read_pending.tracks", "GET", "/tracks"),
+                 ("read_pending.listings", "GET", "/listings"),
+                 *[("read_pending.images." + kind, "GET", f"/listings/en-US/{kind}")
+                   for kind in media.IMAGE_TYPES],
+                 ("read_pending.details", "GET", "/details"),
+                 ("validate_edit", "POST", ":validate")]
+        secret = "fixture-private-token-not-for-diagnostics"
+        for phase, method, suffix in cases:
+            with self.subTest(phase=phase):
+                api = FakeAPI()
+                original_request = api.request
+                before = copy.deepcopy(api.live)
+
+                def denied(request_method, path, **kwargs):
+                    uploaded = sum(len(values) for values in api.edits["1"]["images"].values())
+                    if uploaded == 4 and request_method == method and path.endswith(suffix):
+                        api.calls.append((request_method, path, kwargs))
+                        raise media.ApiError(403, "PERMISSION_DENIED", "Permission denied " + secret)
+                    return original_request(request_method, path, **kwargs)
+
+                report_file = self.root / "denied-report.json"
+                with patch.object(api, "request", side_effect=denied), \
+                        patch.object(media, "authenticate", return_value=secret), \
+                        patch.object(media, "API", return_value=api), \
+                        patch.object(publish_play, "_SECRETS", [secret]):
+                    report = media.run(self.assets_dir, self.listing_file, report_file)
+                self.assertEqual(report["phase"], phase)
+                self.assertEqual(report["failedApiOperation"], {
+                    "phase": phase, "method": method,
+                    "endpoint": media.APP_PATH + "/edits/{editId}" + suffix})
+                self.assertEqual(len(report["uploaded"]), 4)
+                self.assertEqual(report.get("pendingSnapshotVerified", False), phase == "validate_edit")
+                self.assertNotIn("validated", report)
+                self.assertFalse(report["committed"])
+                self.assertTrue(report["ownedEditDeleted"])
+                self.assertFalse(report["editMayBePending"])
+                self.assertEqual(api.edits, {})
+                self.assertEqual(api.live, before)
+                self.assertFalse(any(path.endswith(":commit") for _, path, _ in api.calls))
+                self.assertEqual(report["error"]["httpCode"], 403)
+                self.assertNotIn(secret, report_file.read_text())
+
     def test_precommit_cleanup_error_keeps_pending_flag_and_diagnostic(self):
         api = FakeAPI()
         api.bad_upload_hash = True

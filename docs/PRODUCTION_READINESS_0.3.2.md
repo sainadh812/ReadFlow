@@ -41,6 +41,12 @@ Keep `READFLOW_PLAY_SERVICE_ACCOUNT_JSON` and the existing upload key. `scripts/
 
 The capture-build reuse helper is now pinned to the verified code 28 emulator build from run `43749926901`. `reuse_capture_build=true` checks both APK hashes and four Git source objects: `app/src/main`, `app/src/release`, `app/src/storeDemoAndroidTest` and `app/build.gradle.kts`. Retry `43752099137` on `5b5d273` reuses those unchanged application/test APKs while recording the newer capture-script revision separately. If an APK or source pin differs, reuse stops; build normally with reuse disabled. These remain emulator-only APKs, not the signed Play artifacts.
 
+## Current store publication attempt
+
+[Store run 43752999523](https://github.com/sainadh812/ReadFlow/actions/runs/43752999523) staged the en-US description, icon, feature graphic and two reviewed actual app screenshots. A subsequent API call returned HTTP 403 `PERMISSION_DENIED` before the validation marker or commit. The owned edit was deleted; no listing changes were published. The exact failing endpoint is being diagnosed before attributing the denial to a particular grant. [Attempt report](evidence/reader-0.3.2/store-publication-attempt-43752999523.json).
+
+Additional feature media is being captured in [run 43753190368](https://github.com/sainadh812/ReadFlow/actions/runs/43753190368), after the prior emulator host crashed during page-turn recording. The retained library/PDF frames are authentic captures made before that host crash.
+
 ## Console handoff retained from the source review
 
 The source fix introduces no new data flow, SDK, permission or paid feature. The [ready-to-enter Console answers](PRODUCTION_READINESS_0.3.1.md#console-handoff-answers-already-supported-by-evidence), [reviewer steps](PRODUCTION_READINESS_0.3.1.md#app-access-instructions-ready-for-the-reviewer) and [mediaPlayback declaration text](PRODUCTION_READINESS_0.3.1.md#foreground-service-declaration-draft) remain the starting material. Recheck the new signed manifest/runtime inventory before attaching code 28 artifact claims, and supply the reviewed code 28 video URL.

@@ -201,20 +201,43 @@ def image_hashes(images: list[dict]) -> list[str]:
     return hashes
 
 
-def snapshot(api: API, edit_id: str) -> dict:
+def observe_api_call(report: dict | None, phase: str, method: str, endpoint: str, call):
+    """Record only a controlled endpoint template, never headers, bodies or tokens."""
+    if report is None:
+        return call()
+    operation = {"phase": phase, "method": method,
+                 "endpoint": re.sub(r"(/edits/)[A-Za-z0-9_-]+", r"\1{editId}", endpoint)}
+    report["phase"] = phase
+    report["lastApiOperation"] = operation
+    try:
+        result = call()
+    except Exception:
+        # Cleanup must not erase which request actually failed.
+        report["failedApiOperation"] = operation
+        raise
+    report["lastCompletedApiOperation"] = operation
+    return result
+
+
+def snapshot(api: API, edit_id: str, report: dict | None = None, phase: str = "snapshot") -> dict:
     prefix = f"{APP_PATH}/edits/{edit_id}"
-    tracks = api.request("GET", prefix + "/tracks").get("tracks", [])
-    listings = api.request("GET", prefix + "/listings").get("listings", [])
+
+    def read(name: str, suffix: str) -> dict:
+        return observe_api_call(report, phase + "." + name, "GET", prefix + suffix,
+                                lambda: api.request("GET", prefix + suffix))
+
+    tracks = read("tracks", "/tracks").get("tracks", [])
+    listings = read("listings", "/listings").get("listings", [])
     if not isinstance(tracks, list) or not isinstance(listings, list):
         raise PublishError("Google returned an invalid store snapshot.")
     images = {}
     for kind in IMAGE_TYPES:
-        values = api.request("GET", prefix + f"/listings/{LANGUAGE}/{kind}").get("images", [])
+        values = read("images." + kind, f"/listings/{LANGUAGE}/{kind}").get("images", [])
         if not isinstance(values, list):
             raise PublishError("Google returned invalid store images.")
         images[kind] = image_hashes(values)
     return {"tracks": normalized_tracks(tracks), "listings": listing_map(listings),
-            "details": api.request("GET", prefix + "/details"), "imageHashes": images}
+            "details": read("details", "/details"), "imageHashes": images}
 
 
 def publication_plan(before: dict, assets: list[dict], requested: dict) -> tuple[dict, list[dict]]:
@@ -253,41 +276,53 @@ def verify_snapshot(before: dict, after: dict, assets: list[dict], listing: dict
 
 
 def publish(api: API, assets: list[dict], requested: dict, report: dict) -> None:
-    edit_id = api.create_edit()
+    edit_id = observe_api_call(report, "create_edit", "POST", APP_PATH + "/edits", api.create_edit)
     report["editId"] = edit_id
     report["editMayBePending"] = True
     changed = False
     try:
-        before = snapshot(api, edit_id)
+        before = snapshot(api, edit_id, report, "read_before")
         report["before"] = before
+        report["phase"] = "plan_publication"
         listing, missing = publication_plan(before, assets, requested)
         report["requestedListing"] = listing
         report["plannedUploads"] = [{key: asset[key] for key in ("file", "image_type", "sha256")} for asset in missing]
         prefix = f"{APP_PATH}/edits/{edit_id}"
         if listing != before["listings"].get(LANGUAGE, {}):
             changed = True
-            api.request("PUT", prefix + f"/listings/{LANGUAGE}", json=listing)
+            endpoint = prefix + f"/listings/{LANGUAGE}"
+            observe_api_call(report, "update_listing", "PUT", endpoint,
+                             lambda: api.request("PUT", endpoint, json=listing))
         report["uploaded"] = []
         for asset in missing:
             changed = True
             with asset["path"].open("rb") as handle:
-                response = api.request("POST", "/upload" + prefix + f"/listings/{LANGUAGE}/{asset['image_type']}",
-                                       params={"uploadType": "media"}, data=handle,
-                                       headers={"Content-Type": "image/png"})
+                endpoint = "/upload" + prefix + f"/listings/{LANGUAGE}/{asset['image_type']}"
+                response = observe_api_call(report, "upload_image." + asset["image_type"], "POST", endpoint,
+                                            lambda: api.request("POST", endpoint,
+                                                                params={"uploadType": "media"}, data=handle,
+                                                                headers={"Content-Type": "image/png"}))
+            report["phase"] = "verify_uploaded_image"
             if image_hashes([response.get("image")]) != [asset["sha256"]]:
                 raise PublishError("Uploaded image response has a different SHA256; edit was not committed.")
             report["uploaded"].append({"file": asset["file"], "sha256": asset["sha256"]})
         if not changed:
+            report["phase"] = "verify_existing_state"
             verify_snapshot(before, before, assets, listing)
             report.update(status="already_matches", verified=True, committed=False)
             return
-        pending = snapshot(api, edit_id)
+        pending = snapshot(api, edit_id, report, "read_pending")
+        report["phase"] = "verify_pending_state"
         verify_snapshot(before, pending, assets, listing)
-        api.request("POST", prefix + ":validate")
+        report["pendingSnapshotVerified"] = True
+        observe_api_call(report, "validate_edit", "POST", prefix + ":validate",
+                         lambda: api.request("POST", prefix + ":validate"))
         report["validated"] = True
         report["commitAttempted"] = True
         try:
-            api.request("POST", prefix + ":commit", params={"changesInReviewBehavior": "ERROR_IF_IN_REVIEW"})
+            observe_api_call(report, "commit_edit", "POST", prefix + ":commit",
+                             lambda: api.request("POST", prefix + ":commit",
+                                                 params={"changesInReviewBehavior": "ERROR_IF_IN_REVIEW"}))
         except Exception as error:
             ambiguous = not isinstance(error, ApiError) or error.http_code == 0 or error.http_code >= 500 or 200 <= error.http_code < 300
             report["status"] = "commit_outcome_unknown" if ambiguous else "commit_rejected"
@@ -296,11 +331,13 @@ def publish(api: API, assets: list[dict], requested: dict, report: dict) -> None
         report["committed"] = True
         report["editMayBePending"] = False
         report["status"] = "committed_verification_pending"
-        verify_id = api.create_edit()
+        verify_id = observe_api_call(report, "create_verification_edit", "POST",
+                                     APP_PATH + "/edits", api.create_edit)
         report["verificationEditId"] = verify_id
         try:
-            after = snapshot(api, verify_id)
+            after = snapshot(api, verify_id, report, "read_after")
             report["after"] = after
+            report["phase"] = "verify_committed_state"
             verify_snapshot(before, after, assets, listing)
             report.update(status="committed_and_verified", verified=True)
         finally:
@@ -325,14 +362,16 @@ def publish(api: API, assets: list[dict], requested: dict, report: dict) -> None
 
 def run(assets_dir: Path, listing_file: Path, report_path: Path = DEFAULT_REPORT) -> dict:
     report = {"action": "publish_store_media", "package": PACKAGE, "language": LANGUAGE,
-              "status": "started", "committed": False, "verified": False,
+              "status": "started", "phase": "validate_local_assets", "committed": False, "verified": False,
               "productionRelease": "not_attempted", "storeReviewState": "not_determined_by_this_operation",
               "startedAt": datetime.now(timezone.utc).isoformat()}
     try:
         assets = load_assets(assets_dir)
+        report["phase"] = "validate_local_listing"
         listing = load_listing(listing_file)
         report["manifestSha256"] = digest((assets_dir / "manifest.json").read_bytes())
         report["listingSha256"] = digest(listing_file.read_bytes())
+        report["phase"] = "authenticate"
         publish(API(authenticate()), assets, listing, report)
     except Exception as error:
         if report["status"] in {"started", "committed_verification_pending"}:
@@ -353,6 +392,7 @@ def main() -> int:
     args = parser.parse_args()
     report = run(args.assets, args.listing, args.report)
     print(json.dumps({"status": report["status"], "report": str(args.report),
+                      "phase": report["phase"], "failedApiOperation": report.get("failedApiOperation"),
                       "committed": report["committed"], "verified": report["verified"],
                       "error": report.get("error")}))
     return 0 if report["status"] in {"already_matches", "committed_and_verified"} else 1
