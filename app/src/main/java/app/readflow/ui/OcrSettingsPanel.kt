@@ -23,7 +23,7 @@ import java.util.Locale
 @Composable internal fun OcrSettingsScreen(vm: ReaderViewModel, prefs: Preferences) {
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text("Text recognition") }, navigationIcon = {
-            Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.screen.value = if (vm.playback.value.document == null) "settings" else "reader" }
+            Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.back() }
         })
         LazyColumn(contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 28.dp)) {
             item { OcrSettingsPanel(vm, prefs) }
@@ -100,7 +100,7 @@ import java.util.Locale
                 TextButton(onClick = vm::cancelOcr) { Text("Cancel text recognition") }
             }
             lastRun?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
-            TextButton(onClick = { vm.screen.value = "benchmark" }) {
+            TextButton(onClick = { vm.navigate("benchmark") }) {
                 Icon(Icons.Default.Science, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Compare in phone testbench")
             }
         }

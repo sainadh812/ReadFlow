@@ -54,7 +54,7 @@ private val issueDisplayJson = Json { prettyPrint = true; encodeDefaults = true 
         val id = vm.pendingIssueExport; vm.pendingIssueExport = null
         if (uri != null && id != null) vm.exportIssue(uri, id)
     }
-    fun back() { if (selected != null) vm.selectedIssue.value = null else vm.screen.value = "settings" }
+    fun back() { if (selected != null) vm.selectedIssue.value = null else vm.back() }
     BackHandler { back() }
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text(if (selected == null) "Error history" else "Issue details", maxLines = 1, overflow = TextOverflow.Ellipsis) },

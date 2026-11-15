@@ -1,0 +1,21 @@
+{
+  "result": "pass",
+  "environment": "host SQLite; production SQL with exported Room v1 schema, not an Android device test",
+  "sqliteVersion": "3.37.2",
+  "sourceSha256": "e7f5b454577c25c26cba3324c3143f8f4956245e8c7015598cc940b59c51fbb7",
+  "schemaV1Sha256": "0968c3b244e608e30ca8783b2c27bb8e4f844fd10bcd5046758383bbda5c457c",
+  "schemaV2Sha256": "49346ad689ab7bf9bccbdb770a9b085472c3efaaed3e22d374f552fa155680e8",
+  "testsRun": 9,
+  "checks": [
+    "test_committed_history_survives_reopen_and_failed_transaction_rolls_back",
+    "test_delayed_writes_cannot_regress_saved_page_or_timestamps",
+    "test_legacy_audio_is_resume_fallback_until_manual_history_exists",
+    "test_manual_page_changes_preserve_last_open_and_independent_narration",
+    "test_migrated_schema_has_required_columns_primary_key_and_cascade",
+    "test_migration_matches_room_generated_version_two_schema",
+    "test_migration_preserves_every_existing_table_and_audio_word",
+    "test_missing_and_deleted_documents_cannot_leave_orphan_history",
+    "test_viewing_old_document_does_not_reorder_last_opened_document"
+  ],
+  "failures": []
+}

@@ -89,7 +89,7 @@ import kotlinx.coroutines.flow.sample
             }
         }
     }, confirmButton = { TextButton(onClick = { expanded = false }) { Text("Done") } },
-        dismissButton = { TextButton(onClick = { expanded = false; vm.screen.value = "benchmark" }) { Text("Phone testbench") } })
+        dismissButton = { TextButton(onClick = { expanded = false; vm.navigate("benchmark") }) { Text("Phone testbench") } })
 }
 
 @Composable internal fun MetricDetail(label: String, value: String) {

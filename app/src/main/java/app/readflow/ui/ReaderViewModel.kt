@@ -25,6 +25,11 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     val app = application as ReadFlowApp
     val playback = app.playback.state
     val library = app.documents.dao.library().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val readingHistory = app.documents.dao.readingHistory().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    private val mutableLibraryState = MutableStateFlow(LibraryState())
+    val libraryState = mutableLibraryState.asStateFlow()
+    val visibleLibrary = combine(library, libraryState, ::filterLibrary)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val preferences = app.preferences.values.stateIn(viewModelScope, SharingStarted.Eagerly, Preferences())
     val downloads = app.models.progress
     val ocrDownloads = app.ocrModels.progress
@@ -41,7 +46,8 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     val ocrPerformance = app.diagnostics.extractionPerformance
     val benchmark = app.benchmarks.state
     val benchmarkBusy = app.benchmarks.busy
-    val screen = MutableStateFlow("library")
+    private val navigation = ReaderNavigation()
+    val screen = navigation.screen
     val message = MutableStateFlow<String?>(null)
     val importing = MutableStateFlow(false)
     val refreshingText = MutableStateFlow(false)
@@ -56,12 +62,126 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     private val ocrDownloadJobs = mutableMapOf<String, Job>()
     private var ocrRefresh: Job? = null
     private val activeOperations = ConcurrentHashMap.newKeySet<Job>()
+    private var pendingOpen: Job? = null
+    private var openRequest = 0L
+    private var lastHistoryTime = 0L
+    private val historyWrites = ManualHistoryWriter(viewModelScope, persist = { event ->
+        if (event.opened) app.documents.dao.recordManualOpen(event.documentId, event.page, event.time)
+        else app.documents.dao.recordManualView(event.documentId, event.page, event.time)
+    }, onFailure = { event, error ->
+        message.value = "The reading position could not be saved"
+        app.issues.record("READING_HISTORY", error, IssueInput(documentId = event.documentId))
+    })
+
+    init {
+        viewModelScope.launch {
+            combine(playback, screen) { state, destination ->
+                val document = state.document
+                val page = state.page
+                if (destination == "reader" && document != null && page?.documentId == document.id && page.index in 0 until document.pageCount)
+                    document to page.index else null
+            }.distinctUntilChanged().collect { visible ->
+                visible?.let { (document, page) -> rememberPage(document, page, opened = false) }
+            }
+        }
+    }
+
+    fun setLibraryQuery(query: String) { mutableLibraryState.update { it.copy(query = query.take(300)) } }
+    fun setLibraryFilter(filter: LibraryFilter) { mutableLibraryState.update { it.copy(filter = filter) } }
+    fun setLibrarySort(sort: LibrarySort) { mutableLibraryState.update { it.copy(sort = sort) } }
+
+    private fun cancelPendingOpen() { openRequest++; pendingOpen?.cancel(); pendingOpen = null }
+    private fun navigateNow(destination: String) {
+        if (screen.value == "benchmark" && destination != "benchmark") app.benchmarks.cancel("Left the testbench")
+        navigation.navigate(destination)
+    }
+    fun navigate(destination: String) {
+        cancelPendingOpen()
+        if (destination == "reader" && playback.value.document == null) return
+        navigateNow(destination)
+    }
+    fun back(): Boolean {
+        cancelPendingOpen()
+        if (screen.value == "issues" && selectedIssue.value != null) { selectedIssue.value = null; return true }
+        if (screen.value == "benchmark") app.benchmarks.cancel("Left the testbench")
+        val changed = navigation.back()
+        if (screen.value == "reader" && playback.value.document == null) navigation.back()
+        return changed
+    }
+    fun returnToReader() {
+        val document = playback.value.document ?: return
+        cancelPendingOpen()
+        rememberPage(document, currentPage(document), opened = true)
+        navigateNow("reader")
+    }
+    private fun currentPage(document: DocumentEntity): Int =
+        (playback.value.page?.takeIf { it.documentId == document.id }?.index ?: playback.value.viewPageIndex)
+            .coerceIn(0, (document.pageCount - 1).coerceAtLeast(0))
+    private fun rememberPage(document: DocumentEntity, page: Int, opened: Boolean) {
+        if (page !in 0 until document.pageCount) return
+        lastHistoryTime = maxOf(System.currentTimeMillis(), lastHistoryTime + 1)
+        historyWrites.record(ManualHistoryEvent(document.id, page, lastHistoryTime, opened))
+    }
     private fun benchmarkBlocksWork(): Boolean = app.benchmarks.busy.value.also {
         if (it) message.value = "Finish or cancel the phone benchmark first"
     }
     fun open(document: DocumentEntity) {
-        if (benchmarkBlocksWork()) return
-        ocrRefresh?.cancel(); app.playback.open(document); screen.value = "reader"
+        beginOpen(document, listen = false)
+    }
+    fun openForListening(document: DocumentEntity) {
+        beginOpen(document, listen = true)
+    }
+    private fun beginOpen(document: DocumentEntity, listen: Boolean): Job? {
+        if (benchmarkBlocksWork()) return null
+        cancelPendingOpen()
+        val request = openRequest
+        val active = playback.value
+        if (active.document?.id == document.id && (!listen || active.playing || active.wantsToPlay || active.currentChunk != null)) {
+            rememberPage(document, currentPage(document), opened = true)
+            navigateNow("reader")
+            if (listen && !active.playing && !active.wantsToPlay) app.playback.playFromControls()
+            return null
+        }
+        return viewModelScope.launch {
+            try {
+                historyWrites.flush()
+                val audio = app.documents.dao.position(document.id)
+                val manual = app.documents.dao.manualPosition(document.id)
+                if (listen) {
+                    val prefs = app.preferences.values.first()
+                    if (!app.models.installed(prefs.model) || !app.models.installed("alignment")) {
+                        ensureActive()
+                        if (request == openRequest) {
+                            message.value = "Download a voice model and alignment model before listening"
+                            navigateNow("voices")
+                        }
+                        return@launch
+                    }
+                }
+                ensureActive()
+                if (request != openRequest || app.documents.dao.document(document.id) == null) return@launch
+                ensureActive()
+                if (request != openRequest) return@launch
+                ocrRefresh?.cancel()
+                val targetPage: Int
+                if (listen) {
+                    val (page, word) = listeningResume(document, audio)
+                    targetPage = page
+                    app.playback.start(document, page, word)
+                } else {
+                    targetPage = manualResumePage(document, manual, audio)
+                    app.playback.open(document, targetPage)
+                }
+                rememberPage(document, targetPage, opened = true)
+                navigateNow("reader")
+            } catch (cancel: CancellationException) { throw cancel }
+            catch (error: Exception) {
+                if (request == openRequest) {
+                    app.issues.record("OPEN_DOCUMENT", error, documentIssueInput(document))
+                    message.value = error.message ?: "Could not open this document"
+                }
+            }
+        }.also { pendingOpen = it }
     }
     fun import(uri: Uri) = launchImport("IMPORT_FILE", { withContext(Dispatchers.IO) {
         val title = runCatching { app.contentResolver.query(uri, arrayOf(android.provider.OpenableColumns.DISPLAY_NAME), null, null, null)?.use { if (it.moveToFirst()) it.getString(0) else null } }.getOrNull()
@@ -79,6 +199,12 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         finally { importing.value = false }
     } }
     fun update(preferences: Preferences) { viewModelScope.launch { app.preferences.set(preferences) } }
+    fun setAppTheme(id: String) { viewModelScope.launch {
+        try { app.preferences.setAppTheme(id) }
+        catch (cancel: CancellationException) { throw cancel }
+        catch (_: Exception) { message.value = "The app theme could not be saved" }
+    } }
+    fun setAppTheme(theme: AppTheme) = setAppTheme(theme.id)
     fun chooseOcrEngine(engine: String) {
         if (benchmarkBlocksWork()) return
         if (engine !in setOf("mlkit", "teleocr", "paddleocr")) return
@@ -102,11 +228,11 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         ocrRefresh?.cancel()
         try {
             app.benchmarks.start(options)
-            screen.value = "benchmark"
+            navigate("benchmark")
         } catch (error: IllegalArgumentException) { message.value = error.message }
     }
     fun cancelBenchmark(reason: String = "Stopped by user") = app.benchmarks.cancel(reason)
-    fun leaveBenchmark() { app.benchmarks.cancel("Left the testbench"); screen.value = "settings" }
+    fun leaveBenchmark() { app.benchmarks.cancel("Left the testbench"); back() }
     fun copyBenchmarkResults() {
         try {
             app.getSystemService(ClipboardManager::class.java).setPrimaryClip(
@@ -170,7 +296,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     fun captureIssue(stage: String, error: Throwable, input: IssueInput = IssueInput()) {
         viewModelScope.launch { app.issues.record(stage, error, input) }
     }
-    fun showIssues() { screen.value = "issues"; viewModelScope.launch { app.issues.refresh() } }
+    fun showIssues() { navigate("issues"); viewModelScope.launch { app.issues.refresh() } }
     fun setCrashReportingEnabled(enabled: Boolean) { app.crashReporting.setEnabled(enabled) }
     fun readIssue(id: String) { viewModelScope.launch { selectedIssue.value = app.issues.read(id) } }
     fun deleteIssue(id: String) { viewModelScope.launch {
@@ -223,6 +349,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
         catch (_: Exception) { message.value = "Could not copy playback diagnostics" }
     } }
     fun deleteDocument(document: DocumentEntity) { operation("DOCUMENT_DELETE", documentIssueInput(document)) {
+        cancelPendingOpen()
         ocrRefresh?.cancelAndJoin()
         app.playback.deleteDocument(document)
         app.issues.deleteForDocument(document.id)
@@ -230,7 +357,10 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     } }
     fun page(index: Int) {
         if (benchmarkBlocksWork()) return
-        playback.value.document?.let { if (index in 0 until it.pageCount) { ocrRefresh?.cancel(); app.playback.open(it, index) } }
+        cancelPendingOpen()
+        playback.value.document?.let { if (index in 0 until it.pageCount) {
+            ocrRefresh?.cancel(); app.playback.open(it, index); rememberPage(it, index, opened = false)
+        } }
     }
     fun retryOcr() = refreshOcr(rotate = false)
     fun rotateOcr() = refreshOcr(rotate = true)
@@ -263,6 +393,7 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     }
     fun readBookmark(bookmark: BookmarkEntity) {
         if (benchmarkBlocksWork()) return
+        cancelPendingOpen()
         val document = playback.value.document?.takeIf { it.id == bookmark.documentId } ?: return
         val request = app.playback.stop()
         viewModelScope.launch {
@@ -289,6 +420,8 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     } }
     fun sample(previewModel: String? = null, previewVoice: String? = null, pronunciation: Boolean = false) { viewModelScope.launch {
         if (benchmarkBlocksWork()) return@launch
+        cancelPendingOpen()
+        val sampleRequest = openRequest
         try {
             if (previewModel != null) app.playback.changeModel(previewModel, checkNotNull(previewVoice))
             val text = if (pronunciation) BenchmarkFixtures.PRONUNCIATION.joinToString("\n\n")
@@ -299,11 +432,15 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
             app.documents.dao.insertDocument(document)
             val page = DocumentPipeline().process(id, 0, ExtractedPage(text.split("\n\n").mapIndexed { index, paragraph -> TextElement(paragraph, emptyList(), index, index) }, 0f, 0f, "Original sample"))
             app.documents.dao.putPage(PageEntity(id, 0, Json.encodeToString(PageContent.serializer(), page), "Original sample"))
-            open(document)
+            if (sampleRequest != openRequest) return@launch
+            val opening = beginOpen(document, listen = false)
+            val request = openRequest
+            opening?.join()
             if (previewModel != null) {
                 // Wait for preference collection before selecting the engine for the preview.
                 app.preferences.values.first { it.model == previewModel && it.voice == previewVoice }
-                app.playback.start(document, 0, page.words.first().id)
+                if (request == openRequest && screen.value == "reader" && playback.value.document?.id == document.id)
+                    app.playback.start(document, 0, page.words.first().id)
             }
         } catch (cancel: CancellationException) { throw cancel }
         catch (e: Exception) { app.issues.record("PREVIEW", e, IssueInput(details = mapOf("model" to previewModel.orEmpty(), "voice" to previewVoice.orEmpty()))); message.value = e.message }

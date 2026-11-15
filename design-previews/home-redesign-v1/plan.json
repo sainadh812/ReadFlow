@@ -1,0 +1,144 @@
+{
+  "title": "Read Assist home and library redesign",
+  "version": "Approved design v2 \u2014 implemented in Read Assist 0.3.0",
+  "status": "All three native themes implemented; release validation in progress.",
+  "target": "Main/front GUI: the library landing screen, document browsing, import entry points and navigation.",
+  "recommendation": "Confirmed default: A \u2014 Warm Library; B and C are selectable alternatives.",
+  "currentScreenFindings": [
+    "Current landing screen is a flat document list with generic file icons, two import buttons and top-bar Voice models/Settings.",
+    "ReadingPosition stores the latest narrated page/word, but not a separate last manually viewed page or last-opened history.",
+    "PDF/image first pages can already be rendered locally; no author, reading-time, completion, favorites or folder metadata currently exists.",
+    "Root navigation needs a reliable back stack so Settings returns to the screen that opened it."
+  ],
+  "concepts": [
+    {
+      "id": "A",
+      "name": "Warm Library",
+      "layout": "Book-like library with a generous resume card and two-column document previews.",
+      "appearance": "Warm ivory, forest green actions, restrained serif headings and original thumbnail fallbacks.",
+      "benefit": "Strong reading identity and a clear starting point.",
+      "tradeoff": "Large previews show fewer documents at once.",
+      "image": "a-warm-library.png"
+    },
+    {
+      "id": "B",
+      "name": "Modern Focus",
+      "layout": "Compact resume strip, visible title search and filters, spacious sortable document rows.",
+      "appearance": "Bright surfaces, navy typography, cobalt actions and subtle separators.",
+      "benefit": "Fast scanning for large mixed document libraries.",
+      "tradeoff": "More utilitarian and less like a personal bookshelf.",
+      "image": "b-modern-focus.png"
+    },
+    {
+      "id": "C",
+      "name": "Night Reader",
+      "layout": "A prominent listening/resume card with Listen and Open page actions above a smaller document shelf.",
+      "appearance": "Charcoal, muted olive surfaces, sage actions and warm off-white text.",
+      "benefit": "Comfortable dark presentation with immediate access to listening.",
+      "tradeoff": "Hero uses more vertical space and emphasizes listening over browsing.",
+      "image": "c-night-reader.png"
+    }
+  ],
+  "commonDesign": [
+    "One Library landing destination; bottom navigation Library, Voices, Settings, with a correct previous-screen/back history.",
+    "Offer all three visual layouts through Settings \u2192 Appearance \u2192 App theme, with Warm Library as the default and a durable per-user selection.",
+    "Single Add action opens a choice sheet: Import PDF or image, Import webpage; sample document available in the empty state.",
+    "Visible local title search, All/PDFs/Articles/Images filtering, and Newest/Title sorting. Preserve entered search/filter during navigation.",
+    "Document thumbnail, readable title, format and page count; optional saved page location is labeled Page X of Y, never inferred completion.",
+    "Move removal to each document overflow menu and retain confirmation and original-file preservation.",
+    "Continue opens the saved page without automatically starting speech. Listen explicitly starts or resumes narration only when ready.",
+    "Use local PDF/image first-page thumbnails, generated off the main thread with a bounded cache. Articles use attractive typographic fallbacks.",
+    "If an active audio session is surfaced on Library, its small bar appears only for that session and navigates to Reader without re-opening/resetting playback; avoid duplicating a hero player.",
+    "Carry the chosen style into Add, empty/search-empty/importing/error states and Voices/Settings headers.",
+    "Provide the three approved appearances with readable contrast, 48dp touch targets, TalkBack labels, large-font layouts, landscape adaptation and reduced-motion behavior."
+  ],
+  "resumeBehavior": {
+    "savedListeningPosition": "Continue using existing audio position and word ownership for narration.",
+    "newManualReadingHistory": "Add separate durable last-opened/manual page state so silent navigation does not overwrite the narration word. For long reflowed pages, consider a stable word/paragraph anchor.",
+    "priority": "An active document session is offered first; otherwise choose the latest user-opened document with a valid stored position.",
+    "correctness": "Restoring a page must not trigger speech automatically. Do not measure or advertise completion from the furthest page visited.",
+    "implementationNote": "Schema migration or versioned persistent state and navigation state changes are required for full manual resume; this is more than a color change."
+  },
+  "implementationPhases": [
+    {
+      "phase": 1,
+      "name": "Refine the approved theme family",
+      "work": "Use all three home designs. Specify the theme chooser plus matching Add sheet and empty states for each appearance."
+    },
+    {
+      "phase": 2,
+      "name": "Shared foundation, themes and navigation",
+      "work": "Implement shared functional components, three selectable visual/layout variants, persistent theme preference with Warm Library default, and correct back navigation."
+    },
+    {
+      "phase": 3,
+      "name": "Library and resume",
+      "work": "Add safe resume persistence, search/filter/sort, local thumbnail cache and tidy document actions."
+    },
+    {
+      "phase": 4,
+      "name": "State and accessibility checks",
+      "work": "Verify default and persisted theme selection after upgrade/restart; test switching among all three themes during an active session; verify import/cancel/failure, empty search, long titles, hundreds of documents, process restart, large fonts and contrast in every theme."
+    },
+    {
+      "phase": 5,
+      "name": "Delivery after approval",
+      "work": "Run appropriate regression/build/lint checks, inspect on a device when available, then publish the approved signed APK."
+    }
+  ],
+  "boundaries": {
+    "implementationPerformed": true,
+    "existingReader": "Keep the approved medium playback dock, page curl, brightness/warmth, dictionary and speech-failure marking behavior during the main-screen redesign.",
+    "newProductFeatures": "Folders, favorites, statistics, streaks, accounts and a bookstore are outside this initial proposal.",
+    "previews": "Generated UI concepts with fictional sample documents, not screenshots of an implemented app. Generated text/spacing will be refined in the selected design."
+  },
+  "artifacts": {
+    "generationMode": "Built-in image_gen tool",
+    "prompts": "prompts.json",
+    "images": [
+      "a-warm-library.png",
+      "b-modern-focus.png",
+      "c-night-reader.png"
+    ]
+  },
+  "userDecision": {
+    "selectedConcepts": [
+      "A",
+      "B",
+      "C"
+    ],
+    "defaultConcept": "A",
+    "requirement": "Offer all three themes and let each user choose. Use A by default."
+  },
+  "themeSelection": {
+    "entryPoint": "Settings \u2192 Appearance \u2192 App theme",
+    "options": [
+      {
+        "id": "warm_library",
+        "concept": "A",
+        "name": "Warm Library",
+        "isDefault": true
+      },
+      {
+        "id": "modern_focus",
+        "concept": "B",
+        "name": "Modern Focus",
+        "isDefault": false
+      },
+      {
+        "id": "night_reader",
+        "concept": "C",
+        "name": "Night Reader",
+        "isDefault": false
+      }
+    ],
+    "chooser": "Three labeled preview cards with an accessible selected checkmark. Warm Library has a Default badge.",
+    "interaction": "Selecting a card applies that theme immediately and saves the choice. Reopening the app restores it.",
+    "defaultPolicy": "Use Warm Library when no app-theme choice has been saved, including the first launch after upgrading. Unknown stored theme identifiers fall back to Warm Library.",
+    "scope": "Each theme includes its own library layout, colors, typography and component styling. Shared navigation and the same features remain available in every theme. Carry matching styling through Voices, Settings, import sheets and dialogs.",
+    "systemAppearance": "Theme selection remains explicit; system dark mode must not silently select a different A/B/C theme. Night Reader provides the proposed dark appearance. Reconcile the existing global dark-mode control with App theme to avoid conflicting main-GUI appearance settings.",
+    "readerAppearance": "Keep document paper, fonts, brightness and warmth as independent reader preferences.",
+    "stateSafety": "Changing theme preserves documents, library search/filter/sort, reading position, model downloads and any active narration session.",
+    "persistence": "Store a stable app-theme identifier in existing preferences, with Warm Library as the default. Never reset unrelated preferences during theme changes."
+  }
+}

@@ -70,6 +70,7 @@ class ReadingCoordinator(
     private val aligner = OnnxForcedAligner { java.io.File(models.directory("alignment"), "model.onnx") }
     private val planner = SpeechPlanner()
     private var work: Job? = null
+    private val removingDocumentIds = mutableSetOf<String>()
     // A settings switch must drain the previous producer before touching native
     // resources. New reading work joins this transition before taking its settings.
     private var settingsTransition: Job? = null
@@ -163,7 +164,7 @@ class ReadingCoordinator(
     }
     fun detach() { observer?.cancel(); playerListener?.let { player?.removeListener(it) }; playerListener = null; player = null; stop() }
     fun open(document: DocumentEntity, pageIndex: Int? = null) {
-        if (benchmarkActive()) return
+        if (benchmarkActive() || document.id in removingDocumentIds) return
         val old = work
         val generation = invalidate()
         sentenceFailures.openDocument(document.id, stableId(document.hash, document.processingVersion))
@@ -483,7 +484,7 @@ class ReadingCoordinator(
             "phonemizer=${if (usesMisaki(chosen)) MISAKI_RECIPE_VERSION else "default"}"
 
     fun start(document: DocumentEntity = checkNotNull(state.value.document), pageIndex: Int = state.value.page?.index ?: state.value.viewPageIndex, wordId: String? = null) {
-        if (benchmarkActive()) return
+        if (benchmarkActive() || document.id in removingDocumentIds) return
         val old = work
         val pendingSettings = settingsTransition
         val generation = invalidate()
@@ -786,11 +787,19 @@ class ReadingCoordinator(
     }
     suspend fun clearCache() { val old = work; stop(); old?.join(); cache.clear() }
     suspend fun deleteDocument(document: DocumentEntity) {
-        val old = work; stop(); old?.join()
-        cache.deleteDocument(document.id); documents.delete(document)
-        if (state.value.document?.id == document.id) {
-            sentenceFailures.openDocument(null)
-            mutable.value = ReaderPlayback()
+        if (!removingDocumentIds.add(document.id)) return
+        try {
+            if (state.value.document?.id == document.id) {
+                val old = work
+                stop()
+                sentenceFailures.openDocument(null)
+                mutable.value = ReaderPlayback()
+                old?.join()
+            }
+            cache.deleteDocument(document.id)
+            documents.delete(document)
+        } finally {
+            removingDocumentIds.remove(document.id)
         }
     }
 }

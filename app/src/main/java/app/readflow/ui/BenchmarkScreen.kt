@@ -107,7 +107,7 @@ import app.readflow.data.Preferences
                                 speechModels = if (selected) (speechModels + model).distinct() else speechModels - model
                             }
                         }
-                        if (!alignmentInstalled || installedSpeech.size < SpeechDistribution.benchmarkModels.count { it != "sc-kokoro" }) TextButton(onClick = { vm.screen.value = "voices" }) {
+                        if (!alignmentInstalled || installedSpeech.size < SpeechDistribution.benchmarkModels.count { it != "sc-kokoro" }) TextButton(onClick = { vm.navigate("voices") }) {
                             Icon(Icons.Default.Download, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("Manage voice models")
                         }
                         if (!SpeechDistribution.IS_PLAY_BUILD) {
@@ -133,7 +133,7 @@ import app.readflow.data.Preferences
                             "paddleocr" in ocrEngines, paddleInstalled) { selected ->
                             ocrEngines = if (selected) (ocrEngines + "paddleocr").distinct() else ocrEngines - "paddleocr"
                         }
-                        TextButton(onClick = { vm.screen.value = "ocr" }) {
+                        TextButton(onClick = { vm.navigate("ocr") }) {
                             Icon(Icons.Default.DocumentScanner, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text("OCR setup · ${ocrQualityLabel(prefs.ocrQuality)}")
                         }
                     }

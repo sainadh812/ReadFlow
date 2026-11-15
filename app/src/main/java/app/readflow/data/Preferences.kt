@@ -15,7 +15,8 @@ data class Preferences(val model: String = "kokoro", val voice: String = "0", va
     val readerTheme: String = if (dark) "evening_paper" else "warm_paperback", val readerFont: String = "system_serif",
     val pageTurnStyle: String = "curl",
     val usePhoneBrightness: Boolean = true, val readerBrightnessPercent: Int = 60,
-    val warmLightEnabled: Boolean = false, val warmLightStrength: Int = 35)
+    val warmLightEnabled: Boolean = false, val warmLightStrength: Int = 35,
+    val appTheme: String = AppTheme.WARM_LIBRARY.id)
 class PreferenceStore(private val context: Context) {
     private val model = stringPreferencesKey("model"); private val voice = stringPreferencesKey("voice")
     private val font = intPreferencesKey("font"); private val dark = booleanPreferencesKey("dark")
@@ -45,7 +46,10 @@ class PreferenceStore(private val context: Context) {
         ReaderAppearancePreferences.theme(it[readerTheme], it[dark] ?: false), ReaderAppearancePreferences.font(it[readerFont]),
         ReaderAppearancePreferences.pageTurn(it[pageTurnStyle]),
         it[usePhoneBrightness] ?: true, (it[readerBrightness] ?: 60).coerceIn(1, 100),
-        it[warmLightEnabled] ?: false, (it[warmLightStrength] ?: 35).coerceIn(0, 100))) }
+        it[warmLightEnabled] ?: false, (it[warmLightStrength] ?: 35).coerceIn(0, 100),
+        AppTheme.fromId(it[appThemePreferenceKey]).id)) }
+
+    suspend fun setAppTheme(id: String) { context.store.edit { it.writeAppTheme(id) } }
 
     // Lighting is written independently of set(): a stale speech/appearance copy must never
     // revert a newer slider position. DataStore serializes this edit with all other updates.

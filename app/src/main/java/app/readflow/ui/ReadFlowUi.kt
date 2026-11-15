@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.contentDescription
@@ -38,15 +37,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import app.readflow.R
 import app.readflow.core.*
 import app.readflow.data.Preferences
-import app.readflow.data.DocumentEntity
+import app.readflow.data.AppTheme
 import app.readflow.playback.ReaderPlayback
 import app.readflow.playback.failedSentenceIds
 import java.util.Locale
-
-private val Accent = Color(0xFF126D63)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable fun ReadFlowUi(vm: ReaderViewModel, requestNotifications: () -> Unit) {
@@ -56,37 +52,17 @@ private val Accent = Color(0xFF126D63)
     val message by vm.message.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     val readerPaper = remember(prefs.readerTheme) { ReaderPapers.selected(prefs.readerTheme) }
-    ReaderSystemBarAppearance(if (screen == "reader") readerPaper.dark else prefs.dark)
+    val appTheme = AppTheme.fromId(prefs.appTheme)
+    ReaderSystemBarAppearance(if (screen == "reader") readerPaper.dark else appTheme.dark)
     var urlDialog by remember { mutableStateOf(false) }
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> if (uri != null) vm.import(uri) }
-    BackHandler(screen != "library") {
-        if (screen == "benchmark") vm.leaveBenchmark()
-        else vm.screen.value = if (screen == "reader" || playback.document == null) "library" else "reader"
-    }
+    BackHandler(screen != "library") { vm.back() }
     LaunchedEffect(message) { message?.let { snackbar.showSnackbar(it); vm.message.value = null } }
-    MaterialTheme(colorScheme = if (prefs.dark) darkColorScheme(
-        primary = Color(0xFF88D5C5), onPrimary = Color(0xFF00382F), primaryContainer = Color(0xFF164D43), onPrimaryContainer = Color(0xFFC4F4E4),
-        secondary = Color(0xFFB6CDC3), secondaryContainer = Color(0xFF2F4941), onSecondaryContainer = Color(0xFFD2E9DD),
-        surface = Color(0xFF171D1B), onSurface = Color(0xFFE2E9E3), surfaceVariant = Color(0xFF35413C), onSurfaceVariant = Color(0xFFB8C8BF),
-        background = Color(0xFF101614), onBackground = Color(0xFFE2E9E3), outlineVariant = Color(0xFF35413C),
-        surfaceContainerLowest = Color(0xFF0B110F), surfaceContainerLow = Color(0xFF171D1B), surfaceContainer = Color(0xFF1B2420),
-        surfaceContainerHigh = Color(0xFF25302A), surfaceContainerHighest = Color(0xFF303C35))
-        else lightColorScheme(
-            primary = Accent, onPrimary = Color.White, primaryContainer = Color(0xFFD9EFE7), onPrimaryContainer = Color(0xFF124C40),
-            secondary = Color(0xFF526C60), secondaryContainer = Color(0xFFE4EEE5), onSecondaryContainer = Color(0xFF284D3C),
-            surface = Color(0xFFFFFEFA), onSurface = Color(0xFF192B25), surfaceVariant = Color(0xFFE7ECE4), onSurfaceVariant = Color(0xFF57675F),
-            background = Color(0xFFF3F5EF), onBackground = Color(0xFF192B25), outlineVariant = Color(0xFFD8E1D7),
-            surfaceContainerLowest = Color(0xFFFFFFFF), surfaceContainerLow = Color(0xFFF6F7F1), surfaceContainer = Color(0xFFEFF2E9),
-            surfaceContainerHigh = Color(0xFFE9EDE4), surfaceContainerHighest = Color(0xFFE2E8DE)),
-        typography = Typography(
-            headlineMedium = TextStyle(fontFamily = FontFamily.Serif, fontSize = 30.sp, lineHeight = 36.sp, letterSpacing = (-.5).sp),
-            headlineSmall = TextStyle(fontSize = 25.sp, lineHeight = 32.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-.4).sp),
-            titleLarge = TextStyle(fontSize = 21.sp, lineHeight = 28.sp, fontWeight = FontWeight.SemiBold),
-            bodyLarge = TextStyle(fontSize = 18.sp, lineHeight = 28.sp, letterSpacing = 0.sp)),
-        shapes = Shapes(small = RoundedCornerShape(12.dp), medium = RoundedCornerShape(18.dp), large = RoundedCornerShape(24.dp))) {
+    AppThemeAppearance(appTheme) {
         Scaffold(snackbarHost = { SnackbarHost(snackbar) },
+            bottomBar = { if (screen in setOf("library", "voices", "settings")) LibraryNavigation(screen, vm::navigate) },
             containerColor = if (screen == "reader") readerPaper.chrome else MaterialTheme.colorScheme.background) { insets ->
-            Box(Modifier.fillMaxSize().padding(insets)) {
+            Box(Modifier.fillMaxSize().padding(insets).consumeWindowInsets(insets)) {
                 when (screen) {
                     "reader" -> ReaderTheme(prefs.readerTheme) { Reader(vm, playback, prefs, requestNotifications) }
                     "voices" -> Voices(vm)
@@ -95,7 +71,7 @@ private val Accent = Color(0xFF126D63)
                     "ocr" -> OcrSettingsScreen(vm, prefs)
                     "benchmark" -> BenchmarkScreen(vm, prefs)
                     "issues" -> IssueLogsScreen(vm)
-                    else -> Library(vm, { picker.launch(arrayOf("application/pdf", "image/*")) }, { urlDialog = true })
+                    else -> LibraryScreen(vm, appTheme, { picker.launch(arrayOf("application/pdf", "image/*")) }, { urlDialog = true }, requestNotifications)
                 }
             }
         }
@@ -109,82 +85,16 @@ private val Accent = Color(0xFF126D63)
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable private fun Library(vm: ReaderViewModel, import: () -> Unit, url: () -> Unit) {
-    val documents by vm.library.collectAsStateWithLifecycle()
-    val importing by vm.importing.collectAsStateWithLifecycle()
-    var deleting by remember { mutableStateOf<DocumentEntity?>(null) }
-    Column(Modifier.fillMaxSize()) {
-        TopAppBar(title = { Text(stringResource(R.string.app_name), fontWeight = FontWeight.SemiBold) }, actions = {
-            Tool(Icons.Default.RecordVoiceOver, "Voice models") { vm.screen.value = "voices" }
-            Tool(Icons.Default.Settings, "Settings") { vm.screen.value = "settings" }
-        })
-        Column(Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("Your library", style = MaterialTheme.typography.headlineMedium, modifier = Modifier.weight(1f))
-                Surface(color = MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(50)) {
-                    Row(Modifier.padding(horizontal = 10.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.OfflineBolt, null, Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSecondaryContainer)
-                        Spacer(Modifier.width(4.dp))
-                        Text("On device", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSecondaryContainer)
-                    }
-                }
-            }
-            Spacer(Modifier.height(4.dp))
-            Text(if (documents.isEmpty()) "Bring a book, PDF or article." else "${documents.size} ${if (documents.size == 1) "document" else "documents"} ready to open",
-                style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+@Composable private fun LibraryNavigation(screen: String, navigate: (String) -> Unit) {
+    NavigationBar(containerColor = MaterialTheme.colorScheme.surface, tonalElevation = 0.dp) {
+        listOf(
+            Triple("library", "Library", Icons.AutoMirrored.Filled.MenuBook),
+            Triple("voices", "Voices", Icons.Default.Headphones),
+            Triple("settings", "Settings", Icons.Default.Tune),
+        ).forEach { (route, label, icon) ->
+            NavigationBarItem(selected = screen == route, onClick = { navigate(route) },
+                icon = { Icon(icon, null) }, label = { Text(label) })
         }
-        Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Button(onClick = import, enabled = !importing, modifier = Modifier.weight(1f).heightIn(min = 48.dp), contentPadding = PaddingValues(horizontal = 12.dp)) {
-                Icon(Icons.Default.Add, null, Modifier.size(20.dp)); Spacer(Modifier.width(6.dp)); Text("Import file")
-            }
-            OutlinedButton(onClick = url, enabled = !importing, modifier = Modifier.weight(1f).heightIn(min = 48.dp), contentPadding = PaddingValues(horizontal = 12.dp)) {
-                Icon(Icons.Default.Link, null, Modifier.size(20.dp)); Spacer(Modifier.width(6.dp)); Text("Webpage")
-            }
-        }
-        if (importing) {
-            LinearProgressIndicator(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp))
-            Text("Adding to your library…", Modifier.padding(horizontal = 20.dp), style = MaterialTheme.typography.bodySmall)
-        }
-        if (documents.isEmpty()) Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            Surface(shape = RoundedCornerShape(28.dp), color = MaterialTheme.colorScheme.primaryContainer) {
-                Icon(Icons.AutoMirrored.Filled.MenuBook, null, Modifier.padding(24.dp).size(48.dp), tint = MaterialTheme.colorScheme.onPrimaryContainer)
-            }
-            Spacer(Modifier.height(24.dp))
-            Text("A little more time to read", style = MaterialTheme.typography.titleLarge)
-            Spacer(Modifier.height(8.dp))
-            Text("Import a document, then listen and follow along.", style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-            Spacer(Modifier.height(16.dp))
-            TextButton(onClick = { vm.sample() }, enabled = !importing) { Text("Try a sample") }
-        } else LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 24.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            items(documents, key = { it.id }) { doc ->
-                Card(onClick = { vm.open(doc) }, modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = .65f))) {
-                    Row(Modifier.fillMaxWidth().padding(start = 16.dp, top = 16.dp, bottom = 16.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Surface(Modifier.size(width = 48.dp, height = 64.dp), color = MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(10.dp)) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(if (doc.mime == "application/pdf") Icons.Default.PictureAsPdf else if (doc.mime.startsWith("image")) Icons.Default.Image else Icons.Default.Article,
-                                    null, tint = MaterialTheme.colorScheme.onPrimaryContainer)
-                            }
-                        }
-                        Column(Modifier.weight(1f).padding(start = 14.dp, end = 4.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text(doc.title, maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
-                            Text("${if (doc.mime == "application/pdf") "PDF" else if (doc.mime.startsWith("image")) "Image" else "Article"} · ${doc.pageCount} ${if (doc.pageCount == 1) "page" else "pages"}",
-                                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                        Tool(Icons.Default.DeleteOutline, "Delete ${doc.title}") { deleting = doc }
-                    }
-                }
-            }
-        }
-    }
-    deleting?.let { document ->
-        AlertDialog(onDismissRequest = { deleting = null }, title = { Text("Remove from library?") },
-            text = { Text("Remove “${document.title}” and its saved reading data from Read Assist? Your original file stays on your device.") },
-            confirmButton = { TextButton(onClick = { deleting = null; vm.deleteDocument(document) }) { Text("Remove", color = MaterialTheme.colorScheme.error) } },
-            dismissButton = { TextButton(onClick = { deleting = null }) { Text("Keep") } })
     }
 }
 
@@ -254,7 +164,7 @@ private val Accent = Color(0xFF126D63)
         // Keep navigation in the header and listening controls in one dock; the page owns the remaining height.
         if (!pageOnly) Surface {
             Row(Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                Tool(Icons.AutoMirrored.Filled.ArrowBack, "Library") { vm.screen.value = "library" }
+                Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.back() }
                 Column(Modifier.weight(1f).heightIn(min = 48.dp).clickable(onClickLabel = "Contents and bookmarks") { contents = true }.padding(vertical = 6.dp), verticalArrangement = Arrangement.Center) {
                     Text(state.document?.title ?: "Reader", maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -307,12 +217,12 @@ private val Accent = Color(0xFF126D63)
                         DropdownMenuItem(text = { Text("Playback speed · ${String.format(Locale.US, "%.2f×", prefs.speed)}") }, onClick = { speeds = true; menu = false }, leadingIcon = { Icon(Icons.Default.Speed, null) })
                         DropdownMenuItem(text = { Text("Back ten seconds") }, onClick = { vm.app.playback.skip(-10); menu = false }, leadingIcon = { Icon(Icons.Default.Replay10, null) })
                         DropdownMenuItem(text = { Text("Forward ten seconds") }, onClick = { vm.app.playback.skip(10); menu = false }, leadingIcon = { Icon(Icons.Default.Forward10, null) })
-                        DropdownMenuItem(text = { Text("Voice models") }, onClick = { vm.screen.value = "voices"; menu = false }, leadingIcon = { Icon(Icons.Default.RecordVoiceOver, null) })
+                        DropdownMenuItem(text = { Text("Voice models") }, onClick = { vm.navigate("voices"); menu = false }, leadingIcon = { Icon(Icons.Default.RecordVoiceOver, null) })
                         DropdownMenuItem(text = { Text(if (follow) "Stop following reading" else "Follow reading") }, onClick = { follow = !follow; menu = false }, leadingIcon = { Icon(Icons.Default.MyLocation, null) })
                         DropdownMenuItem(text = { Text(if (prefs.showPerformance) "Hide performance" else "Show performance") }, onClick = { vm.update(prefs.copy(showPerformance = !prefs.showPerformance)); menu = false }, leadingIcon = { Icon(Icons.Default.Speed, null) })
-                        DropdownMenuItem(text = { Text("Text recognition · ${modelDisplayName(prefs.ocrEngine)}") }, onClick = { vm.screen.value = "ocr"; menu = false }, leadingIcon = { Icon(Icons.Default.DocumentScanner, null) })
-                        DropdownMenuItem(text = { Text("Phone testbench") }, onClick = { vm.screen.value = "benchmark"; menu = false }, leadingIcon = { Icon(Icons.Default.Science, null) })
-                        DropdownMenuItem(text = { Text("Settings and appearance") }, onClick = { vm.screen.value = "settings"; menu = false }, leadingIcon = { Icon(Icons.Default.Tune, null) })
+                        DropdownMenuItem(text = { Text("Text recognition · ${modelDisplayName(prefs.ocrEngine)}") }, onClick = { vm.navigate("ocr"); menu = false }, leadingIcon = { Icon(Icons.Default.DocumentScanner, null) })
+                        DropdownMenuItem(text = { Text("Phone testbench") }, onClick = { vm.navigate("benchmark"); menu = false }, leadingIcon = { Icon(Icons.Default.Science, null) })
+                        DropdownMenuItem(text = { Text("Settings and appearance") }, onClick = { vm.navigate("settings"); menu = false }, leadingIcon = { Icon(Icons.Default.Tune, null) })
                         DropdownMenuItem(text = { Text("Reading details") }, onClick = { details = true; menu = false }, leadingIcon = { Icon(Icons.Default.Info, null) })
                         DropdownMenuItem(text = { Text("Issue logs") }, onClick = { vm.showIssues(); menu = false }, leadingIcon = { Icon(Icons.Default.BugReport, null) })
                         if (hasOriginal) {

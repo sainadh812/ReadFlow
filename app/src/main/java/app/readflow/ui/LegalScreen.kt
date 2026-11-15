@@ -38,7 +38,7 @@ import kotlinx.coroutines.withContext
     }
     Column(Modifier.fillMaxSize()) {
         TopAppBar(title = { Text("Privacy and licenses") }, navigationIcon = {
-            Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.screen.value = "settings" }
+            Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.back() }
         })
         LazyColumn(contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             item { SelectionContainer { Text(privacy, style = MaterialTheme.typography.bodyMedium) } }

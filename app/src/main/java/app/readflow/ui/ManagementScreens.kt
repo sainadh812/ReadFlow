@@ -34,7 +34,7 @@ import java.util.Locale
     val prefs by vm.preferences.collectAsStateWithLifecycle()
     var details by remember { mutableStateOf<String?>(null) }
     Column(Modifier.fillMaxSize()) {
-        TopAppBar(title = { Text("Voice models") }, navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.screen.value = if (vm.playback.value.document == null) "library" else "reader" } })
+        TopAppBar(title = { Text("Voice models") }, navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.back() } })
         LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
             items(vm.app.models.packs, key = { it.id }) { pack ->
                 val status = progress[pack.id]
@@ -122,14 +122,35 @@ import java.util.Locale
     var reportProblem by rememberSaveable { mutableStateOf(false) }
     var crashReportingConsent by rememberSaveable { mutableStateOf(false) }
     Column(Modifier.fillMaxSize()) {
-        TopAppBar(title = { Text("Make it yours") }, navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.screen.value = if (vm.playback.value.document == null) "library" else "reader" } })
+        TopAppBar(title = { Text("Make it yours") }, navigationIcon = { Tool(Icons.AutoMirrored.Filled.ArrowBack, "Back") { vm.back() } })
         LazyColumn(contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item {
                 Text("SETTINGS", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(start = 4.dp, top = 8.dp))
             }
-            item { SettingsDestination(Icons.Default.DocumentScanner, "Text recognition", "${modelDisplayName(prefs.ocrEngine)} · ${ocrQualityLabel(prefs.ocrQuality)}") { vm.screen.value = "ocr" } }
-            item { SettingsDestination(Icons.Default.RecordVoiceOver, "Voice models", "Choose a voice and manage downloaded models") { vm.screen.value = "voices" } }
+            item {
+                SettingsCard("Appearance", Icons.Default.Palette) {
+                    Text("App theme", style = MaterialTheme.typography.titleMedium)
+                    ThemeChooser(prefs.appTheme, vm::setAppTheme)
+                    HorizontalDivider(Modifier.padding(vertical = 4.dp))
+                    Text("Reader appearance", style = MaterialTheme.typography.titleMedium)
+                    val paper = ReaderPapers.selected(prefs.readerTheme)
+                    val font = ReaderFonts.options.firstOrNull { it.id == prefs.readerFont } ?: ReaderFonts.options.first()
+                    Surface(color = paper.paper, shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, paper.outline)) {
+                        Column(Modifier.fillMaxWidth().readerPaper(paper).padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text("A little more time to read.", color = paper.ink, fontFamily = font.family,
+                                style = MaterialTheme.typography.bodyLarge)
+                            Text("${paper.label} · ${font.label} · ${prefs.fontSize}", color = paper.muted,
+                                style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                    FilledTonalButton(onClick = { appearance = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                        Icon(Icons.Default.TextFields, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Paper, font and size")
+                    }
+                }
+            }
+            item { SettingsDestination(Icons.Default.DocumentScanner, "Text recognition", "${modelDisplayName(prefs.ocrEngine)} · ${ocrQualityLabel(prefs.ocrQuality)}") { vm.navigate("ocr") } }
+            item { SettingsDestination(Icons.Default.RecordVoiceOver, "Voice models", "Choose a voice and manage downloaded models") { vm.navigate("voices") } }
             item {
                 SettingsCard("Performance", Icons.Default.Speed) {
                     SettingsSwitch("Show reading metrics", "Speech speed, prepared audio and buffering gaps while you read.", prefs.showPerformance) {
@@ -149,28 +170,10 @@ import java.util.Locale
                         vm.updateSpeechPerformance(prefs.copy(allowSpinning = it))
                     }
                     HorizontalDivider(Modifier.padding(vertical = 4.dp))
-                    FilledTonalButton(onClick = { vm.screen.value = "benchmark" }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+                    FilledTonalButton(onClick = { vm.navigate("benchmark") }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
                         Icon(Icons.Default.Science, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Open phone testbench")
                     }
                     Text("Measure OCR, speech and word timing with repeatable samples on this phone.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-            }
-            item {
-                SettingsCard("Appearance", Icons.Default.Palette) {
-                    SettingsSwitch("App dark mode", "For your library and settings. Reader paper has its own choice.", prefs.dark) { vm.update(prefs.copy(dark = it)) }
-                    val paper = ReaderPapers.selected(prefs.readerTheme)
-                    val font = ReaderFonts.options.firstOrNull { it.id == prefs.readerFont } ?: ReaderFonts.options.first()
-                    Surface(color = paper.paper, shape = RoundedCornerShape(12.dp), border = BorderStroke(1.dp, paper.outline)) {
-                        Column(Modifier.fillMaxWidth().readerPaper(paper).padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text("A little more time to read.", color = paper.ink, fontFamily = font.family,
-                                style = MaterialTheme.typography.bodyLarge)
-                            Text("${paper.label} · ${font.label} · ${prefs.fontSize}", color = paper.muted,
-                                style = MaterialTheme.typography.bodySmall)
-                        }
-                    }
-                    FilledTonalButton(onClick = { appearance = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
-                        Icon(Icons.Default.TextFields, null, Modifier.size(20.dp)); Spacer(Modifier.width(8.dp)); Text("Paper, font and size")
-                    }
                 }
             }
             item {
@@ -259,7 +262,7 @@ import java.util.Locale
                 }
             }
             item { SettingsDestination(Icons.Default.LocalCafe, "Buy me a coffee", "Optional support · all current features stay free") { support = true } }
-            item { SettingsDestination(Icons.Default.Info, "Privacy and licenses", "How data is handled and third-party acknowledgments") { vm.screen.value = "legal" } }
+            item { SettingsDestination(Icons.Default.Info, "Privacy and licenses", "How data is handled and third-party acknowledgments") { vm.navigate("legal") } }
             item { Text("Read Assist ${app.readflow.BuildConfig.VERSION_NAME} · Android 15+\nDocument processing and speech stay on this device.",
                 Modifier.padding(horizontal = 4.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
         }
