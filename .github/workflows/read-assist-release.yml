@@ -11,6 +11,7 @@ on:
         options:
           - build
           - inspect_play
+          - inspect_store
           - publish_play
       upload_symbols:
         description: Upload this build's matching native symbols to the approved Firebase app
@@ -151,7 +152,7 @@ jobs:
         run: python3 scripts/ci_prepare_release.py cleanup
 
   play:
-    if: (inputs.operation == 'inspect_play' || inputs.operation == 'publish_play') && github.repository == 'sainadh812/ReadFlow' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/reader-playback-and-pdf-space')
+    if: (inputs.operation == 'inspect_play' || inputs.operation == 'inspect_store' || inputs.operation == 'publish_play') && github.repository == 'sainadh812/ReadFlow' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/reader-playback-and-pdf-space')
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     defaults:
@@ -182,6 +183,14 @@ jobs:
           READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
         run: python3 scripts/publish_play.py inspect
 
+      - name: Inspect Google Play store listing and media
+        if: inputs.operation == 'inspect_store'
+        env:
+          READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          python3 -m unittest discover -s scripts -p 'test_inspect_play_store.py'
+          python3 scripts/inspect_play_store.py
+
       - name: Publish the verified 0.3.1 bundle to Internal testing
         if: inputs.operation == 'publish_play'
         env:
@@ -194,6 +203,16 @@ jobs:
         with:
           name: Read-Assist-Play-${{ inputs.operation }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: build/play-upload-0.3.1/report.json
+          if-no-files-found: error
+          retention-days: 15
+          include-hidden-files: false
+
+      - name: Upload the sanitized store inspection report
+        if: always() && hashFiles('build/play-store-inspection/report.json') != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: Read-Assist-Store-Inspection-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/play-store-inspection/report.json
           if-no-files-found: error
           retention-days: 15
           include-hidden-files: false
