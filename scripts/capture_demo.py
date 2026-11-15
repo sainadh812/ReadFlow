@@ -136,9 +136,9 @@ class Capture:
         self.shell("input", "keyevent", "KEYCODE_BACK")
         time.sleep(.8)
 
-    def scroll_to(self, label, attempts=6):
+    def scroll_to(self, label, attempts=6, contains=False):
         for _ in range(attempts):
-            if self.find(label) is not None:
+            if self.find(label, contains=contains) is not None:
                 return
             self.swipe()
         raise CaptureError(f"Could not scroll to {label}")
@@ -245,10 +245,10 @@ class Capture:
         with self.recording("02-reading"):
             self.screenshot("03-reader-pdf")
             self.swipe(.84, .46, .16, .46, 800)
-            self.wait("Page 2 of 3")
+            self.wait("Page 2 of 3", contains=True)
             self.screenshot("04-page-turned")
             self.swipe(.16, .46, .84, .46, 800)
-            self.wait("Page 1 of 3")
+            self.wait("Page 1 of 3", contains=True)
             self.tap("Text view")
             self.screenshot("05-reader-text")
             time.sleep(3)
@@ -277,7 +277,7 @@ class Capture:
         with self.recording("04-dictionary"):
             self.tap("Reader menu")
             self.tap("Dictionary")
-            self.wait("English word")
+            self.tap("English word", contains=True)
             self.shell("input", "text", "curiosity")
             self.tap("Look up word")
             self.wait("curiosity", timeout=30)
@@ -293,14 +293,14 @@ class Capture:
         with self.recording("05-library-themes"):
             for label, filename in [("Modern Focus", "11-library-modern"), ("Night Reader", "12-library-night")]:
                 self.tap("Settings")
-                self.scroll_to(label)
-                self.tap(label)
+                self.scroll_to(label, contains=True)
+                self.tap(label, contains=True)
                 self.tap("Library")
                 self.screenshot(filename)
                 time.sleep(3)
             self.tap("Settings")
-            self.scroll_to("Warm Library")
-            self.tap("Warm Library")
+            self.scroll_to("Warm Library", contains=True)
+            self.tap("Warm Library", contains=True)
             self.screenshot("13-theme-chooser")
             self.tap("Library")
 
