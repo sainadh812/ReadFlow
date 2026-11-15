@@ -147,6 +147,19 @@ class FFmpeg:
                 "rmsDbFS": db(rms), "peakDbFS": db(peak), "activeOneSecondWindows": active_windows,
                 "meaning": "Signal-level check only; not speech recognition, listening review or a sync guarantee."}
 
+    def full_rate_audio_peak(self, path: Path) -> dict:
+        result = self.call(["-v", "error", "-i", str(path), "-map", "0:a:0", "-vn",
+                            "-f", "f32le", "-"], binary=True)
+        samples = array("f", result.stdout)
+        if sys.byteorder != "little":
+            samples.byteswap()
+        if not samples or any(not math.isfinite(value) for value in samples):
+            raise MediaError("Decoded audio is empty or contains nonfinite samples.")
+        peak = max(abs(value) for value in samples)
+        return {"peakLinear": peak, "peakDbFS": 20 * math.log10(peak) if peak else None,
+                "clippedSamples": sum(abs(value) >= 1 for value in samples),
+                "analysis": "Float32 decode of every channel at the original sample rate; no downmix or resampling."}
+
 
 def wrapped(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont, width: int) -> list[str]:
     lines = []
@@ -267,9 +280,28 @@ def audio_input(directory: Path, clip: dict, adjustment: float) -> tuple[Path | 
     return input_file(directory, name), lead + adjustment
 
 
+def audio_gain(settings: dict) -> float:
+    value = number(settings.get("audioGainDb", 0), "Constant audio gain", -60)
+    if value > 30:
+        raise MediaError("Constant audio gain must not exceed 30 dB.")
+    return value
+
+
+def validate_gain(ff: FFmpeg, source: Path, gain: float) -> None:
+    if gain > 0:
+        peak = ff.full_rate_audio_peak(source)["peakDbFS"]
+        if peak is not None and peak + gain > -1:
+            raise MediaError("Requested audio gain would leave less than 1 dB of measured peak headroom.")
+
+
 def render_scene(ff: FFmpeg, source: Path, audio: Path | None, lead: float, cut: dict, bg: Path, destination: Path,
                  *, embedded: bool = False) -> None:
     duration, start = cut["duration"], cut["start"]
+    gain = audio_gain(cut)
+    if gain:
+        if audio is None:
+            raise MediaError("Audio gain requires an actual recorded audio source.")
+        validate_gain(ff, audio, gain)
     args = ["-y", "-v", "error", "-loop", "1", "-framerate", str(FPS), "-i", str(bg),
             "-i", str(source)]
     audio_start = start + lead
@@ -290,11 +322,13 @@ def render_scene(ff: FFmpeg, source: Path, audio: Path | None, lead: float, cut:
     if embedded:
         # AAC can begin after the first video frame. Put decoded audio on the
         # same t=0 timeline before trimming, preserving that recorded silence.
-        vf += f"[2:a]aresample=48000:first_pts=0,atrim=start={start}:duration={duration},asetpts=PTS-STARTPTS"
+        vf += f"[2:a]aresample=48000:async=1:min_hard_comp=0:first_pts=0,atrim=start={start}:duration={duration},asetpts=PTS-STARTPTS"
     else:
         vf += "[2:a]asetpts=PTS-STARTPTS"
     if audio is not None and audio_start < 0:
         vf += f",adelay={round(-audio_start * 1000)}:all=1"
+    if gain:
+        vf += f",volume={gain}dB"
     vf += f",apad,atrim=duration={duration},aresample=48000[a]"
     args += ["-filter_complex", vf, "-map", "[v]", "-map", "[a]", "-t", str(duration),
              "-c:v", "libx264", "-preset", "medium", "-crf", "19", "-pix_fmt", "yuv420p",
@@ -331,6 +365,7 @@ def foreground_service(ff: FFmpeg, directory: Path, output: Path, capture: dict,
         return dict(result, unavailable="Background-playback clip is missing.")
     clip = clips[FGS_FILE]
     settings = recipe.get("foregroundService", {})
+    gain = audio_gain(settings)
     adjustment = number(settings.get("audioOffsetAdjustmentSeconds", 0), "FGS audio offset adjustment", -30)
     audio, lead = audio_input(directory, clip, adjustment)
     if audio is None:
@@ -341,17 +376,26 @@ def foreground_service(ff: FFmpeg, directory: Path, output: Path, capture: dict,
     audio_probe = ff.probe(audio)
     if not audio_probe["hasAudio"]:
         raise MediaError("The declared audio source contains no audio stream.")
+    validate_gain(ff, audio, gain)
     if audio_probe["durationSeconds"] - max(lead, 0) + max(-lead, 0) < duration - .5:
         raise MediaError("Captured FGS audio ends more than half a second before the video; investigate synchronization.")
     destination = output / "Read-Assist-0.3.2-foreground-service.mp4"
-    if embedded:
+    if embedded and gain == 0:
         # Preserve the recorder's original device timestamps, encoded streams,
         # and container bytes for uncut foreground-service evidence.
         shutil.copyfile(source, destination)
+    elif embedded:
+        # A disclosed constant gain restores a quiet live capture. Keep the
+        # original video packets and audio timeline; retain the raw MP4 too.
+        ff.call(["-y", "-v", "error", "-copyts", "-i", str(source), "-map", "0:v:0", "-map", "0:a:0",
+                 "-c:v", "copy", "-af", f"volume={gain}dB", "-c:a", "aac", "-b:a", "192k",
+                 "-movflags", "+faststart", str(destination)])
     else:
         af = f"atrim=start={max(0, lead)},asetpts=PTS-STARTPTS"
         if lead < 0:
             af += f",adelay={round(-lead * 1000)}:all=1"
+        if gain:
+            af += f",volume={gain}dB"
         af += f",apad,atrim=duration={duration}"
         ff.call(["-y", "-v", "error", "-i", str(source), "-i", str(audio), "-map", "0:v:0", "-map", "1:a:0",
                  "-c:v", "copy", "-af", af, "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
@@ -362,9 +406,12 @@ def foreground_service(ff: FFmpeg, directory: Path, output: Path, capture: dict,
         raise MediaError("FGS output video stream differs from the original capture; evidence was not preserved.")
     source_audio_hash = ff.audio_stream_hash(audio)
     output_audio_hash = ff.audio_stream_hash(destination)
-    if embedded and (digest(source) != digest(destination) or source_audio_hash != output_audio_hash):
+    if embedded and gain == 0 and (digest(source) != digest(destination) or source_audio_hash != output_audio_hash):
         raise MediaError("FGS output differs from the original device-synchronized capture.")
     stats = ff.audio_stats(destination)
+    peak = ff.full_rate_audio_peak(destination)
+    if gain > 0 and peak["peakDbFS"] is not None and peak["peakDbFS"] >= -.1:
+        raise MediaError("Raised audio has insufficient decoded peak headroom; reduce the gain.")
     playing = session_state(directory, "background-media-session.txt", 3)
     paused = session_state(directory, "playback-session-paused.txt", 2)
     evidence_flag = capture.get("backgroundPlaybackEvidenceRecorded") is True
@@ -376,7 +423,9 @@ def foreground_service(ff: FFmpeg, directory: Path, output: Path, capture: dict,
                    "sourceVideo": FGS_FILE, "sourceVideoSha256": digest(source),
                    "sourceCapture": clip.get("sourceCapture"),
                    "sourceAudio": audio.relative_to(directory).as_posix(), "sourceAudioSha256": digest(audio),
-                   "embeddedDeviceAudio": embedded, "rawContainerUnchanged": embedded,
+                   "embeddedDeviceAudio": embedded, "rawContainerUnchanged": embedded and gain == 0,
+                   "rawAudioUnchanged": embedded and gain == 0, "constantAudioGainDb": gain,
+                   "audioProcessing": "Constant gain only, then AAC encoding; no replacement, noise removal, dynamic compression or timing change." if gain else "No gain adjustment.",
                    "encodedAudioStreamSha256": output_audio_hash, "sourceAudioStreamSha256": source_audio_hash,
                    "audioCaptureMethod": clip.get("audioCaptureMethod", "Separate host monitor recording"),
                    "recorder": clip.get("recorder"), "recordedAudioSynchronization": clip.get("audioSynchronization"),
@@ -384,8 +433,9 @@ def foreground_service(ff: FFmpeg, directory: Path, output: Path, capture: dict,
                    "deviceSpeakerOutputRedirectedDuringRecording": clip.get("deviceSpeakerOutputRedirectedDuringRecording") is True,
                    "recordedHostAudioLeadSecondsApprox": clip.get("hostAudioLeadSecondsApprox"),
                    "operatorOffsetAdjustmentSeconds": adjustment, "appliedAudioLeadSeconds": lead,
-                   "audioAlignmentRule": "Original device timestamps and container preserved unchanged." if embedded else "Output t=0 uses source WAV t=appliedAudioLeadSeconds; negative lead adds initial silence.",
+                   "audioAlignmentRule": ("Original device timeline retained; encoded video unchanged; audio re-encoded at disclosed constant gain." if gain else "Original device timestamps and container preserved unchanged.") if embedded else "Output t=0 uses source WAV t=appliedAudioLeadSeconds; negative lead adds initial silence.",
                    "audioTailPaddingLimitSeconds": 0 if embedded else .5, "audioStatistics": stats,
+                   "fullRateAudioPeak": peak,
                    "capturePlaybackEvidenceFlag": evidence_flag, "backgroundPlaying": playing, "notificationPaused": paused,
                    "usesPreviouslyPreparedAudio": capture.get("playbackClipUsesPreviouslyPreparedAudio") is True,
                    "preparationBeforeRecording": capture.get("playbackPreparation"),
@@ -443,6 +493,7 @@ def build(directory: Path, output: Path, recipe_path: Path | None) -> dict:
                                        "recorderArchiveSha256": clip.get("recorderArchiveSha256"),
                                        "deviceSpeakerOutputRedirectedDuringRecording": clip.get("deviceSpeakerOutputRedirectedDuringRecording") is True,
                                        "recordedAudioSynchronization": clip.get("audioSynchronization"),
+                                       "constantAudioGainDb": audio_gain(cut),
                                        "appliedAudioLeadSeconds": lead, "output": part.relative_to(output).as_posix()})
         concat = work / "concat.txt"
         concat.write_text("".join(f"file 'scene-{index:02d}.mp4'\n" for index in range(len(segments))))
