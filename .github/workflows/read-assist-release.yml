@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       operation:
-        description: Build a signed candidate, inspect Play access, or publish the verified 0.3.1 bundle to Internal testing
+        description: Build, record app media, inspect Play, or publish the verified 0.3.1 release
         type: choice
         required: true
         default: build
@@ -21,6 +21,11 @@ on:
         description: Upload this build's matching native symbols to the approved Firebase app
         type: boolean
         required: true
+        default: false
+      reuse_capture_build:
+        description: Capture only — reuse the exact verified emulator APKs from run 43745021098
+        type: boolean
+        required: false
         default: false
 
 # Play access is restricted to the explicit API operations below. No repository
@@ -269,6 +274,9 @@ jobs:
     if: inputs.operation == 'capture_demo' && github.repository == 'sainadh812/ReadFlow' && github.ref == 'refs/heads/fix/reader-playback-and-pdf-space'
     runs-on: ubuntu-24.04
     timeout-minutes: 60
+    permissions:
+      contents: read
+      actions: read
     defaults:
       run:
         shell: bash
@@ -295,15 +303,26 @@ jobs:
           packages: platform-tools
           log-accepted-android-sdk-licenses: false
       - name: Install emulator and recording tools
+        env:
+          REUSE_CAPTURE_BUILD: ${{ inputs.reuse_capture_build }}
         run: |
-          sdkmanager "platforms;android-36" "build-tools;35.0.0" "ndk;27.2.12479018" "cmake;3.22.1" "emulator" "system-images;android-35;google_apis;x86_64"
+          sdkmanager "emulator" "system-images;android-35;google_apis;x86_64"
+          if [[ "$REUSE_CAPTURE_BUILD" != 'true' ]]; then
+            sdkmanager "platforms;android-36" "build-tools;35.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
+          fi
           sudo apt-get update -qq
           sudo apt-get install -y ffmpeg pulseaudio
           sudo chmod a+rw /dev/kvm
       - name: Build the release runtime for emulator capture only
+        if: inputs.reuse_capture_build != true
         run: |
           bash scripts/bootstrap.sh --play
           ./gradlew :app:assembleRelease :app:assembleReleaseAndroidTest -Pemulator=true -PstoreDemo=true --console=plain --no-daemon
+      - name: Reuse the exact verified emulator capture APKs
+        if: inputs.reuse_capture_build == true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/reuse_capture_build.py
       - name: Record real app screens and background playback
         env:
           CAPTURE_SOURCE_SHA: ${{ github.sha }}
