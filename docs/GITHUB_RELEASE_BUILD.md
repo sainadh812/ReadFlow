@@ -1,14 +1,15 @@
 # Read Assist: GitHub release build and Google Play publication
 
 The owner chose GitHub Actions for the configured, signed build. The workflow is
-manual only. Its default `build` operation builds the approved
-`fix/reader-playback-and-pdf-space` branch. The owner subsequently authorized
-**full publication of 0.3.1/code 27**, including store copy, screenshots, demo
-videos and promotion to production for the existing `app.readflow` app.
-[Publication run 43743340573](https://github.com/sainadh812/ReadFlow/actions/runs/43743340573)
-confirmed code 27 published to **Internal testing** on 15 November 2026; see the
-[release evidence](evidence/reader-0.3.1/play-publication.json). That evidence does
-not establish store-media completion, production access or production publication.
+manual only; every operation checks out the immutable dispatched commit
+(`github.sha`) on an allowed branch. The owner authorized **full publication**,
+including store copy, screenshots, demo videos and production for `app.readflow`.
+The current candidate is **0.3.2/code 28**, which fixes a dictionary lookup failure
+found during actual Android emulator testing. New signed-artifact verification,
+usable recordings and publication are pending; see the
+[current readiness handoff](PRODUCTION_READINESS_0.3.2.md). Historical code 27
+Internal testing publication is recorded below and does not establish code 28
+availability or production publication.
 
 ## Current setup
 
@@ -34,14 +35,15 @@ not establish store-media completion, production access or production publicatio
   JSON credential as the repository Actions secret
   `READFLOW_PLAY_SERVICE_ACCOUNT_JSON`. The API operations read that secret only
   in their execution step; it is not an artifact, repository file, or command-line
-  argument. Successful authentication and Internal testing publication are recorded in the [current release handoff](PLAY_UPLOAD_0.3.1.md).
-- Store publication additionally needs **Manage store presence**; production
-  promotion needs **Release to production, exclude devices, and use Play App Signing**
-  for Read Assist. These additional grants remain unverified until exercised with
-  the API. Keep the same service account and `READFLOW_PLAY_SERVICE_ACCOUNT_JSON`
-  secret; no replacement key is needed. Policy declarations may separately need
-  **Manage policy declarations** and Console work. Owner authorization is not
-  evidence that Google has granted production eligibility or accepted declarations.
+  argument. Successful authentication and Internal testing publication are recorded
+  in the [historical 0.3.1 handoff](PLAY_UPLOAD_0.3.1.md).
+- The owner subsequently reports adding **Manage store presence**, **Release to
+  production, exclude devices, and use Play App Signing**, and **Manage policy
+  declarations** for Read Assist. Actual relevant API/Console access remains to
+  be verified. Keep the same service account and `READFLOW_PLAY_SERVICE_ACCOUNT_JSON`
+  secret; no replacement key is needed. A permission grant does not establish
+  production eligibility or accepted declarations, and a service-account key does
+  not provide an interactive Play Console login.
 
 ## Current Google Play API operations
 
@@ -54,61 +56,66 @@ an `operation`:
 | `inspect_play` | Check API access and inspect the existing app and Internal testing state without committing a release. |
 | `inspect_store` | Read listing copy, image hashes, bundles, tracks and available lifecycle information; delete the temporary inspection edit without committing. |
 | `capture_demo` | Build an isolated emulator variant and attempt actual app screenshots, videos and background-playback evidence. No Play upload or production signing key is used. |
-| `publish_play` | Upload the exact verified 0.3.1 AAB below and commit it to Internal testing. |
+| `publish_play` | Upload the exact verified 0.3.2 AAB after its pins are finalized and commit it to Internal testing. |
 | `publish_store` | Publish approved en-US listing copy and verified icon, feature graphic and actual app screenshots; preserve tracks, other locales and app details. |
-| `validate_production` | Stage promotion of the existing verified code 27 bundle, call Play validation, then delete the owned edit without committing. |
-| `publish_production` | Promote the existing verified code 27 bundle to production, validate and commit, then check the resulting release state. No bundle upload or rebuild occurs. |
+| `validate_production` | Stage promotion of the existing verified code 28 bundle, call Play validation, then delete the owned edit without committing. |
+| `publish_production` | Promote the existing verified code 28 bundle to production, validate and commit, then check the resulting release state. No bundle upload or rebuild occurs. |
 
-The Play operations check out the dispatched Git commit (`github.sha`), install
-hash-pinned Python dependencies, and run publishing safeguards before accessing
-the credential. They share the build workflow's concurrency group and retain its
-repository and approved-branch restrictions. No new Android build runs during
-these operations.
+All jobs check out the dispatched Git commit (`github.sha`), with persisted Git
+credentials disabled. Build and Play jobs accept only `sainadh812/ReadFlow` on
+`main` or `fix/reader-playback-and-pdf-space`; use the release branch for this
+candidate. Play jobs install hash-pinned Python dependencies and run publishing
+safeguards before accessing the credential; they do not rebuild Android artifacts.
+Build and Play operations serialize in `read-assist-production-build`.
+`capture_demo` has the separate `read-assist-demo-capture` concurrency group, so
+capture can run alongside a signed build or API operation. Neither group cancels
+an in-progress run.
 
-Store operations use `store-assets/release-0.3.1/manifest.json` and
+Store operations use `store-assets/release-0.3.2/manifest.json` and
 `store-assets/listing/en-US.json`. They verify PNG sizes, dimensions, hashes and
 source provenance, including the generator, fonts and original app captures.
 The required set is one 512×512 icon, one 1024×500 feature graphic and 2–8 actual
 1080×1920 screenshots. Conflicting existing media is not deleted automatically.
 Production additionally requires the live listing and media to match these
-approved files, completed Internal testing code 27, and Google's bundle hash to
+approved files, completed Internal testing code 28, and Google's bundle hash to
 match the AAB below. A newer bundle/track or an active or halted production rollout
 stops promotion. Other tracks and store metadata must remain unchanged.
 
 `capture_demo` runs only from the approved release branch. Its source-tree guard
-requires `app/src/main` and `app/src/release` to match the signed 0.3.1 source.
+requires `app/src/main` and `app/src/release` to match the reviewed 0.3.2
+application source; signed-artifact verification is still required independently.
 Capture provenance records the actual commit, APK hash and emulator build:
 x86_64 release runtime, local debug signing and no configured Firebase. These
 recordings are not physical-device or Play-installed ARM64 verification. Review
 the capture report, footage and real audio before generating or publishing media;
 a capture dispatch alone does not establish that usable media was produced.
 
-For capture-script retries, `reuse_capture_build=true` downloads only the two
-SHA-256-pinned emulator APKs from run `43745021098`, whose compilation passed.
-The app, release, seed and Gradle source objects must still match that build.
-The first run's emulator failed to find its AVD and produced no app media;
-the wrapper now uses an explicit shared AVD path and bounded startup waits.
-Reused APK build provenance and the current capture-script commit are recorded
-separately. If those artifacts expire or source guards differ, build normally
-with `reuse_capture_build=false`.
+Keep `reuse_capture_build=false` for 0.3.2. The existing reuse helper pins emulator
+APKs from historical 0.3.1 run `43745021098`; those APKs cannot verify the dictionary
+fix or supply code 28 media. Reuse may be enabled only after a separate, verified
+code 28 emulator build and all matching APK/source pins are deliberately recorded.
+Capture provenance must distinguish the APK build from any later capture script.
 
 Store and production commits use `ERROR_IF_IN_REVIEW`; ambiguous commit responses
 require reconciliation rather than automatic retries. Validation failures and
 Console requirements are retained as evidence. An empty production track or an
 inspection lifecycle quota error does not establish production eligibility or a
-permission refusal. See [production submission evidence](PRODUCTION_READINESS_0.3.1.md).
+permission refusal. See [current production readiness](PRODUCTION_READINESS_0.3.2.md).
 
-The publishing script pins this existing GitHub release artifact:
+The current publishing target is:
 
-- Repository/tag: `sainadh812/ReadFlow` / `v0.3.1-play-candidate`.
-- Asset: `Read-Assist-0.3.1-upload-signed.aab`, **72,436,099 bytes**.
-- SHA-256: `a247863362aec730e6c50ebe85a403de8cb572821276077d38a3c0b2f8e7e1f6`.
-- Package/version: `app.readflow`, **0.3.1/code 27**.
-- App source commit: `94006546634355658abfba7ce1a7a442d8825828`.
-- Signed build: [run 43736870521](https://github.com/sainadh812/ReadFlow/actions/runs/43736870521).
-- Evidence: [configured release](evidence/reader-0.3.1/release-evidence.json),
-  [GitHub artifact verification](evidence/reader-0.3.1/github-release.json), and
-  [independent AAB verification](evidence/reader-0.3.1/aab-verification.json).
+- Repository/tag: `sainadh812/ReadFlow` / `v0.3.2-play-candidate` (publication pending).
+- Asset: `Read-Assist-0.3.2-upload-signed.aab`, package `app.readflow`, **0.3.2/code 28**.
+- Application fix revision: `a6c99f33f6e8934f4a304355a3e093b1b569dfa8`.
+- Dispatched build/capture revision: `e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3`.
+- Signed build: [run 43749924111](https://github.com/sainadh812/ReadFlow/actions/runs/43749924111);
+  capture: [run 43749926901](https://github.com/sainadh812/ReadFlow/actions/runs/43749926901).
+  These links record dispatches, not verified outcomes.
+- **New AAB byte count and SHA-256 remain unverified.** The publishers use size `0`
+  and `UNVERIFIED_0_3_2_AAB_SHA256` and fail before credentials/API access for upload
+  or production validation/promotion. Set both pins only from independently audited
+  code 28 bytes; never reuse the code 27 hash. Inspection and store operations
+  remain available.
 
 Dispatch inspection from the approved release branch:
 
@@ -120,10 +127,13 @@ gh workflow run read-assist-release.yml \
   -f upload_symbols=false
 ```
 
-Select another operation using the same command. After inspecting current state,
-review captured media and commit the approved assets, publish the store listing,
-then run `validate_production` before `publish_production`. These operations do not
-submit policy declarations or resolve account/testing prerequisites automatically.
+Select another operation using the same command; keep capture reuse disabled.
+Verify the new signed artifact and Android regression, publish the exact GitHub
+candidate, finalize its hash/size pins, inspect Play and publish code 28 to Internal
+testing. Review actual media and commit the approved assets before `publish_store`.
+Resolve outstanding declarations, then run `validate_production` before
+`publish_production`. These operations do not submit policy declarations or resolve
+account/testing prerequisites automatically.
 GitHub supports `--ref` with workflow
 inputs; the workflow must already exist on the repository's default branch for
 manual dispatch. See [GitHub's manual workflow instructions](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow).
@@ -133,18 +143,45 @@ API reports contain sanitized evidence and are retained as Actions artifacts for
 
 | Operations | Report | Artifact prefix |
 | --- | --- | --- |
-| `inspect_play`, `publish_play` | `build/play-upload-0.3.1/report.json` | `Read-Assist-Play-<operation>` |
+| `inspect_play`, `publish_play` | `build/play-upload-0.3.2/report.json` | `Read-Assist-Play-<operation>` |
 | `inspect_store` | `build/play-store-inspection/report.json` | `Read-Assist-Store-Inspection` |
 | `publish_store` | `build/play-store-publication/report.json` | `Read-Assist-Store-Publication` |
 | `validate_production`, `publish_production` | `build/play-production-publication/report.json` | `Read-Assist-Production` |
 
-Artifact names append `<run-id>-<attempt>`. `capture_demo` separately retains
-`build/store-media/capture/`, the emulator APK and its test APK in
+Artifact names append `<run-id>-<attempt>`. `build` retains `dist/play-production/`
+in `Read-Assist-signed-candidate-<run-id>-<attempt>` for 14 days. `capture_demo`
+separately retains `build/store-media/capture/`, the emulator APK and its test APK in
 `Read-Assist-Store-Capture-<run-id>-<attempt>` for 15 days, including diagnostics on
 failed runs. Preserve relevant reports, media hashes and run URLs. A successful
 build, capture, validation or commit does not by itself establish public store
 availability: distinguish lifecycle states such as in review, published and
 availability unconfirmed, including failures to read lifecycle information.
+
+## Historical 0.3.1 Internal testing publication — 15 November 2026
+
+[Publication run 43743340573](https://github.com/sainadh812/ReadFlow/actions/runs/43743340573)
+confirmed **0.3.1/code 27** published to Internal testing. See the
+[release evidence](evidence/reader-0.3.1/play-publication.json). This does not
+establish store-media completion, production eligibility or production publication.
+The actual Android dictionary failure found later is why the current candidate
+uses code 28.
+
+The historical verified artifact was:
+
+- Repository/tag: `sainadh812/ReadFlow` / `v0.3.1-play-candidate`.
+- Asset: `Read-Assist-0.3.1-upload-signed.aab`, **72,436,099 bytes**.
+- SHA-256: `a247863362aec730e6c50ebe85a403de8cb572821276077d38a3c0b2f8e7e1f6`.
+- Package/version: `app.readflow`, **0.3.1/code 27**.
+- App source commit: `94006546634355658abfba7ce1a7a442d8825828`.
+- Signed build: [run 43736870521](https://github.com/sainadh812/ReadFlow/actions/runs/43736870521).
+- Evidence: [configured release](evidence/reader-0.3.1/release-evidence.json),
+  [GitHub artifact verification](evidence/reader-0.3.1/github-release.json), and
+  [independent AAB verification](evidence/reader-0.3.1/aab-verification.json).
+
+The historical capture build `43745021098` compiled its two emulator APKs, but
+that run could not find its AVD and produced no app media. The later wrapper uses
+an explicit shared AVD path and bounded startup waits. Those old APK hashes and
+source guards remain specific to code 27.
 
 ## Historical configured build — 31 October 2026
 
@@ -169,14 +206,18 @@ Artifacts expire after 14 days; preserve the downloaded files and their checksum
   fonts match 0.2.5; only the app-owned Misaki native binary changed. This comparison
   does not establish legal clearance.
 - Native symbols were generated and retained, but not uploaded. No phone crash
-  delivery or device testing was verified. **0.2.6/code 22 has not been uploaded to Play.**
+  delivery or device testing was verified. **At this build handoff, 0.2.6/code 22
+  had not been uploaded to Play.**
+  The later November 2026 inspection found code 22 already published to Internal
+  testing; this historical build note is not the current track state.
 
 Evidence: [release](evidence/play-store-0.2.6-configured/release-evidence.json),
 [checksums](evidence/play-store-0.2.6-configured/SHA256SUMS.json),
 [local verification](evidence/play-store-0.2.6-configured/local-verification.json),
 [dependency delta](evidence/play-store-0.2.6-configured/dependency-delta.json),
 [GitHub publication](evidence/play-store-0.2.6-configured/github-release.json).
-Use this exact candidate for further checks; rebuild only if a change is needed.
+These facts apply only to the historical code 22 candidate; use the current
+code 28 handoff for new publication work.
 
 The historical configured **0.2.5/code 21** build remains documented in
 [run 40529659238](https://github.com/sainadh812/ReadFlow/actions/runs/40529659238)
@@ -221,7 +262,8 @@ artifact. The client JSON is app configuration, not an administrative credential
 
 Use **Actions → Read Assist signed release candidate → Run workflow** and choose
 `operation=build`. The workflow must exist on `main` for this button to be
-available; the build operation checks out the approved release branch separately.
+available. Select the approved release branch when dispatching; the build checks
+out that dispatch's immutable `github.sha`, not a later branch tip.
 Leave native symbol upload off for the initial build/review.
 
 The workflow validates the exact Firebase destination, installs the pinned Android
