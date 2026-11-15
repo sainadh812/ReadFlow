@@ -42,6 +42,8 @@ Do not submit “no data collected” based on local document processing. The ac
 
 For the form, account for crash logs, diagnostics, device/other IDs, and applicable performance/session information from enabled Firebase reporting; this flow is optional because it has a real default-off choice. Firebase expressly identifies its Installations and Sessions dependencies. The separate email-support flow can contain an email address, user-written description and optionally reduced technical details. Model/dictionary hosts and imported websites receive connection/request information. Local theme changes and local dictionary queries add no off-device collection by themselves. Exact form choices must reflect both these code facts and the owner's actual recipient/support practices; the older worksheet is not evidence that the Console answers were completed. [Firebase disclosure](https://firebase.google.com/docs/android/play-data-disclosure#crashlytics), [Play Data safety definitions](https://support.google.com/googleplay/android-developer/answer/10787469).
 
+The form's optional/required choice applies to each data type across its collection paths. In particular, do not mark diagnostics or device/other IDs optional solely because Crashlytics is optional: ML Kit also collects them and has no app-level opt-out here. Similarly, a sharing exception for user-initiated email or payment handoff does not automatically remove collection disclosures. The existing owner-approved support retention is **90 days after resolution**, with earlier deletion requests through the privacy contact; payment records follow actual accounting/legal obligations. These retained owner facts do not need to be requested again.
+
 No new privacy-policy mismatch was found for dictionary/themes/lighting in this review. No first-launch/consent network capture or Firebase delivery test was performed here; configured SDK presence is not delivery evidence.
 
 ## Notices, models and demo content
@@ -70,9 +72,33 @@ The remaining work is to inspect and complete the actual Console fields, using a
 | Service-account permissions | The owner previously granted app view and testing releases. Store-presence and production publishing permission updates are being handled separately. Inspect the actual grant or API result; a lifecycle quota response does not prove a missing grant. |
 | Production access/account status | Account type, verification status, production eligibility and any Console-specific testing prerequisite are not in the inspected API report. Do not assume a personal-account test requirement or that Internal publication satisfies it. |
 | Store presence | The observed en-US listing lacked descriptions and graphics. Current images/video publication is separate work; verify the final listing after its commit. |
-| App content | Verify submitted Data safety, ads declaration, target audience, content rating, app access, privacy URL and foreground-service declaration. Source supports no ads, no app login and no paid feature gate; target audience and rating must be chosen from actual intended users/content, including the general-purpose dictionary. No current completion state was retrieved. |
+| App content | Verify submitted Data safety, ads, target audience, content rating, app access, privacy URL and foreground-service declarations. Ready-to-enter answers are below. The owner supplies intended age groups; rating authorities derive ratings from the completed content questionnaire, including the general-purpose dictionary. No current completion state was retrieved. |
 | Distribution | Confirm the existing free price and chosen territories in Console. Current user authorization covers publication; do not infer new prices or country exclusions. |
 | Creator support | Owner confirmation of `readassist@ybl` registration/recipient and what transaction details the recipient actually receives is absent from repository evidence. Use real owner/provider facts for the relevant disclosure rather than inventing a payment backend or a verified recipient name. |
+
+## Console handoff: answers already supported by evidence
+
+Open **Read Assist → Policy and programs → App content** and review **Needs attention** and existing declarations. Preserve accurate saved answers; the table is a handoff, not evidence that these fields have been submitted. [Google's app-review preparation instructions](https://support.google.com/googleplay/android-developer/answer/9859455).
+
+| Field | Answer/material ready to use |
+| --- | --- |
+| Privacy policy | `https://sainadh812.github.io/ReadFlow/privacy.html` |
+| Ads | **No**. The reviewed app has no ads or advertising SDK. |
+| App access / sign-in details | **No access restrictions requiring authentication**. No login, invitation, subscription or purchase is required. Use the reviewer steps below for optional model/dictionary setup; do not invent a demo account. |
+| Advertising ID, if requested | **No**. The exact signed code 27 manifest has no `com.google.android.gms.permission.AD_ID`; no Advertising ID use or advertising-ID dependency was found in release source/runtime inventory. ML Kit installation IDs are a separate Data safety disclosure. |
+| Health apps | **No health features** for this document reader. The reviewed app has no health tracking, diagnosis, treatment, medical service or Health Connect integration. Reading fonts and lighting do not justify a medical claim. Complete the declaration even for an app without health features. [Health declaration guidance](https://support.google.com/googleplay/android-developer/answer/14738291). |
+| Foreground service | **Media playback**. Paste the functionality and interruption explanations below and attach the reviewed continuous background-playback URL once published. A product montage alone is insufficient evidence. |
+| Store contact / price | Use `xperimenting.ai@gmail.com`; preserve **Free** pricing. The current [en-US copy](../store-assets/listing/en-US.json) is ready for automation: title Read Assist, short description 80 characters, full description 1,744 characters. Store-media completion remains pending its publication evidence. |
+
+The manifest check used the exact AAB/hash above and found only Internet, network state, foreground service/media playback, notifications, wake lock and the app's dynamic-receiver permission. No broad photo/file, location, microphone, SMS or call-log permission is present.
+
+Remaining owner/account facts are limited to the following; obtain existing Console/account records first:
+
+1. **Actual intended age groups and existing distribution territories.** Complete the rating questionnaire from the neutral reference content and general-purpose Wiktionary pack; do not select a desired rating or assume every content question is No. Google's reference category includes dictionaries. [Rating questionnaire guidance](https://support.google.com/googleplay/android-developer/answer/6159966).
+2. **Account verification and production access.** For personal accounts created after 13 November 2023, Google's requirement is 12 continuously opted-in closed testers for 14 days and a production-access application; inspect whether it applies to this account. The verified Internal release does not supply that evidence. Use real tester engagement/feedback, resulting changes and the owner's install forecast if the application asks; no such history or forecast is established here. [Conditional testing requirements](https://support.google.com/googleplay/android-developer/answer/14151465).
+3. **UPI recipient/provider facts and final Data safety choices.** Confirm the registered recipient, what transaction information the owner receives, and whether the full contribution reaches the creator. Code establishes that tips unlock nothing; Google's direct-tip exception also depends on the full contribution going to the creator. Assess the actual financial-feature prompt against this external handoff rather than inventing financial services or automatically declaring none. [Direct-tip guidance](https://support.google.com/googleplay/android-developer/answer/10281818). Retain the known support/privacy practices above when completing collection, sharing, encryption and deletion answers.
+
+Once the actual required declarations are saved and the reviewed media is published, run `validate_production`, resolve any specific Console errors, then run `publish_production` for the existing code 27 bundle. These scripts do not submit policy declarations. Record the final Console/release state: an accepted API commit, review submission, approval and public availability are distinct outcomes.
 
 ## App-access instructions ready for the reviewer
 
