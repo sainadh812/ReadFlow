@@ -7,7 +7,8 @@ including store copy, screenshots, demo videos and production for `app.readflow`
 The current candidate is **0.3.2/code 28**, which fixes a dictionary lookup failure
 found during actual Android emulator testing. The new signed artifacts and Android
 dictionary fix are verified; the GitHub candidate and code 28 Internal testing
-release are published. Usable store media and production publication remain pending. See the
+release are published. Two initial screenshots are ready; store publication is
+blocked at API validation, and remaining media/production are pending. See the
 [current readiness handoff](PRODUCTION_READINESS_0.3.2.md). Historical code 27
 Internal testing publication is recorded below and does not establish code 28
 availability or production publication.
@@ -40,8 +41,9 @@ availability or production publication.
   in the [current code 28 publication report](evidence/reader-0.3.2/play-release-summary.json).
 - The owner subsequently reports adding **Manage store presence**, **Release to
   production, exclude devices, and use Play App Signing**, and **Manage policy
-  declarations** for Read Assist. Actual relevant API/Console access remains to
-  be verified. Keep the same service account and `READFLOW_PLAY_SERVICE_ACCOUNT_JSON`
+  declarations** for Read Assist. Listing/image staging and readback succeeded,
+  but `edits:validate` returned 403 `PERMISSION_DENIED`; its cause is unestablished.
+  The owner has been asked to have Muse check saved app access/account notices. Keep the same service account and `READFLOW_PLAY_SERVICE_ACCOUNT_JSON`
   secret; no replacement key is needed. A permission grant does not establish
   production eligibility or accepted declarations, and a service-account key does
   not provide an interactive Play Console login.
@@ -95,10 +97,10 @@ a capture dispatch alone does not establish that usable media was produced.
 run `43749926901`. The helper checks both APK SHA-256 hashes and four Git source
 objects: `app/src/main`, `app/src/release`, `app/src/storeDemoAndroidTest` and
 `app/build.gradle.kts`. Any mismatch stops reuse; use a fresh build with reuse
-disabled after application/setup changes. Capture retry
-[43752099137](https://github.com/sainadh812/ReadFlow/actions/runs/43752099137), revision
-`5b5d273`, is pending. Provenance records its capture-script revision separately
-from the reused APK build at `e1a73d4`. No production signing key is used.
+disabled after application/setup changes. Remaining media capture
+[43753190368](https://github.com/sainadh812/ReadFlow/actions/runs/43753190368) is pending.
+Provenance records each capture-script revision separately from the reused APK
+build at `e1a73d4`. No production signing key is used.
 
 Store and production commits use `ERROR_IF_IN_REVIEW`; ambiguous commit responses
 require reconciliation rather than automatic retries. Validation failures and
@@ -136,13 +138,26 @@ The current publishing target is:
   This is not physical-device or Play-installed ARM64 verification.
 - Subsequent recording navigation failed to find `PDF view` and produced no clips.
   This separate media failure does not invalidate the Android dictionary result.
-  Usable media remains pending; capture retry `43752099137` is not yet verified.
+  A later run supplied two reviewed library/PDF screenshots before an emulator
+  host crash. Additional feature media/video capture `43753190368` remains pending.
 - Internal publication [run 43751948754](https://github.com/sainadh812/ReadFlow/actions/runs/43751948754)
   confirmed the exact code 28 AAB hash, completed Internal track and lifecycle
   `RELEASE_LIFECYCLE_STATE_PUBLISHED` at 2026-11-15 19:22:24 UTC. The
   [sanitized report](evidence/reader-0.3.2/play-release-summary.json) confirms other
   tracks were unchanged and tester lists were not modified. Production was empty
   in that snapshot; this is not production publication or tester-device verification.
+
+
+Store publication diagnostic [run 43753406662](https://github.com/sainadh812/ReadFlow/actions/runs/43753406662)
+confirmed HTTP 403 `PERMISSION_DENIED` at
+`POST /androidpublisher/v3/applications/app.readflow/edits/{editId}:validate`.
+The listing PUT, icon/feature graphic/two screenshot uploads and staged readback
+all succeeded (`pendingSnapshotVerified=true`). No commit was attempted; the owned
+edit was deleted and no listing/media changes were published. See the
+[exact diagnostic report](evidence/reader-0.3.2/store-publication-attempt-43753406662.json).
+The public APK and code 28 Internal release remain available. The response does
+not establish a cause or another required grant; the saved app-access/account
+check has already been requested. Keep validation and commit safeguards enabled.
 
 Dispatch inspection from the approved release branch:
 
@@ -158,7 +173,9 @@ Select another operation using the same command. For a capture-only retry with
 unchanged application/setup source, `-f reuse_capture_build=true` selects the
 verified emulator APKs described above. The signed files, public GitHub downloads,
 Android dictionary regression and Internal testing publication are verified.
-Review actual media and commit the approved assets before `publish_store`.
+The initial four image assets are committed and reviewed but unpublished. Resolve
+the confirmed validation denial before completing `publish_store`; review further
+captures before adding media.
 Resolve outstanding declarations, then run `validate_production` before
 `publish_production`. These operations do not submit policy declarations or resolve
 account/testing prerequisites automatically.
