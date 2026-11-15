@@ -328,9 +328,14 @@ class Capture:
     @contextlib.contextmanager
     def device_recording(self, name):
         """Record original synchronized device output upstream of the host PCM path."""
+        line_buffer = shutil.which("stdbuf")
+        if line_buffer is None:
+            raise CaptureError("Device recorder startup monitoring requires coreutils stdbuf.")
         clip = self.output / f"{name}.mp4"
         log_path = self.output / f"{name}-scrcpy.log"
-        command = [self.scrcpy, "--no-playback", "--no-control", "--no-window",
+        # scrcpy's INFO messages use buffered stdout when redirected to a file.
+        # Observe the real startup message while the process is still running.
+        command = [line_buffer, "-oL", "-eL", self.scrcpy, "--no-playback", "--no-control", "--no-window",
                    "--require-audio", "--audio-source=output", "--audio-codec=aac",
                    "--video-codec=h264", "--video-bit-rate=8000000", "--max-fps=30",
                    "--time-limit=180", f"--record={clip}"]
@@ -360,7 +365,8 @@ class Capture:
                         break
                     time.sleep(.25)
                 else:
-                    raise CaptureError("Device recorder did not confirm recording startup within 30 seconds.")
+                    raise CaptureError("Device recorder did not confirm recording startup within 30 seconds: "
+                                       + log_path.read_text()[-1500:])
                 entry["recordingReadyAt"] = self.now()
                 yield
             finally:

@@ -35,6 +35,7 @@ pathlib.Path('build/store-media/capture/capture-build.json').write_text(json.dum
 PY
 export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
 demo_phase 'prepare-verified-device-recorder'
+command -v stdbuf > "$demo_dir/stdbuf-path.txt"
 # Capture live Android output before the emulator's failing speaker PCM path.
 # Pin the official static release and verify it before executing any binary.
 python3 - <<'PY'
