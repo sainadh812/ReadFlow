@@ -1,11 +1,14 @@
-# Read Assist: GitHub release build and Internal testing upload
+# Read Assist: GitHub release build and Google Play publication
 
 The owner chose GitHub Actions for the configured, signed build. The workflow is
 manual only. Its default `build` operation builds the approved
-`fix/reader-playback-and-pdf-space` branch. Separate `inspect_play` and
-`publish_play` operations use the Google Play Developer API for the existing
-`app.readflow` app. The authorized publishing target is **0.3.1/code 27 on Internal
-testing only**. [Publication run 43743340573](https://github.com/sainadh812/ReadFlow/actions/runs/43743340573) confirmed code 27 published on 15 November 2026; see the [release evidence](evidence/reader-0.3.1/play-publication.json).
+`fix/reader-playback-and-pdf-space` branch. The owner subsequently authorized
+**full publication of 0.3.1/code 27**, including store copy, screenshots, demo
+videos and promotion to production for the existing `app.readflow` app.
+[Publication run 43743340573](https://github.com/sainadh812/ReadFlow/actions/runs/43743340573)
+confirmed code 27 published to **Internal testing** on 15 November 2026; see the
+[release evidence](evidence/reader-0.3.1/play-publication.json). That evidence does
+not establish store-media completion, production access or production publication.
 
 ## Current setup
 
@@ -32,6 +35,13 @@ testing only**. [Publication run 43743340573](https://github.com/sainadh812/Read
   `READFLOW_PLAY_SERVICE_ACCOUNT_JSON`. The API operations read that secret only
   in their execution step; it is not an artifact, repository file, or command-line
   argument. Successful authentication and Internal testing publication are recorded in the [current release handoff](PLAY_UPLOAD_0.3.1.md).
+- Store publication additionally needs **Manage store presence**; production
+  promotion needs **Release to production, exclude devices, and use Play App Signing**
+  for Read Assist. These additional grants remain unverified until exercised with
+  the API. Keep the same service account and `READFLOW_PLAY_SERVICE_ACCOUNT_JSON`
+  secret; no replacement key is needed. Policy declarations may separately need
+  **Manage policy declarations** and Console work. Owner authorization is not
+  evidence that Google has granted production eligibility or accepted declarations.
 
 ## Current Google Play API operations
 
@@ -42,13 +52,42 @@ an `operation`:
 | --- | --- |
 | `build` | Default; build and verify signed APK/AAB files without uploading to Play. `upload_symbols` applies only to this operation. |
 | `inspect_play` | Check API access and inspect the existing app and Internal testing state without committing a release. |
-| `publish_play` | Upload the exact verified 0.3.1 AAB below and commit it to Internal testing. No production release is authorized. |
+| `inspect_store` | Read listing copy, image hashes, bundles, tracks and available lifecycle information; delete the temporary inspection edit without committing. |
+| `capture_demo` | Build an isolated emulator variant and attempt actual app screenshots, videos and background-playback evidence. No Play upload or production signing key is used. |
+| `publish_play` | Upload the exact verified 0.3.1 AAB below and commit it to Internal testing. |
+| `publish_store` | Publish approved en-US listing copy and verified icon, feature graphic and actual app screenshots; preserve tracks, other locales and app details. |
+| `validate_production` | Stage promotion of the existing verified code 27 bundle, call Play validation, then delete the owned edit without committing. |
+| `publish_production` | Promote the existing verified code 27 bundle to production, validate and commit, then check the resulting release state. No bundle upload or rebuild occurs. |
 
 The Play operations check out the dispatched Git commit (`github.sha`), install
 hash-pinned Python dependencies, and run publishing safeguards before accessing
 the credential. They share the build workflow's concurrency group and retain its
 repository and approved-branch restrictions. No new Android build runs during
 these operations.
+
+Store operations use `store-assets/release-0.3.1/manifest.json` and
+`store-assets/listing/en-US.json`. They verify PNG sizes, dimensions, hashes and
+source provenance, including the generator, fonts and original app captures.
+The required set is one 512×512 icon, one 1024×500 feature graphic and 2–8 actual
+1080×1920 screenshots. Conflicting existing media is not deleted automatically.
+Production additionally requires the live listing and media to match these
+approved files, completed Internal testing code 27, and Google's bundle hash to
+match the AAB below. A newer bundle/track or an active or halted production rollout
+stops promotion. Other tracks and store metadata must remain unchanged.
+
+`capture_demo` runs only from the approved release branch. Its source-tree guard
+requires `app/src/main` and `app/src/release` to match the signed 0.3.1 source.
+Capture provenance records the actual commit, APK hash and emulator build:
+x86_64 release runtime, local debug signing and no configured Firebase. These
+recordings are not physical-device or Play-installed ARM64 verification. Review
+the capture report, footage and real audio before generating or publishing media;
+a capture dispatch alone does not establish that usable media was produced.
+
+Store and production commits use `ERROR_IF_IN_REVIEW`; ambiguous commit responses
+require reconciliation rather than automatic retries. Validation failures and
+Console requirements are retained as evidence. An empty production track or an
+inspection lifecycle quota error does not establish production eligibility or a
+permission refusal. See [production submission evidence](PRODUCTION_READINESS_0.3.1.md).
 
 The publishing script pins this existing GitHub release artifact:
 
@@ -72,16 +111,31 @@ gh workflow run read-assist-release.yml \
   -f upload_symbols=false
 ```
 
-For the authorized upload, use the same command with `-f operation=publish_play`
-after checking the inspection report. GitHub supports `--ref` with workflow
+Select another operation using the same command. After inspecting current state,
+review captured media and commit the approved assets, publish the store listing,
+then run `validate_production` before `publish_production`. These operations do not
+submit policy declarations or resolve account/testing prerequisites automatically.
+GitHub supports `--ref` with workflow
 inputs; the workflow must already exist on the repository's default branch for
 manual dispatch. See [GitHub's manual workflow instructions](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow).
 
-Each API run uploads only the sanitized
-`build/play-upload-0.3.1/report.json`, when present, as an artifact named
-`Read-Assist-Play-<operation>-<run-id>-<attempt>` with 15-day retention. Preserve
-that report and the run URL as publication evidence. A successful build or an
-inspection alone does not establish a completed Play upload or tester availability.
+API reports contain sanitized evidence and are retained as Actions artifacts for
+15 days, when the corresponding report exists:
+
+| Operations | Report | Artifact prefix |
+| --- | --- | --- |
+| `inspect_play`, `publish_play` | `build/play-upload-0.3.1/report.json` | `Read-Assist-Play-<operation>` |
+| `inspect_store` | `build/play-store-inspection/report.json` | `Read-Assist-Store-Inspection` |
+| `publish_store` | `build/play-store-publication/report.json` | `Read-Assist-Store-Publication` |
+| `validate_production`, `publish_production` | `build/play-production-publication/report.json` | `Read-Assist-Production` |
+
+Artifact names append `<run-id>-<attempt>`. `capture_demo` separately retains
+`build/store-media/capture/`, the emulator APK and its test APK in
+`Read-Assist-Store-Capture-<run-id>-<attempt>` for 15 days, including diagnostics on
+failed runs. Preserve relevant reports, media hashes and run URLs. A successful
+build, capture, validation or commit does not by itself establish public store
+availability: distinguish lifecycle states such as in review, published and
+availability unconfirmed, including failures to read lifecycle information.
 
 ## Historical configured build — 31 October 2026
 
@@ -126,9 +180,10 @@ The owner reports Muse Spark uploaded the verified AAB as **0.2.5/code 21** to t
 new free Read Assist app (**4975999632955979701**) and saved an internal-test draft.
 No rollout was performed at that time; code 21 is already used. This is historical,
 owner-reported Console evidence, separate from the independently verified CI
-builds. The later authorization is to publish the verified **0.3.1/code 27 AAB**
-to Internal testing in that same app, using the existing upload key and Play App
-Signing. Inspect the current API state before publishing; do not assume the old
+builds. The subsequent Internal testing authorization and publication concerned
+the verified **0.3.1/code 27 AAB** in that same app, using the existing upload key
+and Play App Signing. The owner's newer full-publication authorization is described
+above. Inspect the current API state before publishing; do not assume the old
 draft still represents the current track. See the
 [earlier handoff](PLAY_STORE_HANDOFF.md#current-play-console-state--owner-reported).
 
@@ -188,5 +243,6 @@ secrets do not offer a normal settings-UI export. Never upload private signing
 files as Actions artifacts, GitHub releases or source archives. Only the public
 certificate and its metadata belong in Git. The Play service-account JSON stays
 in the repository secret and is available only to the API step. The `build`
-operation publishes no app to Play; only the explicit `publish_play` operation
-targets Internal testing. No operation changes Firebase billing.
+operation publishes no app to Play. Explicit `publish_play`, `publish_store` and
+`publish_production` operations respectively target Internal testing, store
+listing/media and production. No operation changes Firebase billing.
