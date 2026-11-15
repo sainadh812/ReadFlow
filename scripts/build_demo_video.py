@@ -344,6 +344,7 @@ def foreground_service(ff: FFmpeg, directory: Path, output: Path, capture: dict,
                    "probe": ff.probe(destination), "decodeValidation": "passed", "uncutVideo": True,
                    "encodedVideoStreamSha256": output_hash, "sourceVideoStreamSha256": raw_hash,
                    "sourceVideo": FGS_FILE, "sourceVideoSha256": digest(source),
+                   "sourceCapture": clip.get("sourceCapture"),
                    "sourceAudio": audio.relative_to(directory).as_posix(), "sourceAudioSha256": digest(audio),
                    "recordedHostAudioLeadSecondsApprox": clip["hostAudioLeadSecondsApprox"],
                    "operatorOffsetAdjustmentSeconds": adjustment, "appliedAudioLeadSeconds": lead,
@@ -351,6 +352,7 @@ def foreground_service(ff: FFmpeg, directory: Path, output: Path, capture: dict,
                    "audioTailPaddingLimitSeconds": .5, "audioStatistics": stats,
                    "capturePlaybackEvidenceFlag": evidence_flag, "backgroundPlaying": playing, "notificationPaused": paused,
                    "usesPreviouslyPreparedAudio": capture.get("playbackClipUsesPreviouslyPreparedAudio") is True,
+                   "preparationBeforeRecording": capture.get("playbackPreparation"),
                    "automaticChecksPassed": automatic, "playbackReviewConfirmed": reviewed,
                    "reviewNote": settings.get("reviewNote", ""), "foregroundServiceReady": automatic and reviewed})
     return result
@@ -376,7 +378,7 @@ def build(directory: Path, output: Path, recipe_path: Path | None) -> dict:
         ff = FFmpeg()
         capture, clips = load_capture(directory)
         report.update({"ffmpeg": ff.version, "captureReportSha256": digest(directory / "capture-report.json"),
-                       "captureProvenance": {key: capture.get(key) for key in ("sourceCommit", "workflowRun", "deviceFingerprint", "deviceAbi", "captureKind", "status", "errors", "notes")},
+                       "captureProvenance": {key: capture.get(key) for key in ("sourceCommit", "workflowRun", "deviceFingerprint", "deviceAbi", "captureKind", "captureAssemblyKind", "sources", "verifiedSameAppBuild", "status", "errors", "notes")},
                        "recipeSha256": digest(recipe_path) if recipe_path else None})
         probes = {name: ff.probe(input_file(directory, name)) for name in clips}
         if any(not item["hasVideo"] or not item["width"] or not item["height"] for item in probes.values()):
@@ -395,6 +397,7 @@ def build(directory: Path, output: Path, recipe_path: Path | None) -> dict:
             source = input_file(directory, cut["file"])
             render_scene(ff, source, audio, lead, cut, bg, part)
             report["segments"].append({**cut, "sourceSha256": digest(source), "measuredSource": probes[cut["file"]],
+                                       "sourceCapture": clip.get("sourceCapture"),
                                        "sourceAudio": audio.relative_to(directory).as_posix() if audio else None,
                                        "sourceAudioSha256": digest(audio) if audio else None,
                                        "appliedAudioLeadSeconds": lead, "output": part.relative_to(output).as_posix()})
