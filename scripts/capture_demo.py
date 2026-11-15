@@ -98,12 +98,12 @@ class Capture:
         values = list(map(int, re.findall(r"\d+", node.get("bounds", ""))))
         return values if len(values) == 4 else [0, 0, 0, 0]
 
-    def find(self, label, contains=False, root=None):
+    def find(self, label, contains=False, root=None, text_only=False):
         if root is None:
             root = self.dump()
         candidates = []
         for node in root.iter("node"):
-            values = [node.get("text", ""), node.get("content-desc", "")]
+            values = [node.get("text", "")] if text_only else [node.get("text", ""), node.get("content-desc", "")]
             matched = any(label in value if contains else label == value for value in values)
             x1, y1, x2, y2 = self.bounds(node)
             if matched and x2 > x1 and y2 > y1 and y1 < self.height:
@@ -111,20 +111,23 @@ class Capture:
         candidates.sort(key=lambda n: (n.get("clickable") != "true", n.get("content-desc") != label))
         return candidates[0] if candidates else None
 
-    def wait(self, label, timeout=20, contains=False):
+    def wait(self, label, timeout=20, contains=False, text_only=False):
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
-            node = self.find(label, contains)
+            node = self.find(label, contains, text_only=text_only)
             if node is not None:
                 return node
             time.sleep(.7)
         raise CaptureError(f"Visible control not found: {label}")
 
-    def tap(self, label, timeout=15, contains=False):
-        node = self.wait(label, timeout, contains)
+    def tap(self, label, timeout=15, contains=False, text_only=False):
+        node = self.wait(label, timeout, contains, text_only=text_only)
         x1, y1, x2, y2 = self.bounds(node)
+        hierarchy = f"ui-before-tap-{len(self.report['steps']):03d}.xml"
+        (self.output / hierarchy).write_text(self.last_xml)
         self.shell("input", "tap", (x1 + x2) // 2, (y1 + y2) // 2)
-        self.report["steps"].append({"time": self.now(), "action": "tap", "label": label})
+        self.report["steps"].append({"time": self.now(), "action": "tap", "label": label,
+                                     "textOnly": text_only, "hierarchy": hierarchy})
         time.sleep(.7)
 
     def swipe(self, x1=.5, y1=.75, x2=.5, y2=.3, duration=500):
@@ -212,8 +215,19 @@ class Capture:
         self.shell("am", "force-stop", PACKAGE)
         self.launch()
         self.wait("Library")
-        self.tap(BOOK, contains=True)
+        self.open_book()
         self.wait("PDF view", timeout=30)
+
+    def open_book(self):
+        # The overflow icon is named "Options for <title>" and can remain
+        # visible when the actual title is below the fold. Match title text
+        # only, scrolling until it is exposed instead of opening that menu.
+        for _ in range(4):
+            if self.find(BOOK, contains=True, text_only=True) is not None:
+                self.tap(BOOK, contains=True, text_only=True)
+                return
+            self.swipe()
+        raise CaptureError(f"Document title is not visible: {BOOK}")
 
     def seed(self, models, dictionary):
         args = ["shell", "am", "instrument", "-w", "-r", "-e", "class", "app.readflow.StoreDemoSeedTest",
@@ -240,7 +254,7 @@ class Capture:
             self.back()
 
     def reader(self):
-        self.tap(BOOK, contains=True)
+        self.open_book()
         self.wait("PDF view", timeout=30)
         with self.recording("02-reading"):
             self.screenshot("03-reader-pdf")

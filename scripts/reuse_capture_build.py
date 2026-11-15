@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Reuse only the hash-pinned successful emulator build from the first capture run.
+"""Reuse only the hash-pinned 0.3.2 emulator build with passing Android setup.
 
-The original emulator launch failed, but its release/test APK build passed.
+The original capture navigation failed, but its release/test build and seed passed.
 This avoids rebuilding unchanged application code when retrying capture scripts.
 These APKs are not production artifacts. No publishing/signing secrets are used.
 """
@@ -13,17 +13,17 @@ import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-RUN = "43745021098"
-SOURCE = "9856a49897f2caabe421d085ed6e90a203380c11"
+RUN = "43749926901"
+SOURCE = "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3"
 TREES = {
-    "app/src/main": "7e3cef462b28059d56efe8b5dd0126b2510f088d",
+    "app/src/main": "82a53a2b49b7316d8def3a708550f342a525741b",
     "app/src/release": "e98f60bab8f45f39833437585503e6b2e86b1648",
-    "app/src/storeDemoAndroidTest": "3fa42320bf3e556b8b35a4cec6f1a17d33f04d27",
-    "app/build.gradle.kts": "996e78b4e783bd829663f63929bb387d9bd30cda",
+    "app/src/storeDemoAndroidTest": "7a45438f4213e804eaa9de5655d497e6ee0b7604",
+    "app/build.gradle.kts": "d69158f23fdc8f554c3751f6e3192c87332c24d7",
 }
 APKS = {
-    "app/build/outputs/apk/release/app-release.apk": "80bd5a37d3cad56a25f46c42fb056398e2ee54ff04fa0130947cf885c763c97e",
-    "app/build/outputs/apk/androidTest/release/app-release-androidTest.apk": "f4076633d7f1fe5ed3237415724277f6b70d83d936637f32688830911f71e91d",
+    "app/build/outputs/apk/release/app-release.apk": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+    "app/build/outputs/apk/androidTest/release/app-release-androidTest.apk": "f880ca95289ef905b928b40186a6b67085bf40fbed556d03377dd368b7ff6a15",
 }
 
 

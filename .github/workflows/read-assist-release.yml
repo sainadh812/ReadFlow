@@ -23,7 +23,7 @@ on:
         required: true
         default: false
       reuse_capture_build:
-        description: Capture only — reuse the exact verified emulator APKs from run 43745021098
+        description: Capture only — reuse the exact verified 0.3.2 emulator APKs from run 43749926901
         type: boolean
         required: false
         default: false
