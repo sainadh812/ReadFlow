@@ -2,6 +2,11 @@
 # Run only on the disposable, accelerated GitHub Actions capture machine.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+case "${CAPTURE_SECTIONS:-all}" in
+  all) demo_capture_sections='library,controls,dictionary,themes,playback,reader' ;;
+  playback) demo_capture_sections='playback' ;;
+  *) printf '%s\n' 'CAPTURE_SECTIONS must be all or playback.' >&2; exit 2 ;;
+esac
 demo_dir="$PWD/build/store-media/capture"
 mkdir -p "$demo_dir"
 demo_phase() {
@@ -168,7 +173,7 @@ if ! grep -Eq 'OK \([0-9]+ tests?\)' "$demo_dir/seed-instrumentation.txt"; then
   exit 1
 fi
 demo_phase 'capture-real-ui-and-playback'
-python3 scripts/capture_demo.py capture --output "$demo_dir" --audio-source readassist_demo.monitor
+python3 scripts/capture_demo.py capture --output "$demo_dir" --audio-source readassist_demo.monitor --sections "$demo_capture_sections"
 adb shell dumpsys media_session > "$demo_dir/final-media-session.txt"
 adb logcat -d -v threadtime > "$demo_dir/device-logcat.txt"
 demo_phase 'complete'

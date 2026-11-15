@@ -78,6 +78,26 @@ class Capture:
     def launch(self):
         self.shell("am", "start", "-W", "-n", f"{PACKAGE}/.MainActivity")
         time.sleep(2)
+        if self.dismiss_launcher_anr():
+            self.shell("am", "start", "-W", "-n", f"{PACKAGE}/.MainActivity")
+            time.sleep(2)
+
+    def dismiss_launcher_anr(self):
+        # A slow emulator cold boot can leave this unrelated system dialog
+        # over the app. Preserve it and close only the named launcher; never
+        # dismiss a Read Assist failure or edit a dialog out of recorded media.
+        root = self.dump()
+        title = self.find("Pixel Launcher isn't responding", root=root, text_only=True)
+        if title is None or title.get("package") != "android":
+            return False
+        recoveries = self.report.setdefault("environmentRecoveries", [])
+        evidence = f"diagnostic-launcher-anr-{len(recoveries) + 1:02d}"
+        self.screenshot(evidence)
+        recoveries.append({"time": self.now(), "dialog": "Pixel Launcher isn't responding",
+                           "action": "Close app", "evidence": evidence + ".png",
+                           "beforeRecording": True})
+        self.tap("Close app")
+        return True
 
     def dump(self):
         for _ in range(3):
@@ -411,6 +431,7 @@ class Capture:
         self.launch()
 
     def capture(self, sections):
+        self.report["sectionsRequested"] = sections
         actions = {"library": self.library, "reader": self.reader, "controls": self.controls,
                    "dictionary": self.dictionary, "themes": self.themes, "playback": self.playback}
         for name in sections:

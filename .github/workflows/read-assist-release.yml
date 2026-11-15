@@ -27,6 +27,14 @@ on:
         type: boolean
         required: false
         default: false
+      capture_sections:
+        description: Capture all app features or only background playback evidence
+        type: choice
+        required: false
+        default: all
+        options:
+          - all
+          - playback
 
 # Play access is restricted to the explicit API operations below. No repository
 # writes, OIDC, pull-request or fork execution.
@@ -327,6 +335,7 @@ jobs:
         env:
           CAPTURE_SOURCE_SHA: ${{ github.sha }}
           CAPTURE_RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          CAPTURE_SECTIONS: ${{ inputs.capture_sections }}
         run: bash scripts/run_store_demo.sh
       - name: Preserve capture files and diagnostics
         if: always()
