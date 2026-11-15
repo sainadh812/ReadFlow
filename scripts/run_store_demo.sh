@@ -12,14 +12,14 @@ demo_phase 'verify-source'
 python3 - <<'PY'
 import hashlib, json, os, pathlib, subprocess
 expected = {
-    'app/src/main': '7e3cef462b28059d56efe8b5dd0126b2510f088d',
+    'app/src/main': '82a53a2b49b7316d8def3a708550f342a525741b',
     'app/src/release': 'e98f60bab8f45f39833437585503e6b2e86b1648',
 }
 trees = {path: subprocess.check_output(['git', 'rev-parse', 'HEAD:'+path], text=True).strip() for path in expected}
 if trees != expected:
-    raise SystemExit('Capture source does not match the published 0.3.1 application source.')
+    raise SystemExit('Capture source does not match the reviewed 0.3.2 application source.')
 apk = pathlib.Path('app/build/outputs/apk/release/app-release.apk')
-record = {'appVersion':'0.3.1', 'versionCode':27, 'publishedAppSource':'94006546634355658abfba7ce1a7a442d8825828',
+record = {'appVersion':'0.3.2', 'versionCode':28, 'applicationSourceRevision':'a6c99f33f6e8934f4a304355a3e093b1b569dfa8',
           'sourceTrees':trees, 'captureSource':os.environ.get('CAPTURE_SOURCE_SHA'),
           'apkBuildSource':os.environ.get('CAPTURE_APK_BUILD_SOURCE', os.environ.get('CAPTURE_SOURCE_SHA')),
           'reusedApkBuildRun':os.environ.get('CAPTURE_REUSED_APK_BUILD_RUN'),

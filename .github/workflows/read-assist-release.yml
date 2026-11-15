@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       operation:
-        description: Build, record app media, inspect Play, or publish the verified 0.3.1 release
+        description: Build, record app media, inspect Play, or publish the verified 0.3.2 release
         type: choice
         required: true
         default: build
@@ -34,7 +34,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: read-assist-production-build
+  group: ${{ inputs.operation == 'capture_demo' && 'read-assist-demo-capture' || 'read-assist-production-build' }}
   cancel-in-progress: false
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: sainadh812/ReadFlow
-          ref: fix/reader-playback-and-pdf-space
+          ref: ${{ github.sha }}
           persist-credentials: false
 
       - name: Check required owner inputs without writing them
@@ -200,7 +200,7 @@ jobs:
           python3 -m unittest discover -s scripts -p 'test_inspect_play_store.py'
           python3 scripts/inspect_play_store.py
 
-      - name: Publish the verified 0.3.1 bundle to Internal testing
+      - name: Publish the verified 0.3.2 bundle to Internal testing
         if: inputs.operation == 'publish_play'
         env:
           READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
@@ -212,7 +212,7 @@ jobs:
           READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
         run: |
           python3 -m unittest discover -s scripts -p 'test_publish_store_media.py'
-          python3 scripts/publish_store_media.py --assets store-assets/release-0.3.1 --listing store-assets/listing/en-US.json
+          python3 scripts/publish_store_media.py --assets store-assets/release-0.3.2 --listing store-assets/listing/en-US.json
 
       - name: Validate production readiness without committing a release
         if: inputs.operation == 'validate_production'
@@ -220,22 +220,22 @@ jobs:
           READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
         run: |
           python3 -m unittest discover -s scripts -p 'test_promote_play_production.py'
-          python3 scripts/promote_play_production.py --assets store-assets/release-0.3.1 --validate-only
+          python3 scripts/promote_play_production.py --assets store-assets/release-0.3.2 --validate-only
 
-      - name: Promote the verified 0.3.1 bundle to production
+      - name: Promote the verified 0.3.2 bundle to production
         if: inputs.operation == 'publish_production'
         env:
           READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
         run: |
           python3 -m unittest discover -s scripts -p 'test_promote_play_production.py'
-          python3 scripts/promote_play_production.py --assets store-assets/release-0.3.1
+          python3 scripts/promote_play_production.py --assets store-assets/release-0.3.2
 
       - name: Upload the sanitized Google Play report only
-        if: always() && hashFiles('build/play-upload-0.3.1/report.json') != ''
+        if: always() && hashFiles('build/play-upload-0.3.2/report.json') != ''
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: Read-Assist-Play-${{ inputs.operation }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: build/play-upload-0.3.1/report.json
+          path: build/play-upload-0.3.2/report.json
           if-no-files-found: error
           retention-days: 15
           include-hidden-files: false
