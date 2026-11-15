@@ -1,0 +1,47 @@
+{
+  "createdAt": "2026-11-15T21:25:30.343620+00:00",
+  "sourceRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43761868949",
+  "sourceMp4Sha256": "180e1bcd6da0d78fa4a0005524f1fea70206e8a81dd5cd2e2872d42a03222fc3",
+  "captureReportSha256": "92987d4fca779f4bf4b320ac8aa39af5b3dcdd4c5ec9791d8f70dd9379c5e054",
+  "originalNativeMp4Unmodified": true,
+  "method": "Actual raw frames inspected on the original30fps-filled video timeline; local Wav2Vec2 transcript and signal reviewed with original audio packet timestamps; real app media/service state checked.",
+  "humanListeningPerformed": false,
+  "subjectiveSpeechQualityAssessed": false,
+  "exactSampleLevelAvSynchronizationClaimed": false,
+  "approximateSynchronizationReviewed": true,
+  "controls": {
+    "visiblePlayToPauseTransitionBetweenSeconds": [
+      3.8,
+      4.2
+    ],
+    "firstRecognizedSpokenWord": "Reading",
+    "firstRecognizedWordStartSecondsApprox": 4.168,
+    "homeAndNotificationSeen": true,
+    "notificationPauseToPlayTransitionBetweenSeconds": [
+      26.0,
+      26.2
+    ],
+    "lastRecognizedPartialPhrase": "There is no hur\u2026",
+    "lastRecognizedSpeechEndSecondsApprox": 26.032,
+    "postPauseSilenceObserved": true,
+    "backgroundAppSessionPlaying": true,
+    "notificationAppSessionPaused": true,
+    "actualReadingServiceForeground": true
+  },
+  "audio": {
+    "source": "Genuine live Android REMOTE_SUBMIX embedded in the native scrcpy MP4",
+    "initialAudioStreamTimestampSeconds": 0.034292,
+    "recordedPacketGapsRetained": true,
+    "viewingCopyConstantGainDb": 26,
+    "otherProcessing": "AAC encoding only; no replacement audio, noise removal, dynamic compression or speech timing change",
+    "originalSourceIncludedInArchive": true,
+    "reasonForGain": "Android MUSIC route changed from15 to5 when REMOTE_SUBMIX started; original native recording is quiet.",
+    "contentReview": "ASR recognizes the original CC0 reading text through Home and media controls. Recognition contains substitutions; no subjective listening or pronunciation judgment is claimed."
+  },
+  "evidence": {
+    "asrReport": "build/store-media/audio-review-43761868949.json",
+    "controlFrames": "build/store-media/review-43761868949/control-timing-contact.jpg",
+    "gainAssessment": "build/store-media/review-43761868949/gain-assessment-report.json"
+  },
+  "reviewPassed": true
+}

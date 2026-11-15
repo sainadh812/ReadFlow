@@ -1,0 +1,405 @@
+{
+  "file": "Read-Assist-0.3.2-capture-sources.zip",
+  "bytes": 11510743,
+  "sha256": "186e93085a745cefe35a220bee7b51a492381fab6110dc4f7128664e2988f095",
+  "zipCrcVerified": true,
+  "everyEntryHashVerified": true,
+  "entries": 79,
+  "inventory": [
+    {
+      "path": "README.txt",
+      "bytes": 2563,
+      "sha256": "9c8a4d40c151cebb24cacd65047e23bbb44d54a6ec49c08ee4837aabfedff8af"
+    },
+    {
+      "path": "credits/MEDIA_CREDITS.md",
+      "bytes": 5266,
+      "sha256": "1360dd124cc479c8eadd5ebb8b375f04410eed15c3e325db771d052ee7077f51"
+    },
+    {
+      "path": "credits/dictionary/ATTRIBUTION.txt",
+      "bytes": 2387,
+      "sha256": "b53907baf6c8e26928235ac9b573bce956b0aa0b4379572e73505c7b77694435"
+    },
+    {
+      "path": "credits/dictionary/CC-BY-SA-4.0.txt",
+      "bytes": 20137,
+      "sha256": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2"
+    },
+    {
+      "path": "inventory.json",
+      "bytes": 14789,
+      "sha256": "6d1eb287f152d910d148c48abffd1bdb7554f175ad9773c6f036fe179ec008b9"
+    },
+    {
+      "path": "review/gain-assessment-report.json",
+      "bytes": 1092,
+      "sha256": "a19243ae5d2420b6f7ab8c432d66bd17dccc646434da68530926acdabace6b4e"
+    },
+    {
+      "path": "review/gain-timeline-verification.json",
+      "bytes": 1075,
+      "sha256": "3f1523abc23e559b681a22b72b4b4a5a41bc890cd3d5736af3206b641edb33a2"
+    },
+    {
+      "path": "review/native-audio-review.json",
+      "bytes": 39467,
+      "sha256": "17df14027764d23e84f207a27eb449f703983a0ddc3bf412db54d02904567e5a"
+    },
+    {
+      "path": "review/playback-review.json",
+      "bytes": 2363,
+      "sha256": "fe08d9aee4af5e71da38eb065da0933438d3266954341c5273e5e203985ef456"
+    },
+    {
+      "path": "review/product-audio-timeline-verification.json",
+      "bytes": 1161,
+      "sha256": "761a6626e03b1da7d56268c5e96ac939a93f8047721e10ad8dfbff7f20f143cc"
+    },
+    {
+      "path": "review/product-frame-timeline-verification.json",
+      "bytes": 3202,
+      "sha256": "78bf76197f5495f64abdffd30b511bed83b8e4d9a08f06a7523aa52eea257b0e"
+    },
+    {
+      "path": "review/renderer-gain-guard-regression.json",
+      "bytes": 407,
+      "sha256": "980238ecafcf0d2ddc809c1a8a94e5ae88b66b0c1754cef77ebc1c3f9b4f6a2c"
+    },
+    {
+      "path": "review/renderer-native-timeline-regression.json",
+      "bytes": 510,
+      "sha256": "e8d4c0ae501df05cad52528255e9e4ecb6ee0b6c0183f17be9d373936d29dea5"
+    },
+    {
+      "path": "review/root-source-visual-review.json",
+      "bytes": 2443,
+      "sha256": "5bcea47ef6b9c47e4dc3f3c9a3ef2c78a788e5ce78c72edc4ddbdb3b3cdd6781"
+    },
+    {
+      "path": "review/video-build-report.json",
+      "bytes": 26469,
+      "sha256": "496ac4294c726718100f2594e72097fa09e1337ded25cb5bd96e9083be52bd40"
+    },
+    {
+      "path": "runs/43752099137/metadata/capture-build.json",
+      "bytes": 765,
+      "sha256": "815f64804dab37766acfad308f4157fd98aa374d9dc8605883b5d151c4a27131"
+    },
+    {
+      "path": "runs/43752099137/metadata/capture-report.json",
+      "bytes": 13797,
+      "sha256": "a827d630fa9afdc52289f224696f54a18a15ee57a9c24af739ffa60754c8645b"
+    },
+    {
+      "path": "runs/43752099137/metadata/reused-build.json",
+      "bytes": 717,
+      "sha256": "889a6f2e5675b348da347049b89ddf1c393f290c6c29a461b1e87ead122fa212"
+    },
+    {
+      "path": "runs/43752099137/original-demo-documents/A quiet space for thought.pdf",
+      "bytes": 34704,
+      "sha256": "377fd98713d86e5ceb04d5cdcd0c8fe8e17e40199a0e12ffb334e0b9564a1da0"
+    },
+    {
+      "path": "runs/43752099137/original-demo-documents/Everyday curiosity.pdf",
+      "bytes": 26049,
+      "sha256": "4f601625217436915c4e46857fc3bbac6b164fbe7c7cc59c64f955cfd5da51e4"
+    },
+    {
+      "path": "runs/43752099137/original-demo-documents/Field notes.pdf",
+      "bytes": 23503,
+      "sha256": "30541282c1d1689f180d1db428cdd66c64099c2e940cdb1f8093bc3fafbdedb7"
+    },
+    {
+      "path": "runs/43752099137/original-demo-documents/seed.json",
+      "bytes": 1464,
+      "sha256": "3ee45aeaac81887b593ce0c9731098cd4b74cd7a17ed1c88274be1b0adb3c919"
+    },
+    {
+      "path": "runs/43752099137/screenshots/01-library-warm.png",
+      "bytes": 205242,
+      "sha256": "a23ac6e7735455727ab996832e0350fd68926f2907d85f0b7c0a0601fbe78d8a"
+    },
+    {
+      "path": "runs/43752099137/screenshots/03-reader-pdf.png",
+      "bytes": 362809,
+      "sha256": "2edf5160c551d1dc3db41f6bb8c2d77da3f8be5b078642c7ebf5bcae383e98e9"
+    },
+    {
+      "path": "runs/43753190368/audio/01-library-audio.wav",
+      "bytes": 3084234,
+      "sha256": "3bcd392bad15a75118c0772f42bddc82c50b66b442539d64ba4ad1f29af79093"
+    },
+    {
+      "path": "runs/43753190368/audio/02-reading-audio.wav",
+      "bytes": 5284262,
+      "sha256": "0d686f23f1452519594b6b4b5fb3e127633362bf66cb1d804f527efaa40db538"
+    },
+    {
+      "path": "runs/43753190368/audio/03-reading-light-audio.wav",
+      "bytes": 9721950,
+      "sha256": "85a0c423a690f1608febad83494b0383b74d9dbe244ce7929fc5d29ec4e24c30"
+    },
+    {
+      "path": "runs/43753190368/audio/04-dictionary-audio.wav",
+      "bytes": 8553406,
+      "sha256": "2e8132e2ab2a1ee40cf0add104510df877eda956480a0f8dde10061a8cf40563"
+    },
+    {
+      "path": "runs/43753190368/audio/05-library-themes-audio.wav",
+      "bytes": 9357978,
+      "sha256": "6214b94b6c7400ec058a8ae0cd68db72348bbe164f2fab1cc3eb59478a847cfd"
+    },
+    {
+      "path": "runs/43753190368/metadata/capture-build.json",
+      "bytes": 765,
+      "sha256": "d947c57a7152b8bac455a69a7adc37bf1d88143f8125d19693a9be1e47a8ce2a"
+    },
+    {
+      "path": "runs/43753190368/metadata/capture-report.json",
+      "bytes": 23902,
+      "sha256": "8dbd48f74c5f57068303b42779228e02089ddad7d56775052dc4cfc893661a6f"
+    },
+    {
+      "path": "runs/43753190368/metadata/reused-build.json",
+      "bytes": 717,
+      "sha256": "889a6f2e5675b348da347049b89ddf1c393f290c6c29a461b1e87ead122fa212"
+    },
+    {
+      "path": "runs/43753190368/original-demo-documents/A quiet space for thought.pdf",
+      "bytes": 34704,
+      "sha256": "377fd98713d86e5ceb04d5cdcd0c8fe8e17e40199a0e12ffb334e0b9564a1da0"
+    },
+    {
+      "path": "runs/43753190368/original-demo-documents/Everyday curiosity.pdf",
+      "bytes": 26049,
+      "sha256": "4f601625217436915c4e46857fc3bbac6b164fbe7c7cc59c64f955cfd5da51e4"
+    },
+    {
+      "path": "runs/43753190368/original-demo-documents/Field notes.pdf",
+      "bytes": 23503,
+      "sha256": "30541282c1d1689f180d1db428cdd66c64099c2e940cdb1f8093bc3fafbdedb7"
+    },
+    {
+      "path": "runs/43753190368/original-demo-documents/seed.json",
+      "bytes": 1464,
+      "sha256": "3769b71d82c316bb5b38621cd92f34b776b63d64a106b09b12bf15fb91f27d40"
+    },
+    {
+      "path": "runs/43753190368/screenshots/05-reader-text.png",
+      "bytes": 244227,
+      "sha256": "801b09519228bdbf1f966f0d1edb9ec9500377ea14357a5ce8fec3e0f6fa2ba7"
+    },
+    {
+      "path": "runs/43753190368/screenshots/07-warm-light.png",
+      "bytes": 155244,
+      "sha256": "9bd1f8fbe12c673d001d0be77b79fa8b72faa56c7cdcbb6796762caf0174a024"
+    },
+    {
+      "path": "runs/43753190368/screenshots/09-voice-and-speed.png",
+      "bytes": 169088,
+      "sha256": "4295f075805c132e640e443d0a541bc7395bfc3939cd17bef4e053b8d25acb83"
+    },
+    {
+      "path": "runs/43753190368/screenshots/10-dictionary.png",
+      "bytes": 188914,
+      "sha256": "28fccbcaee404bdbbcb71d230228b1293b96e611631b50dad1d4f8f487b42af2"
+    },
+    {
+      "path": "runs/43753190368/screenshots/11-library-modern.png",
+      "bytes": 203744,
+      "sha256": "9534be6114fbc13ca304b082611c9df640ce5f10b0e5292e703f23665d959b3d"
+    },
+    {
+      "path": "runs/43753190368/screenshots/12-library-night.png",
+      "bytes": 220582,
+      "sha256": "14ff882b1411d983324b212e314ea61f10c66da447c06245690a2f591a074aab"
+    },
+    {
+      "path": "runs/43753190368/video/01-library.mp4",
+      "bytes": 669958,
+      "sha256": "dc26c0093a177ce8066287dfb402e7344147e45f2e8b6677d719b72dfeacc597"
+    },
+    {
+      "path": "runs/43753190368/video/02-reading.mp4",
+      "bytes": 668714,
+      "sha256": "7b4b9bd8a2720aa90492a0f2807e9be4b1782aed12b1f701a278a790f79e27aa"
+    },
+    {
+      "path": "runs/43753190368/video/03-reading-light.mp4",
+      "bytes": 2493934,
+      "sha256": "08f3b776a8067a5e87f993ad620ff5102c360bc2e6fd041e5fae2c88912ff2c6"
+    },
+    {
+      "path": "runs/43753190368/video/04-dictionary.mp4",
+      "bytes": 2694416,
+      "sha256": "6e8e8cb4fc76eecabf2480149f42d5152b22f3e17cc4a6fe2c7114618ce1629b"
+    },
+    {
+      "path": "runs/43753190368/video/05-library-themes.mp4",
+      "bytes": 1929937,
+      "sha256": "e49eafff544902d9255b5338ce0d98a40e9bd3be0e9e2f3ef27b5cafabd2ff5e"
+    },
+    {
+      "path": "runs/43761868949/audio-routing-evidence/android-music-volume-after.txt",
+      "bytes": 126,
+      "sha256": "09782aea5e7d6975194f211f61b2d2cd442abbb4114ccd2050891439d751d600"
+    },
+    {
+      "path": "runs/43761868949/audio-routing-evidence/android-music-volume-before.txt",
+      "bytes": 125,
+      "sha256": "6a106e21beca00b82ecc3df1538697f30afa8dd606a590cfb31a282d8287c234"
+    },
+    {
+      "path": "runs/43761868949/metadata/06-background-playback-streams.json",
+      "bytes": 3646,
+      "sha256": "719be05fbb49418fe4d8303625a8322940e7a8ceeb54b155cfb700b10a4d7581"
+    },
+    {
+      "path": "runs/43761868949/metadata/capture-build.json",
+      "bytes": 765,
+      "sha256": "f7c873d1f1720906a93a4556d841c16d8f5e394cede481802777976d4930e384"
+    },
+    {
+      "path": "runs/43761868949/metadata/capture-report.json",
+      "bytes": 15144,
+      "sha256": "92987d4fca779f4bf4b320ac8aa39af5b3dcdd4c5ec9791d8f70dd9379c5e054"
+    },
+    {
+      "path": "runs/43761868949/metadata/device-recorder.json",
+      "bytes": 351,
+      "sha256": "f52efc1b7fc6c09f6adb615afe4747b1ff9288a58a07348873bdb0fd3b0ff053"
+    },
+    {
+      "path": "runs/43761868949/metadata/reused-build.json",
+      "bytes": 717,
+      "sha256": "889a6f2e5675b348da347049b89ddf1c393f290c6c29a461b1e87ead122fa212"
+    },
+    {
+      "path": "runs/43761868949/metadata/scrcpy-version.txt",
+      "bytes": 274,
+      "sha256": "8bf9bfd9b8a882843418a2d6fdbe6d1d61c6fac1f0bbd2209a4fde58e7d0882f"
+    },
+    {
+      "path": "runs/43761868949/original-demo-documents/A quiet space for thought.pdf",
+      "bytes": 34704,
+      "sha256": "377fd98713d86e5ceb04d5cdcd0c8fe8e17e40199a0e12ffb334e0b9564a1da0"
+    },
+    {
+      "path": "runs/43761868949/original-demo-documents/Everyday curiosity.pdf",
+      "bytes": 26049,
+      "sha256": "4f601625217436915c4e46857fc3bbac6b164fbe7c7cc59c64f955cfd5da51e4"
+    },
+    {
+      "path": "runs/43761868949/original-demo-documents/Field notes.pdf",
+      "bytes": 23503,
+      "sha256": "30541282c1d1689f180d1db428cdd66c64099c2e940cdb1f8093bc3fafbdedb7"
+    },
+    {
+      "path": "runs/43761868949/original-demo-documents/seed.json",
+      "bytes": 1464,
+      "sha256": "3bd876c76557c04ae00db58c262a5b73510bd6b1d3d5c103537f813c03c925a7"
+    },
+    {
+      "path": "runs/43761868949/playback-evidence/14-reading-aloud.png",
+      "bytes": 221021,
+      "sha256": "08ef45144563f58a2bd26ba01482123c005e803be5d6e0eed21dbc10363d2ca0"
+    },
+    {
+      "path": "runs/43761868949/playback-evidence/15-background-notification.png",
+      "bytes": 130075,
+      "sha256": "809589e24009ba44bd97ce6cb5c6e6fad1cc4bd06f9cef3be09fd23944a796e5"
+    },
+    {
+      "path": "runs/43761868949/playback-evidence/15-background-notification.xml",
+      "bytes": 41872,
+      "sha256": "546d94c8887b8e4001278471d09cec8ff84f2214d6401620186d4a3bd99b8ac4"
+    },
+    {
+      "path": "runs/43761868949/playback-evidence/16-notification-paused.png",
+      "bytes": 130924,
+      "sha256": "5169f73b8a5981d76800939be21c922481afed00d06b38ac76da4b05741d24ac"
+    },
+    {
+      "path": "runs/43761868949/playback-evidence/16-notification-paused.xml",
+      "bytes": 41871,
+      "sha256": "c9cbbec44f02235560adca6d00e3ee1b694612635f78f3523628279e7f9c821b"
+    },
+    {
+      "path": "runs/43761868949/playback-evidence/background-media-session.txt",
+      "bytes": 6189,
+      "sha256": "1146ab7e8530a9af385b4b0d46014e542b88b835ee334ce8aad8d93932e65319"
+    },
+    {
+      "path": "runs/43761868949/playback-evidence/background-service.txt",
+      "bytes": 3192,
+      "sha256": "9df385838efb5cbcfd3483c4cb72ba241eb47e9d9bd2ae808e8a3d9aea1da4ed"
+    },
+    {
+      "path": "runs/43761868949/playback-evidence/playback-prepared-page.png",
+      "bytes": 231188,
+      "sha256": "ea0b3ac3e0f4c214e4c6f3dc39b5d4562bbae8e54c7588f55febf3b667e5b245"
+    },
+    {
+      "path": "runs/43761868949/playback-evidence/playback-prepared-page.xml",
+      "bytes": 17884,
+      "sha256": "1652af499405420c5865e7ac757d79f781511ddd26c814b81420284b9b958810"
+    },
+    {
+      "path": "runs/43761868949/playback-evidence/playback-session-before.txt",
+      "bytes": 6187,
+      "sha256": "00a36fd3df553b0f6ace6d3e0ec51dd0b6a11107241153e0be331957c628fbfd"
+    },
+    {
+      "path": "runs/43761868949/playback-evidence/playback-session-paused.txt",
+      "bytes": 6186,
+      "sha256": "97e6940150ff87b6e109dd7aad1530073231d967cb853243135c3b163775f14b"
+    },
+    {
+      "path": "runs/43761868949/playback-evidence/playback-session-warmed-paused.txt",
+      "bytes": 6187,
+      "sha256": "a352a153d15764a82e958f25af9a6da06d744d739d341f526ad079d98a212d2e"
+    },
+    {
+      "path": "runs/43761868949/video/06-background-playback.mp4",
+      "bytes": 2650342,
+      "sha256": "180e1bcd6da0d78fa4a0005524f1fea70206e8a81dd5cd2e2872d42a03222fc3"
+    },
+    {
+      "path": "screenshots/capture-provenance.json",
+      "bytes": 11870,
+      "sha256": "1c98fd30a96f945e8f7d75c628c2e8d04b7ad85ca4acffdae4f3dfa507a59947"
+    },
+    {
+      "path": "screenshots/editorial-captions.json",
+      "bytes": 1797,
+      "sha256": "ec0e418271254314997706dd0ef88b5239366a22e49b96ed6d0677df767192c0"
+    },
+    {
+      "path": "screenshots/store-image-manifest.json",
+      "bytes": 14053,
+      "sha256": "69cc917f7a6b1e37366796c460012b3afaad0f7a91690cf2e403241327f5326f"
+    },
+    {
+      "path": "video-assembly/accepted-video-recipe.json",
+      "bytes": 4169,
+      "sha256": "7fd523000097b8547fda6bea8f9994c68d81e5e40703c1f88015c24afc064549"
+    },
+    {
+      "path": "video-assembly/assembly-manifest.json",
+      "bytes": 11712,
+      "sha256": "6f4b3517fe28ea51ca17c16aedcb4d5311dc451213b55af4eb4781ce1e7144ab"
+    },
+    {
+      "path": "video-assembly/capture-report.json",
+      "bytes": 13224,
+      "sha256": "ec92bbc1b142f1011759fa7cb6d5e59aae0987c06b4f5cc0704fe5b60277bbfe"
+    },
+    {
+      "path": "video-assembly/edit-recipe-used.json",
+      "bytes": 4193,
+      "sha256": "f85ac590586a676cbc523911c1e2af59b4cf8ec01f1e1699c34db2789a2f3678"
+    }
+  ]
+}

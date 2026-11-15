@@ -1,0 +1,555 @@
+{
+  "startedAt": "2026-11-15T21:25:30.443357+00:00",
+  "status": "complete",
+  "createdBy": "scripts/build_demo_video.py",
+  "layout": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "fullPortraitFrame": [
+      1240,
+      60,
+      540,
+      960
+    ]
+  },
+  "speedMultiplier": 1,
+  "musicAdded": false,
+  "syntheticUiAdded": false,
+  "sourceFootageModified": false,
+  "notes": [
+    "Editorial titles and warm background are outside the app footage.",
+    "Cuts omit time between scenes; retained footage plays at its original speed.",
+    "Models may have been prepared before capture; this is not a cold-start performance demonstration.",
+    "Audio signal checks do not establish audible speech quality or exact synchronization."
+  ],
+  "ffmpeg": "ffmpeg version n9.0.2-17-g2a571b6068-20260930 Copyright (c) 2000-2026 the FFmpeg developers",
+  "captureReportSha256": "ec92bbc1b142f1011759fa7cb6d5e59aae0987c06b4f5cc0704fe5b60277bbfe",
+  "captureProvenance": {
+    "sourceCommit": null,
+    "workflowRun": null,
+    "deviceFingerprint": "google/sdk_gphone64_x86_64/emu64xa:15/AE3A.240806.043/12960925:userdebug/dev-keys",
+    "deviceAbi": "x86_64",
+    "captureKind": "authentic emulator recording",
+    "captureAssemblyKind": "Byte-identical reviewed selection from separate workflow runs; not one successful full capture",
+    "sources": [
+      {
+        "role": "product features",
+        "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+        "captureSourceCommit": "29f768dfde141cf0c319b561037c600f7ebd6af7",
+        "captureReportSha256": "8dbd48f74c5f57068303b42779228e02089ddad7d56775052dc4cfc893661a6f",
+        "captureBuildSha256": "d947c57a7152b8bac455a69a7adc37bf1d88143f8125d19693a9be1e47a8ce2a",
+        "captureReportFile": "provenance/43753190368/capture-report.json",
+        "captureBuildFile": "provenance/43753190368/capture-build.json",
+        "originalCaptureStatus": "partial",
+        "originalCaptureErrors": [
+          {
+            "section": "playback",
+            "error": "Media session did not confirm actual PLAYING; foreground-service proof incomplete.",
+            "time": "2026-11-15T19:46:15.047518+00:00"
+          },
+          {
+            "section": "reader",
+            "error": "Visible control not found: Page 2 of 3",
+            "time": "2026-11-15T19:47:12.743414+00:00"
+          }
+        ],
+        "appBuild": {
+          "appVersion": "0.3.2",
+          "versionCode": 28,
+          "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+          "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+          "sourceTrees": {
+            "app/src/main": "82a53a2b49b7316d8def3a708550f342a525741b",
+            "app/src/release": "e98f60bab8f45f39833437585503e6b2e86b1648"
+          }
+        },
+        "selectedOriginalClipFiles": [
+          "01-library.mp4",
+          "02-reading.mp4",
+          "03-reading-light.mp4",
+          "04-dictionary.mp4",
+          "05-library-themes.mp4"
+        ],
+        "reusedBuildSha256": "889a6f2e5675b348da347049b89ddf1c393f290c6c29a461b1e87ead122fa212"
+      },
+      {
+        "role": "background playback",
+        "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43761868949",
+        "captureSourceCommit": "d64a05245ab41e08994854b1b17608f7aa7faa4c",
+        "captureReportSha256": "92987d4fca779f4bf4b320ac8aa39af5b3dcdd4c5ec9791d8f70dd9379c5e054",
+        "captureBuildSha256": "f7c873d1f1720906a93a4556d841c16d8f5e394cede481802777976d4930e384",
+        "captureReportFile": "provenance/43761868949/capture-report.json",
+        "captureBuildFile": "provenance/43761868949/capture-build.json",
+        "originalCaptureStatus": "complete",
+        "originalCaptureErrors": [],
+        "appBuild": {
+          "appVersion": "0.3.2",
+          "versionCode": 28,
+          "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+          "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+          "sourceTrees": {
+            "app/src/main": "82a53a2b49b7316d8def3a708550f342a525741b",
+            "app/src/release": "e98f60bab8f45f39833437585503e6b2e86b1648"
+          }
+        },
+        "selectedOriginalClipFiles": [
+          "06-background-playback.mp4"
+        ],
+        "reusedBuildSha256": "889a6f2e5675b348da347049b89ddf1c393f290c6c29a461b1e87ead122fa212"
+      }
+    ],
+    "verifiedSameAppBuild": {
+      "appVersion": "0.3.2",
+      "versionCode": 28,
+      "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+      "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+      "sourceTrees": {
+        "app/src/main": "82a53a2b49b7316d8def3a708550f342a525741b",
+        "app/src/release": "e98f60bab8f45f39833437585503e6b2e86b1648"
+      }
+    },
+    "status": "assembled_from_separate_capture_runs",
+    "errors": [
+      {
+        "sourceWorkflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+        "section": "playback",
+        "error": "Media session did not confirm actual PLAYING; foreground-service proof incomplete.",
+        "time": "2026-11-15T19:46:15.047518+00:00"
+      },
+      {
+        "sourceWorkflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+        "section": "reader",
+        "error": "Visible control not found: Page 2 of 3",
+        "time": "2026-11-15T19:47:12.743414+00:00"
+      }
+    ],
+    "notes": [
+      "Source clips and host WAVs retain their exact original bytes.",
+      "Feature capture had assertion failures; its actual PDF forward turn was independently frame-reviewed.",
+      "No successful single full capture is claimed.",
+      "Emulator release runtime uses local debug signing and x86_64; not a Play-delivered ARM64 artifact."
+    ]
+  },
+  "recipeSha256": "7fd523000097b8547fda6bea8f9994c68d81e5e40703c1f88015c24afc064549",
+  "segments": [
+    {
+      "file": "01-library.mp4",
+      "start": 7.0,
+      "duration": 7.0,
+      "title": "A place for\nevery page",
+      "caption": "Bring PDFs, images and saved web articles into your library.",
+      "sourceSha256": "dc26c0093a177ce8066287dfb402e7344147e45f2e8b6677d719b72dfeacc597",
+      "measuredSource": {
+        "durationSeconds": 15.54,
+        "width": 1080,
+        "height": 1920,
+        "fps": 2.57,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceCapture": {
+        "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+        "captureReportSha256": "8dbd48f74c5f57068303b42779228e02089ddad7d56775052dc4cfc893661a6f",
+        "captureBuildSha256": "d947c57a7152b8bac455a69a7adc37bf1d88143f8125d19693a9be1e47a8ce2a",
+        "originalFile": "01-library.mp4",
+        "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+        "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+        "originalHostAudioFile": "01-library-audio.wav",
+        "originalHostAudioSha256": "3bcd392bad15a75118c0772f42bddc82c50b66b442539d64ba4ad1f29af79093"
+      },
+      "sourceAudio": "01-library-audio.wav",
+      "sourceAudioSha256": "3bcd392bad15a75118c0772f42bddc82c50b66b442539d64ba4ad1f29af79093",
+      "embeddedDeviceAudio": false,
+      "audioCaptureMethod": null,
+      "recorder": null,
+      "recorderArchiveSha256": null,
+      "deviceSpeakerOutputRedirectedDuringRecording": false,
+      "recordedAudioSynchronization": "Separate host capture; start offset approximate, inspect before publishing.",
+      "constantAudioGainDb": 0.0,
+      "appliedAudioLeadSeconds": 0.000400616000035825,
+      "output": "render-parts/scene-00.mp4"
+    },
+    {
+      "file": "02-reading.mp4",
+      "start": 2.0,
+      "duration": 6.0,
+      "title": "Turn the page.\nKeep your place.",
+      "caption": "Swipe forward like a book. Choose the original PDF or a clear text view.",
+      "sourceSha256": "7b4b9bd8a2720aa90492a0f2807e9be4b1782aed12b1f701a278a790f79e27aa",
+      "measuredSource": {
+        "durationSeconds": 25.58,
+        "width": 1080,
+        "height": 1920,
+        "fps": 1.99,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceCapture": {
+        "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+        "captureReportSha256": "8dbd48f74c5f57068303b42779228e02089ddad7d56775052dc4cfc893661a6f",
+        "captureBuildSha256": "d947c57a7152b8bac455a69a7adc37bf1d88143f8125d19693a9be1e47a8ce2a",
+        "originalFile": "02-reading.mp4",
+        "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+        "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+        "originalHostAudioFile": "02-reading-audio.wav",
+        "originalHostAudioSha256": "0d686f23f1452519594b6b4b5fb3e127633362bf66cb1d804f527efaa40db538"
+      },
+      "sourceAudio": "02-reading-audio.wav",
+      "sourceAudioSha256": "0d686f23f1452519594b6b4b5fb3e127633362bf66cb1d804f527efaa40db538",
+      "embeddedDeviceAudio": false,
+      "audioCaptureMethod": null,
+      "recorder": null,
+      "recorderArchiveSha256": null,
+      "deviceSpeakerOutputRedirectedDuringRecording": false,
+      "recordedAudioSynchronization": "Separate host capture; start offset approximate, inspect before publishing.",
+      "constantAudioGainDb": 0.0,
+      "appliedAudioLeadSeconds": 0.0005782529999578401,
+      "output": "render-parts/scene-01.mp4"
+    },
+    {
+      "file": "03-reading-light.mp4",
+      "start": 15.0,
+      "duration": 9.0,
+      "title": "Read in your\nown light",
+      "caption": "Adjust brightness and add a warm glow from the reader controls.",
+      "sourceSha256": "08f3b776a8067a5e87f993ad620ff5102c360bc2e6fd041e5fae2c88912ff2c6",
+      "measuredSource": {
+        "durationSeconds": 49.69,
+        "width": 1080,
+        "height": 1920,
+        "fps": 3.2,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceCapture": {
+        "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+        "captureReportSha256": "8dbd48f74c5f57068303b42779228e02089ddad7d56775052dc4cfc893661a6f",
+        "captureBuildSha256": "d947c57a7152b8bac455a69a7adc37bf1d88143f8125d19693a9be1e47a8ce2a",
+        "originalFile": "03-reading-light.mp4",
+        "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+        "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+        "originalHostAudioFile": "03-reading-light-audio.wav",
+        "originalHostAudioSha256": "85a0c423a690f1608febad83494b0383b74d9dbe244ce7929fc5d29ec4e24c30"
+      },
+      "sourceAudio": "03-reading-light-audio.wav",
+      "sourceAudioSha256": "85a0c423a690f1608febad83494b0383b74d9dbe244ce7929fc5d29ec4e24c30",
+      "embeddedDeviceAudio": false,
+      "audioCaptureMethod": null,
+      "recorder": null,
+      "recorderArchiveSha256": null,
+      "deviceSpeakerOutputRedirectedDuringRecording": false,
+      "recordedAudioSynchronization": "Separate host capture; start offset approximate, inspect before publishing.",
+      "constantAudioGainDb": 0.0,
+      "appliedAudioLeadSeconds": 0.0011277220000351917,
+      "output": "render-parts/scene-02.mp4"
+    },
+    {
+      "file": "03-reading-light.mp4",
+      "start": 43.0,
+      "duration": 5.0,
+      "title": "Set your pace",
+      "caption": "Keep voice, reading speed and accuracy controls close at hand.",
+      "sourceSha256": "08f3b776a8067a5e87f993ad620ff5102c360bc2e6fd041e5fae2c88912ff2c6",
+      "measuredSource": {
+        "durationSeconds": 49.69,
+        "width": 1080,
+        "height": 1920,
+        "fps": 3.2,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceCapture": {
+        "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+        "captureReportSha256": "8dbd48f74c5f57068303b42779228e02089ddad7d56775052dc4cfc893661a6f",
+        "captureBuildSha256": "d947c57a7152b8bac455a69a7adc37bf1d88143f8125d19693a9be1e47a8ce2a",
+        "originalFile": "03-reading-light.mp4",
+        "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+        "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+        "originalHostAudioFile": "03-reading-light-audio.wav",
+        "originalHostAudioSha256": "85a0c423a690f1608febad83494b0383b74d9dbe244ce7929fc5d29ec4e24c30"
+      },
+      "sourceAudio": "03-reading-light-audio.wav",
+      "sourceAudioSha256": "85a0c423a690f1608febad83494b0383b74d9dbe244ce7929fc5d29ec4e24c30",
+      "embeddedDeviceAudio": false,
+      "audioCaptureMethod": null,
+      "recorder": null,
+      "recorderArchiveSha256": null,
+      "deviceSpeakerOutputRedirectedDuringRecording": false,
+      "recordedAudioSynchronization": "Separate host capture; start offset approximate, inspect before publishing.",
+      "constantAudioGainDb": 0.0,
+      "appliedAudioLeadSeconds": 0.0011277220000351917,
+      "output": "render-parts/scene-03.mp4"
+    },
+    {
+      "file": "04-dictionary.mp4",
+      "start": 30.0,
+      "duration": 8.0,
+      "title": "Stay with\nthe story",
+      "caption": "Look up English words in the reader. Definitions work offline after download.",
+      "sourceSha256": "6e8e8cb4fc76eecabf2480149f42d5152b22f3e17cc4a6fe2c7114618ce1629b",
+      "measuredSource": {
+        "durationSeconds": 43.63,
+        "width": 1080,
+        "height": 1920,
+        "fps": 4.86,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceCapture": {
+        "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+        "captureReportSha256": "8dbd48f74c5f57068303b42779228e02089ddad7d56775052dc4cfc893661a6f",
+        "captureBuildSha256": "d947c57a7152b8bac455a69a7adc37bf1d88143f8125d19693a9be1e47a8ce2a",
+        "originalFile": "04-dictionary.mp4",
+        "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+        "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+        "originalHostAudioFile": "04-dictionary-audio.wav",
+        "originalHostAudioSha256": "2e8132e2ab2a1ee40cf0add104510df877eda956480a0f8dde10061a8cf40563"
+      },
+      "sourceAudio": "04-dictionary-audio.wav",
+      "sourceAudioSha256": "2e8132e2ab2a1ee40cf0add104510df877eda956480a0f8dde10061a8cf40563",
+      "embeddedDeviceAudio": false,
+      "audioCaptureMethod": null,
+      "recorder": null,
+      "recorderArchiveSha256": null,
+      "deviceSpeakerOutputRedirectedDuringRecording": false,
+      "recordedAudioSynchronization": "Separate host capture; start offset approximate, inspect before publishing.",
+      "constantAudioGainDb": 0.0,
+      "appliedAudioLeadSeconds": 0.0009553209999921819,
+      "output": "render-parts/scene-04.mp4"
+    },
+    {
+      "file": "05-library-themes.mp4",
+      "start": 5.5,
+      "duration": 7.0,
+      "title": "Make it yours",
+      "caption": "Choose Warm Library, Modern Focus or Night Reader in Settings.",
+      "sourceSha256": "e49eafff544902d9255b5338ce0d98a40e9bd3be0e9e2f3ef27b5cafabd2ff5e",
+      "measuredSource": {
+        "durationSeconds": 47.98,
+        "width": 1080,
+        "height": 1920,
+        "fps": 3.92,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceCapture": {
+        "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+        "captureReportSha256": "8dbd48f74c5f57068303b42779228e02089ddad7d56775052dc4cfc893661a6f",
+        "captureBuildSha256": "d947c57a7152b8bac455a69a7adc37bf1d88143f8125d19693a9be1e47a8ce2a",
+        "originalFile": "05-library-themes.mp4",
+        "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+        "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+        "originalHostAudioFile": "05-library-themes-audio.wav",
+        "originalHostAudioSha256": "6214b94b6c7400ec058a8ae0cd68db72348bbe164f2fab1cc3eb59478a847cfd"
+      },
+      "sourceAudio": "05-library-themes-audio.wav",
+      "sourceAudioSha256": "6214b94b6c7400ec058a8ae0cd68db72348bbe164f2fab1cc3eb59478a847cfd",
+      "embeddedDeviceAudio": false,
+      "audioCaptureMethod": null,
+      "recorder": null,
+      "recorderArchiveSha256": null,
+      "deviceSpeakerOutputRedirectedDuringRecording": false,
+      "recordedAudioSynchronization": "Separate host capture; start offset approximate, inspect before publishing.",
+      "constantAudioGainDb": 0.0,
+      "appliedAudioLeadSeconds": 0.0004040310000164027,
+      "output": "render-parts/scene-05.mp4"
+    },
+    {
+      "file": "05-library-themes.mp4",
+      "start": 22.5,
+      "duration": 7.0,
+      "title": "A quieter look",
+      "caption": "Night Reader gives your library a darker palette.",
+      "sourceSha256": "e49eafff544902d9255b5338ce0d98a40e9bd3be0e9e2f3ef27b5cafabd2ff5e",
+      "measuredSource": {
+        "durationSeconds": 47.98,
+        "width": 1080,
+        "height": 1920,
+        "fps": 3.92,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceCapture": {
+        "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+        "captureReportSha256": "8dbd48f74c5f57068303b42779228e02089ddad7d56775052dc4cfc893661a6f",
+        "captureBuildSha256": "d947c57a7152b8bac455a69a7adc37bf1d88143f8125d19693a9be1e47a8ce2a",
+        "originalFile": "05-library-themes.mp4",
+        "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+        "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+        "originalHostAudioFile": "05-library-themes-audio.wav",
+        "originalHostAudioSha256": "6214b94b6c7400ec058a8ae0cd68db72348bbe164f2fab1cc3eb59478a847cfd"
+      },
+      "sourceAudio": "05-library-themes-audio.wav",
+      "sourceAudioSha256": "6214b94b6c7400ec058a8ae0cd68db72348bbe164f2fab1cc3eb59478a847cfd",
+      "embeddedDeviceAudio": false,
+      "audioCaptureMethod": null,
+      "recorder": null,
+      "recorderArchiveSha256": null,
+      "deviceSpeakerOutputRedirectedDuringRecording": false,
+      "recordedAudioSynchronization": "Separate host capture; start offset approximate, inspect before publishing.",
+      "constantAudioGainDb": 0.0,
+      "appliedAudioLeadSeconds": 0.0004040310000164027,
+      "output": "render-parts/scene-06.mp4"
+    },
+    {
+      "file": "06-background-playback.mp4",
+      "start": 3.2,
+      "duration": 25.0,
+      "title": "Keep listening",
+      "caption": "Start narration, switch apps and pause from Android's media controls.",
+      "audioGainDb": 26,
+      "sourceSha256": "180e1bcd6da0d78fa4a0005524f1fea70206e8a81dd5cd2e2872d42a03222fc3",
+      "measuredSource": {
+        "durationSeconds": 33.03,
+        "width": 1080,
+        "height": 1920,
+        "fps": 7.87,
+        "hasVideo": true,
+        "hasAudio": true
+      },
+      "sourceCapture": {
+        "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43761868949",
+        "captureReportSha256": "92987d4fca779f4bf4b320ac8aa39af5b3dcdd4c5ec9791d8f70dd9379c5e054",
+        "captureBuildSha256": "f7c873d1f1720906a93a4556d841c16d8f5e394cede481802777976d4930e384",
+        "originalFile": "06-background-playback.mp4",
+        "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+        "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+        "embeddedDeviceAudio": true,
+        "audioCaptureMethod": "Live Android REMOTE_SUBMIX output via scrcpy --audio-source=output",
+        "recorder": "scrcpy 5.0.1",
+        "audioSynchronization": "Original audio/video packet timestamps captured on device; multiplexed together by scrcpy.",
+        "recorderArchiveSha256": "9f969d30cc574816077edecda65719c1c70b0aee1df1ba5fa00779ac07b8fd6e",
+        "deviceSpeakerOutputRedirectedDuringRecording": true
+      },
+      "sourceAudio": "06-background-playback.mp4",
+      "sourceAudioSha256": "180e1bcd6da0d78fa4a0005524f1fea70206e8a81dd5cd2e2872d42a03222fc3",
+      "embeddedDeviceAudio": true,
+      "audioCaptureMethod": "Live Android REMOTE_SUBMIX output via scrcpy --audio-source=output",
+      "recorder": "scrcpy 5.0.1",
+      "recorderArchiveSha256": "9f969d30cc574816077edecda65719c1c70b0aee1df1ba5fa00779ac07b8fd6e",
+      "deviceSpeakerOutputRedirectedDuringRecording": true,
+      "recordedAudioSynchronization": "Original audio/video packet timestamps captured on device; multiplexed together by scrcpy.",
+      "constantAudioGainDb": 26.0,
+      "appliedAudioLeadSeconds": 0.0,
+      "output": "render-parts/scene-07.mp4"
+    }
+  ],
+  "productDemo": {
+    "file": "Read-Assist-0.3.2-product-demo.mp4",
+    "sha256": "cda2837be33ece81a7e6ad205d59cf328d9695498c0323162511892b9057b2c2",
+    "bytes": 2142928,
+    "probe": {
+      "durationSeconds": 74.02,
+      "width": 1920,
+      "height": 1080,
+      "fps": 30.0,
+      "hasVideo": true,
+      "hasAudio": true
+    },
+    "decodeValidation": "passed",
+    "expectedDurationSeconds": 74.0
+  },
+  "foregroundService": {
+    "rawVideoUnchanged": true,
+    "foregroundServiceReady": true,
+    "automaticChecksPassed": true,
+    "playbackReviewConfirmed": true,
+    "file": "Read-Assist-0.3.2-foreground-service.mp4",
+    "sha256": "720119d77d9d39b0ac3ddf0e058e6555756b5ae3c2612fbe7aa46e1ed7c79fea",
+    "bytes": 2622524,
+    "probe": {
+      "durationSeconds": 33.03,
+      "width": 1080,
+      "height": 1920,
+      "fps": 7.87,
+      "hasVideo": true,
+      "hasAudio": true
+    },
+    "decodeValidation": "passed",
+    "uncutVideo": true,
+    "encodedVideoStreamSha256": "e3545c42b227711018ad401be5395e314a6c6b4307157d726d3ae3d64ebbd951",
+    "sourceVideoStreamSha256": "e3545c42b227711018ad401be5395e314a6c6b4307157d726d3ae3d64ebbd951",
+    "sourceVideo": "06-background-playback.mp4",
+    "sourceVideoSha256": "180e1bcd6da0d78fa4a0005524f1fea70206e8a81dd5cd2e2872d42a03222fc3",
+    "sourceCapture": {
+      "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43761868949",
+      "captureReportSha256": "92987d4fca779f4bf4b320ac8aa39af5b3dcdd4c5ec9791d8f70dd9379c5e054",
+      "captureBuildSha256": "f7c873d1f1720906a93a4556d841c16d8f5e394cede481802777976d4930e384",
+      "originalFile": "06-background-playback.mp4",
+      "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+      "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+      "embeddedDeviceAudio": true,
+      "audioCaptureMethod": "Live Android REMOTE_SUBMIX output via scrcpy --audio-source=output",
+      "recorder": "scrcpy 5.0.1",
+      "audioSynchronization": "Original audio/video packet timestamps captured on device; multiplexed together by scrcpy.",
+      "recorderArchiveSha256": "9f969d30cc574816077edecda65719c1c70b0aee1df1ba5fa00779ac07b8fd6e",
+      "deviceSpeakerOutputRedirectedDuringRecording": true
+    },
+    "sourceAudio": "06-background-playback.mp4",
+    "sourceAudioSha256": "180e1bcd6da0d78fa4a0005524f1fea70206e8a81dd5cd2e2872d42a03222fc3",
+    "embeddedDeviceAudio": true,
+    "rawContainerUnchanged": false,
+    "rawAudioUnchanged": false,
+    "constantAudioGainDb": 26.0,
+    "audioProcessing": "Constant gain only, then AAC encoding; no replacement, noise removal, dynamic compression or timing change.",
+    "encodedAudioStreamSha256": "5f016d7466ad631323f0b60ac24d6f355660dcc3b5df38527071302f2292fd79",
+    "sourceAudioStreamSha256": "eeb3bbdd56be0d350f2344a9938bd499d23afe2768159866559a5b0306bc7a1f",
+    "audioCaptureMethod": "Live Android REMOTE_SUBMIX output via scrcpy --audio-source=output",
+    "recorder": "scrcpy 5.0.1",
+    "recordedAudioSynchronization": "Original audio/video packet timestamps captured on device; multiplexed together by scrcpy.",
+    "recorderArchiveSha256": "9f969d30cc574816077edecda65719c1c70b0aee1df1ba5fa00779ac07b8fd6e",
+    "deviceSpeakerOutputRedirectedDuringRecording": true,
+    "recordedHostAudioLeadSecondsApprox": null,
+    "operatorOffsetAdjustmentSeconds": 0.0,
+    "appliedAudioLeadSeconds": 0.0,
+    "audioAlignmentRule": "Original device timeline retained; encoded video unchanged; audio re-encoded at disclosed constant gain.",
+    "audioTailPaddingLimitSeconds": 0,
+    "audioStatistics": {
+      "nonSilent": true,
+      "sampleCount": 524422,
+      "sampleRate": 16000,
+      "analysisChannels": 1,
+      "rmsDbFS": -33.0,
+      "peakDbFS": -6.67,
+      "activeOneSecondWindows": 22,
+      "meaning": "Signal-level check only; not speech recognition, listening review or a sync guarantee."
+    },
+    "fullRateAudioPeak": {
+      "peakLinear": 0.46565067768096924,
+      "peakDbFS": -6.638795213232358,
+      "clippedSamples": 0,
+      "analysis": "Float32 decode of every channel at the original sample rate; no downmix or resampling."
+    },
+    "capturePlaybackEvidenceFlag": true,
+    "backgroundPlaying": {
+      "file": "background-media-session.txt",
+      "sha256": "1146ab7e8530a9af385b4b0d46014e542b88b835ee334ce8aad8d93932e65319",
+      "expectedState": 3,
+      "observedAppStates": [
+        3
+      ],
+      "confirmed": true
+    },
+    "notificationPaused": {
+      "file": "playback-session-paused.txt",
+      "sha256": "97e6940150ff87b6e109dd7aad1530073231d967cb853243135c3b163775f14b",
+      "expectedState": 2,
+      "observedAppStates": [
+        2
+      ],
+      "confirmed": true
+    },
+    "usesPreviouslyPreparedAudio": true,
+    "preparationBeforeRecording": {
+      "method": "Prepare pages before listening: page 1 through page 1",
+      "readyMessage": "Pages 1\u20131 ready \u00b7 press Play to read",
+      "evidence": "playback-prepared-page.png",
+      "outsideProofRecording": true,
+      "usesOrdinaryVerifiedAudioCache": true
+    },
+    "reviewNote": "Actual Play\u2192Home\u2192notificationPause frames and app-scoped PLAYING/PAUSED/foreground-service evidence reviewed. Local ASR identifies original CC0 narration beginning about4.17s and ending about26.03s; visible Play changes3.8\u20134.2s and notificationPause changes26.0\u201326.2s. Genuine native audio raised by constant26dB for clarity; original device timeline and encoded video preserved, raw MP4 retained. Gain/content/timeline correlation checked after AAC encoding. No human listening or exact sample-level AV sync claim."
+  },
+  "creditsSha256": "1360dd124cc479c8eadd5ebb8b375f04410eed15c3e325db771d052ee7077f51",
+  "finishedAt": "2026-11-15T21:26:23.065234+00:00"
+}

@@ -1,0 +1,87 @@
+{
+  "purpose": "Read Assist0.3.2 product walkthrough with authentic feature footage and genuine live narration; separate continuous foreground-service viewing copy.",
+  "review": {
+    "method": "Actual raw-frame contact sheets and fine page-turn frames inspected; FFmpeg decoded all five source clips; actual host WAVs measured. No human listening performed.",
+    "frameReviewDirectory": "build/store-media/review-43753190368",
+    "sourceCaptureReportSha256": "8dbd48f74c5f57068303b42779228e02089ddad7d56775052dc4cfc893661a6f",
+    "sourceCaptureRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+    "sourceCaptureScriptCommit": "29f768dfde141cf0c319b561037c600f7ebd6af7",
+    "appBuildSourceCommit": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+    "emulatorApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+    "captureAssertionNote": "Reader assertion assumed page1 at start; actual recorded reader begins on page2 and visibly turns forward to page3 at4.2\u20135.0seconds. No claim that all capture assertions passed.",
+    "playbackSpeedMultiplier": 1,
+    "coldStartPerformanceDemonstration": false,
+    "sourceRuns": [
+      "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+      "https://github.com/sainadh812/ReadFlow/actions/runs/43761868949"
+    ],
+    "assemblyManifestSha256": "6f4b3517fe28ea51ca17c16aedcb4d5311dc451213b55af4eb4781ce1e7144ab",
+    "playbackReviewSha256": "fe08d9aee4af5e71da38eb065da0933438d3266954341c5273e5e203985ef456",
+    "humanListeningPerformed": false,
+    "audioMethod": "Original live native audio; constant26dB gain disclosed, no source substitution. Original MP4 retained. Device packet timing retained, including initial delay and recorded gaps."
+  },
+  "segments": [
+    {
+      "file": "01-library.mp4",
+      "start": 7.0,
+      "duration": 7,
+      "title": "A place for\nevery page",
+      "caption": "Bring PDFs, images and saved web articles into your library."
+    },
+    {
+      "file": "02-reading.mp4",
+      "start": 2,
+      "duration": 6,
+      "title": "Turn the page.\nKeep your place.",
+      "caption": "Swipe forward like a book. Choose the original PDF or a clear text view."
+    },
+    {
+      "file": "03-reading-light.mp4",
+      "start": 15,
+      "duration": 9,
+      "title": "Read in your\nown light",
+      "caption": "Adjust brightness and add a warm glow from the reader controls."
+    },
+    {
+      "file": "03-reading-light.mp4",
+      "start": 43,
+      "duration": 5,
+      "title": "Set your pace",
+      "caption": "Keep voice, reading speed and accuracy controls close at hand."
+    },
+    {
+      "file": "04-dictionary.mp4",
+      "start": 30,
+      "duration": 8,
+      "title": "Stay with\nthe story",
+      "caption": "Look up English words in the reader. Definitions work offline after download."
+    },
+    {
+      "file": "05-library-themes.mp4",
+      "start": 5.5,
+      "duration": 7,
+      "title": "Make it yours",
+      "caption": "Choose Warm Library, Modern Focus or Night Reader in Settings."
+    },
+    {
+      "file": "05-library-themes.mp4",
+      "start": 22.5,
+      "duration": 7,
+      "title": "A quieter look",
+      "caption": "Night Reader gives your library a darker palette."
+    },
+    {
+      "file": "06-background-playback.mp4",
+      "start": 3.2,
+      "duration": 25,
+      "title": "Keep listening",
+      "caption": "Start narration, switch apps and pause from Android's media controls.",
+      "audioGainDb": 26
+    }
+  ],
+  "foregroundService": {
+    "reviewedAudioSyncAndControls": true,
+    "audioGainDb": 26,
+    "reviewNote": "Actual Play\u2192Home\u2192notificationPause frames and app-scoped PLAYING/PAUSED/foreground-service evidence reviewed. Local ASR identifies original CC0 narration beginning about4.17s and ending about26.03s; visible Play changes3.8\u20134.2s and notificationPause changes26.0\u201326.2s. Genuine native audio raised by constant26dB for clarity; original device timeline and encoded video preserved, raw MP4 retained. Gain/content/timeline correlation checked after AAC encoding. No human listening or exact sample-level AV sync claim."
+  }
+}

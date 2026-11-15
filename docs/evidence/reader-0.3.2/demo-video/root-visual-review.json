@@ -1,0 +1,45 @@
+{
+  "reviewedAt": "2026-11-15T21:22:53.468412+00:00",
+  "reviewKind": "Assistant visual inspection of original capture screenshots and timeline contact sheet",
+  "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43761868949",
+  "rawVideoSha256": "180e1bcd6da0d78fa4a0005524f1fea70206e8a81dd5cd2e2872d42a03222fc3",
+  "reviewedFiles": [
+    {
+      "file": "build/store-capture-43761868949/build/store-media/capture/14-reading-aloud.png",
+      "sha256": "08ef45144563f58a2bd26ba01482123c005e803be5d6e0eed21dbc10363d2ca0"
+    },
+    {
+      "file": "build/store-capture-43761868949/build/store-media/capture/15-background-notification.png",
+      "sha256": "809589e24009ba44bd97ce6cb5c6e6fad1cc4bd06f9cef3be09fd23944a796e5"
+    },
+    {
+      "file": "build/store-capture-43761868949/build/store-media/capture/16-notification-paused.png",
+      "sha256": "5169f73b8a5981d76800939be21c922481afed00d06b38ac76da4b05741d24ac"
+    },
+    {
+      "file": "build/store-media/review-43761868949/06-background-playback-contact-00.jpg",
+      "sha256": "e604bab49bd9babc38c9a962e955ec3c199572bd896bc53d5221a2a8e703476c"
+    }
+  ],
+  "observations": [
+    "Reader initially shows Play, then Pause after playback starts.",
+    "The original timeline shows the reader followed by the Android Home screen and notification shade.",
+    "Notification media control changes from Pause to Play at the end of the recording.",
+    "Reading screenshot shows actual word highlighting and the reader Text/PDF controls."
+  ],
+  "visualControlSequenceConfirmed": true,
+  "humanListeningPerformed": false,
+  "audioAssessment": "Separate signal, transcript and source/output timing reports are required; this visual review alone does not establish audible narration.",
+  "finalProductVisualReview": {
+    "videoSha256": "cda2837be33ece81a7e6ad205d59cf328d9695498c0323162511892b9057b2c2",
+    "contactSheet": "build/store-media/rendered/timeline-verification/whole-frame-contact-00.jpg",
+    "contactSheetSha256": "9a52eb9751a30e761512590a8961fdf8db5b5d1a223af80f1e2b89a02c0daf98",
+    "sceneCount": 8,
+    "observations": [
+      "Eight scene titles and captions are readable and remain outside the full app frame.",
+      "The real page curl, reading controls, dictionary, themes and Android playback controls are visible.",
+      "No visual layout or cropping issue was found in the reviewed whole-scene contact sheet."
+    ],
+    "passed": true
+  }
+}

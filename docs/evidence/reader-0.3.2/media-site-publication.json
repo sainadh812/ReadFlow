@@ -1,0 +1,37 @@
+{
+  "startedAt": "2026-11-15T21:31:17.953996+00:00",
+  "pageUrl": "https://sainadh812.github.io/ReadFlow/demo.html",
+  "status": "pushed_deployment_unverified",
+  "hostingConfigurationModified": false,
+  "pushAttempted": true,
+  "pushSucceeded": true,
+  "renderReportSha256": "496ac4294c726718100f2594e72097fa09e1337ded25cb5bd96e9083be52bd40",
+  "files": {
+    "media/Read-Assist-0.3.2-product-demo.mp4": {
+      "sha256": "cda2837be33ece81a7e6ad205d59cf328d9695498c0323162511892b9057b2c2",
+      "bytes": 2142928
+    },
+    "media/Read-Assist-0.3.2-foreground-service.mp4": {
+      "sha256": "720119d77d9d39b0ac3ddf0e058e6555756b5ae3c2612fbe7aa46e1ed7c79fea",
+      "bytes": 2622524
+    },
+    "demo.html": {
+      "sha256": "ef93d4dfcd833383cdd01fabf1a33552cb72b5678e44352bbe5de91f378370e8",
+      "bytes": 13439
+    },
+    "MEDIA_CREDITS.md": {
+      "sha256": "1360dd124cc479c8eadd5ebb8b375f04410eed15c3e325db771d052ee7077f51",
+      "bytes": 5266
+    }
+  },
+  "beforeCommit": "83de87b028b001f053d01d7bd4a541e785eb1cb3",
+  "preservedFiles": {
+    ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "index.html": "eaaab2e01ed7255ba4eb458b42e42c87e693c6347b29bd502894645adfa5fcbd",
+    "media/Read-Assist-0.3.2-feature-tour.mp4": "dc45e670e69ceeb38b07248fce4e23b4fd2e612d0180f134eca487b52213fef3",
+    "privacy.html": "0bd9eb1e31a99fefb8da580b98ae9f4c8ceafbd4d99fbac7f610f56df01d197a"
+  },
+  "stagedFilesVerified": true,
+  "publicationCommit": "443d9667ff6e85b33020e55d9b3fe69149fd9120",
+  "finishedAt": "2026-11-15T21:31:21.436099+00:00"
+}

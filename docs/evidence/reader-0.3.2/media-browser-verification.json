@@ -1,0 +1,39 @@
+{
+  "url": "https://sainadh812.github.io/ReadFlow/demo.html",
+  "checkedAt": "2026-11-15T21:32:10.516Z",
+  "layouts": [
+    {
+      "width": 1440,
+      "scrollWidth": 1425,
+      "horizontalOverflow": false,
+      "videoCount": 2
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "horizontalOverflow": false,
+      "videoCount": 2
+    }
+  ],
+  "videos": [
+    {
+      "source": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-product-demo.mp4",
+      "duration": 74.021354,
+      "currentTime": 1.466025,
+      "width": 1920,
+      "height": 1080,
+      "readyState": 4,
+      "error": null
+    },
+    {
+      "source": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-foreground-service.mp4",
+      "duration": 33.027125,
+      "currentTime": 1.438899,
+      "width": 1080,
+      "height": 1920,
+      "readyState": 4,
+      "error": null
+    }
+  ],
+  "verified": true
+}

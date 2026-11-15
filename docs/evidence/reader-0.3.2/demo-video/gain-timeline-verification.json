@@ -1,0 +1,20 @@
+{
+  "purpose": "Verify source/output decoded content, constant gain and timing after AAC encoding; no substitute audio or subjective listening claim",
+  "source": "build/store-media/combined-capture/06-background-playback.mp4",
+  "sourceSha256": "180e1bcd6da0d78fa4a0005524f1fea70206e8a81dd5cd2e2872d42a03222fc3",
+  "output": "build/store-media/rendered/Read-Assist-0.3.2-foreground-service.mp4",
+  "outputSha256": "720119d77d9d39b0ac3ddf0e058e6555756b5ae3c2612fbe7aa46e1ed7c79fea",
+  "gainRequestedDb": 26,
+  "gainMeasuredDb": 25.991194607539214,
+  "correlationAtOriginalTimestamps": 0.9999817378671108,
+  "bestCorrelationLagSeconds": 0.0,
+  "lagSearchRangeSeconds": 0.02,
+  "encodingSignalToErrorDb": 44.26224168362993,
+  "encodingErrorNote": "Difference from gain-scaled original decoded audio, not acoustic background-noise SNR.",
+  "decodedPeakDbFS": -3.6418545593452354,
+  "clippedSamples": 0,
+  "sampleRate": 16000,
+  "timeBase": "Audio decoded with original PTS and initial silence retained, before comparison",
+  "humanListeningPerformed": false,
+  "passed": true
+}

@@ -1,0 +1,1238 @@
+{
+  "createdAt": "2026-11-15T21:24:37.747617+00:00",
+  "purpose": "Automated transcript and approximate timing aid for actual captured app audio",
+  "humanListeningPerformed": false,
+  "subjectiveSpeechQualityAssessed": false,
+  "exactAudioVideoSyncEstablished": false,
+  "captureReportSha256": "92987d4fca779f4bf4b320ac8aa39af5b3dcdd4c5ec9791d8f70dd9379c5e054",
+  "captureSourceCommit": "d64a05245ab41e08994854b1b17608f7aa7faa4c",
+  "captureWorkflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43761868949",
+  "rawVideo": "06-background-playback.mp4",
+  "rawVideoSha256": "180e1bcd6da0d78fa4a0005524f1fea70206e8a81dd5cd2e2872d42a03222fc3",
+  "sourceAudio": "06-background-playback.mp4",
+  "sourceAudioSha256": "180e1bcd6da0d78fa4a0005524f1fea70206e8a81dd5cd2e2872d42a03222fc3",
+  "audioDurationSeconds": 33.0275,
+  "embeddedDeviceAudio": true,
+  "audioCaptureMethod": "Live Android REMOTE_SUBMIX output via scrcpy --audio-source=output",
+  "recorder": "scrcpy 5.0.1",
+  "recordedAudioSynchronization": "Original audio/video packet timestamps captured on device; multiplexed together by scrcpy.",
+  "recorderArchiveSha256": "9f969d30cc574816077edecda65719c1c70b0aee1df1ba5fa00779ac07b8fd6e",
+  "deviceSpeakerOutputRedirectedDuringRecording": true,
+  "recordedHostAudioLeadSecondsApprox": 0.0,
+  "offsetAdjustmentSeconds": 0.0,
+  "appliedAudioLeadSeconds": 0.0,
+  "recordedAudioStreamStartSeconds": 0.034292,
+  "originalPacketTimelineRetained": true,
+  "timingRule": "Approximate video time = decoded audio sample time - applied audio lead. Native decoding retains initial silence and packet gaps from original device timestamps.",
+  "model": {
+    "name": "Existing local Wav2Vec2 base 960h quantized ONNX",
+    "sha256": "1d9a366c27b2966625cd5035ac3db8847c53bba617169912bb251b42975a3a22",
+    "vocabSha256": "4178db26b3c7570f6a47f14ac6a1c7b32950b8c2800fb097287e53776934f1c5",
+    "onnxRuntimeVersion": "1.20.1",
+    "providers": [
+      "CPUExecutionProvider"
+    ],
+    "newModelDownloaded": false,
+    "decoder": "Greedy CTC; repeated tokens collapsed and blank/special tokens removed"
+  },
+  "sampleRate": 16000,
+  "chunkSeconds": 10.0,
+  "stepSeconds": 5.0,
+  "minimumChunkRmsDbFS": -70.0,
+  "chunksOverlap": true,
+  "signalActivity": {
+    "analysisWindowSeconds": 0.02,
+    "rmsThresholdDbFS": -50,
+    "mergeSilenceUnderSeconds": 0.1,
+    "minimumIntervalSeconds": 0.04,
+    "meaning": "Signal activity only; not word boundaries or subjective listening.",
+    "intervals": [
+      {
+        "audioStartSeconds": 4.18,
+        "audioEndSeconds": 4.32,
+        "videoStartSecondsApprox": 4.18,
+        "videoEndSecondsApprox": 4.32
+      },
+      {
+        "audioStartSeconds": 4.48,
+        "audioEndSeconds": 4.7,
+        "videoStartSecondsApprox": 4.48,
+        "videoEndSecondsApprox": 4.7
+      },
+      {
+        "audioStartSeconds": 6.48,
+        "audioEndSeconds": 6.52,
+        "videoStartSecondsApprox": 6.48,
+        "videoEndSecondsApprox": 6.52
+      },
+      {
+        "audioStartSeconds": 6.68,
+        "audioEndSeconds": 6.74,
+        "videoStartSecondsApprox": 6.68,
+        "videoEndSecondsApprox": 6.74
+      },
+      {
+        "audioStartSeconds": 7.06,
+        "audioEndSeconds": 7.1,
+        "videoStartSecondsApprox": 7.06,
+        "videoEndSecondsApprox": 7.1
+      },
+      {
+        "audioStartSeconds": 8.24,
+        "audioEndSeconds": 8.44,
+        "videoStartSecondsApprox": 8.24,
+        "videoEndSecondsApprox": 8.44
+      },
+      {
+        "audioStartSeconds": 9.5,
+        "audioEndSeconds": 9.56,
+        "videoStartSecondsApprox": 9.5,
+        "videoEndSecondsApprox": 9.56
+      },
+      {
+        "audioStartSeconds": 9.68,
+        "audioEndSeconds": 9.74,
+        "videoStartSecondsApprox": 9.68,
+        "videoEndSecondsApprox": 9.74
+      },
+      {
+        "audioStartSeconds": 10.26,
+        "audioEndSeconds": 10.3,
+        "videoStartSecondsApprox": 10.26,
+        "videoEndSecondsApprox": 10.3
+      },
+      {
+        "audioStartSeconds": 10.48,
+        "audioEndSeconds": 10.52,
+        "videoStartSecondsApprox": 10.48,
+        "videoEndSecondsApprox": 10.52
+      },
+      {
+        "audioStartSeconds": 11.92,
+        "audioEndSeconds": 11.98,
+        "videoStartSecondsApprox": 11.92,
+        "videoEndSecondsApprox": 11.98
+      },
+      {
+        "audioStartSeconds": 12.2,
+        "audioEndSeconds": 12.26,
+        "videoStartSecondsApprox": 12.2,
+        "videoEndSecondsApprox": 12.26
+      },
+      {
+        "audioStartSeconds": 12.84,
+        "audioEndSeconds": 12.92,
+        "videoStartSecondsApprox": 12.84,
+        "videoEndSecondsApprox": 12.92
+      },
+      {
+        "audioStartSeconds": 14.56,
+        "audioEndSeconds": 14.66,
+        "videoStartSecondsApprox": 14.56,
+        "videoEndSecondsApprox": 14.66
+      },
+      {
+        "audioStartSeconds": 14.86,
+        "audioEndSeconds": 14.92,
+        "videoStartSecondsApprox": 14.86,
+        "videoEndSecondsApprox": 14.92
+      },
+      {
+        "audioStartSeconds": 15.06,
+        "audioEndSeconds": 15.1,
+        "videoStartSecondsApprox": 15.06,
+        "videoEndSecondsApprox": 15.1
+      },
+      {
+        "audioStartSeconds": 15.82,
+        "audioEndSeconds": 16.0,
+        "videoStartSecondsApprox": 15.82,
+        "videoEndSecondsApprox": 16.0
+      },
+      {
+        "audioStartSeconds": 16.88,
+        "audioEndSeconds": 16.96,
+        "videoStartSecondsApprox": 16.88,
+        "videoEndSecondsApprox": 16.96
+      },
+      {
+        "audioStartSeconds": 18.48,
+        "audioEndSeconds": 18.78,
+        "videoStartSecondsApprox": 18.48,
+        "videoEndSecondsApprox": 18.78
+      },
+      {
+        "audioStartSeconds": 20.28,
+        "audioEndSeconds": 20.32,
+        "videoStartSecondsApprox": 20.28,
+        "videoEndSecondsApprox": 20.32
+      },
+      {
+        "audioStartSeconds": 20.74,
+        "audioEndSeconds": 20.88,
+        "videoStartSecondsApprox": 20.74,
+        "videoEndSecondsApprox": 20.88
+      },
+      {
+        "audioStartSeconds": 22.52,
+        "audioEndSeconds": 22.58,
+        "videoStartSecondsApprox": 22.52,
+        "videoEndSecondsApprox": 22.58
+      },
+      {
+        "audioStartSeconds": 22.78,
+        "audioEndSeconds": 22.94,
+        "videoStartSecondsApprox": 22.78,
+        "videoEndSecondsApprox": 22.94
+      },
+      {
+        "audioStartSeconds": 23.12,
+        "audioEndSeconds": 23.18,
+        "videoStartSecondsApprox": 23.12,
+        "videoEndSecondsApprox": 23.18
+      },
+      {
+        "audioStartSeconds": 25.42,
+        "audioEndSeconds": 25.72,
+        "videoStartSecondsApprox": 25.42,
+        "videoEndSecondsApprox": 25.72
+      }
+    ]
+  },
+  "limitations": [
+    "Recognition can omit or substitute words; compare with the known original demo text.",
+    "Word intervals are approximate CTC frame timings, not measured audio/video synchronization.",
+    "Overlapping chunks repeat text and are not a concatenated continuous transcript.",
+    "Signal and transcript evidence do not replace visual control/session-state review."
+  ],
+  "chunks": [
+    {
+      "index": 0,
+      "audioStartSeconds": 0.0,
+      "audioEndSeconds": 10.0,
+      "videoStartSecondsApprox": 0.0,
+      "videoEndSecondsApprox": 10.0,
+      "rmsDbFS": -56.31,
+      "text": "READING OPENS A QUIET SPACE OR THOUGHT A PAGE GIVES US TIME THOUGHT NOTICE T ITS TAL AND FOLLOW A",
+      "words": [
+        {
+          "text": "READING",
+          "audioStartSecondsApprox": 4.168,
+          "audioEndSecondsApprox": 4.409,
+          "videoStartSecondsApprox": 4.168,
+          "videoEndSecondsApprox": 4.409
+        },
+        {
+          "text": "OPENS",
+          "audioStartSecondsApprox": 4.529,
+          "audioEndSecondsApprox": 4.749,
+          "videoStartSecondsApprox": 4.529,
+          "videoEndSecondsApprox": 4.749
+        },
+        {
+          "text": "A",
+          "audioStartSecondsApprox": 4.85,
+          "audioEndSecondsApprox": 4.87,
+          "videoStartSecondsApprox": 4.85,
+          "videoEndSecondsApprox": 4.87
+        },
+        {
+          "text": "QUIET",
+          "audioStartSecondsApprox": 4.97,
+          "audioEndSecondsApprox": 5.271,
+          "videoStartSecondsApprox": 4.97,
+          "videoEndSecondsApprox": 5.271
+        },
+        {
+          "text": "SPACE",
+          "audioStartSecondsApprox": 5.371,
+          "audioEndSecondsApprox": 5.671,
+          "videoStartSecondsApprox": 5.371,
+          "videoEndSecondsApprox": 5.671
+        },
+        {
+          "text": "OR",
+          "audioStartSecondsApprox": 5.812,
+          "audioEndSecondsApprox": 5.852,
+          "videoStartSecondsApprox": 5.812,
+          "videoEndSecondsApprox": 5.852
+        },
+        {
+          "text": "THOUGHT",
+          "audioStartSecondsApprox": 5.912,
+          "audioEndSecondsApprox": 6.132,
+          "videoStartSecondsApprox": 5.912,
+          "videoEndSecondsApprox": 6.132
+        },
+        {
+          "text": "A",
+          "audioStartSecondsApprox": 6.533,
+          "audioEndSecondsApprox": 6.553,
+          "videoStartSecondsApprox": 6.533,
+          "videoEndSecondsApprox": 6.553
+        },
+        {
+          "text": "PAGE",
+          "audioStartSecondsApprox": 6.613,
+          "audioEndSecondsApprox": 6.954,
+          "videoStartSecondsApprox": 6.613,
+          "videoEndSecondsApprox": 6.954
+        },
+        {
+          "text": "GIVES",
+          "audioStartSecondsApprox": 7.034,
+          "audioEndSecondsApprox": 7.214,
+          "videoStartSecondsApprox": 7.034,
+          "videoEndSecondsApprox": 7.214
+        },
+        {
+          "text": "US",
+          "audioStartSecondsApprox": 7.275,
+          "audioEndSecondsApprox": 7.315,
+          "videoStartSecondsApprox": 7.275,
+          "videoEndSecondsApprox": 7.315
+        },
+        {
+          "text": "TIME",
+          "audioStartSecondsApprox": 7.415,
+          "audioEndSecondsApprox": 7.635,
+          "videoStartSecondsApprox": 7.415,
+          "videoEndSecondsApprox": 7.635
+        },
+        {
+          "text": "THOUGHT",
+          "audioStartSecondsApprox": 7.776,
+          "audioEndSecondsApprox": 8.016,
+          "videoStartSecondsApprox": 7.776,
+          "videoEndSecondsApprox": 8.016
+        },
+        {
+          "text": "NOTICE",
+          "audioStartSecondsApprox": 8.337,
+          "audioEndSecondsApprox": 8.617,
+          "videoStartSecondsApprox": 8.337,
+          "videoEndSecondsApprox": 8.617
+        },
+        {
+          "text": "T",
+          "audioStartSecondsApprox": 8.677,
+          "audioEndSecondsApprox": 8.697,
+          "videoStartSecondsApprox": 8.677,
+          "videoEndSecondsApprox": 8.697
+        },
+        {
+          "text": "ITS",
+          "audioStartSecondsApprox": 8.798,
+          "audioEndSecondsApprox": 8.878,
+          "videoStartSecondsApprox": 8.798,
+          "videoEndSecondsApprox": 8.878
+        },
+        {
+          "text": "TAL",
+          "audioStartSecondsApprox": 8.918,
+          "audioEndSecondsApprox": 9.218,
+          "videoStartSecondsApprox": 8.918,
+          "videoEndSecondsApprox": 9.218
+        },
+        {
+          "text": "AND",
+          "audioStartSecondsApprox": 9.499,
+          "audioEndSecondsApprox": 9.579,
+          "videoStartSecondsApprox": 9.499,
+          "videoEndSecondsApprox": 9.579
+        },
+        {
+          "text": "FOLLOW",
+          "audioStartSecondsApprox": 9.659,
+          "audioEndSecondsApprox": 9.9,
+          "videoStartSecondsApprox": 9.659,
+          "videoEndSecondsApprox": 9.9
+        },
+        {
+          "text": "A",
+          "audioStartSecondsApprox": 9.98,
+          "audioEndSecondsApprox": 10.0,
+          "videoStartSecondsApprox": 9.98,
+          "videoEndSecondsApprox": 10.0
+        }
+      ],
+      "lowSignalSkipped": false
+    },
+    {
+      "index": 1,
+      "audioStartSeconds": 5.0,
+      "audioEndSeconds": 15.0,
+      "videoStartSecondsApprox": 5.0,
+      "videoEndSecondsApprox": 15.0,
+      "rmsDbFS": -54.51,
+      "text": "WIAT' FACE FOR THOUGHT A PAGE GIVES US TIME TO PAUSE NOTICE A DETAIL AND FOLLOW AN IDEA AT OUR OUR OWN PACE EACH SENTENCE ADDS SOMETHING NEW TO THE PICTURE LISTEN",
+      "words": [
+        {
+          "text": "WIAT'",
+          "audioStartSecondsApprox": 5.0,
+          "audioEndSecondsApprox": 5.321,
+          "videoStartSecondsApprox": 5.0,
+          "videoEndSecondsApprox": 5.321
+        },
+        {
+          "text": "FACE",
+          "audioStartSecondsApprox": 5.421,
+          "audioEndSecondsApprox": 5.661,
+          "videoStartSecondsApprox": 5.421,
+          "videoEndSecondsApprox": 5.661
+        },
+        {
+          "text": "FOR",
+          "audioStartSecondsApprox": 5.741,
+          "audioEndSecondsApprox": 5.842,
+          "videoStartSecondsApprox": 5.741,
+          "videoEndSecondsApprox": 5.842
+        },
+        {
+          "text": "THOUGHT",
+          "audioStartSecondsApprox": 5.902,
+          "audioEndSecondsApprox": 6.142,
+          "videoStartSecondsApprox": 5.902,
+          "videoEndSecondsApprox": 6.142
+        },
+        {
+          "text": "A",
+          "audioStartSecondsApprox": 6.523,
+          "audioEndSecondsApprox": 6.543,
+          "videoStartSecondsApprox": 6.523,
+          "videoEndSecondsApprox": 6.543
+        },
+        {
+          "text": "PAGE",
+          "audioStartSecondsApprox": 6.603,
+          "audioEndSecondsApprox": 6.944,
+          "videoStartSecondsApprox": 6.603,
+          "videoEndSecondsApprox": 6.944
+        },
+        {
+          "text": "GIVES",
+          "audioStartSecondsApprox": 7.024,
+          "audioEndSecondsApprox": 7.204,
+          "videoStartSecondsApprox": 7.024,
+          "videoEndSecondsApprox": 7.204
+        },
+        {
+          "text": "US",
+          "audioStartSecondsApprox": 7.265,
+          "audioEndSecondsApprox": 7.325,
+          "videoStartSecondsApprox": 7.265,
+          "videoEndSecondsApprox": 7.325
+        },
+        {
+          "text": "TIME",
+          "audioStartSecondsApprox": 7.405,
+          "audioEndSecondsApprox": 7.625,
+          "videoStartSecondsApprox": 7.405,
+          "videoEndSecondsApprox": 7.625
+        },
+        {
+          "text": "TO",
+          "audioStartSecondsApprox": 7.645,
+          "audioEndSecondsApprox": 7.705,
+          "videoStartSecondsApprox": 7.645,
+          "videoEndSecondsApprox": 7.705
+        },
+        {
+          "text": "PAUSE",
+          "audioStartSecondsApprox": 7.766,
+          "audioEndSecondsApprox": 8.066,
+          "videoStartSecondsApprox": 7.766,
+          "videoEndSecondsApprox": 8.066
+        },
+        {
+          "text": "NOTICE",
+          "audioStartSecondsApprox": 8.327,
+          "audioEndSecondsApprox": 8.587,
+          "videoStartSecondsApprox": 8.327,
+          "videoEndSecondsApprox": 8.587
+        },
+        {
+          "text": "A",
+          "audioStartSecondsApprox": 8.647,
+          "audioEndSecondsApprox": 8.667,
+          "videoStartSecondsApprox": 8.647,
+          "videoEndSecondsApprox": 8.667
+        },
+        {
+          "text": "DETAIL",
+          "audioStartSecondsApprox": 8.727,
+          "audioEndSecondsApprox": 9.228,
+          "videoStartSecondsApprox": 8.727,
+          "videoEndSecondsApprox": 9.228
+        },
+        {
+          "text": "AND",
+          "audioStartSecondsApprox": 9.489,
+          "audioEndSecondsApprox": 9.569,
+          "videoStartSecondsApprox": 9.489,
+          "videoEndSecondsApprox": 9.569
+        },
+        {
+          "text": "FOLLOW",
+          "audioStartSecondsApprox": 9.649,
+          "audioEndSecondsApprox": 9.91,
+          "videoStartSecondsApprox": 9.649,
+          "videoEndSecondsApprox": 9.91
+        },
+        {
+          "text": "AN",
+          "audioStartSecondsApprox": 9.97,
+          "audioEndSecondsApprox": 10.01,
+          "videoStartSecondsApprox": 9.97,
+          "videoEndSecondsApprox": 10.01
+        },
+        {
+          "text": "IDEA",
+          "audioStartSecondsApprox": 10.251,
+          "audioEndSecondsApprox": 10.591,
+          "videoStartSecondsApprox": 10.251,
+          "videoEndSecondsApprox": 10.591
+        },
+        {
+          "text": "AT",
+          "audioStartSecondsApprox": 10.691,
+          "audioEndSecondsApprox": 10.731,
+          "videoStartSecondsApprox": 10.691,
+          "videoEndSecondsApprox": 10.731
+        },
+        {
+          "text": "OUR",
+          "audioStartSecondsApprox": 10.792,
+          "audioEndSecondsApprox": 10.852,
+          "videoStartSecondsApprox": 10.792,
+          "videoEndSecondsApprox": 10.852
+        },
+        {
+          "text": "OUR",
+          "audioStartSecondsApprox": 10.892,
+          "audioEndSecondsApprox": 10.952,
+          "videoStartSecondsApprox": 10.892,
+          "videoEndSecondsApprox": 10.952
+        },
+        {
+          "text": "OWN",
+          "audioStartSecondsApprox": 10.992,
+          "audioEndSecondsApprox": 11.092,
+          "videoStartSecondsApprox": 10.992,
+          "videoEndSecondsApprox": 11.092
+        },
+        {
+          "text": "PACE",
+          "audioStartSecondsApprox": 11.172,
+          "audioEndSecondsApprox": 11.473,
+          "videoStartSecondsApprox": 11.172,
+          "videoEndSecondsApprox": 11.473
+        },
+        {
+          "text": "EACH",
+          "audioStartSecondsApprox": 11.954,
+          "audioEndSecondsApprox": 12.074,
+          "videoStartSecondsApprox": 11.954,
+          "videoEndSecondsApprox": 12.074
+        },
+        {
+          "text": "SENTENCE",
+          "audioStartSecondsApprox": 12.154,
+          "audioEndSecondsApprox": 12.555,
+          "videoStartSecondsApprox": 12.154,
+          "videoEndSecondsApprox": 12.555
+        },
+        {
+          "text": "ADDS",
+          "audioStartSecondsApprox": 12.856,
+          "audioEndSecondsApprox": 13.016,
+          "videoStartSecondsApprox": 12.856,
+          "videoEndSecondsApprox": 13.016
+        },
+        {
+          "text": "SOMETHING",
+          "audioStartSecondsApprox": 13.076,
+          "audioEndSecondsApprox": 13.377,
+          "videoStartSecondsApprox": 13.076,
+          "videoEndSecondsApprox": 13.377
+        },
+        {
+          "text": "NEW",
+          "audioStartSecondsApprox": 13.457,
+          "audioEndSecondsApprox": 13.597,
+          "videoStartSecondsApprox": 13.457,
+          "videoEndSecondsApprox": 13.597
+        },
+        {
+          "text": "TO",
+          "audioStartSecondsApprox": 13.657,
+          "audioEndSecondsApprox": 13.717,
+          "videoStartSecondsApprox": 13.657,
+          "videoEndSecondsApprox": 13.717
+        },
+        {
+          "text": "THE",
+          "audioStartSecondsApprox": 13.778,
+          "audioEndSecondsApprox": 13.838,
+          "videoStartSecondsApprox": 13.778,
+          "videoEndSecondsApprox": 13.838
+        },
+        {
+          "text": "PICTURE",
+          "audioStartSecondsApprox": 13.878,
+          "audioEndSecondsApprox": 14.178,
+          "videoStartSecondsApprox": 13.878,
+          "videoEndSecondsApprox": 14.178
+        },
+        {
+          "text": "LISTEN",
+          "audioStartSecondsApprox": 14.579,
+          "audioEndSecondsApprox": 14.9,
+          "videoStartSecondsApprox": 14.579,
+          "videoEndSecondsApprox": 14.9
+        }
+      ],
+      "lowSignalSkipped": false
+    },
+    {
+      "index": 2,
+      "audioStartSeconds": 10.0,
+      "audioEndSeconds": 20.0,
+      "videoStartSecondsApprox": 10.0,
+      "videoEndSecondsApprox": 20.0,
+      "rmsDbFS": -54.42,
+      "text": "IDEA AT OURR OWN PAGE EACH SENTENCE ADD SOMETHING NEW TO THE PICTURE LISTEN TO THE WORDS OR LET YOUR EYES MOVE GENTLY ACROSS THE PAGE A FAMILIAR SENTENCE CAN S",
+      "words": [
+        {
+          "text": "IDEA",
+          "audioStartSecondsApprox": 10.24,
+          "audioEndSecondsApprox": 10.561,
+          "videoStartSecondsApprox": 10.24,
+          "videoEndSecondsApprox": 10.561
+        },
+        {
+          "text": "AT",
+          "audioStartSecondsApprox": 10.681,
+          "audioEndSecondsApprox": 10.721,
+          "videoStartSecondsApprox": 10.681,
+          "videoEndSecondsApprox": 10.721
+        },
+        {
+          "text": "OURR",
+          "audioStartSecondsApprox": 10.782,
+          "audioEndSecondsApprox": 10.942,
+          "videoStartSecondsApprox": 10.782,
+          "videoEndSecondsApprox": 10.942
+        },
+        {
+          "text": "OWN",
+          "audioStartSecondsApprox": 11.002,
+          "audioEndSecondsApprox": 11.082,
+          "videoStartSecondsApprox": 11.002,
+          "videoEndSecondsApprox": 11.082
+        },
+        {
+          "text": "PAGE",
+          "audioStartSecondsApprox": 11.162,
+          "audioEndSecondsApprox": 11.423,
+          "videoStartSecondsApprox": 11.162,
+          "videoEndSecondsApprox": 11.423
+        },
+        {
+          "text": "EACH",
+          "audioStartSecondsApprox": 11.944,
+          "audioEndSecondsApprox": 12.064,
+          "videoStartSecondsApprox": 11.944,
+          "videoEndSecondsApprox": 12.064
+        },
+        {
+          "text": "SENTENCE",
+          "audioStartSecondsApprox": 12.144,
+          "audioEndSecondsApprox": 12.545,
+          "videoStartSecondsApprox": 12.144,
+          "videoEndSecondsApprox": 12.545
+        },
+        {
+          "text": "ADD",
+          "audioStartSecondsApprox": 12.846,
+          "audioEndSecondsApprox": 12.966,
+          "videoStartSecondsApprox": 12.846,
+          "videoEndSecondsApprox": 12.966
+        },
+        {
+          "text": "SOMETHING",
+          "audioStartSecondsApprox": 13.066,
+          "audioEndSecondsApprox": 13.367,
+          "videoStartSecondsApprox": 13.066,
+          "videoEndSecondsApprox": 13.367
+        },
+        {
+          "text": "NEW",
+          "audioStartSecondsApprox": 13.447,
+          "audioEndSecondsApprox": 13.587,
+          "videoStartSecondsApprox": 13.447,
+          "videoEndSecondsApprox": 13.587
+        },
+        {
+          "text": "TO",
+          "audioStartSecondsApprox": 13.647,
+          "audioEndSecondsApprox": 13.727,
+          "videoStartSecondsApprox": 13.647,
+          "videoEndSecondsApprox": 13.727
+        },
+        {
+          "text": "THE",
+          "audioStartSecondsApprox": 13.747,
+          "audioEndSecondsApprox": 13.828,
+          "videoStartSecondsApprox": 13.747,
+          "videoEndSecondsApprox": 13.828
+        },
+        {
+          "text": "PICTURE",
+          "audioStartSecondsApprox": 13.868,
+          "audioEndSecondsApprox": 14.168,
+          "videoStartSecondsApprox": 13.868,
+          "videoEndSecondsApprox": 14.168
+        },
+        {
+          "text": "LISTEN",
+          "audioStartSecondsApprox": 14.569,
+          "audioEndSecondsApprox": 14.89,
+          "videoStartSecondsApprox": 14.569,
+          "videoEndSecondsApprox": 14.89
+        },
+        {
+          "text": "TO",
+          "audioStartSecondsApprox": 14.97,
+          "audioEndSecondsApprox": 15.01,
+          "videoStartSecondsApprox": 14.97,
+          "videoEndSecondsApprox": 15.01
+        },
+        {
+          "text": "THE",
+          "audioStartSecondsApprox": 15.07,
+          "audioEndSecondsApprox": 15.13,
+          "videoStartSecondsApprox": 15.07,
+          "videoEndSecondsApprox": 15.13
+        },
+        {
+          "text": "WORDS",
+          "audioStartSecondsApprox": 15.21,
+          "audioEndSecondsApprox": 15.611,
+          "videoStartSecondsApprox": 15.21,
+          "videoEndSecondsApprox": 15.611
+        },
+        {
+          "text": "OR",
+          "audioStartSecondsApprox": 15.832,
+          "audioEndSecondsApprox": 15.892,
+          "videoStartSecondsApprox": 15.832,
+          "videoEndSecondsApprox": 15.892
+        },
+        {
+          "text": "LET",
+          "audioStartSecondsApprox": 15.952,
+          "audioEndSecondsApprox": 16.052,
+          "videoStartSecondsApprox": 15.952,
+          "videoEndSecondsApprox": 16.052
+        },
+        {
+          "text": "YOUR",
+          "audioStartSecondsApprox": 16.092,
+          "audioEndSecondsApprox": 16.232,
+          "videoStartSecondsApprox": 16.092,
+          "videoEndSecondsApprox": 16.232
+        },
+        {
+          "text": "EYES",
+          "audioStartSecondsApprox": 16.373,
+          "audioEndSecondsApprox": 16.513,
+          "videoStartSecondsApprox": 16.373,
+          "videoEndSecondsApprox": 16.513
+        },
+        {
+          "text": "MOVE",
+          "audioStartSecondsApprox": 16.593,
+          "audioEndSecondsApprox": 16.754,
+          "videoStartSecondsApprox": 16.593,
+          "videoEndSecondsApprox": 16.754
+        },
+        {
+          "text": "GENTLY",
+          "audioStartSecondsApprox": 16.854,
+          "audioEndSecondsApprox": 17.154,
+          "videoStartSecondsApprox": 16.854,
+          "videoEndSecondsApprox": 17.154
+        },
+        {
+          "text": "ACROSS",
+          "audioStartSecondsApprox": 17.255,
+          "audioEndSecondsApprox": 17.555,
+          "videoStartSecondsApprox": 17.255,
+          "videoEndSecondsApprox": 17.555
+        },
+        {
+          "text": "THE",
+          "audioStartSecondsApprox": 17.655,
+          "audioEndSecondsApprox": 17.715,
+          "videoStartSecondsApprox": 17.655,
+          "videoEndSecondsApprox": 17.715
+        },
+        {
+          "text": "PAGE",
+          "audioStartSecondsApprox": 17.756,
+          "audioEndSecondsApprox": 18.096,
+          "videoStartSecondsApprox": 17.756,
+          "videoEndSecondsApprox": 18.096
+        },
+        {
+          "text": "A",
+          "audioStartSecondsApprox": 18.517,
+          "audioEndSecondsApprox": 18.537,
+          "videoStartSecondsApprox": 18.517,
+          "videoEndSecondsApprox": 18.537
+        },
+        {
+          "text": "FAMILIAR",
+          "audioStartSecondsApprox": 18.577,
+          "audioEndSecondsApprox": 18.998,
+          "videoStartSecondsApprox": 18.577,
+          "videoEndSecondsApprox": 18.998
+        },
+        {
+          "text": "SENTENCE",
+          "audioStartSecondsApprox": 19.138,
+          "audioEndSecondsApprox": 19.599,
+          "videoStartSecondsApprox": 19.138,
+          "videoEndSecondsApprox": 19.599
+        },
+        {
+          "text": "CAN",
+          "audioStartSecondsApprox": 19.719,
+          "audioEndSecondsApprox": 19.82,
+          "videoStartSecondsApprox": 19.719,
+          "videoEndSecondsApprox": 19.82
+        },
+        {
+          "text": "S",
+          "audioStartSecondsApprox": 19.96,
+          "audioEndSecondsApprox": 19.98,
+          "videoStartSecondsApprox": 19.96,
+          "videoEndSecondsApprox": 19.98
+        }
+      ],
+      "lowSignalSkipped": false
+    },
+    {
+      "index": 3,
+      "audioStartSeconds": 15.0,
+      "audioEndSeconds": 25.0,
+      "videoStartSecondsApprox": 15.0,
+      "videoEndSecondsApprox": 25.0,
+      "rmsDbFS": -54.41,
+      "text": "THE WORDS OR LET YOUR EYES MOVE GENTLY ACROSS THE PAGE A FAMILIAR SENTENCE CAN SOUND DIFFERENT WHEN WE HEAR IT SPOKEN ALOUD ITS RHYTHM GIVES US ANOTHER WAY TO UNDERSTAND",
+      "words": [
+        {
+          "text": "THE",
+          "audioStartSecondsApprox": 15.04,
+          "audioEndSecondsApprox": 15.12,
+          "videoStartSecondsApprox": 15.04,
+          "videoEndSecondsApprox": 15.12
+        },
+        {
+          "text": "WORDS",
+          "audioStartSecondsApprox": 15.2,
+          "audioEndSecondsApprox": 15.601,
+          "videoStartSecondsApprox": 15.2,
+          "videoEndSecondsApprox": 15.601
+        },
+        {
+          "text": "OR",
+          "audioStartSecondsApprox": 15.822,
+          "audioEndSecondsApprox": 15.882,
+          "videoStartSecondsApprox": 15.822,
+          "videoEndSecondsApprox": 15.882
+        },
+        {
+          "text": "LET",
+          "audioStartSecondsApprox": 15.942,
+          "audioEndSecondsApprox": 16.062,
+          "videoStartSecondsApprox": 15.942,
+          "videoEndSecondsApprox": 16.062
+        },
+        {
+          "text": "YOUR",
+          "audioStartSecondsApprox": 16.082,
+          "audioEndSecondsApprox": 16.222,
+          "videoStartSecondsApprox": 16.082,
+          "videoEndSecondsApprox": 16.222
+        },
+        {
+          "text": "EYES",
+          "audioStartSecondsApprox": 16.363,
+          "audioEndSecondsApprox": 16.503,
+          "videoStartSecondsApprox": 16.363,
+          "videoEndSecondsApprox": 16.503
+        },
+        {
+          "text": "MOVE",
+          "audioStartSecondsApprox": 16.583,
+          "audioEndSecondsApprox": 16.743,
+          "videoStartSecondsApprox": 16.583,
+          "videoEndSecondsApprox": 16.743
+        },
+        {
+          "text": "GENTLY",
+          "audioStartSecondsApprox": 16.844,
+          "audioEndSecondsApprox": 17.164,
+          "videoStartSecondsApprox": 16.844,
+          "videoEndSecondsApprox": 17.164
+        },
+        {
+          "text": "ACROSS",
+          "audioStartSecondsApprox": 17.244,
+          "audioEndSecondsApprox": 17.545,
+          "videoStartSecondsApprox": 17.244,
+          "videoEndSecondsApprox": 17.545
+        },
+        {
+          "text": "THE",
+          "audioStartSecondsApprox": 17.625,
+          "audioEndSecondsApprox": 17.705,
+          "videoStartSecondsApprox": 17.625,
+          "videoEndSecondsApprox": 17.705
+        },
+        {
+          "text": "PAGE",
+          "audioStartSecondsApprox": 17.766,
+          "audioEndSecondsApprox": 18.086,
+          "videoStartSecondsApprox": 17.766,
+          "videoEndSecondsApprox": 18.086
+        },
+        {
+          "text": "A",
+          "audioStartSecondsApprox": 18.507,
+          "audioEndSecondsApprox": 18.527,
+          "videoStartSecondsApprox": 18.507,
+          "videoEndSecondsApprox": 18.527
+        },
+        {
+          "text": "FAMILIAR",
+          "audioStartSecondsApprox": 18.567,
+          "audioEndSecondsApprox": 18.988,
+          "videoStartSecondsApprox": 18.567,
+          "videoEndSecondsApprox": 18.988
+        },
+        {
+          "text": "SENTENCE",
+          "audioStartSecondsApprox": 19.128,
+          "audioEndSecondsApprox": 19.589,
+          "videoStartSecondsApprox": 19.128,
+          "videoEndSecondsApprox": 19.589
+        },
+        {
+          "text": "CAN",
+          "audioStartSecondsApprox": 19.709,
+          "audioEndSecondsApprox": 19.81,
+          "videoStartSecondsApprox": 19.709,
+          "videoEndSecondsApprox": 19.81
+        },
+        {
+          "text": "SOUND",
+          "audioStartSecondsApprox": 19.93,
+          "audioEndSecondsApprox": 20.19,
+          "videoStartSecondsApprox": 19.93,
+          "videoEndSecondsApprox": 20.19
+        },
+        {
+          "text": "DIFFERENT",
+          "audioStartSecondsApprox": 20.251,
+          "audioEndSecondsApprox": 20.611,
+          "videoStartSecondsApprox": 20.251,
+          "videoEndSecondsApprox": 20.611
+        },
+        {
+          "text": "WHEN",
+          "audioStartSecondsApprox": 20.711,
+          "audioEndSecondsApprox": 20.812,
+          "videoStartSecondsApprox": 20.711,
+          "videoEndSecondsApprox": 20.812
+        },
+        {
+          "text": "WE",
+          "audioStartSecondsApprox": 20.852,
+          "audioEndSecondsApprox": 20.912,
+          "videoStartSecondsApprox": 20.852,
+          "videoEndSecondsApprox": 20.912
+        },
+        {
+          "text": "HEAR",
+          "audioStartSecondsApprox": 20.992,
+          "audioEndSecondsApprox": 21.152,
+          "videoStartSecondsApprox": 20.992,
+          "videoEndSecondsApprox": 21.152
+        },
+        {
+          "text": "IT",
+          "audioStartSecondsApprox": 21.212,
+          "audioEndSecondsApprox": 21.273,
+          "videoStartSecondsApprox": 21.212,
+          "videoEndSecondsApprox": 21.273
+        },
+        {
+          "text": "SPOKEN",
+          "audioStartSecondsApprox": 21.333,
+          "audioEndSecondsApprox": 21.733,
+          "videoStartSecondsApprox": 21.333,
+          "videoEndSecondsApprox": 21.733
+        },
+        {
+          "text": "ALOUD",
+          "audioStartSecondsApprox": 21.814,
+          "audioEndSecondsApprox": 22.134,
+          "videoStartSecondsApprox": 21.814,
+          "videoEndSecondsApprox": 22.134
+        },
+        {
+          "text": "ITS",
+          "audioStartSecondsApprox": 22.575,
+          "audioEndSecondsApprox": 22.695,
+          "videoStartSecondsApprox": 22.575,
+          "videoEndSecondsApprox": 22.695
+        },
+        {
+          "text": "RHYTHM",
+          "audioStartSecondsApprox": 22.756,
+          "audioEndSecondsApprox": 22.996,
+          "videoStartSecondsApprox": 22.756,
+          "videoEndSecondsApprox": 22.996
+        },
+        {
+          "text": "GIVES",
+          "audioStartSecondsApprox": 23.096,
+          "audioEndSecondsApprox": 23.277,
+          "videoStartSecondsApprox": 23.096,
+          "videoEndSecondsApprox": 23.277
+        },
+        {
+          "text": "US",
+          "audioStartSecondsApprox": 23.357,
+          "audioEndSecondsApprox": 23.417,
+          "videoStartSecondsApprox": 23.357,
+          "videoEndSecondsApprox": 23.417
+        },
+        {
+          "text": "ANOTHER",
+          "audioStartSecondsApprox": 23.517,
+          "audioEndSecondsApprox": 23.838,
+          "videoStartSecondsApprox": 23.517,
+          "videoEndSecondsApprox": 23.838
+        },
+        {
+          "text": "WAY",
+          "audioStartSecondsApprox": 23.938,
+          "audioEndSecondsApprox": 24.138,
+          "videoStartSecondsApprox": 23.938,
+          "videoEndSecondsApprox": 24.138
+        },
+        {
+          "text": "TO",
+          "audioStartSecondsApprox": 24.259,
+          "audioEndSecondsApprox": 24.319,
+          "videoStartSecondsApprox": 24.259,
+          "videoEndSecondsApprox": 24.319
+        },
+        {
+          "text": "UNDERSTAND",
+          "audioStartSecondsApprox": 24.439,
+          "audioEndSecondsApprox": 24.92,
+          "videoStartSecondsApprox": 24.439,
+          "videoEndSecondsApprox": 24.92
+        }
+      ],
+      "lowSignalSkipped": false
+    },
+    {
+      "index": 4,
+      "audioStartSeconds": 20.0,
+      "audioEndSeconds": 30.0,
+      "videoStartSecondsApprox": 20.0,
+      "videoEndSecondsApprox": 30.0,
+      "rmsDbFS": -56.35,
+      "text": "OUND DIFFERENT WHEN WE HEAR IT SPOKEN A LOUD ITS RHYTHM GIVES US ANOTHER WAY TO UNDERSTAND THERE IS NO HER",
+      "words": [
+        {
+          "text": "OUND",
+          "audioStartSecondsApprox": 20.04,
+          "audioEndSecondsApprox": 20.16,
+          "videoStartSecondsApprox": 20.04,
+          "videoEndSecondsApprox": 20.16
+        },
+        {
+          "text": "DIFFERENT",
+          "audioStartSecondsApprox": 20.24,
+          "audioEndSecondsApprox": 20.601,
+          "videoStartSecondsApprox": 20.24,
+          "videoEndSecondsApprox": 20.601
+        },
+        {
+          "text": "WHEN",
+          "audioStartSecondsApprox": 20.701,
+          "audioEndSecondsApprox": 20.802,
+          "videoStartSecondsApprox": 20.701,
+          "videoEndSecondsApprox": 20.802
+        },
+        {
+          "text": "WE",
+          "audioStartSecondsApprox": 20.842,
+          "audioEndSecondsApprox": 20.902,
+          "videoStartSecondsApprox": 20.842,
+          "videoEndSecondsApprox": 20.902
+        },
+        {
+          "text": "HEAR",
+          "audioStartSecondsApprox": 20.982,
+          "audioEndSecondsApprox": 21.142,
+          "videoStartSecondsApprox": 20.982,
+          "videoEndSecondsApprox": 21.142
+        },
+        {
+          "text": "IT",
+          "audioStartSecondsApprox": 21.202,
+          "audioEndSecondsApprox": 21.263,
+          "videoStartSecondsApprox": 21.202,
+          "videoEndSecondsApprox": 21.263
+        },
+        {
+          "text": "SPOKEN",
+          "audioStartSecondsApprox": 21.323,
+          "audioEndSecondsApprox": 21.723,
+          "videoStartSecondsApprox": 21.323,
+          "videoEndSecondsApprox": 21.723
+        },
+        {
+          "text": "A",
+          "audioStartSecondsApprox": 21.804,
+          "audioEndSecondsApprox": 21.824,
+          "videoStartSecondsApprox": 21.804,
+          "videoEndSecondsApprox": 21.824
+        },
+        {
+          "text": "LOUD",
+          "audioStartSecondsApprox": 21.864,
+          "audioEndSecondsApprox": 22.104,
+          "videoStartSecondsApprox": 21.864,
+          "videoEndSecondsApprox": 22.104
+        },
+        {
+          "text": "ITS",
+          "audioStartSecondsApprox": 22.565,
+          "audioEndSecondsApprox": 22.685,
+          "videoStartSecondsApprox": 22.565,
+          "videoEndSecondsApprox": 22.685
+        },
+        {
+          "text": "RHYTHM",
+          "audioStartSecondsApprox": 22.745,
+          "audioEndSecondsApprox": 23.006,
+          "videoStartSecondsApprox": 22.745,
+          "videoEndSecondsApprox": 23.006
+        },
+        {
+          "text": "GIVES",
+          "audioStartSecondsApprox": 23.086,
+          "audioEndSecondsApprox": 23.287,
+          "videoStartSecondsApprox": 23.086,
+          "videoEndSecondsApprox": 23.287
+        },
+        {
+          "text": "US",
+          "audioStartSecondsApprox": 23.347,
+          "audioEndSecondsApprox": 23.407,
+          "videoStartSecondsApprox": 23.347,
+          "videoEndSecondsApprox": 23.407
+        },
+        {
+          "text": "ANOTHER",
+          "audioStartSecondsApprox": 23.507,
+          "audioEndSecondsApprox": 23.828,
+          "videoStartSecondsApprox": 23.507,
+          "videoEndSecondsApprox": 23.828
+        },
+        {
+          "text": "WAY",
+          "audioStartSecondsApprox": 23.928,
+          "audioEndSecondsApprox": 24.128,
+          "videoStartSecondsApprox": 23.928,
+          "videoEndSecondsApprox": 24.128
+        },
+        {
+          "text": "TO",
+          "audioStartSecondsApprox": 24.228,
+          "audioEndSecondsApprox": 24.289,
+          "videoStartSecondsApprox": 24.228,
+          "videoEndSecondsApprox": 24.289
+        },
+        {
+          "text": "UNDERSTAND",
+          "audioStartSecondsApprox": 24.429,
+          "audioEndSecondsApprox": 24.91,
+          "videoStartSecondsApprox": 24.429,
+          "videoEndSecondsApprox": 24.91
+        },
+        {
+          "text": "THERE",
+          "audioStartSecondsApprox": 25.391,
+          "audioEndSecondsApprox": 25.531,
+          "videoStartSecondsApprox": 25.391,
+          "videoEndSecondsApprox": 25.531
+        },
+        {
+          "text": "IS",
+          "audioStartSecondsApprox": 25.571,
+          "audioEndSecondsApprox": 25.631,
+          "videoStartSecondsApprox": 25.571,
+          "videoEndSecondsApprox": 25.631
+        },
+        {
+          "text": "NO",
+          "audioStartSecondsApprox": 25.691,
+          "audioEndSecondsApprox": 25.792,
+          "videoStartSecondsApprox": 25.691,
+          "videoEndSecondsApprox": 25.792
+        },
+        {
+          "text": "HER",
+          "audioStartSecondsApprox": 25.892,
+          "audioEndSecondsApprox": 26.032,
+          "videoStartSecondsApprox": 25.892,
+          "videoEndSecondsApprox": 26.032
+        }
+      ],
+      "lowSignalSkipped": false
+    },
+    {
+      "index": 5,
+      "audioStartSeconds": 25.0,
+      "audioEndSeconds": 33.0275,
+      "videoStartSecondsApprox": 25.0,
+      "videoEndSecondsApprox": 33.0275,
+      "rmsDbFS": -61.4,
+      "text": "",
+      "words": [],
+      "lowSignalSkipped": false
+    },
+    {
+      "index": 6,
+      "audioStartSeconds": 30.0,
+      "audioEndSeconds": 33.0275,
+      "videoStartSecondsApprox": 30.0,
+      "videoEndSecondsApprox": 33.0275,
+      "rmsDbFS": null,
+      "text": "",
+      "words": [],
+      "lowSignalSkipped": true
+    }
+  ],
+  "status": "transcribed_for_review"
+}

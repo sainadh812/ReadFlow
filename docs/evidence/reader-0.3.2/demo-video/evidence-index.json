@@ -1,0 +1,71 @@
+{
+  "rendererCommit": "bc24141",
+  "files": [
+    {
+      "file": "video-build-report.json",
+      "sourcePath": "build/store-media/rendered/video-build-report.json",
+      "bytes": 26469,
+      "sha256": "496ac4294c726718100f2594e72097fa09e1337ded25cb5bd96e9083be52bd40"
+    },
+    {
+      "file": "video-recipe.json",
+      "sourcePath": "store-assets/release-0.3.2/video-recipe.json",
+      "bytes": 4169,
+      "sha256": "7fd523000097b8547fda6bea8f9994c68d81e5e40703c1f88015c24afc064549"
+    },
+    {
+      "file": "playback-review.json",
+      "sourcePath": "build/store-media/review-43761868949/playback-review.json",
+      "bytes": 2363,
+      "sha256": "fe08d9aee4af5e71da38eb065da0933438d3266954341c5273e5e203985ef456"
+    },
+    {
+      "file": "source-audio-review.json",
+      "sourcePath": "build/store-media/audio-review-43761868949.json",
+      "bytes": 39467,
+      "sha256": "17df14027764d23e84f207a27eb449f703983a0ddc3bf412db54d02904567e5a"
+    },
+    {
+      "file": "gain-timeline-verification.json",
+      "sourcePath": "build/store-media/rendered/gain-timeline-verification.json",
+      "bytes": 1075,
+      "sha256": "3f1523abc23e559b681a22b72b4b4a5a41bc890cd3d5736af3206b641edb33a2"
+    },
+    {
+      "file": "product-audio-timeline-verification.json",
+      "sourcePath": "build/store-media/rendered/product-audio-timeline-verification.json",
+      "bytes": 1161,
+      "sha256": "761a6626e03b1da7d56268c5e96ac939a93f8047721e10ad8dfbff7f20f143cc"
+    },
+    {
+      "file": "frame-timeline-verification.json",
+      "sourcePath": "build/store-media/rendered/timeline-verification/report.json",
+      "bytes": 3202,
+      "sha256": "78bf76197f5495f64abdffd30b511bed83b8e4d9a08f06a7523aa52eea257b0e"
+    },
+    {
+      "file": "root-visual-review.json",
+      "sourcePath": "build/store-media/root-source-visual-review.json",
+      "bytes": 2443,
+      "sha256": "5bcea47ef6b9c47e4dc3f3c9a3ef2c78a788e5ce78c72edc4ddbdb3b3cdd6781"
+    },
+    {
+      "file": "whole-frame-contact.jpg",
+      "sourcePath": "build/store-media/rendered/timeline-verification/whole-frame-contact-00.jpg",
+      "bytes": 572364,
+      "sha256": "9a52eb9751a30e761512590a8961fdf8db5b5d1a223af80f1e2b89a02c0daf98"
+    },
+    {
+      "file": "MEDIA_CREDITS.md",
+      "sourcePath": "store-assets/MEDIA_CREDITS.md",
+      "bytes": 5266,
+      "sha256": "1360dd124cc479c8eadd5ebb8b375f04410eed15c3e325db771d052ee7077f51"
+    },
+    {
+      "file": "source-archive-inventory.json",
+      "sourcePath": "build/store-media/public/Read-Assist-0.3.2-capture-sources.inventory.json",
+      "bytes": 14747,
+      "sha256": "8cfc9ba7ba648baa4a3b8755b3ab2ab4c2844e18fd911d87eda5cd727fdca371"
+    }
+  ]
+}
