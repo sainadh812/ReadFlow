@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "app_package": "app.readflow",
+  "app_name": "Read Assist",
+  "generator": "scripts/build_store_images.py",
+  "generator_sha256": "8f7c6c5d56bc1224a9b773d43342b40b3e6fbaeaebc9a54edae7ebf0cbafda34",
+  "pillow_version": "12.3.0",
+  "theme": "Warm Library",
+  "capture_policy": "No app UI is generated. Caller-supplied captures are fitted in full without stretching or cropping. Capture authenticity and release version must be verified separately.",
+  "feature_graphic_visual": "editorial_book_illustration",
+  "phone_screenshot_count": 2,
+  "screenshot_requirements": {
+    "minimum_two_present": true,
+    "recommended_four_present": false
+  },
+  "assets": [
+    {
+      "file": "read-assist-icon-512.png",
+      "image_type": "icon",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "bytes": 3012,
+      "sha256": "d55e29abdbd1a11f70a52641c461385fb61fcb58e9ece60a168084c270bc3ff0",
+      "alt_text": "White open book on the blue Read Assist app icon.",
+      "sources": [
+        {
+          "path": "app/src/main/res/drawable/ic_readflow.xml",
+          "sha256": "a5b2c836162122078016e9eb57f6ffd5dc3e611134769fa45c2acbbd1e72a198",
+          "kind": "shipped_android_vector"
+        }
+      ]
+    },
+    {
+      "file": "read-assist-feature-1024x500.png",
+      "image_type": "featureGraphic",
+      "width": 1024,
+      "height": 500,
+      "mode": "RGB",
+      "bytes": 48447,
+      "sha256": "9760d013b735fff1970fa4c3811d0913c37bb2613a92fb884b68a0f72035ce2a",
+      "alt_text": "Read Assist. Read. Listen. Understand.",
+      "sources": [
+        {
+          "path": "app/src/main/java/app/readflow/ui/AppThemeUi.kt",
+          "sha256": "5ce0134306841b4f4690baad2dae51ff3b2877aef3774e505d8c6910515f4cad",
+          "kind": "shipped_warm_library_palette"
+        },
+        {
+          "path": "app/src/main/res/font/source_serif.ttf",
+          "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "app/src/main/res/font/noto_sans.ttf",
+          "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+          "kind": "bundled_font"
+        }
+      ]
+    },
+    {
+      "file": "read-assist-phone-01-1080x1920.png",
+      "image_type": "phoneScreenshots",
+      "width": 1080,
+      "height": 1920,
+      "mode": "RGB",
+      "bytes": 328112,
+      "sha256": "2815da73ef587ec2c7bb0203b3dcf488f1cc92adca49194b84bfec855b39969c",
+      "alt_text": "Read Assist's Warm Library theme with original sample documents.",
+      "sources": [
+        {
+          "path": "store-assets/release-0.3.2/captures/01-library-warm.png",
+          "sha256": "a23ac6e7735455727ab996832e0350fd68926f2907d85f0b7c0a0601fbe78d8a",
+          "kind": "caller_supplied_app_capture"
+        },
+        {
+          "path": "app/src/main/java/app/readflow/ui/AppThemeUi.kt",
+          "sha256": "5ce0134306841b4f4690baad2dae51ff3b2877aef3774e505d8c6910515f4cad",
+          "kind": "shipped_warm_library_palette"
+        },
+        {
+          "path": "app/src/main/res/font/source_serif.ttf",
+          "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "app/src/main/res/font/noto_sans.ttf",
+          "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "store-assets/release-0.3.2/captions.json",
+          "sha256": "27bb39e44f5706bbb26fd44b8ff27c7f5d2cc5adb8100b2357203beae706d1d7",
+          "kind": "editorial_capture_captions"
+        }
+      ]
+    },
+    {
+      "file": "read-assist-phone-02-1080x1920.png",
+      "image_type": "phoneScreenshots",
+      "width": 1080,
+      "height": 1920,
+      "mode": "RGB",
+      "bytes": 478224,
+      "sha256": "4041159457c096d74d0409a3dc72a2fb191120e366098a2ca39a0519058b2279",
+      "alt_text": "The PDF reader showing an original sample document and the lower playback dock.",
+      "sources": [
+        {
+          "path": "store-assets/release-0.3.2/captures/03-reader-pdf.png",
+          "sha256": "2edf5160c551d1dc3db41f6bb8c2d77da3f8be5b078642c7ebf5bcae383e98e9",
+          "kind": "caller_supplied_app_capture"
+        },
+        {
+          "path": "app/src/main/java/app/readflow/ui/AppThemeUi.kt",
+          "sha256": "5ce0134306841b4f4690baad2dae51ff3b2877aef3774e505d8c6910515f4cad",
+          "kind": "shipped_warm_library_palette"
+        },
+        {
+          "path": "app/src/main/res/font/source_serif.ttf",
+          "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "app/src/main/res/font/noto_sans.ttf",
+          "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "store-assets/release-0.3.2/captions.json",
+          "sha256": "27bb39e44f5706bbb26fd44b8ff27c7f5d2cc5adb8100b2357203beae706d1d7",
+          "kind": "editorial_capture_captions"
+        }
+      ]
+    }
+  ]
+}

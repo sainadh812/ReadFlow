@@ -1,0 +1,61 @@
+{
+  "versionName": "0.3.2",
+  "versionCode": 28,
+  "screenshots": [
+    {
+      "file": "01-library-warm.png",
+      "sha256": "a23ac6e7735455727ab996832e0350fd68926f2907d85f0b7c0a0601fbe78d8a",
+      "capturedAt": "2026-11-15T19:27:59.951288+00:00",
+      "run": "https://github.com/sainadh812/ReadFlow/actions/runs/43752099137",
+      "captureSource": "5b5d273beb11b6ceb9250e3f8e7d7a2c914dff44",
+      "appBuild": {
+        "appVersion": "0.3.2",
+        "versionCode": 28,
+        "applicationSourceRevision": "a6c99f33f6e8934f4a304355a3e093b1b569dfa8",
+        "sourceTrees": {
+          "app/src/main": "82a53a2b49b7316d8def3a708550f342a525741b",
+          "app/src/release": "e98f60bab8f45f39833437585503e6b2e86b1648"
+        },
+        "captureSource": "5b5d273beb11b6ceb9250e3f8e7d7a2c914dff44",
+        "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+        "reusedApkBuildRun": "43749926901",
+        "run": "https://github.com/sainadh812/ReadFlow/actions/runs/43752099137",
+        "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+        "buildKind": "release runtime, x86_64 emulator, local debug signing, Firebase unconfigured",
+        "playArtifact": false,
+        "productionUploadKeyUsed": false
+      },
+      "visualReview": "Complete actual app frame inspected; no error overlay or fabricated UI."
+    },
+    {
+      "file": "03-reader-pdf.png",
+      "sha256": "2edf5160c551d1dc3db41f6bb8c2d77da3f8be5b078642c7ebf5bcae383e98e9",
+      "capturedAt": "2026-11-15T19:28:23.289371+00:00",
+      "run": "https://github.com/sainadh812/ReadFlow/actions/runs/43752099137",
+      "captureSource": "5b5d273beb11b6ceb9250e3f8e7d7a2c914dff44",
+      "appBuild": {
+        "appVersion": "0.3.2",
+        "versionCode": 28,
+        "applicationSourceRevision": "a6c99f33f6e8934f4a304355a3e093b1b569dfa8",
+        "sourceTrees": {
+          "app/src/main": "82a53a2b49b7316d8def3a708550f342a525741b",
+          "app/src/release": "e98f60bab8f45f39833437585503e6b2e86b1648"
+        },
+        "captureSource": "5b5d273beb11b6ceb9250e3f8e7d7a2c914dff44",
+        "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+        "reusedApkBuildRun": "43749926901",
+        "run": "https://github.com/sainadh812/ReadFlow/actions/runs/43752099137",
+        "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+        "buildKind": "release runtime, x86_64 emulator, local debug signing, Firebase unconfigured",
+        "playArtifact": false,
+        "productionUploadKeyUsed": false
+      },
+      "visualReview": "Complete actual app frame inspected; no error overlay or fabricated UI."
+    }
+  ],
+  "notes": [
+    "Chosen screenshots are from the verified code 28 emulator build.",
+    "The first capture run ended later in a host emulator crash; these frames were captured intact before that crash.",
+    "Additional feature screenshots and video are being recorded."
+  ]
+}

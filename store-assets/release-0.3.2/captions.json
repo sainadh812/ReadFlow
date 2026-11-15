@@ -1,0 +1,42 @@
+{
+  "01-library-warm.png": {
+    "title": "Your library. Your pace.",
+    "subtitle": "A comfortable home for your reading",
+    "alt_text": "Read Assist's Warm Library theme with original sample documents."
+  },
+  "03-reader-pdf.png": {
+    "title": "Keep the original page",
+    "subtitle": "Read your PDF with playback controls close by",
+    "alt_text": "The PDF reader showing an original sample document and the lower playback dock."
+  },
+  "05-reader-text.png": {
+    "title": "Switch to a clearer text view",
+    "subtitle": "Move between Text and PDF from the bottom dock",
+    "alt_text": "The same sample document in text mode, with the Text and PDF switch visible."
+  },
+  "07-warm-light.png": {
+    "title": "Read in your own light",
+    "subtitle": "Adjust brightness and add a warm glow",
+    "alt_text": "The reader's bottom settings panel with brightness and warm-light controls."
+  },
+  "10-dictionary.png": {
+    "title": "Stay with the story",
+    "subtitle": "English definitions, offline after download",
+    "alt_text": "The in-reader English dictionary showing a definition of curiosity and source attribution."
+  },
+  "11-library-modern.png": {
+    "title": "A fresh view of your library",
+    "subtitle": "Choose the Modern Focus theme",
+    "alt_text": "Read Assist's library with the Modern Focus theme selected."
+  },
+  "12-library-night.png": {
+    "title": "Settle into Night Reader",
+    "subtitle": "Three themes. One familiar library.",
+    "alt_text": "Read Assist's library with the Night Reader theme selected."
+  },
+  "14-reading-aloud.png": {
+    "title": "Listen and follow along",
+    "subtitle": "On-device narration after voice-pack download",
+    "alt_text": "Read Assist playing the original sample aloud in text mode."
+  }
+}
