@@ -28,7 +28,7 @@ import org.junit.runner.RunWith
 /** Opt-in setup on an isolated emulator. It creates real documents and downloads real packs. */
 @RunWith(AndroidJUnit4::class)
 class StoreDemoSeedTest {
-    @Test fun seedOriginalDemoDocuments() = runBlocking {
+    @Test fun seedOriginalDemoDocuments() = runBlocking<Unit> {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val args = InstrumentationRegistry.getArguments()
         assumeTrue("Explicit demo setup not enabled", args.getString("demo") == "true")
