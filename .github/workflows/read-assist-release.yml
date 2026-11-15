@@ -3,13 +3,23 @@ name: Read Assist signed release candidate
 on:
   workflow_dispatch:
     inputs:
+      operation:
+        description: Build a signed candidate, inspect Play access, or publish the verified 0.3.1 bundle to Internal testing
+        type: choice
+        required: true
+        default: build
+        options:
+          - build
+          - inspect_play
+          - publish_play
       upload_symbols:
         description: Upload this build's matching native symbols to the approved Firebase app
         type: boolean
         required: true
         default: false
 
-# No Play publishing, repository writes, OIDC, pull-request or fork execution.
+# Play access is restricted to the explicit API operations below. No repository
+# writes, OIDC, pull-request or fork execution.
 permissions:
   contents: read
 
@@ -19,7 +29,7 @@ concurrency:
 
 jobs:
   build:
-    if: github.repository == 'sainadh812/ReadFlow' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/reader-playback-and-pdf-space')
+    if: (inputs.operation == 'build' || inputs.operation == '') && github.repository == 'sainadh812/ReadFlow' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/reader-playback-and-pdf-space')
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     defaults:
@@ -139,3 +149,51 @@ jobs:
       - name: Remove private build inputs
         if: always()
         run: python3 scripts/ci_prepare_release.py cleanup
+
+  play:
+    if: (inputs.operation == 'inspect_play' || inputs.operation == 'publish_play') && github.repository == 'sainadh812/ReadFlow' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/reader-playback-and-pdf-space')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out the dispatched source revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: sainadh812/ReadFlow
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Install the pinned Google Play API dependencies
+        run: python3 -m pip install --require-hashes -r scripts/play-publish-requirements.txt
+
+      - name: Verify Google Play publishing safeguards
+        run: python3 -m unittest discover -s scripts -p 'test_publish_play.py'
+
+      - name: Inspect Google Play access and Internal testing
+        if: inputs.operation == 'inspect_play'
+        env:
+          READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
+        run: python3 scripts/publish_play.py inspect
+
+      - name: Publish the verified 0.3.1 bundle to Internal testing
+        if: inputs.operation == 'publish_play'
+        env:
+          READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
+        run: python3 scripts/publish_play.py publish
+
+      - name: Upload the sanitized Google Play report only
+        if: always() && hashFiles('build/play-upload-0.3.1/report.json') != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: Read-Assist-Play-${{ inputs.operation }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/play-upload-0.3.1/report.json
+          if-no-files-found: error
+          retention-days: 15
+          include-hidden-files: false

@@ -1,8 +1,11 @@
-# Read Assist: GitHub production build
+# Read Assist: GitHub release build and Internal testing upload
 
 The owner chose GitHub Actions for the configured, signed build. The workflow is
-manual only and builds the approved `fix/reader-playback-and-pdf-space` branch.
-It does not publish to Play Console.
+manual only. Its default `build` operation builds the approved
+`fix/reader-playback-and-pdf-space` branch. Separate `inspect_play` and
+`publish_play` operations use the Google Play Developer API for the existing
+`app.readflow` app. The authorized publishing target is **0.3.1/code 27 on Internal
+testing only**. API publication has not yet been verified in this document.
 
 ## Current setup
 
@@ -21,8 +24,66 @@ It does not publish to Play Console.
   accepts this name as a fallback, so no repeat transfer is needed. The successful
   configured build validated its project/app IDs, and the downloaded APK resources
   independently match those identifiers.
+- The owner reports enabling the Google Play Android Developer API in
+  `read-assist-fbd21`, granting
+  `play-publisher@read-assist-fbd21.iam.gserviceaccount.com` access to Read Assist
+  with view-app-information and release-to-testing permissions, and storing its
+  JSON credential as the repository Actions secret
+  `READFLOW_PLAY_SERVICE_ACCOUNT_JSON`. The API operations read that secret only
+  in their execution step; it is not an artifact, repository file, or command-line
+  argument. Successful authentication and publication require separate API evidence.
 
-## Verified configured build — 31 October 2026
+## Current Google Play API operations
+
+Use the existing `.github/workflows/read-assist-release.yml` workflow and select
+an `operation`:
+
+| Operation | Behavior |
+| --- | --- |
+| `build` | Default; build and verify signed APK/AAB files without uploading to Play. `upload_symbols` applies only to this operation. |
+| `inspect_play` | Check API access and inspect the existing app and Internal testing state without committing a release. |
+| `publish_play` | Upload the exact verified 0.3.1 AAB below and commit it to Internal testing. No production release is authorized. |
+
+The Play operations check out the dispatched Git commit (`github.sha`), install
+hash-pinned Python dependencies, and run publishing safeguards before accessing
+the credential. They share the build workflow's concurrency group and retain its
+repository and approved-branch restrictions. No new Android build runs during
+these operations.
+
+The publishing script pins this existing GitHub release artifact:
+
+- Repository/tag: `sainadh812/ReadFlow` / `v0.3.1-play-candidate`.
+- Asset: `Read-Assist-0.3.1-upload-signed.aab`, **72,436,099 bytes**.
+- SHA-256: `a247863362aec730e6c50ebe85a403de8cb572821276077d38a3c0b2f8e7e1f6`.
+- Package/version: `app.readflow`, **0.3.1/code 27**.
+- App source commit: `94006546634355658abfba7ce1a7a442d8825828`.
+- Signed build: [run 43736870521](https://github.com/sainadh812/ReadFlow/actions/runs/43736870521).
+- Evidence: [configured release](evidence/reader-0.3.1/release-evidence.json),
+  [GitHub artifact verification](evidence/reader-0.3.1/github-release.json), and
+  [independent AAB verification](evidence/reader-0.3.1/aab-verification.json).
+
+Dispatch inspection from the approved release branch:
+
+```bash
+gh workflow run read-assist-release.yml \
+  --repo sainadh812/ReadFlow \
+  --ref fix/reader-playback-and-pdf-space \
+  -f operation=inspect_play \
+  -f upload_symbols=false
+```
+
+For the authorized upload, use the same command with `-f operation=publish_play`
+after checking the inspection report. GitHub supports `--ref` with workflow
+inputs; the workflow must already exist on the repository's default branch for
+manual dispatch. See [GitHub's manual workflow instructions](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow).
+
+Each API run uploads only the sanitized
+`build/play-upload-0.3.1/report.json`, when present, as an artifact named
+`Read-Assist-Play-<operation>-<run-id>-<attempt>` with 15-day retention. Preserve
+that report and the run URL as publication evidence. A successful build or an
+inspection alone does not establish a completed Play upload or tester availability.
+
+## Historical configured build — 31 October 2026
 
 [Successful run](https://github.com/sainadh812/ReadFlow/actions/runs/41183292058) · [signed APK/AAB and verification files](https://github.com/sainadh812/ReadFlow/actions/runs/41183292058/artifacts/13036231224) · [published 0.2.6 prerelease](https://github.com/sainadh812/ReadFlow/releases/tag/v0.2.6-play-candidate).
 Source commit: `25944d402312adf69e44f5e3d6f5b42a2e6b179f`; version **0.2.6/code 22**.
@@ -59,16 +120,17 @@ The historical configured **0.2.5/code 21** build remains documented in
 and its [release evidence](evidence/play-store-0.2.5-configured/release-evidence.json).
 Its checks and the owner-reported Play draft below apply to that older artifact.
 
-## Play upload handoff
+## Historical Play upload handoff
 
 The owner reports Muse Spark uploaded the verified AAB as **0.2.5/code 21** to the
 new free Read Assist app (**4975999632955979701**) and saved an internal-test draft.
-No rollout was performed. Preserve that existing app and draft; code 21 is already
-used. For a subsequently authorized update, use the verified **0.2.6/code 22 AAB**
-with the existing upload key and Play App Signing. Uploading or rolling out code 22
-is not part of this build workflow. The code 21 draft is owner-reported Console
-evidence, separate from the independently verified CI builds.
-See [current handoff](PLAY_STORE_HANDOFF.md#current-play-console-state--owner-reported).
+No rollout was performed at that time; code 21 is already used. This is historical,
+owner-reported Console evidence, separate from the independently verified CI
+builds. The later authorization is to publish the verified **0.3.1/code 27 AAB**
+to Internal testing in that same app, using the existing upload key and Play App
+Signing. Inspect the current API state before publishing; do not assume the old
+draft still represents the current track. See the
+[earlier handoff](PLAY_STORE_HANDOFF.md#current-play-console-state--owner-reported).
 
 ## Firebase config secret
 
@@ -93,9 +155,10 @@ artifact. The client JSON is app configuration, not an administrative credential
 
 ## Build and review
 
-Use **Actions → Read Assist signed release candidate → Run workflow**. The workflow must
-exist on `main` for this button to be available; it checks out the approved release
-branch separately. Leave native symbol upload off for the initial build/review.
+Use **Actions → Read Assist signed release candidate → Run workflow** and choose
+`operation=build`. The workflow must exist on `main` for this button to be
+available; the build operation checks out the approved release branch separately.
+Leave native symbol upload off for the initial build/review.
 
 The workflow validates the exact Firebase destination, installs the pinned Android
 toolchain, builds a signed AAB/APK, runs tests/lint and checks the public policy,
@@ -123,5 +186,7 @@ Private key/password files are retained outside the repository under the owner's
 protected local signing directory. Keep an owner-controlled secure backup; GitHub
 secrets do not offer a normal settings-UI export. Never upload private signing
 files as Actions artifacts, GitHub releases or source archives. Only the public
-certificate and its metadata belong in Git. The workflow publishes no app to Play
-and does not change Firebase billing.
+certificate and its metadata belong in Git. The Play service-account JSON stays
+in the repository secret and is available only to the API step. The `build`
+operation publishes no app to Play; only the explicit `publish_play` operation
+targets Internal testing. No operation changes Firebase billing.
