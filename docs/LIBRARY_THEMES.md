@@ -20,4 +20,11 @@ The approved medium playback dock, dictionary, page turns, reading light and red
 
 ## Validation
 
-Release checks and signed-artifact evidence will be recorded here after the build. No connected Android device or hardware-accelerated emulator is available in this workspace; on-device layout, TalkBack and playback checks are not yet verified.
+Released as [Read Assist 0.3.0](https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.0-play-candidate), version code 26, from commit `f40664444ccc8ec4e691188dd3e0eaa94b77ebd5`. [Download the signed APK](https://github.com/sainadh812/ReadFlow/releases/download/v0.3.0-play-candidate/Read-Assist-0.3.0-upload-signed.apk) for Android 15+ ARM64.
+
+- Local release build: **460 tests passed**, no skips. [GitHub CI run 43724779348](https://github.com/sainadh812/ReadFlow/actions/runs/43724779348): **457 passed, 3 model-fixture tests skipped**, no failures. Lint: **0 errors, 38 warnings**. See [local](evidence/reader-0.3.0/local-validation.json) and [CI evidence](evidence/reader-0.3.0/release-evidence.json).
+- **9 host SQLite checks passed**, using the production migration and history SQL, including preserved narration positions, durable manual history and matching Room schema v2. These are host checks, not Android instrumentation. See [migration evidence](evidence/reader-0.3.0/manual-reading-history-verification.json).
+- All **18 checked theme text/background pairs** have contrast of at least **4.97:1**. See [contrast results](evidence/reader-0.3.0/theme-contrast.json).
+- APK/AAB signatures match the approved upload certificate; APK 16 KB alignment and bundle validation passed. Dictionary, fonts and license assets were retained. The public APK download matched its published hash. See [APK](evidence/reader-0.3.0/apk-verification.json), [bundle](evidence/reader-0.3.0/aab-verification.json) and [download evidence](evidence/reader-0.3.0/github-release.json).
+
+No physical-device validation was performed. Phone installation/upgrade, visual layout, TalkBack and runtime playback remain unverified; no connected Android device or working hardware-accelerated emulator was available.

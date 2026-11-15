@@ -1,0 +1,8 @@
+{
+  "artifact": "Read-Assist-0.3.0-upload-signed.aab",
+  "bundletoolValidation": "passed",
+  "jarsignerStrictExitCode": 4,
+  "signature": "verified; expected self-signed upload-certificate trust warning",
+  "certificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+  "matchesPreviousGitHubApkCertificate": true
+}

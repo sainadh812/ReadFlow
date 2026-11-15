@@ -1,0 +1,21 @@
+{
+  "version": "0.3.0",
+  "versionCode": 26,
+  "verifiedAtUtc": "2026-11-15T14:31:15.207913+00:00",
+  "sourceCommit": "f40664444ccc8ec4e691188dd3e0eaa94b77ebd5",
+  "releaseAssembly": "passed",
+  "releaseUnitTests": {
+    "tests": 460,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "Warning": 38
+  },
+  "historyMigrationHostTests": 9,
+  "themeTextContrastPairs": 18,
+  "workflowActionlint": "passed",
+  "deviceUiValidation": "Not performed: no connected Android device or working hardware-accelerated emulator. Native layout, TalkBack, install/upgrade and playback remain unverified on a phone.",
+  "distribution": "Local APK unsigned; distribution uses the separately verified GitHub signed artifact."
+}

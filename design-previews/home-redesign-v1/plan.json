@@ -1,7 +1,7 @@
 {
   "title": "Read Assist home and library redesign",
-  "version": "Approved design v2 \u2014 implemented in Read Assist 0.3.0",
-  "status": "All three native themes implemented; release validation in progress.",
+  "version": "Approved design v2 \u2014 released in Read Assist 0.3.0",
+  "status": "All three native themes released on GitHub; build and artifact checks passed. Physical-device validation remains pending.",
   "target": "Main/front GUI: the library landing screen, document browsing, import entry points and navigation.",
   "recommendation": "Confirmed default: A \u2014 Warm Library; B and C are selectable alternatives.",
   "currentScreenFindings": [
@@ -140,5 +140,45 @@
     "readerAppearance": "Keep document paper, fonts, brightness and warmth as independent reader preferences.",
     "stateSafety": "Changing theme preserves documents, library search/filter/sort, reading position, model downloads and any active narration session.",
     "persistence": "Store a stable app-theme identifier in existing preferences, with Warm Library as the default. Never reset unrelated preferences during theme changes."
+  },
+  "release": {
+    "versionName": "0.3.0",
+    "versionCode": 26,
+    "tag": "v0.3.0-play-candidate",
+    "url": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.0-play-candidate",
+    "apkUrl": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.0-play-candidate/Read-Assist-0.3.0-upload-signed.apk",
+    "sourceCommit": "f40664444ccc8ec4e691188dd3e0eaa94b77ebd5",
+    "githubRunId": 43724779348,
+    "platform": "Android 15+ / ARM64",
+    "apkSha256": "fa6ce8fbb3ff2b97ac750446cbbada7a94d8cee500f90ad02c0b4355410432af",
+    "validation": {
+      "localUnitTests": {
+        "passed": 460,
+        "skipped": 0,
+        "failed": 0
+      },
+      "ciUnitTests": {
+        "total": 460,
+        "passed": 457,
+        "skipped": 3,
+        "failed": 0,
+        "skipReason": "Model fixtures unavailable in CI"
+      },
+      "hostMigrationChecksPassed": 9,
+      "lint": {
+        "errors": 0,
+        "warnings": 38
+      },
+      "themeContrast": {
+        "checkedPairs": 18,
+        "minimumRatio": 4.97
+      },
+      "apkAndAabSignatures": "Verified against the approved upload certificate",
+      "apk16KbAlignment": "passed",
+      "bundleValidation": "passed",
+      "publicApkDownload": "HTTP 200; size and SHA-256 match the verified signed artifact",
+      "physicalDeviceValidation": "Not performed; phone install/upgrade, visual layout, TalkBack and runtime playback remain unverified",
+      "evidenceDirectory": "../../docs/evidence/reader-0.3.0"
+    }
   }
 }
