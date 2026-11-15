@@ -48,17 +48,85 @@ def redact(value: str) -> str:
     return text[:800]
 
 
+def _diagnostic_identifier(value: object, pattern: str, limit: int) -> str | None:
+    """Reject unexpected or sensitive values rather than serializing/truncating them."""
+    if not isinstance(value, str) or not value or len(value) > limit:
+        return None
+    if redact(value) != value or not re.fullmatch(pattern, value, re.ASCII):
+        return None
+    return value
+
+
+def error_diagnostics(error: object) -> list[dict]:
+    """Keep only bounded Google reason identifiers and public resource references.
+
+    Never retain the raw error payload. Resource metadata is restricted to this
+    app/project; arbitrary resource paths can contain private identifiers or keys.
+    """
+    if not isinstance(error, dict):
+        return []
+    result = []
+    for field, source in (("details", "google.rpc.ErrorInfo"), ("errors", "legacy")):
+        entries = error.get(field, [])
+        if not isinstance(entries, list):
+            continue
+        for entry in entries[:4]:
+            if not isinstance(entry, dict):
+                continue
+            if field == "details" and entry.get("@type") != "type.googleapis.com/google.rpc.ErrorInfo":
+                continue
+            item = {"source": source}
+            for name, pattern, limit in (
+                ("reason", r"[A-Za-z][A-Za-z0-9_]*", 63),
+                ("domain", r"(?:global|usageLimits|androidpublisher|(?:[a-z0-9-]+\.)*googleapis\.com|(?:[a-z0-9-]+\.)*google\.com)", 128),
+            ):
+                value = _diagnostic_identifier(entry.get(name), pattern, limit)
+                if value is not None:
+                    item[name] = value
+            metadata = entry.get("metadata")
+            if field == "details" and isinstance(metadata, dict):
+                safe_metadata = {}
+                permission = _diagnostic_identifier(
+                    metadata.get("permission"),
+                    r"(?:CAN_[A-Z][A-Z0-9_]*|(?:androidpublisher|playdeveloper|play|iam|serviceusage|resourcemanager)"
+                    r"(?:\.[A-Za-z][A-Za-z0-9]*){1,8})", 192
+                )
+                if permission is not None:
+                    safe_metadata["permission"] = permission
+                resource = _diagnostic_identifier(metadata.get("resource"), r"[A-Za-z0-9_./-]+", 256)
+                public_resources = {
+                    PACKAGE, f"applications/{PACKAGE}", APP_PATH,
+                    f"//androidpublisher.googleapis.com/applications/{PACKAGE}",
+                    f"//androidpublisher.googleapis.com{APP_PATH}",
+                    f"projects/{EXPECTED_PROJECT}",
+                    f"//cloudresourcemanager.googleapis.com/projects/{EXPECTED_PROJECT}",
+                }
+                if resource in public_resources or (resource is not None and re.fullmatch(
+                    rf"developers/[0-9]{{1,24}}/applications/{re.escape(PACKAGE)}", resource
+                )):
+                    safe_metadata["resource"] = resource
+                if safe_metadata:
+                    item["metadata"] = safe_metadata
+            if len(item) > 1 and item not in result:
+                result.append(item)
+    return result
+
+
 class ApiError(PublishError):
-    def __init__(self, http_code: int, status: str, message: str):
+    def __init__(self, http_code: int, status: str, message: str, google_error: dict | None = None):
         self.http_code = http_code
         self.status = redact(status)
         self.message = redact(message)
+        self.diagnostics = error_diagnostics(google_error)
         super().__init__(f"Google API {http_code} {self.status}: {self.message}")
 
 
 def safe_error(error: Exception) -> dict:
     if isinstance(error, ApiError):
-        return {"httpCode": error.http_code, "status": error.status, "message": error.message}
+        result = {"httpCode": error.http_code, "status": error.status, "message": error.message}
+        if error.diagnostics:
+            result["diagnostics"] = error.diagnostics
+        return result
     if isinstance(error, PublishError):
         return {"status": "VALIDATION_FAILED", "message": redact(str(error))}
     return {"status": "UNEXPECTED_ERROR", "message": "Operation failed; raw diagnostics withheld."}
@@ -227,7 +295,12 @@ class API:
             raise ApiError(response.status_code, "INVALID_RESPONSE", "Google returned a non-JSON response.") from None
         if not 200 <= response.status_code < 300:
             error = payload.get("error", {}) if isinstance(payload, dict) else {}
-            raise ApiError(response.status_code, str(error.get("status", "HTTP_ERROR")), str(error.get("message", "Google API request failed.")))
+            if not isinstance(error, dict):
+                error = {}
+            status = error.get("status")
+            message = error.get("message")
+            raise ApiError(response.status_code, status if isinstance(status, str) else "HTTP_ERROR",
+                           message if isinstance(message, str) else "Google API request failed.", google_error=error)
         if not isinstance(payload, dict):
             raise ApiError(response.status_code, "INVALID_RESPONSE", "Google returned an unexpected response structure.")
         return payload

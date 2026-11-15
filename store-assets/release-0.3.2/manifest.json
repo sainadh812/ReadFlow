@@ -8,10 +8,10 @@
   "theme": "Warm Library",
   "capture_policy": "No app UI is generated. Caller-supplied captures are fitted in full without stretching or cropping. Capture authenticity and release version must be verified separately.",
   "feature_graphic_visual": "editorial_book_illustration",
-  "phone_screenshot_count": 2,
+  "phone_screenshot_count": 8,
   "screenshot_requirements": {
     "minimum_two_present": true,
-    "recommended_four_present": false
+    "recommended_four_present": true
   },
   "assets": [
     {
@@ -90,7 +90,7 @@
         },
         {
           "path": "store-assets/release-0.3.2/captions.json",
-          "sha256": "27bb39e44f5706bbb26fd44b8ff27c7f5d2cc5adb8100b2357203beae706d1d7",
+          "sha256": "ec0e418271254314997706dd0ef88b5239366a22e49b96ed6d0677df767192c0",
           "kind": "editorial_capture_captions"
         }
       ]
@@ -127,7 +127,229 @@
         },
         {
           "path": "store-assets/release-0.3.2/captions.json",
-          "sha256": "27bb39e44f5706bbb26fd44b8ff27c7f5d2cc5adb8100b2357203beae706d1d7",
+          "sha256": "ec0e418271254314997706dd0ef88b5239366a22e49b96ed6d0677df767192c0",
+          "kind": "editorial_capture_captions"
+        }
+      ]
+    },
+    {
+      "file": "read-assist-phone-03-1080x1920.png",
+      "image_type": "phoneScreenshots",
+      "width": 1080,
+      "height": 1920,
+      "mode": "RGB",
+      "bytes": 482447,
+      "sha256": "3a89c444555b8ad75af33edf782e74df69cd0fb22170beae92874fba53affa9d",
+      "alt_text": "The same sample document in text mode, with the Text and PDF switch visible.",
+      "sources": [
+        {
+          "path": "store-assets/release-0.3.2/captures/05-reader-text.png",
+          "sha256": "801b09519228bdbf1f966f0d1edb9ec9500377ea14357a5ce8fec3e0f6fa2ba7",
+          "kind": "caller_supplied_app_capture"
+        },
+        {
+          "path": "app/src/main/java/app/readflow/ui/AppThemeUi.kt",
+          "sha256": "5ce0134306841b4f4690baad2dae51ff3b2877aef3774e505d8c6910515f4cad",
+          "kind": "shipped_warm_library_palette"
+        },
+        {
+          "path": "app/src/main/res/font/source_serif.ttf",
+          "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "app/src/main/res/font/noto_sans.ttf",
+          "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "store-assets/release-0.3.2/captions.json",
+          "sha256": "ec0e418271254314997706dd0ef88b5239366a22e49b96ed6d0677df767192c0",
+          "kind": "editorial_capture_captions"
+        }
+      ]
+    },
+    {
+      "file": "read-assist-phone-04-1080x1920.png",
+      "image_type": "phoneScreenshots",
+      "width": 1080,
+      "height": 1920,
+      "mode": "RGB",
+      "bytes": 267592,
+      "sha256": "a6c381a78f3295dbb2749554d5de8e590b386262e3e8b66ea5088d4b6f87f561",
+      "alt_text": "The reader's bottom settings panel with brightness and warm-light controls.",
+      "sources": [
+        {
+          "path": "store-assets/release-0.3.2/captures/07-warm-light.png",
+          "sha256": "9bd1f8fbe12c673d001d0be77b79fa8b72faa56c7cdcbb6796762caf0174a024",
+          "kind": "caller_supplied_app_capture"
+        },
+        {
+          "path": "app/src/main/java/app/readflow/ui/AppThemeUi.kt",
+          "sha256": "5ce0134306841b4f4690baad2dae51ff3b2877aef3774e505d8c6910515f4cad",
+          "kind": "shipped_warm_library_palette"
+        },
+        {
+          "path": "app/src/main/res/font/source_serif.ttf",
+          "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "app/src/main/res/font/noto_sans.ttf",
+          "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "store-assets/release-0.3.2/captions.json",
+          "sha256": "ec0e418271254314997706dd0ef88b5239366a22e49b96ed6d0677df767192c0",
+          "kind": "editorial_capture_captions"
+        }
+      ]
+    },
+    {
+      "file": "read-assist-phone-05-1080x1920.png",
+      "image_type": "phoneScreenshots",
+      "width": 1080,
+      "height": 1920,
+      "mode": "RGB",
+      "bytes": 294501,
+      "sha256": "4197d155465c8c4606da9ff4aa56bcb0038f011a4467618ac51610ca517426d3",
+      "alt_text": "Reader controls with text recognition, voice model, voice choice and reading speed.",
+      "sources": [
+        {
+          "path": "store-assets/release-0.3.2/captures/09-voice-and-speed.png",
+          "sha256": "4295f075805c132e640e443d0a541bc7395bfc3939cd17bef4e053b8d25acb83",
+          "kind": "caller_supplied_app_capture"
+        },
+        {
+          "path": "app/src/main/java/app/readflow/ui/AppThemeUi.kt",
+          "sha256": "5ce0134306841b4f4690baad2dae51ff3b2877aef3774e505d8c6910515f4cad",
+          "kind": "shipped_warm_library_palette"
+        },
+        {
+          "path": "app/src/main/res/font/source_serif.ttf",
+          "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "app/src/main/res/font/noto_sans.ttf",
+          "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "store-assets/release-0.3.2/captions.json",
+          "sha256": "ec0e418271254314997706dd0ef88b5239366a22e49b96ed6d0677df767192c0",
+          "kind": "editorial_capture_captions"
+        }
+      ]
+    },
+    {
+      "file": "read-assist-phone-06-1080x1920.png",
+      "image_type": "phoneScreenshots",
+      "width": 1080,
+      "height": 1920,
+      "mode": "RGB",
+      "bytes": 352200,
+      "sha256": "98ccda5c89f6362e30802efc4c1d5063c186002780773666f3adfe7a770d24c0",
+      "alt_text": "The in-reader English dictionary showing a definition of curiosity and source attribution.",
+      "sources": [
+        {
+          "path": "store-assets/release-0.3.2/captures/10-dictionary.png",
+          "sha256": "28fccbcaee404bdbbcb71d230228b1293b96e611631b50dad1d4f8f487b42af2",
+          "kind": "caller_supplied_app_capture"
+        },
+        {
+          "path": "app/src/main/java/app/readflow/ui/AppThemeUi.kt",
+          "sha256": "5ce0134306841b4f4690baad2dae51ff3b2877aef3774e505d8c6910515f4cad",
+          "kind": "shipped_warm_library_palette"
+        },
+        {
+          "path": "app/src/main/res/font/source_serif.ttf",
+          "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "app/src/main/res/font/noto_sans.ttf",
+          "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "store-assets/release-0.3.2/captions.json",
+          "sha256": "ec0e418271254314997706dd0ef88b5239366a22e49b96ed6d0677df767192c0",
+          "kind": "editorial_capture_captions"
+        }
+      ]
+    },
+    {
+      "file": "read-assist-phone-07-1080x1920.png",
+      "image_type": "phoneScreenshots",
+      "width": 1080,
+      "height": 1920,
+      "mode": "RGB",
+      "bytes": 340665,
+      "sha256": "9ff1eb8cf0d9bc25a66b870318e4cacd0374affce93178191feae226dc1bd0c8",
+      "alt_text": "Read Assist's library with the Modern Focus theme selected.",
+      "sources": [
+        {
+          "path": "store-assets/release-0.3.2/captures/11-library-modern.png",
+          "sha256": "9534be6114fbc13ca304b082611c9df640ce5f10b0e5292e703f23665d959b3d",
+          "kind": "caller_supplied_app_capture"
+        },
+        {
+          "path": "app/src/main/java/app/readflow/ui/AppThemeUi.kt",
+          "sha256": "5ce0134306841b4f4690baad2dae51ff3b2877aef3774e505d8c6910515f4cad",
+          "kind": "shipped_warm_library_palette"
+        },
+        {
+          "path": "app/src/main/res/font/source_serif.ttf",
+          "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "app/src/main/res/font/noto_sans.ttf",
+          "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "store-assets/release-0.3.2/captions.json",
+          "sha256": "ec0e418271254314997706dd0ef88b5239366a22e49b96ed6d0677df767192c0",
+          "kind": "editorial_capture_captions"
+        }
+      ]
+    },
+    {
+      "file": "read-assist-phone-08-1080x1920.png",
+      "image_type": "phoneScreenshots",
+      "width": 1080,
+      "height": 1920,
+      "mode": "RGB",
+      "bytes": 356969,
+      "sha256": "d30dd19fbf29043924375714f653742910a95f681568db16f2da3e15f9a47f9d",
+      "alt_text": "Read Assist's library with the Night Reader theme selected.",
+      "sources": [
+        {
+          "path": "store-assets/release-0.3.2/captures/12-library-night.png",
+          "sha256": "14ff882b1411d983324b212e314ea61f10c66da447c06245690a2f591a074aab",
+          "kind": "caller_supplied_app_capture"
+        },
+        {
+          "path": "app/src/main/java/app/readflow/ui/AppThemeUi.kt",
+          "sha256": "5ce0134306841b4f4690baad2dae51ff3b2877aef3774e505d8c6910515f4cad",
+          "kind": "shipped_warm_library_palette"
+        },
+        {
+          "path": "app/src/main/res/font/source_serif.ttf",
+          "sha256": "97b2d4da6e3cb494b5a1e66ae176914d852ccabef49e0c02c0df25f3e39aca0b",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "app/src/main/res/font/noto_sans.ttf",
+          "sha256": "bfb7bb691513f12e734dc346c03a03f784912432d7e3fa8e56efcf906fe86b3d",
+          "kind": "bundled_font"
+        },
+        {
+          "path": "store-assets/release-0.3.2/captions.json",
+          "sha256": "ec0e418271254314997706dd0ef88b5239366a22e49b96ed6d0677df767192c0",
           "kind": "editorial_capture_captions"
         }
       ]

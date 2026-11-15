@@ -1,12 +1,113 @@
 """Offline regression tests for credential, artifact and release safeguards."""
 import copy
 import hashlib
+import json
 import pathlib
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import publish_play as publisher
+
+
+class GoogleErrorDiagnosticsTest(unittest.TestCase):
+    def api_error_report(self, error):
+        # Exercise response parsing without opening a session or making a request.
+        api = publisher.API.__new__(publisher.API)
+        api.session = Mock()
+        response = Mock(status_code=403, content=b"error")
+        response.json.return_value = {"error": error}
+        api.session.request.return_value = response
+        with self.assertRaises(publisher.ApiError) as caught:
+            api.request("POST", publisher.APP_PATH + "/edits/test-edit:validate")
+        api.session.request.assert_called_once()
+        return publisher.safe_error(caught.exception)
+
+    def test_google_permission_and_legacy_reason_survive_response_parsing(self):
+        report = self.api_error_report({
+            "status": "PERMISSION_DENIED", "message": "The caller does not have permission",
+            "details": [{
+                "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                "reason": "IAM_PERMISSION_DENIED", "domain": "androidpublisher.googleapis.com",
+                "metadata": {"permission": "androidpublisher.edits.validate", "resource": "applications/app.readflow"},
+            }],
+            "errors": [{"reason": "insufficientPermissions", "domain": "global", "message": "Unneeded duplicate prose"}],
+        })
+        self.assertEqual(report, {
+            "httpCode": 403, "status": "PERMISSION_DENIED", "message": "The caller does not have permission",
+            "diagnostics": [
+                {"source": "google.rpc.ErrorInfo", "reason": "IAM_PERMISSION_DENIED",
+                 "domain": "androidpublisher.googleapis.com",
+                 "metadata": {"permission": "androidpublisher.edits.validate", "resource": "applications/app.readflow"}},
+                {"source": "legacy", "reason": "insufficientPermissions", "domain": "global"},
+            ],
+        })
+
+    def test_untrusted_details_and_sensitive_fields_are_not_reported(self):
+        secret = "RegisteredCredentialValue"
+        with patch.object(publisher, "_SECRETS", [secret]):
+            report = self.api_error_report({
+                "status": "PERMISSION_DENIED", "message": "Denied for " + secret,
+                "access_token": "UNTRUSTED_ACCESS_TOKEN",
+                "headers": {"Authorization": "Bearer UNTRUSTED_HEADER_TOKEN"},
+                "details": [
+                    {"@type": "type.googleapis.com/google.rpc.DebugInfo", "stackEntries": ["PRIVATE_STACK_ENTRY"]},
+                    {"@type": "type.googleapis.com/google.rpc.ErrorInfo", "reason": secret,
+                     "domain": "googleapis.com", "metadata": {
+                         "permission": "androidpublisher." + secret,
+                         "resource": "applications/app.readflow?access_token=PRIVATE_QUERY_TOKEN",
+                         "access_token": "PRIVATE_METADATA_TOKEN", "private_key": "PRIVATE_METADATA_KEY",
+                         "headers": {"Authorization": "Bearer PRIVATE_NESTED_TOKEN"},
+                     }},
+                    {"@type": "type.googleapis.com/google.rpc.ErrorInfo", "reason": "SAFE_REASON",
+                     "domain": "UNTRUSTED_DOMAIN", "metadata": {
+                         "permission": "eyJhbGciOiJIUzI.eyJzdWIiOiIxMjM.signature",
+                         "resource": "projects/unapproved-private-project",
+                     }},
+                    {"@type": "type.googleapis.com/google.rpc.ErrorInfo", "reason": "ya29.PRIVATE_TOKEN",
+                     "domain": {"private_key": "NESTED_KEY"}, "metadata": {
+                         "permission": "-----BEGIN PRIVATE KEY-----PRIVATE_KEY_BODY",
+                         "resource": ["applications/app.readflow", "PRIVATE_LIST_VALUE"],
+                     }},
+                ],
+                "errors": [{"reason": {"access_token": "NESTED_REASON_TOKEN"}, "domain": "global",
+                            "location": "PRIVATE_LOCATION", "message": "PRIVATE_LEGACY_MESSAGE"}],
+            })
+        self.assertEqual(report["message"], "Denied for [REDACTED]")
+        self.assertEqual(report["diagnostics"], [
+            {"source": "google.rpc.ErrorInfo", "domain": "googleapis.com"},
+            {"source": "google.rpc.ErrorInfo", "reason": "SAFE_REASON"},
+            {"source": "legacy", "domain": "global"},
+        ])
+        rendered = json.dumps(report)
+        for withheld in (secret, "PRIVATE_", "NESTED_", "UNTRUSTED_", "eyJ", "access_token", "private_key", "headers"):
+            self.assertNotIn(withheld, rendered)
+
+    def test_diagnostic_volume_is_bounded_and_oversized_values_are_omitted(self):
+        report = self.api_error_report({
+            "details": [{"@type": "type.googleapis.com/google.rpc.ErrorInfo", "reason": "R" + str(i),
+                         "domain": "x" * 200, "metadata": {"permission": "CAN_" + "X" * 200,
+                                                          "resource": "applications/app.readflow/" + "x" * 500}}
+                        for i in range(100)],
+            "errors": [{"reason": "legacy" + str(i), "domain": "global"} for i in range(100)],
+        })
+        self.assertEqual(len(report["diagnostics"]), 8)
+        self.assertEqual(report["diagnostics"][0], {"source": "google.rpc.ErrorInfo", "reason": "R0"})
+        self.assertLess(len(json.dumps(report)), 1000)
+
+    def test_malformed_error_fields_are_not_stringified_into_reports(self):
+        for error in ([], "PRIVATE_RAW_ERROR", {"status": {"token": "PRIVATE_STATUS"},
+                                               "message": ["PRIVATE_MESSAGE"], "details": {}, "errors": "PRIVATE_ERRORS"}):
+            with self.subTest(error=error):
+                self.assertEqual(self.api_error_report(error), {
+                    "httpCode": 403, "status": "HTTP_ERROR", "message": "Google API request failed.",
+                })
+
+    def test_three_argument_errors_remain_compatible(self):
+        error = publisher.ApiError(403, "PERMISSION_DENIED", "The caller does not have permission")
+        self.assertEqual(publisher.safe_error(error), {
+            "httpCode": 403, "status": "PERMISSION_DENIED", "message": "The caller does not have permission",
+        })
 
 
 class FakeAPI:

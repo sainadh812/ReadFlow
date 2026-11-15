@@ -19,6 +19,11 @@
     "subtitle": "Adjust brightness and add a warm glow",
     "alt_text": "The reader's bottom settings panel with brightness and warm-light controls."
   },
+  "09-voice-and-speed.png": {
+    "title": "Find your reading rhythm",
+    "subtitle": "Choose a voice and adjust your reading speed",
+    "alt_text": "Reader controls with text recognition, voice model, voice choice and reading speed."
+  },
   "10-dictionary.png": {
     "title": "Stay with the story",
     "subtitle": "English definitions, offline after download",
@@ -33,10 +38,5 @@
     "title": "Settle into Night Reader",
     "subtitle": "Three themes. One familiar library.",
     "alt_text": "Read Assist's library with the Night Reader theme selected."
-  },
-  "14-reading-aloud.png": {
-    "title": "Listen and follow along",
-    "subtitle": "On-device narration after voice-pack download",
-    "alt_text": "Read Assist playing the original sample aloud in text mode."
   }
 }
