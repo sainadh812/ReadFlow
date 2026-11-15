@@ -10,8 +10,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.listSaver
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -37,7 +35,9 @@ import kotlin.math.abs
 @Composable internal fun OriginalPage(vm: ReaderViewModel, state: ReaderPlayback, modifier: Modifier, follow: Boolean,
     rotation: Int, fitWidth: Boolean, swipePages: Boolean, rightAdvances: Boolean,
     pageTurn: PageTurnState? = null, onReady: (Boolean) -> Unit = {}, define: (SourceWord) -> Unit = {},
-    lookupWordId: String? = null, manual: () -> Unit) {
+    lookupWordId: String? = null,
+    viewportState: ReaderViewportState = rememberReaderViewportState(state.document?.id, state.page?.index ?: state.viewPageIndex, rotation, fitWidth),
+    manual: () -> Unit) {
     val page = state.page
     val document = state.document ?: return
     val failedIds = remember(page, state.failedSentences, document.id) {
@@ -48,10 +48,6 @@ import kotlin.math.abs
     val pageKey = document.id to pageIndex
     var bitmap by remember(pageKey) { mutableStateOf<Bitmap?>(null) }
     var error by remember(pageKey) { mutableStateOf<String?>(null) }
-    var zoom by rememberSaveable(pageKey, rotation, fitWidth) { mutableFloatStateOf(1f) }
-    var pan by rememberSaveable(pageKey, rotation, fitWidth, stateSaver = listSaver(
-        save = { listOf(it.x, it.y) }, restore = { Offset(it[0], it[1]) },
-    )) { mutableStateOf(Offset.Zero) }
     var size by remember { mutableStateOf(IntSize.Zero) }
     val readyCallback by rememberUpdatedState(onReady)
     LaunchedEffect(pageKey, bitmap, error) { readyCallback(bitmap != null || error != null) }
@@ -82,13 +78,16 @@ import kotlin.math.abs
             }
         }
     }
-    val width = page?.width?.takeIf { it > 0 } ?: bitmap?.width?.toFloat() ?: 1f
-    val height = page?.height?.takeIf { it > 0 } ?: bitmap?.height?.toFloat() ?: 1f
+    val sourceWidth = page?.width?.takeIf { it.isFinite() && it > 0 } ?: bitmap?.width?.toFloat()
+    val sourceHeight = page?.height?.takeIf { it.isFinite() && it > 0 } ?: bitmap?.height?.toFloat()
+    val width = sourceWidth ?: 1f
+    val height = sourceHeight ?: 1f
+    val viewportReady = size.width > 0 && size.height > 0 && sourceWidth != null && sourceHeight != null
     val swapped = rotation % 180 != 0
     val viewport = PageViewport(if (swapped) height else width, if (swapped) width else height,
         size.width.toFloat(), size.height.toFloat(), fitWidth)
-    val scale = viewport.fit * zoom
-    val boundedPan = viewport.constrain(pan, zoom)
+    val scale = viewport.fit * viewportState.zoom
+    val boundedPan = viewport.constrain(viewportState.pan, viewportState.zoom)
     val offsetX = viewport.base.x + boundedPan.x
     val offsetY = viewport.base.y + boundedPan.y
     val transform = when (rotation) {
@@ -104,15 +103,17 @@ import kotlin.math.abs
     val currentLookupWordId by rememberUpdatedState(lookupWordId)
     // A second finger cancels word lookup even before a pinch travels beyond touch slop.
     var wordGestureAllowed by remember(pageKey) { mutableStateOf(true) }
-    LaunchedEffect(viewport) {
-        if (size.width > 0 && size.height > 0) pan = viewport.constrain(pan, zoom)
+    LaunchedEffect(viewport, viewportReady) {
+        // A re-entering canvas is initially unmeasured. Do not clamp away its retained pan.
+        if (viewportReady) viewportState.pan = viewport.constrain(viewportState.pan, viewportState.zoom)
     }
     val currentState by rememberUpdatedState(state)
     val lookupColor = LocalReaderPaper.current.sentence.copy(alpha = .35f).toArgb()
-    LaunchedEffect(state.activeWordId, follow, size, rotation, fitWidth) {
-        if (follow) page?.words?.firstOrNull { it.id == state.activeWordId }?.boxes?.firstOrNull()?.let { box ->
+    LaunchedEffect(pageKey, state.activeWordId, follow, size, rotation, fitWidth, sourceWidth, sourceHeight) {
+        if (follow && viewportReady) page?.words?.firstOrNull { it.id == state.activeWordId }?.boxes?.firstOrNull()?.let { box ->
             val point = transform.map((box.left + box.right) / 2, (box.top + box.bottom) / 2)
-            if (point.second !in 40f..(size.height - 50f)) pan = viewport.constrain(boundedPan + Offset(0f, size.height / 2f - point.second), zoom)
+            if (point.second !in 40f..(size.height - 50f)) viewportState.pan = viewport.constrain(
+                boundedPan + Offset(0f, size.height / 2f - point.second), viewportState.zoom)
         }
     }
     Box(modifier.clipToBounds().background(MaterialTheme.colorScheme.surfaceContainerHighest)) {
@@ -138,7 +139,7 @@ import kotlin.math.abs
                     var accumulatedZoom = 1f
                     var dragging = false
                     var cancelled = false
-                    val initialZoom = zoom
+                    val initialZoom = viewportState.zoom
                     do {
                         val event = awaitPointerEvent()
                         if (event.changes.count { it.pressed || it.previousPressed } > 1) wordGestureAllowed = false
@@ -155,20 +156,20 @@ import kotlin.math.abs
                                 if (dragging) { wordGestureAllowed = false; onManual() }
                             }
                             if (dragging && event.changes.any { it.pressed && it.previousPressed }) {
-                                if (swipe.horizontal && maxOf(initialZoom, zoom) <= 1.01f && swipePages && pageTurn != null) {
+                                if (swipe.horizontal && maxOf(initialZoom, viewportState.zoom) <= 1.01f && swipePages && pageTurn != null) {
                                     pageTurn.drag(swipe.displacement)
                                 } else {
                                     pageTurn?.cancel()
-                                    val next = (zoom * factor).coerceIn(1f, 6f)
-                                    pan = currentViewport.zoomPan(pan, zoom, next, event.calculateCentroid(useCurrent = false), delta)
-                                    zoom = next
+                                    val next = (viewportState.zoom * factor).coerceIn(1f, 6f)
+                                    viewportState.pan = currentViewport.zoomPan(viewportState.pan, viewportState.zoom, next, event.calculateCentroid(useCurrent = false), delta)
+                                    viewportState.zoom = next
                                 }
                                 event.changes.forEach { if (it.positionChanged()) it.consume() }
                             }
                         }
                     } while (!cancelled && event.changes.any { it.pressed })
                     if (!cancelled && dragging) {
-                        val delta = swipe.pageDelta(threshold, swipePages, rightAdvances, maxOf(initialZoom, zoom))
+                        val delta = swipe.pageDelta(threshold, swipePages, rightAdvances, maxOf(initialZoom, viewportState.zoom))
                         if (pageTurn != null) pageTurn.release(delta) else if (delta != 0) vm.page(pageIndex + delta)
                     } else pageTurn?.cancel()
                 } } finally { pageTurn?.cancel() }

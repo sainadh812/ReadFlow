@@ -9,8 +9,8 @@ import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.contentDescription
@@ -130,9 +131,18 @@ import java.util.Locale
     val adjacentPages = rememberAdjacentReaderPages(vm, state.document, pageIndex, prefs.pageTurnStyle != "off", state.failedSentences)
     var rotation by rememberSaveable(state.document?.id, pageIndex) { mutableIntStateOf(0) }
     var fitWidth by rememberSaveable(state.document?.id, pageIndex) { mutableStateOf(true) }
+    // These states outlive the conditional PDF/text surfaces, but only retain the current page.
+    val originalViewport = rememberReaderViewportState(state.document?.id, pageIndex, rotation, fitWidth)
+    val textViewport = rememberSaveable(state.document?.id, pageIndex, saver = LazyListState.Saver) { LazyListState() }
     val selected = page?.words?.firstOrNull { it.id == state.selectedWordId }
     val clipboard = LocalClipboardManager.current
     val status = ocrProgress ?: if (refreshingText) "Updating text recognition…" else state.error ?: state.status
+    fun showOriginalPage(showOriginal: Boolean) {
+        if (!hasOriginal || original == showOriginal) return
+        pageTurn.reset()
+        original = showOriginal
+        if (showOriginal) searching = false
+    }
     fun pauseForDictionary() {
         val current = vm.app.playback.state.value
         // Initial page extraction and silent prepare-ahead are not narration.
@@ -204,7 +214,7 @@ import java.util.Locale
                             DropdownMenuItem(text = { Text("Next page") }, onClick = { pageTurn.requestTurn(1); menu = false }, enabled = pageIndex + 1 < (state.document?.pageCount ?: 1), leadingIcon = { Icon(Icons.Default.ChevronRight, null) })
                         }
                         if (hasOriginal) {
-                            DropdownMenuItem(text = { Text(if (original) "Show reader text" else "Show original page") }, onClick = { original = !original; if (original) searching = false; menu = false }, leadingIcon = { Icon(if (original) Icons.Default.TextFields else Icons.Default.Description, null) })
+                            DropdownMenuItem(text = { Text(if (original) "Show reader text" else "Show original page") }, onClick = { showOriginalPage(!original); menu = false }, leadingIcon = { Icon(if (original) Icons.Default.TextFields else Icons.Default.Description, null) })
                             if (original) {
                                 DropdownMenuItem(text = { Text(if (fitWidth) "Fit whole page" else "Fit page width") }, onClick = { pageTurn.reset(); fitWidth = !fitWidth; menu = false }, leadingIcon = { Icon(Icons.Default.FitScreen, null) })
                                 DropdownMenuItem(text = { Text("Rotate page view") }, onClick = { pageTurn.reset(); rotation = (rotation + 90) % 360; menu = false }, leadingIcon = { Icon(Icons.Default.RotateRight, null) })
@@ -213,7 +223,7 @@ import java.util.Locale
                         if ((state.document?.pageCount ?: 0) > 1) {
                             DropdownMenuItem(text = { Text(if (prefs.swipePages) "Page swipes: on" else "Page swipes: off") }, onClick = { vm.update(prefs.copy(swipePages = !prefs.swipePages)); menu = false })
                         }
-                        DropdownMenuItem(text = { Text("Find in page text") }, onClick = { searching = true; original = false; menu = false }, leadingIcon = { Icon(Icons.Default.Search, null) })
+                        DropdownMenuItem(text = { Text("Find in page text") }, onClick = { showOriginalPage(false); searching = true; menu = false }, leadingIcon = { Icon(Icons.Default.Search, null) })
                         DropdownMenuItem(text = { Text("Playback speed · ${String.format(Locale.US, "%.2f×", prefs.speed)}") }, onClick = { speeds = true; menu = false }, leadingIcon = { Icon(Icons.Default.Speed, null) })
                         DropdownMenuItem(text = { Text("Back ten seconds") }, onClick = { vm.app.playback.skip(-10); menu = false }, leadingIcon = { Icon(Icons.Default.Replay10, null) })
                         DropdownMenuItem(text = { Text("Forward ten seconds") }, onClick = { vm.app.playback.skip(10); menu = false }, leadingIcon = { Icon(Icons.Default.Forward10, null) })
@@ -247,14 +257,14 @@ import java.util.Locale
                 if (original) OriginalPage(vm, state, Modifier.fillMaxSize(), follow && !dictionaryOpen, rotation, fitWidth,
                     prefs.swipePages && !readerControls && !dictionaryOpen, prefs.swipeRightAdvances,
                     pageTurn = pageTurn, onReady = { originalReady = it }, define = { openDictionary(it) },
-                    lookupWordId = dictionaryWordId.takeIf { dictionaryOpen }) { follow = false }
+                    lookupWordId = dictionaryWordId.takeIf { dictionaryOpen }, viewportState = originalViewport) { follow = false }
                 else if (page == null) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     if (state.error != null) Text(state.error, Modifier.padding(24.dp), color = MaterialTheme.colorScheme.error)
                     else CircularProgressIndicator()
                 }
                 else key(page.id) {
-                    ReaderText(page, state, prefs, query, follow && !dictionaryOpen, { follow = false }, { vm.app.playback.select(it) }, { openDictionary(it) },
-                        dictionaryWordId.takeIf { dictionaryOpen },
+                    ReaderText(page, state, prefs, if (searching) query else "", follow && !dictionaryOpen, { follow = false }, { vm.app.playback.select(it) }, { openDictionary(it) },
+                        dictionaryWordId.takeIf { dictionaryOpen }, textViewport,
                         Modifier.fillMaxSize().readerPageSwipes(page.id, prefs.swipePages && !readerControls && !dictionaryOpen, prefs.swipeRightAdvances,
                             manualScroll = { follow = false }, turn = { vm.page(pageIndex + it) },
                             onDrag = pageTurn::drag, onRelease = pageTurn::release, onCancel = pageTurn::cancel))
@@ -281,7 +291,9 @@ import java.util.Locale
             }
         }
         if (!pageOnly && prefs.showPerformance) PerformancePanel(vm, prefs)
-        if (!pageOnly) PlaybackPanel(vm, state, requestNotifications, prefs.speed, { speeds = true }, selected, status,
+        if (!pageOnly) PlaybackPanel(vm, state, requestNotifications, prefs.speed, { speeds = true }, status,
+            originalLabel = if (hasOriginal) { if (state.document?.mime == "application/pdf") "PDF" else "Image" } else null,
+            original = original, changeView = ::showOriginalPage,
             showDetails = { details = true },
             showControls = { readerControls = true })
     }
@@ -356,11 +368,10 @@ import java.util.Locale
 }
 
 @Composable private fun ReaderText(page: PageContent, state: ReaderPlayback, prefs: Preferences, query: String, follow: Boolean, manualScroll: () -> Unit,
-    tap: (String) -> Unit, define: (SourceWord) -> Unit, lookupWordId: String?, modifier: Modifier) {
+    tap: (String) -> Unit, define: (SourceWord) -> Unit, lookupWordId: String?, list: LazyListState, modifier: Modifier) {
     val paper = LocalReaderPaper.current
     val failedIds = remember(page, state.failedSentences) { state.failedSentenceIds(page) }
     val readerFont = ReaderFonts.family(prefs.readerFont)
-    val list = rememberLazyListState()
     val dragging by list.interactionSource.collectIsDraggedAsState()
     val active = page.words.firstOrNull { it.id == state.activeWordId }
     val onTap by rememberUpdatedState(tap)
@@ -423,11 +434,10 @@ import java.util.Locale
 }
 
 @Composable private fun PlaybackPanel(vm: ReaderViewModel, state: ReaderPlayback, notifications: () -> Unit,
-    speed: Float, changeSpeed: () -> Unit, selectedWord: SourceWord?, status: String,
+    speed: Float, changeSpeed: () -> Unit, status: String,
+    originalLabel: String?, original: Boolean, changeView: (Boolean) -> Unit,
     showDetails: () -> Unit, showControls: () -> Unit) {
     val openControls by rememberUpdatedState(showControls)
-    val selected = selectedWord != null && !state.wantsToPlay && !state.preparing
-    val preparingPlayback = state.fillingBuffer || (state.preparing && state.currentChunk == null)
     val playbackStatus = when {
         state.error != null && (state.playing || state.wantsToPlay) -> "Issue ahead · Tap for details"
         state.error != null -> "Reading stopped · Tap for details"
@@ -437,8 +447,7 @@ import java.util.Locale
         state.preparing -> "Preparing audio…"
         else -> status
     }
-    // Ordinary playback needs just the four controls. Keep actionable progress and
-    // recovery visible, while all other details remain available from the menu.
+    // Keep the normal dock compact, while retaining actionable progress and recovery.
     val showStatus = state.error != null || state.blockedSentence != null || state.preparing ||
         state.fillingBuffer || status != state.status
     Surface(modifier = Modifier.pointerInput(Unit) {
@@ -450,49 +459,13 @@ import java.util.Locale
             change.consume()
         })
     }, color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp), tonalElevation = 1.dp, shadowElevation = 6.dp) {
-        Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
-            Column(Modifier.fillMaxWidth().height(48.dp)
-                .clickable(role = androidx.compose.ui.semantics.Role.Button, onClickLabel = "Open reader controls", onClick = showControls)
-                .semantics { contentDescription = "Reader controls. Swipe up or tap to adjust voice, speed, performance and text recognition." },
-                horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                Box(Modifier.width(36.dp).height(4.dp).background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(2.dp)))
+        Column(Modifier.fillMaxWidth()) {
+            originalLabel?.let { label ->
+                ReaderViewSelector(label, original, changeView)
             }
-            Row(Modifier.fillMaxWidth().heightIn(min = 64.dp).padding(bottom = 6.dp), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = changeSpeed, modifier = Modifier.sizeIn(minWidth = 56.dp, minHeight = 48.dp)
-                    .semantics { contentDescription = "Playback speed, $speed times" }, contentPadding = PaddingValues(4.dp)) {
-                    Text("${String.format(Locale.US, "%.2f", speed).trimEnd('0').trimEnd('.')}×", style = MaterialTheme.typography.titleMedium)
-                }
-                IconButton(onClick = { vm.app.playback.sentence(-1) }, enabled = state.page?.words?.isNotEmpty() == true, modifier = Modifier.size(52.dp)) {
-                    Icon(Icons.Default.SkipPrevious, "Previous sentence", Modifier.size(28.dp))
-                }
-                FilledIconButton(onClick = {
-                    if (!state.wantsToPlay && !state.preparing) notifications()
-                    if (selected) vm.app.playback.start(wordId = selectedWord?.id) else vm.app.playback.toggle()
-                }, modifier = Modifier.size(58.dp).semantics {
-                    contentDescription = when {
-                        preparingPlayback -> "Cancel preparation"
-                        state.wantsToPlay -> "Pause"
-                        selected -> "Read from selected word"
-                        else -> "Play"
-                    }
-                }, enabled = state.page?.words?.isNotEmpty() == true || state.preparing || state.wantsToPlay) {
-                    Box(contentAlignment = Alignment.Center) {
-                        if (preparingPlayback) CircularProgressIndicator(Modifier.size(48.dp), color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .65f), strokeWidth = 2.dp)
-                        Icon(when {
-                            preparingPlayback -> Icons.Default.Close
-                            state.wantsToPlay -> Icons.Default.Pause
-                            else -> Icons.Default.PlayArrow
-                        }, null, Modifier.size(32.dp))
-                    }
-                }
-                IconButton(onClick = {
-                    if (state.blockedSentence != null) { notifications(); vm.app.playback.skipBlockedSentence() }
-                    else vm.app.playback.sentence(1)
-                }, enabled = state.page?.words?.isNotEmpty() == true || state.blockedSentence != null, modifier = Modifier.size(52.dp)) {
-                    Icon(Icons.Default.SkipNext, if (state.blockedSentence != null) "Skip blocked sentence" else "Next sentence", Modifier.size(28.dp))
-                }
-            }
-            if (showStatus) Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable(onClickLabel = "Reading details", onClick = showDetails).padding(horizontal = 8.dp, vertical = 4.dp),
+            ReaderTransportRow(vm, state, notifications, speed, changeSpeed,
+                expanded = false, toggleControls = showControls)
+            if (showStatus) Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable(onClickLabel = "Reading details", onClick = showDetails).padding(horizontal = 20.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 Icon(when {
                     state.error != null -> Icons.Default.ErrorOutline
@@ -501,6 +474,28 @@ import java.util.Locale
                 Spacer(Modifier.width(6.dp))
                 Text(playbackStatus, style = MaterialTheme.typography.labelMedium,
                     color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable private fun ReaderViewSelector(originalLabel: String, original: Boolean, changeView: (Boolean) -> Unit) {
+    val width = (192.dp * LocalDensity.current.fontScale.coerceAtLeast(1f)).coerceAtMost(320.dp)
+    Box(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp), contentAlignment = Alignment.Center) {
+        SingleChoiceSegmentedButtonRow(Modifier.widthIn(max = width).fillMaxWidth()) {
+            listOf("Text", originalLabel).forEachIndexed { index, label ->
+                SegmentedButton(selected = original == (index == 1), onClick = { changeView(index == 1) },
+                    shape = SegmentedButtonDefaults.itemShape(index, 2),
+                    colors = SegmentedButtonDefaults.colors(
+                        activeContainerColor = MaterialTheme.colorScheme.primary,
+                        activeContentColor = MaterialTheme.colorScheme.onPrimary),
+                    icon = {},
+                    modifier = Modifier.weight(1f).heightIn(min = 48.dp).semantics {
+                        contentDescription = if (index == 0) "Text view" else "$originalLabel view"
+                    }) {
+                    Text(label, maxLines = 1)
+                }
             }
         }
     }

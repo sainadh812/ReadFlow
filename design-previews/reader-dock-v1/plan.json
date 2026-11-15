@@ -1,0 +1,139 @@
+{
+  "title": "Restore Text/PDF switching and balance the reader bottom panel",
+  "date": "2026-11-15",
+  "status": "Approved and implemented; release validation in progress.",
+  "baseline": {
+    "version": "0.3.0",
+    "sourceCommit": "f40664444ccc8ec4e691188dd3e0eaa94b77ebd5"
+  },
+  "userRequest": [
+    "Restore the Text/PDF view option at the bottom of the reader.",
+    "Make the lower panel visually even.",
+    "Restore a visible up-arrow to open reader controls.",
+    "Show images and a plan before implementation."
+  ],
+  "interpretation": "The requested up-arrow means a visible expand control for the reader settings sheet; playback speed remains a separate control.",
+  "currentFindings": [
+    "Original/text switching exists in the reader overflow menu.",
+    "The collapsed dock uses an unlabelled visual handle in a 48dp tap strip.",
+    "The current four-control row places Play/Pause off the horizontal center."
+  ],
+  "proposedDesign": {
+    "modeRow": {
+      "location": "Top row of the collapsed reader dock, replacing the existing handle strip",
+      "pdf": [
+        "Text",
+        "PDF"
+      ],
+      "image": [
+        "Text",
+        "Image"
+      ],
+      "article": "Omit the selector for documents with no original page; keep the transport row.",
+      "selectedState": "Both labels remain visible; selected segment uses the current theme primary color with contrasting text.",
+      "dimensions": "Centered segment group approximately 192dp wide and at least 48dp tall; allow width/height growth for accessibility."
+    },
+    "transportRow": {
+      "order": [
+        "Playback speed",
+        "Previous sentence",
+        "Play/Pause",
+        "Next sentence",
+        "Expand reader controls"
+      ],
+      "layout": "Five equal-width cells; Play/Pause at the exact horizontal center, paired controls symmetric.",
+      "playDiameterDp": 58,
+      "minimumTouchTargetDp": 48,
+      "collapsedChevron": "Up",
+      "expandedChevron": "Down, closes reader controls",
+      "targetCollapsedDockHeight": "About 112–124dp for PDF/image documents, excluding system insets and actual error/preparation rows.",
+      "normalState": "No additional explanatory text or decorative rows."
+    },
+    "sheet": {
+      "open": "Tap the up-chevron or swipe up on the dock.",
+      "close": "Tap the footer down-chevron, existing close button, swipe down, or Android Back.",
+      "footer": "Use the same five-cell transport layout; the mode selector stays on the underlying reader.",
+      "speedAction": "Reveal the existing Quick playback-speed section, or use an in-sheet picker; avoid stacking a second modal.",
+      "contents": "Reuse existing Quick/Advanced settings, reading light, speech processing effort, text recognition and voice controls.",
+      "scrolling": "Settings scroll above a fixed transport footer."
+    },
+    "themes": "Use the same geometry across Warm Library, Modern Focus and Night Reader. Images show Warm Library; reader paper remains independent.",
+    "safetyAndState": [
+      "View changes use the existing original/text state and preserve the document page, selection, narration position and failed-sentence marks.",
+      "Switching view or opening/closing the sheet must not start, pause, restart or regenerate speech by itself.",
+      "Do not rerun OCR merely to change view; retain existing loading/empty/error handling for unavailable extracted text.",
+      "Reset or finish page-turn animation safely before changing the displayed view.",
+      "Preserve current-page PDF zoom/pan and text scroll across toggles with bounded view state outside the removed content branch; keep auto-follow behavior.",
+      "Preserve preparation cancellation, selected-word playback, blocked-sentence skipping and notification gating in the shared transport.",
+      "Retain actionable progress and error controls only when their existing conditions apply.",
+      "Apply navigation/system insets once and preserve the existing hide-controls reader mode."
+    ]
+  },
+  "implementationSteps": [
+    {
+      "step": 1,
+      "change": "Extract shared transport behavior and five-cell layout without changing playback actions.",
+      "files": [
+        "app/src/main/java/app/readflow/ui/ReadFlowUi.kt",
+        "app/src/main/java/app/readflow/ui/ReaderTransportRow.kt (new)"
+      ]
+    },
+    {
+      "step": 2,
+      "change": "Connect the dock segmented selector to existing reader view state and retain current-page viewport state across switches.",
+      "files": [
+        "app/src/main/java/app/readflow/ui/ReadFlowUi.kt",
+        "app/src/main/java/app/readflow/ui/OriginalPage.kt"
+      ]
+    },
+    {
+      "step": 3,
+      "change": "Reuse the balanced footer in reader controls, wire the down-chevron to dismissal, and route sheet speed changes within the sheet.",
+      "files": [
+        "app/src/main/java/app/readflow/ui/ReaderControlsSheet.kt"
+      ]
+    },
+    {
+      "step": 4,
+      "change": "Check reader behavior and visual layout, then build only after design approval.",
+      "files": []
+    }
+  ],
+  "acceptanceChecks": [
+    "PDF shows Text/PDF; images show Text/Image; articles show no misleading PDF option.",
+    "Play/Pause is centered and five controls have even spacing in collapsed and expanded states.",
+    "All three themes, 320dp-wide screen, large text, rotation and landscape retain usable touch targets.",
+    "TalkBack announces selected view, playback action, playback speed, and expand/collapse controls.",
+    "At large text sizes, a labelled speed icon may replace a clipped numeric rate while preserving the rate in accessibility semantics.",
+    "Tap and swipe open the sheet without conflicting with mode taps, page swipes or slider drags.",
+    "Mode switches preserve page/audio position and appropriate viewport state during paused and active narration.",
+    "Preparation cancel, selected-word start, failed-sentence next and errors remain functional.",
+    "Run the existing release checks; verify actual device layout when a device is available."
+  ],
+  "preview": {
+    "generatedWith": "Built-in image_gen tool",
+    "images": [
+      {
+        "path": "pdf-text-toggle.png",
+        "description": "Collapsed dock in PDF and reflowed text views"
+      },
+      {
+        "path": "expanded-controls.png",
+        "description": "Expanded reader controls and balanced footer"
+      }
+    ],
+    "prompts": "prompts.json",
+    "note": "Concept images use fictional sample content; they are not screenshots from an implemented build.",
+    "implementationScope": "The reader header and document rendering are context in the mockups; this change targets bottom controls and view-state continuity."
+  },
+  "approval": {
+    "date": "2026-11-15",
+    "request": "This looks good to me. Implement it"
+  },
+  "implementation": {
+    "versionName": "0.3.1",
+    "versionCode": 27,
+    "performed": true,
+    "releaseValidation": "in progress"
+  }
+}

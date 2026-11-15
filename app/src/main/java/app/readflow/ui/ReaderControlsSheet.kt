@@ -34,6 +34,7 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.sample
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 /** Reader-local settings: opening, changing tabs, and managing downloads never navigate away. */
@@ -54,6 +55,7 @@ import kotlinx.coroutines.launch
     val feedback by vm.message.collectAsStateWithLifecycle()
     var advanced by rememberSaveable { mutableStateOf(false) }
     var roomy by rememberSaveable { mutableStateOf(false) }
+    var revealSpeed by remember { mutableStateOf(false) }
     DisposableEffect(lighting) { onDispose { lighting.saveDraft() } }
     ModalBottomSheet(
         onDismissRequest = dismiss,
@@ -81,19 +83,30 @@ import kotlinx.coroutines.launch
                 Tab(selected = !advanced, onClick = { advanced = false }, text = { Text("Quick") })
                 Tab(selected = advanced, onClick = { advanced = true }, text = { Text("Advanced") })
             }
-            if (!advanced) LazyColumn(
-                state = quickList, modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                item { ReaderLightingControl(lighting) }
-                item { ReaderEffortControl(vm, prefs) }
-                item { ReaderRecognitionDetail(vm, prefs) }
-                item { ReaderVoiceControls(vm, prefs) {
-                    advanced = true
-                    scope.launch { advancedList.scrollToItem(1) }
-                } }
-                item { ReaderSpeedControl(vm, prefs) }
+            if (!advanced) {
+                LazyColumn(
+                    state = quickList, modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    item(key = "quick-light") { ReaderLightingControl(lighting) }
+                    item(key = "quick-effort") { ReaderEffortControl(vm, prefs) }
+                    item(key = "quick-recognition") { ReaderRecognitionDetail(vm, prefs) }
+                    item(key = "quick-voice") { ReaderVoiceControls(vm, prefs) {
+                        advanced = true
+                        scope.launch { advancedList.scrollToItem(1) }
+                    } }
+                    item(key = "quick-speed") { ReaderSpeedControl(vm, prefs) }
+                }
+                // Run after the Quick list has joined the dialog composition, including
+                // when the footer was tapped from Advanced. No second modal is needed.
+                LaunchedEffect(revealSpeed) {
+                    if (revealSpeed) {
+                        snapshotFlow { quickList.layoutInfo.totalItemsCount }.first { it > READER_SPEED_ITEM_INDEX }
+                        quickList.scrollToItem(READER_SPEED_ITEM_INDEX)
+                        revealSpeed = false
+                    }
+                }
             } else LazyColumn(
                 state = advancedList, modifier = Modifier.weight(1f),
                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
@@ -110,8 +123,15 @@ import kotlinx.coroutines.launch
                         .semantics { liveRegion = LiveRegionMode.Polite }, style = MaterialTheme.typography.bodySmall)
                 }
             }
+            if ((state.error != null || state.preparing || state.fillingBuffer || state.blockedSentence != null) &&
+                (state.error ?: state.status) != feedback) {
+                Text(state.error ?: state.status, Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 6.dp),
+                    style = MaterialTheme.typography.bodySmall, maxLines = 2, overflow = TextOverflow.Ellipsis,
+                    color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
+            }
             HorizontalDivider()
-            ReaderSheetTransport(vm, state, notifications)
+            ReaderTransportRow(vm, state, notifications, prefs.speed,
+                changeSpeed = { advanced = false; revealSpeed = true }, expanded = true, toggleControls = dismiss)
         }
     }
 }
@@ -455,41 +475,6 @@ import kotlinx.coroutines.launch
     }
 }
 
-@Composable private fun ReaderSheetTransport(vm: ReaderViewModel, state: ReaderPlayback, notifications: () -> Unit) {
-    val preparing = state.fillingBuffer || (state.preparing && state.currentChunk == null)
-    val selected = state.selectedWordId != null && !state.wantsToPlay && !state.preparing
-    Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-        Column(Modifier.weight(1f)) {
-            Text(if (state.wantsToPlay) "Listening" else if (state.preparing) "Preparing audio" else "Ready to read",
-                style = MaterialTheme.typography.labelLarge)
-            Text(state.status, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-        IconButton(onClick = { vm.app.playback.sentence(-1) }, enabled = state.page?.words?.isNotEmpty() == true) {
-            Icon(Icons.Default.SkipPrevious, "Previous sentence")
-        }
-        FilledIconButton(onClick = {
-            if (!state.wantsToPlay && !state.preparing) notifications()
-            if (selected) vm.app.playback.start(wordId = state.selectedWordId) else vm.app.playback.toggle()
-        }, enabled = state.page?.words?.isNotEmpty() == true || state.preparing || state.wantsToPlay, modifier = Modifier.size(52.dp)) {
-            Icon(when {
-                preparing -> Icons.Default.Close
-                state.wantsToPlay -> Icons.Default.Pause
-                else -> Icons.Default.PlayArrow
-            }, when {
-                preparing -> "Cancel audio preparation"
-                state.wantsToPlay -> "Pause reading"
-                else -> "Start reading"
-            }, Modifier.size(28.dp))
-        }
-        IconButton(onClick = {
-            if (state.blockedSentence != null) { notifications(); vm.app.playback.skipBlockedSentence() }
-            else vm.app.playback.sentence(1)
-        }, enabled = state.page?.words?.isNotEmpty() == true || state.blockedSentence != null) {
-            Icon(Icons.Default.SkipNext, if (state.blockedSentence != null) "Skip blocked sentence" else "Next sentence")
-        }
-    }
-}
-
+private const val READER_SPEED_ITEM_INDEX = 4
 private fun readerSpeedLabel(value: Float): String = String.format(Locale.US, "%.2f", value).trimEnd('0').trimEnd('.') + "×"
 private fun readerMegabytes(value: Long): String = String.format(Locale.US, "%.1f MB", value / 1_000_000.0)
