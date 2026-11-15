@@ -5,8 +5,9 @@ manual only; every operation checks out the immutable dispatched commit
 (`github.sha`) on an allowed branch. The owner authorized **full publication**,
 including store copy, screenshots, demo videos and production for `app.readflow`.
 The current candidate is **0.3.2/code 28**, which fixes a dictionary lookup failure
-found during actual Android emulator testing. The new signed artifacts are
-verified; Android capture, usable recordings and publication remain pending. See the
+found during actual Android emulator testing. The new signed artifacts and Android
+dictionary fix are verified; the GitHub candidate and code 28 Internal testing
+release are published. Usable store media and production publication remain pending. See the
 [current readiness handoff](PRODUCTION_READINESS_0.3.2.md). Historical code 27
 Internal testing publication is recorded below and does not establish code 28
 availability or production publication.
@@ -36,7 +37,7 @@ availability or production publication.
   `READFLOW_PLAY_SERVICE_ACCOUNT_JSON`. The API operations read that secret only
   in their execution step; it is not an artifact, repository file, or command-line
   argument. Successful authentication and Internal testing publication are recorded
-  in the [historical 0.3.1 handoff](PLAY_UPLOAD_0.3.1.md).
+  in the [current code 28 publication report](evidence/reader-0.3.2/play-release-summary.json).
 - The owner subsequently reports adding **Manage store presence**, **Release to
   production, exclude devices, and use Play App Signing**, and **Manage policy
   declarations** for Read Assist. Actual relevant API/Console access remains to
@@ -90,11 +91,14 @@ recordings are not physical-device or Play-installed ARM64 verification. Review
 the capture report, footage and real audio before generating or publishing media;
 a capture dispatch alone does not establish that usable media was produced.
 
-Keep `reuse_capture_build=false` for 0.3.2. The existing reuse helper pins emulator
-APKs from historical 0.3.1 run `43745021098`; those APKs cannot verify the dictionary
-fix or supply code 28 media. Reuse may be enabled only after a separate, verified
-code 28 emulator build and all matching APK/source pins are deliberately recorded.
-Capture provenance must distinguish the APK build from any later capture script.
+`reuse_capture_build=true` now reuses only the verified code 28 emulator build from
+run `43749926901`. The helper checks both APK SHA-256 hashes and four Git source
+objects: `app/src/main`, `app/src/release`, `app/src/storeDemoAndroidTest` and
+`app/build.gradle.kts`. Any mismatch stops reuse; use a fresh build with reuse
+disabled after application/setup changes. Capture retry
+[43752099137](https://github.com/sainadh812/ReadFlow/actions/runs/43752099137), revision
+`5b5d273`, is pending. Provenance records its capture-script revision separately
+from the reused APK build at `e1a73d4`. No production signing key is used.
 
 Store and production commits use `ERROR_IF_IN_REVIEW`; ambiguous commit responses
 require reconciliation rather than automatic retries. Validation failures and
@@ -104,7 +108,9 @@ permission refusal. See [current production readiness](PRODUCTION_READINESS_0.3.
 
 The current publishing target is:
 
-- Repository/tag: `sainadh812/ReadFlow` / `v0.3.2-play-candidate` (publication pending).
+- Public candidate: [sainadh812/ReadFlow v0.3.2-play-candidate](https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.2-play-candidate).
+  Both APK/AAB downloads returned HTTP 200 and their complete bytes match the sizes
+  and SHA-256 hashes below; see [GitHub verification](evidence/reader-0.3.2/github-release-verification.json).
 - Asset: `Read-Assist-0.3.2-upload-signed.aab`, package `app.readflow`, **0.3.2/code 28**.
 - Application fix revision: `a6c99f33f6e8934f4a304355a3e093b1b569dfa8`.
 - Dispatched build/capture revision: `e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3`.
@@ -121,9 +127,22 @@ The current publishing target is:
   records the existing upload certificate and confirms the fixed dictionary
   expression is present in the release DEX. The publisher now pins this exact
   code 28 AAB; 46 publisher/promoter safeguard tests passed after updating the pins.
-- Android capture [run 43749926901](https://github.com/sainadh812/ReadFlow/actions/runs/43749926901)
-  remains pending. Signed build checks do not establish an Android dictionary
-  runtime result, usable media, GitHub release availability or Play publication.
+- Android [run 43749926901](https://github.com/sainadh812/ReadFlow/actions/runs/43749926901)
+  passed dictionary normalization and installed-dictionary lookup on Android 15:
+  `curiosity` returned three entries with no error, phase `READY`, seed `complete`.
+  The [seed result](evidence/reader-0.3.2/android-dictionary-seed.json) and
+  [build provenance](evidence/reader-0.3.2/android-dictionary-build.json) identify the
+  reviewed source and x86_64 emulator release runtime with local debug signing.
+  This is not physical-device or Play-installed ARM64 verification.
+- Subsequent recording navigation failed to find `PDF view` and produced no clips.
+  This separate media failure does not invalidate the Android dictionary result.
+  Usable media remains pending; capture retry `43752099137` is not yet verified.
+- Internal publication [run 43751948754](https://github.com/sainadh812/ReadFlow/actions/runs/43751948754)
+  confirmed the exact code 28 AAB hash, completed Internal track and lifecycle
+  `RELEASE_LIFECYCLE_STATE_PUBLISHED` at 2026-11-15 19:22:24 UTC. The
+  [sanitized report](evidence/reader-0.3.2/play-release-summary.json) confirms other
+  tracks were unchanged and tester lists were not modified. Production was empty
+  in that snapshot; this is not production publication or tester-device verification.
 
 Dispatch inspection from the approved release branch:
 
@@ -135,11 +154,11 @@ gh workflow run read-assist-release.yml \
   -f upload_symbols=false
 ```
 
-Select another operation using the same command; keep capture reuse disabled.
-The signed files and hash/size pins are verified. Complete the Android regression,
-publish the exact GitHub candidate and verify its downloaded hashes, then inspect
-Play and publish code 28 to Internal testing. Review actual media and commit the
-approved assets before `publish_store`.
+Select another operation using the same command. For a capture-only retry with
+unchanged application/setup source, `-f reuse_capture_build=true` selects the
+verified emulator APKs described above. The signed files, public GitHub downloads,
+Android dictionary regression and Internal testing publication are verified.
+Review actual media and commit the approved assets before `publish_store`.
 Resolve outstanding declarations, then run `validate_production` before
 `publish_production`. These operations do not submit policy declarations or resolve
 account/testing prerequisites automatically.

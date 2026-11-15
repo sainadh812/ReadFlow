@@ -1,0 +1,22 @@
+{
+  "release": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.2-play-candidate",
+  "targetCommit": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+  "assets": [
+    {
+      "file": "Read-Assist-0.3.2-upload-signed.apk",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-upload-signed.apk",
+      "httpStatus": 200,
+      "bytes": 131451127,
+      "sha256": "a38cf6ca0c80214a67b3959391742d4b209ef9208f2bad38321a98105a413af9",
+      "downloadVerified": true
+    },
+    {
+      "file": "Read-Assist-0.3.2-upload-signed.aab",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-upload-signed.aab",
+      "httpStatus": 200,
+      "bytes": 72436186,
+      "sha256": "809f7fc41c0662c085abc313dc88269e4be1c1c416ff983405bcbc670461f12b",
+      "downloadVerified": true
+    }
+  ]
+}

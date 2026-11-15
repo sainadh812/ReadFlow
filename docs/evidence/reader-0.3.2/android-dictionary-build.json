@@ -1,0 +1,17 @@
+{
+  "appVersion": "0.3.2",
+  "versionCode": 28,
+  "applicationSourceRevision": "a6c99f33f6e8934f4a304355a3e093b1b569dfa8",
+  "sourceTrees": {
+    "app/src/main": "82a53a2b49b7316d8def3a708550f342a525741b",
+    "app/src/release": "e98f60bab8f45f39833437585503e6b2e86b1648"
+  },
+  "captureSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+  "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+  "reusedApkBuildRun": null,
+  "run": "https://github.com/sainadh812/ReadFlow/actions/runs/43749926901",
+  "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+  "buildKind": "release runtime, x86_64 emulator, local debug signing, Firebase unconfigured",
+  "playArtifact": false,
+  "productionUploadKeyUsed": false
+}

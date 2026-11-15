@@ -28,7 +28,54 @@
   ],
   "evidenceFiles": {
     "previous-0.3.1-dictionary-device-failure.json": "6597d26880b8f33c853b1a495ddf0f7bec6677f67825872d68509f932fbaefee",
-    "dictionary-native-icu-regression.json": "7929d641ca9fde11bb93ad9a04827638f5291cca49e99666bd693cea22201f6b"
+    "dictionary-native-icu-regression.json": "7929d641ca9fde11bb93ad9a04827638f5291cca49e99666bd693cea22201f6b",
+    "android-dictionary-seed.json": "dfe9e34f5544f89691af2c777725fe15f336cbfb9f16e8cf16eb33622abc983d",
+    "android-dictionary-build.json": "c75cd4d394d9c1caeb00b5d14de0556ef0fc8938198a91946b07e92a5f77a125"
   },
-  "androidFixVerification": "Pending new capture instrumentation; host checks do not establish device success."
+  "androidFixVerification": "Passed on Android 15 x86_64 emulator: normalization verified and the installed dictionary returned three entries for curiosity without an error. This is not physical-device or Play-installed ARM64 verification.",
+  "androidRegression": {
+    "status": "passed",
+    "run": "https://github.com/sainadh812/ReadFlow/actions/runs/43749926901",
+    "versionName": "0.3.2",
+    "versionCode": 28,
+    "androidFingerprint": "google/sdk_gphone64_x86_64/emu64xa:15/AE3A.240806.043/12960925:userdebug/dev-keys",
+    "runtimeAbi": "x86_64",
+    "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+    "applicationSourceRevision": "a6c99f33f6e8934f4a304355a3e093b1b569dfa8",
+    "sourceTrees": {
+      "app/src/main": "82a53a2b49b7316d8def3a708550f342a525741b",
+      "app/src/release": "e98f60bab8f45f39833437585503e6b2e86b1648"
+    },
+    "buildKind": "release runtime, x86_64 emulator, local debug signing, Firebase unconfigured",
+    "androidDictionaryNormalizationVerified": true,
+    "dictionaryLookup": {
+      "query": "curiosity",
+      "entryCount": 3,
+      "error": null,
+      "phase": "READY",
+      "installed": true,
+      "stateError": null
+    },
+    "dictionaryInstalledAndLookupVerified": true,
+    "kokoroInstalledAndVerified": true,
+    "alignmentInstalledAndVerified": true,
+    "seedStatus": "complete",
+    "playArtifact": false,
+    "productionUploadKeyUsed": false
+  },
+  "separateMediaCaptureOutcome": {
+    "status": "partial",
+    "reportSha256": "75b9afe1802ac6be80947356ef9f5e1a6acb92fe662dad793b34e817baa62c32",
+    "recordedClipCount": 0,
+    "navigationError": "Visible control not found: PDF view",
+    "sectionsWithErrors": [
+      "library",
+      "reader",
+      "controls",
+      "dictionary",
+      "themes",
+      "playback"
+    ],
+    "note": "Recording navigation failed after successful dictionary instrumentation. This does not overturn the Android dictionary result; usable store media and playback demonstration remain unverified."
+  }
 }
