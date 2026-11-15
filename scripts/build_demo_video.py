@@ -101,7 +101,10 @@ class FFmpeg:
                 "hasAudio": bool(re.search(r"Stream .*Audio:", info))}
 
     def decode_check(self, path: Path) -> None:
-        result = self.call(["-v", "error", "-i", str(path), "-map", "0:v:0", "-map", "0:a?", "-f", "null", "-"])
+        # Screenrecord uses variable frame timing. Preserve the demuxer timebase
+        # instead of rounding distinct timestamps to an inferred frame rate.
+        result = self.call(["-v", "error", "-i", str(path), "-map", "0:v:0", "-map", "0:a?",
+                            "-fps_mode", "passthrough", "-enc_time_base", "demux", "-f", "null", "-"])
         if result.stderr.strip():
             raise MediaError(f"Decode reported errors for {path.name}: {result.stderr[-1800:]}")
 
@@ -257,17 +260,20 @@ def audio_input(directory: Path, clip: dict, adjustment: float) -> tuple[Path | 
 def render_scene(ff: FFmpeg, source: Path, audio: Path | None, lead: float, cut: dict, bg: Path, destination: Path) -> None:
     duration, start = cut["duration"], cut["start"]
     args = ["-y", "-v", "error", "-loop", "1", "-framerate", str(FPS), "-i", str(bg),
-            "-ss", str(start), "-t", str(duration), "-i", str(source)]
+            "-i", str(source)]
     audio_start = start + lead
     if audio is not None:
         args += ["-ss", str(max(0, audio_start)), "-i", str(audio)]
     else:
         args += ["-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo"]
     x, y, width, height = PORTRAIT
-    vf = (f"[0:v]setsar=1[bg];[1:v]setpts=PTS-STARTPTS,"
+    # Fill unchanged screenrecord frames on the original timeline before cutting.
+    # Input seeking plus PTS-STARTPTS would move the first later VFR frame to t=0.
+    vf = (f"[0:v]setsar=1[bg];[1:v]fps={FPS}:start_time=0,"
+          f"trim=start={start}:duration={duration},setpts=PTS-STARTPTS,"
           f"scale={width}:{height}:force_original_aspect_ratio=decrease:flags=lanczos,"
           f"pad={width}:{height}:(ow-iw)/2:(oh-ih)/2:color=black,setsar=1[app];"
-          f"[bg][app]overlay={x}:{y}:shortest=1,fps={FPS},format=yuv420p[v];"
+          f"[bg][app]overlay={x}:{y}:eof_action=repeat,fps={FPS},format=yuv420p[v];"
           "[2:a]asetpts=PTS-STARTPTS")
     if audio is not None and audio_start < 0:
         vf += f",adelay={round(-audio_start * 1000)}:all=1"
@@ -283,8 +289,21 @@ def session_state(directory: Path, filename: str, state: int) -> dict:
     if not path.is_file():
         return {"file": filename, "confirmed": False, "reason": "Capture evidence file missing."}
     text = path.read_text(errors="replace")
-    confirmed = "app.readflow" in text and bool(re.search(r"state=(?:PlaybackState\s*\{state=)?" + str(state) + r"\b", text))
-    return {"file": filename, "sha256": digest(path), "expectedState": state, "confirmed": confirmed}
+    observed = []
+    for match in re.finditer(r"(?m)^(?P<indent>[ \t]*)package=app\.readflow[ \t]*$", text):
+        indent = len(match.group("indent"))
+        for line in text[match.end():].splitlines():
+            if not line.strip():
+                continue
+            if len(line) - len(line.lstrip()) < indent or line.strip().startswith("package="):
+                break
+            # Android 15 prints PLAYING(3); older releases print just 3.
+            value = re.match(r"\s*state=(?:PlaybackState\s*\{state=)?(?:[A-Z_]+\()?([0-9]+)\)?(?=[,\s}]|$)", line)
+            if value:
+                observed.append(int(value.group(1)))
+                break
+    return {"file": filename, "sha256": digest(path), "expectedState": state,
+            "observedAppStates": observed, "confirmed": state in observed}
 
 
 def foreground_service(ff: FFmpeg, directory: Path, output: Path, capture: dict, clips: dict, probes: dict, recipe: dict) -> dict:
@@ -386,8 +405,9 @@ def build(directory: Path, output: Path, recipe_path: Path | None) -> dict:
         ff.decode_check(final)
         measured = ff.probe(final)
         expected_duration = sum(item["duration"] for item in segments)
-        if measured["width"] != WIDTH or measured["height"] != HEIGHT or abs(measured["durationSeconds"] - expected_duration) > .5:
-            raise MediaError("Finished demo dimensions or duration do not match the edit recipe.")
+        if (measured["width"] != WIDTH or measured["height"] != HEIGHT or measured["fps"] != FPS
+                or abs(measured["durationSeconds"] - expected_duration) > .5):
+            raise MediaError("Finished demo dimensions, frame rate or duration do not match the edit recipe.")
         report["productDemo"] = {"file": final.name, "sha256": digest(final), "bytes": final.stat().st_size,
                                   "probe": measured, "decodeValidation": "passed", "expectedDurationSeconds": expected_duration}
         print("Preparing uncut background-playback evidence…", flush=True)
