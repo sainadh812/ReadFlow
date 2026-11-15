@@ -1,0 +1,30 @@
+{
+  "url": "https://sainadh812.github.io/ReadFlow/demo.html",
+  "checkedAt": "2026-11-15T20:34:49.691Z",
+  "layouts": [
+    {
+      "width": 1440,
+      "scrollWidth": 1425,
+      "horizontalOverflow": false,
+      "videoCount": 1
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "horizontalOverflow": false,
+      "videoCount": 1
+    }
+  ],
+  "videos": [
+    {
+      "source": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-feature-tour.mp4",
+      "duration": 49.021354,
+      "currentTime": 1.464158,
+      "width": 1920,
+      "height": 1080,
+      "readyState": 4,
+      "error": null
+    }
+  ],
+  "verified": true
+}

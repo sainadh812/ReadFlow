@@ -1,0 +1,37 @@
+{
+  "startedAt": "2026-11-15T20:34:05.153907+00:00",
+  "pageUrl": "https://sainadh812.github.io/ReadFlow/demo.html",
+  "status": "pushed_deployment_unverified",
+  "hostingConfigurationModified": false,
+  "pushAttempted": true,
+  "pushSucceeded": true,
+  "publicationScope": "feature_tour_only",
+  "featureTourEvidenceSha256": "fde0938df2d052869ac12936abd33a4560ef5e9e209e0014867f4f6ad4370137",
+  "foregroundServiceProofIncluded": false,
+  "narrationDemonstrationIncluded": false,
+  "pageSource": "site/feature-tour.html",
+  "creditsSource": "store-assets/MEDIA_CREDITS.md",
+  "files": {
+    "demo.html": {
+      "sha256": "cd983f39d379917bdd5defaba7abdacefd41d9ec4f3f0d16ef672819ab57d347",
+      "bytes": 9620
+    },
+    "MEDIA_CREDITS.md": {
+      "sha256": "488bc672dd90410ece2f45bd7631a68208083836dd9ffba7cb397acec1dcf008",
+      "bytes": 4667
+    },
+    "media/Read-Assist-0.3.2-feature-tour.mp4": {
+      "sha256": "dc45e670e69ceeb38b07248fce4e23b4fd2e612d0180f134eca487b52213fef3",
+      "bytes": 1206617
+    }
+  },
+  "beforeCommit": "81d3be27c4f42abe9101feeff043f54398b5eea3",
+  "preservedFiles": {
+    ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "index.html": "eaaab2e01ed7255ba4eb458b42e42c87e693c6347b29bd502894645adfa5fcbd",
+    "privacy.html": "0bd9eb1e31a99fefb8da580b98ae9f4c8ceafbd4d99fbac7f610f56df01d197a"
+  },
+  "stagedFilesVerified": true,
+  "publicationCommit": "83de87b028b001f053d01d7bd4a541e785eb1cb3",
+  "finishedAt": "2026-11-15T20:34:07.643138+00:00"
+}

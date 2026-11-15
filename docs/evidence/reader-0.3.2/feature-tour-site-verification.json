@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-11-15T20:34:49.553463+00:00",
+  "publicationCommit": "83de87b028b001f053d01d7bd4a541e785eb1cb3",
+  "verified": true,
+  "downloads": [
+    {
+      "url": "https://sainadh812.github.io/ReadFlow/demo.html",
+      "httpStatus": 200,
+      "contentType": "text/html",
+      "bytes": 9620,
+      "sha256": "cd983f39d379917bdd5defaba7abdacefd41d9ec4f3f0d16ef672819ab57d347",
+      "verified": true
+    },
+    {
+      "url": "https://sainadh812.github.io/ReadFlow/MEDIA_CREDITS.md",
+      "httpStatus": 200,
+      "contentType": "text/markdown",
+      "bytes": 4667,
+      "sha256": "488bc672dd90410ece2f45bd7631a68208083836dd9ffba7cb397acec1dcf008",
+      "verified": true
+    },
+    {
+      "url": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-feature-tour.mp4",
+      "httpStatus": 200,
+      "contentType": "video/mp4",
+      "bytes": 1206617,
+      "sha256": "dc45e670e69ceeb38b07248fce4e23b4fd2e612d0180f134eca487b52213fef3",
+      "verified": true,
+      "range": {
+        "httpStatus": 206,
+        "contentRange": "bytes 0-1023/1206617",
+        "bytesRead": 1024
+      }
+    },
+    {
+      "url": "https://sainadh812.github.io/ReadFlow/privacy.html",
+      "httpStatus": 200,
+      "contentType": "text/html",
+      "bytes": 13124,
+      "sha256": "0bd9eb1e31a99fefb8da580b98ae9f4c8ceafbd4d99fbac7f610f56df01d197a",
+      "verified": true
+    },
+    {
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-feature-tour.mp4",
+      "httpStatus": 200,
+      "contentType": "application/octet-stream",
+      "bytes": 1206617,
+      "sha256": "dc45e670e69ceeb38b07248fce4e23b4fd2e612d0180f134eca487b52213fef3",
+      "verified": true
+    },
+    {
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-store-media.zip",
+      "httpStatus": 200,
+      "contentType": "application/octet-stream",
+      "bytes": 4610663,
+      "sha256": "0d4196b064592482a1f30f6ae3e56fe882e44bceb3e7654ee222e1ccd0da65e4",
+      "verified": true
+    }
+  ]
+}

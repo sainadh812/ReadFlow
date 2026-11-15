@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Explore Read Assist's pages, dictionary, lighting and themes in a 49-second feature walkthrough recorded from the Android app.">
+  <meta name="theme-color" content="#f8f4ec">
+  <title>A look inside Read Assist</title>
+  <style>
+    :root { color-scheme: light; --paper: #f8f4ec; --surface: #fffcf5; --ink: #192b22; --muted: #5e6258; --green: #214f3a; --sage: #e2e6d7; --line: #d8d4c7; }
+    * { box-sizing: border-box; }
+    html { scroll-padding-top: 1.5rem; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 1rem/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: var(--green); text-underline-offset: .2em; }
+    a:hover { text-decoration-thickness: .12em; }
+    a:focus-visible, video:focus-visible { outline: 3px solid var(--green); outline-offset: 5px; }
+    .skip-link { position: absolute; top: .75rem; left: 1rem; z-index: 2; padding: .6rem 1rem; background: var(--surface); transform: translateY(-200%); }
+    .skip-link:focus { transform: translateY(0); }
+    .shell { width: min(100% - 3rem, 70rem); margin-inline: auto; }
+    .masthead { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 1.5rem; border-bottom: 1px solid var(--line); }
+    .wordmark { margin: 0; font: 600 1.55rem/1.2 Georgia, "Times New Roman", serif; letter-spacing: -.04em; }
+    nav { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; font-size: .875rem; }
+    .masthead nav a { color: var(--muted); }
+    .hero { display: grid; grid-template-columns: 1.3fr 1fr; align-items: end; gap: 2rem 4rem; padding-block: clamp(3rem, 7vw, 5.5rem) 3.5rem; }
+    .eyebrow { margin: 0 0 1.25rem; color: var(--green); font-size: .72rem; font-weight: 650; letter-spacing: .15em; text-transform: uppercase; }
+    h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+    h1 { margin: 0; font-size: clamp(3.2rem, 6.6vw, 5.25rem); line-height: 1.03; letter-spacing: -.055em; }
+    h1 span { display: block; }
+    .hero-copy { max-width: 27rem; padding-bottom: .25rem; }
+    .intro { margin: 0 0 1.6rem; color: var(--muted); font-size: 1.08rem; line-height: 1.75; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: .75rem 1.35rem; border: 1px solid var(--green); border-radius: .55rem; background: var(--green); color: #fff; font-size: .9rem; font-weight: 600; line-height: 1.5; text-decoration: none; }
+    .button:hover { background: #173d2d; }
+    .compatibility { margin: .75rem 0 0; color: var(--muted); font-size: .75rem; }
+    .section-heading { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: .4rem 1rem; padding-block: 1.3rem; border-top: 1px solid var(--line); }
+    .section-heading h2 { margin: 0; font-size: 1.8rem; letter-spacing: -.035em; }
+    .section-heading p { margin: 0; color: var(--muted); font-size: .8rem; }
+    .video-card { overflow: hidden; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }
+    .card-heading { padding: 1.5rem 1.5rem 1.2rem; }
+    .tag { display: inline-block; margin-bottom: .7rem; padding: .15rem .6rem; border-radius: 2rem; background: var(--sage); color: #173d2d; font-size: .68rem; font-weight: 600; letter-spacing: .025em; }
+    .card-heading h3 { margin: 0; font-size: clamp(1.55rem, 3vw, 1.9rem); line-height: 1.25; letter-spacing: -.035em; }
+    .card-heading p { max-width: 42rem; margin: .65rem 0 0; color: var(--muted); font-size: .875rem; }
+    .player-stage { padding: 1.5rem; background: #eae5db; border-block: 1px solid var(--line); }
+    video { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: contain; border: 1px solid #2b3a31; border-radius: .4rem; background: #121914; box-shadow: 0 .6rem 1.5rem #192b221a; }
+    .card-footer { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: .3rem 1rem; padding: 1rem 1.5rem; font-size: .8rem; }
+    .card-footer p { margin: 0; color: var(--muted); font-size: .75rem; }
+    .recording-note { display: grid; grid-template-columns: 1fr 2.1fr; gap: 1.25rem 3rem; padding-block: 2.5rem; }
+    .recording-note h2 { margin: 0; font-size: 1.5rem; line-height: 1.35; letter-spacing: -.025em; }
+    .recording-note p { margin: 0; color: var(--muted); font-size: .875rem; }
+    .recording-note p + p { margin-top: .75rem; }
+    .downloads { display: flex; flex-wrap: wrap; gap: .7rem 1.5rem; margin-top: 1rem; }
+    .footer { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 1rem; padding-block: 1.5rem 2rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .75rem; }
+    .footer p { margin: 0; }
+    .footer nav { font-size: inherit; gap: .5rem 1.25rem; }
+    @media (max-width: 44rem) {
+      .shell { width: min(100% - 2rem, 35rem); }
+      .masthead { align-items: baseline; padding-block: 1.25rem; }
+      .wordmark { font-size: 1.4rem; }
+      nav { gap: .5rem 1rem; font-size: .8rem; }
+      .hero { grid-template-columns: 1fr; gap: 1.75rem; padding-block: 3rem 2.5rem; }
+      .hero-copy { max-width: 31rem; }
+      .intro { font-size: 1rem; }
+      .recording-note { grid-template-columns: 1fr; gap: .75rem; padding-block: 2rem; }
+    }
+    @media (max-width: 23rem) { .masthead { align-items: flex-start; flex-direction: column; gap: .75rem; } .card-heading, .card-footer { padding-inline: 1rem; } .player-stage { padding: .75rem; } }
+    @media print { .skip-link, .player-stage { display: none; } body { background: white; color: black; } .hero { padding-block: 2rem; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="masthead shell">
+    <p class="wordmark">Read Assist</p>
+    <nav aria-label="Main navigation"><a href="#watch">Watch the tour</a><a href="privacy.html">Privacy</a></nav>
+  </header>
+  <main id="main" class="shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div><p class="eyebrow">Your documents. Your pace.</p><h1 id="page-title">Your page.<span>Your way.</span></h1></div>
+      <div class="hero-copy">
+        <p class="intro">A comfortable place for your reading. Explore page turns, the English dictionary, lighting and themes in the Read Assist Android app.</p>
+        <a class="button" href="https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-upload-signed.apk">Download Android APK</a>
+        <p class="compatibility">v0.3.2 release candidate &middot; Android 15+ &middot; ARM64<br><a href="https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.2-play-candidate">Release details on GitHub</a></p>
+      </div>
+    </section>
+    <section id="watch" aria-labelledby="watch-title">
+      <div class="section-heading"><h2 id="watch-title">A look inside</h2><p>49 seconds &middot; Real app footage</p></div>
+      <article class="video-card" aria-labelledby="walkthrough-title">
+        <div class="card-heading">
+          <span class="tag">Feature walkthrough</span>
+          <h3 id="walkthrough-title">Make reading your own</h3>
+          <p id="walkthrough-description">See the library, PDF page turns, reading controls, warm light, dictionary and three app themes.</p>
+        </div>
+        <div class="player-stage">
+          <video controls playsinline preload="metadata" aria-labelledby="walkthrough-title" aria-describedby="walkthrough-description capture-description">
+            <source src="media/Read-Assist-0.3.2-feature-tour.mp4" type="video/mp4">
+            <p>Your browser cannot play this video. <a href="media/Read-Assist-0.3.2-feature-tour.mp4" download>Download the Read Assist feature tour (MP4)</a>.</p>
+          </video>
+        </div>
+        <div class="card-footer"><a href="media/Read-Assist-0.3.2-feature-tour.mp4" download>Download feature tour <span aria-hidden="true">&#8595;</span></a><p>MP4 &middot; Edited walkthrough</p></div>
+      </article>
+    </section>
+    <aside class="recording-note" aria-labelledby="capture-title">
+      <h2 id="capture-title">Recorded from the app</h2>
+      <div>
+        <p id="capture-description">This feature walkthrough shows Read Assist 0.3.2 running in an Android emulator with project-created sample documents. Scenes are edited for length; the app footage plays at its original speed.</p>
+        <p>This is a silent walkthrough of the reading interface.</p>
+        <p>Voice and dictionary packs need an initial download. See the <a href="MEDIA_CREDITS.md">recording notes and content credits</a> for provenance and licenses.</p>
+        <div class="downloads"><a href="https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-sample-reading.pdf">Sample reading PDF</a><a href="https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-store-media.zip">Screenshots and graphics</a></div>
+      </div>
+    </aside>
+  </main>
+  <footer class="footer shell">
+    <p>Read Assist &middot; A little more room to read.</p>
+    <nav aria-label="Footer navigation"><a href="privacy.html">Privacy policy</a><a href="https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.2-play-candidate">GitHub release</a><a href="mailto:xperimenting.ai@gmail.com">Support</a></nav>
+  </footer>
+</body>
+</html>
