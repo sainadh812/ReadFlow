@@ -383,6 +383,27 @@ class Capture:
         self.recover_reader()
         self.first_page()
         self.tap("Text view")
+        # Prepare an actual page through the shipped user flow. Short heading
+        # audio can end while UI automation obtains a hierarchy, so the proof
+        # needs a real reserve of cached speech, not a race against that heading.
+        self.tap("Reader menu")
+        self.tap("Prepare pages before listening")
+        self.tap("Last page", contains=True)
+        self.shell("input", "keyevent", "KEYCODE_MOVE_END")
+        for _ in range(5):
+            self.shell("input", "keyevent", "KEYCODE_DEL")
+        self.shell("input", "text", "1")
+        self.tap("Prepare")
+        self.wait("Pages 1–1 ready · press Play to read", timeout=900, contains=True)
+        self.wait("Play", timeout=30)
+        self.screenshot("playback-prepared-page")
+        self.report["playbackPreparation"] = {
+            "method": "Prepare pages before listening: page 1 through page 1",
+            "readyMessage": "Pages 1–1 ready · press Play to read",
+            "evidence": "playback-prepared-page.png",
+            "outsideProofRecording": True,
+            "usesOrdinaryVerifiedAudioCache": True,
+        }
         self.tap("Play")
         self.wait("Pause", timeout=150)
         # Wait for the media session to report actual PLAYING, not just preparation.
@@ -399,7 +420,19 @@ class Capture:
             raise CaptureError("Media session did not confirm actual PLAYING; foreground-service proof incomplete.")
         # Warm the real model/cache once, then show the explicit user-started
         # playback action in the proof clip without hiding setup latency as a metric.
-        self.tap("Pause")
+        # A real media transport event pauses immediately, without another slow
+        # hierarchy lookup racing the end of a short spoken heading. The proof
+        # below still shows the actual visible Play and notification controls.
+        self.shell("input", "keyevent", "KEYCODE_MEDIA_PAUSE")
+        deadline = time.monotonic() + 20
+        while time.monotonic() < deadline:
+            warmed_paused = self.shell("dumpsys", "media_session")
+            if self.media_state(warmed_paused) == 2:
+                break
+            time.sleep(.5)
+        (self.output / "playback-session-warmed-paused.txt").write_text(warmed_paused)
+        if self.media_state(warmed_paused) != 2:
+            raise CaptureError("Android media Pause did not pause the actual warmed narration.")
         self.wait("Play")
         self.report["playbackClipUsesPreviouslyPreparedAudio"] = True
         with self.recording("06-background-playback"):
