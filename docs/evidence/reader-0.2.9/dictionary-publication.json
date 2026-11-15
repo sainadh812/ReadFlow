@@ -1,0 +1,20 @@
+{
+  "verifiedAtUtc": "2026-11-15T13:44:54.184409+00:00",
+  "releaseUrl": "https://github.com/sainadh812/ReadFlow/releases/tag/english-dictionary-2026.10-v1",
+  "url": "https://github.com/sainadh812/ReadFlow/releases/download/english-dictionary-2026.10-v1/english-dictionary-2026.10-v1.sqlite.gz",
+  "authenticatedRequest": false,
+  "httpStatus": 200,
+  "finalHost": "release-assets.githubusercontent.com",
+  "downloadBytes": 96929395,
+  "downloadSha256": "ad8c3f0f26216ed1ea84228cc4135d0ab9fd49827f8687a19d501a2f412ac40e",
+  "installedBytes": 280727552,
+  "installedSha256": "2abc472051994a9b8109119291d89d51bd44a0ad94041c6768dfa30075785ad8",
+  "matchesBundledManifest": true,
+  "decompressedBytesMatchVerifiedDatabase": true,
+  "rangeResumeCheck": {
+    "httpStatus": 206,
+    "contentRange": "bytes 96928371-96929394/96929395",
+    "bytes": 1024,
+    "matchesVerifiedArchive": true
+  }
+}

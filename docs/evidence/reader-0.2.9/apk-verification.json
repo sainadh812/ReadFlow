@@ -1,0 +1,85 @@
+{
+  "status": "PASS",
+  "checkedAtUtc": "2026-11-15 13:53:15 UTC",
+  "artifact": "build/release-0.2.9/signed-ci/Read-Assist-0.2.9-upload-signed.apk",
+  "bytes": 131238135,
+  "sha256": "597e688f44e31ba83c971d39e667f7b4a34f57790a148aae7dee84e1d859784d",
+  "tools": {
+    "androidBuildTools": "35.0.0",
+    "signature": "apksigner verify --verbose --print-certs",
+    "manifest": "aapt dump badging; aapt dump xmltree AndroidManifest.xml",
+    "alignment": "zipalign -c -P 16 4",
+    "fonts": "python3 scripts/verify_reader_fonts.py --artifact"
+  },
+  "signing": {
+    "verified": true,
+    "scheme": "v2",
+    "signers": 1,
+    "certificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+    "expectedCertificateMatches": true
+  },
+  "application": {
+    "package": "app.readflow",
+    "versionName": "0.2.9",
+    "versionCode": 25,
+    "minSdk": 35,
+    "targetSdk": 36,
+    "debuggable": false,
+    "debuggableManifestAttributes": [
+      "absent; Android default false"
+    ],
+    "nativeAbis": [
+      "arm64-v8a"
+    ],
+    "nativeLibraries": 11
+  },
+  "zipAlignment": {
+    "passed": true,
+    "alignmentBytes": 4,
+    "uncompressedNativeLibraryPageSizeKiB": 16
+  },
+  "dictionary": {
+    "bundledDatabase": false,
+    "packId": "english-dictionary",
+    "packVersion": "2026.10-v1",
+    "downloadUrl": "https://github.com/sainadh812/ReadFlow/releases/download/english-dictionary-2026.10-v1/english-dictionary-2026.10-v1.sqlite.gz",
+    "downloadBytes": 96929395,
+    "downloadSha256": "ad8c3f0f26216ed1ea84228cc4135d0ab9fd49827f8687a19d501a2f412ac40e",
+    "installedBytes": 280727552,
+    "installedSha256": "2abc472051994a9b8109119291d89d51bd44a0ad94041c6768dfa30075785ad8",
+    "assets": [
+      {
+        "asset": "assets/dictionary/manifest.json",
+        "bytes": 1017,
+        "sha256": "b8f8ddacd505402194d25f0d9a55f136655e2fa3bad66a50f3f2a99fafeaee2b",
+        "matchesSource": true
+      },
+      {
+        "asset": "assets/licenses/dictionary/ATTRIBUTION.txt",
+        "bytes": 2387,
+        "sha256": "b53907baf6c8e26928235ac9b573bce956b0aa0b4379572e73505c7b77694435",
+        "matchesSource": true
+      },
+      {
+        "asset": "assets/licenses/dictionary/CC-BY-SA-4.0.txt",
+        "bytes": 20137,
+        "sha256": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2",
+        "matchesSource": true
+      },
+      {
+        "asset": "assets/licenses/dictionary/source-lock.json",
+        "bytes": 486,
+        "sha256": "ccd96d4714f953e333f0c9f1c653ab0d8dfc09178a605a1e75b0f25dcb5d6c35",
+        "matchesSource": true
+      }
+    ]
+  },
+  "fonts": {
+    "status": "PASS",
+    "families": 6,
+    "fontFiles": 7,
+    "fontBytes": 4863856,
+    "licenses": 6
+  },
+  "scope": "Independent static verification of the downloaded CI APK. Device behavior is not measured by these checks."
+}

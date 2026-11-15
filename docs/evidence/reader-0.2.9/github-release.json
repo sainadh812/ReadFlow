@@ -1,0 +1,79 @@
+{
+  "verifiedAtUtc": "2026-11-15T13:53:47.468199+00:00",
+  "release": {
+    "assets": [
+      {
+        "apiUrl": "https://api.github.com/repos/sainadh812/ReadFlow/releases/assets/751160195",
+        "contentType": "application/octet-stream",
+        "createdAt": "2026-11-15T13:53:26Z",
+        "digest": "sha256:e30f49e390e34ac7f07aae7e00c57a5a8ed0243e903203bdca965e4e23727394",
+        "downloadCount": 0,
+        "id": "RA_kwDOUhuP7s4sxcuD",
+        "label": "",
+        "name": "Read-Assist-0.2.9-upload-signed.aab",
+        "size": 72363651,
+        "state": "uploaded",
+        "updatedAt": "2026-11-15T13:53:29Z",
+        "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.9-play-candidate/Read-Assist-0.2.9-upload-signed.aab"
+      },
+      {
+        "apiUrl": "https://api.github.com/repos/sainadh812/ReadFlow/releases/assets/751160198",
+        "contentType": "application/vnd.android.package-archive",
+        "createdAt": "2026-11-15T13:53:26Z",
+        "digest": "sha256:597e688f44e31ba83c971d39e667f7b4a34f57790a148aae7dee84e1d859784d",
+        "downloadCount": 0,
+        "id": "RA_kwDOUhuP7s4sxcuG",
+        "label": "",
+        "name": "Read-Assist-0.2.9-upload-signed.apk",
+        "size": 131238135,
+        "state": "uploaded",
+        "updatedAt": "2026-11-15T13:53:30Z",
+        "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.9-play-candidate/Read-Assist-0.2.9-upload-signed.apk"
+      },
+      {
+        "apiUrl": "https://api.github.com/repos/sainadh812/ReadFlow/releases/assets/751160200",
+        "contentType": "application/json",
+        "createdAt": "2026-11-15T13:53:26Z",
+        "digest": "sha256:74ca3c61055a3b20fb5e42687701fc0ea2246090a6c26b5319a0e7b594c4bc08",
+        "downloadCount": 0,
+        "id": "RA_kwDOUhuP7s4sxcuI",
+        "label": "",
+        "name": "release-evidence.json",
+        "size": 827,
+        "state": "uploaded",
+        "updatedAt": "2026-11-15T13:53:27Z",
+        "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.9-play-candidate/release-evidence.json"
+      },
+      {
+        "apiUrl": "https://api.github.com/repos/sainadh812/ReadFlow/releases/assets/751160201",
+        "contentType": "text/plain; charset=utf-8",
+        "createdAt": "2026-11-15T13:53:26Z",
+        "digest": "sha256:3b3d0a6cd9d3c288aae71231d9dc98f07f149403a18cd713da6a8a0e3b22029a",
+        "downloadCount": 0,
+        "id": "RA_kwDOUhuP7s4sxcuJ",
+        "label": "",
+        "name": "RELEASE_SHA256SUMS.txt",
+        "size": 292,
+        "state": "uploaded",
+        "updatedAt": "2026-11-15T13:53:27Z",
+        "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.9-play-candidate/RELEASE_SHA256SUMS.txt"
+      }
+    ],
+    "isDraft": false,
+    "isPrerelease": true,
+    "name": "Read Assist 0.2.9 \u2014 dictionary and medium playback controls",
+    "publishedAt": "2026-11-15T13:53:31Z",
+    "tagName": "v0.2.9-play-candidate",
+    "targetCommitish": "4684d48c754608c8db6f6b24906fb88624ba7138",
+    "url": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.2.9-play-candidate"
+  },
+  "publicApkDownload": {
+    "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.9-play-candidate/Read-Assist-0.2.9-upload-signed.apk",
+    "authenticatedRequest": false,
+    "httpStatus": 200,
+    "finalHost": "release-assets.githubusercontent.com",
+    "bytes": 131238135,
+    "sha256": "597e688f44e31ba83c971d39e667f7b4a34f57790a148aae7dee84e1d859784d",
+    "matchesVerifiedSignedArtifact": true
+  }
+}

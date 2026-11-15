@@ -1,0 +1,3 @@
+597e688f44e31ba83c971d39e667f7b4a34f57790a148aae7dee84e1d859784d  Read-Assist-0.2.9-upload-signed.apk
+e30f49e390e34ac7f07aae7e00c57a5a8ed0243e903203bdca965e4e23727394  Read-Assist-0.2.9-upload-signed.aab
+74ca3c61055a3b20fb5e42687701fc0ea2246090a6c26b5319a0e7b594c4bc08  release-evidence.json

@@ -1,0 +1,28 @@
+{
+  "verifiedAtUtc": "2026-11-15T13:53:36.306418+00:00",
+  "sourceCommit": "4684d48c754608c8db6f6b24906fb88624ba7138",
+  "workflowUrl": "https://github.com/sainadh812/ReadFlow/actions/runs/43720549739",
+  "artifactName": "Read-Assist-signed-candidate-43720549739-1",
+  "manifestFilesVerified": 78,
+  "allHashesAndSizesMatched": true,
+  "apkCertificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+  "apkVerification": "apk-verification.json",
+  "aabSignatureVerified": true,
+  "aabCertificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+  "aabSignatureNotes": "jarsigner verified; self-signed upload certificate and JAR streaming-layout warnings are recorded in local log. bundletool validation passed.",
+  "bundletoolValidation": "passed",
+  "aabDictionaryAssetsMatchSource": true,
+  "apk16kbAlignment": "passed",
+  "nativeLibrariesVerified": 11,
+  "fontFilesVerified": 7,
+  "unitTests": {
+    "tests": 445,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "lintErrors": 0,
+  "lintWarnings": 37,
+  "deviceTestsPerformed": false,
+  "playUploadPerformed": false
+}

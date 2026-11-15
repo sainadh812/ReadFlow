@@ -1,0 +1,37 @@
+{
+  "version": "0.2.9",
+  "versionCode": 25,
+  "verifiedAtUtc": "2026-11-15T13:46:43.888579+00:00",
+  "sourceCommit": "4684d48c754608c8db6f6b24906fb88624ba7138",
+  "releaseAssembly": "passed",
+  "releaseUnitTests": {
+    "tests": 445,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "Warning": 37
+  },
+  "importerTests": {
+    "tests": 12,
+    "failures": 0
+  },
+  "releaseToolTests": {
+    "tests": 13,
+    "failures": 0
+  },
+  "productionReaderQueryChecks": {
+    "checks": 21,
+    "failures": 0,
+    "scope": "Host SQLite using extracted production query against final pack; not Android execution."
+  },
+  "localApkAssets": {
+    "dictionary/manifest.json": "b8f8ddacd505402194d25f0d9a55f136655e2fa3bad66a50f3f2a99fafeaee2b",
+    "licenses/dictionary/ATTRIBUTION.txt": "b53907baf6c8e26928235ac9b573bce956b0aa0b4379572e73505c7b77694435",
+    "licenses/dictionary/CC-BY-SA-4.0.txt": "23ee78c8bae49cf08ea2f0c84945c66b987ebe4520881fb51b3dad4fb43d07c2",
+    "licenses/dictionary/source-lock.json": "ccd96d4714f953e333f0c9f1c653ab0d8dfc09178a605a1e75b0f25dcb5d6c35"
+  },
+  "deviceUiValidation": "Not performed: no connected physical device or working hardware-accelerated Android emulator. Gesture, install/restart offline, accessibility and phone-performance checks remain pending.",
+  "distribution": "Local release APK unsigned; distribution uses the separately verified signed GitHub CI artifact."
+}

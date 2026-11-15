@@ -1,7 +1,7 @@
 {
   "title": "Read Assist English dictionary feature plan",
   "updated": "2026-11-15",
-  "status": "Implemented for Read Assist 0.2.9/code 25; data checks passed, signed APK release validation in progress.",
+  "status": "Implemented and published as Read Assist 0.2.9/code 25 on GitHub; signed build, data and public-download checks passed. Physical-device acceptance remains pending.",
   "request": "Build an English dictionary into the app; plan the new feature first.",
   "productGoal": "Understand an English word while reading without leaving the document or losing the reading position.",
   "deliveryPreference": {
@@ -210,5 +210,11 @@
     "implementationRequested": "2026-11-15",
     "version": "0.2.9",
     "versionCode": 25
+  },
+  "release": {
+    "url": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.2.9-play-candidate",
+    "apkUrl": "https://github.com/sainadh812/ReadFlow/releases/download/v0.2.9-play-candidate/Read-Assist-0.2.9-upload-signed.apk",
+    "sourceCommit": "4684d48c754608c8db6f6b24906fb88624ba7138",
+    "evidenceDirectory": "docs/evidence/reader-0.2.9"
   }
 }
