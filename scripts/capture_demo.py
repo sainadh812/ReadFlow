@@ -142,6 +142,10 @@ class Capture:
 
     def tap(self, label, timeout=15, contains=False, text_only=False):
         node = self.wait(label, timeout, contains, text_only=text_only)
+        self.tap_observed(node, label, text_only=text_only)
+
+    def tap_observed(self, node, label, text_only=False):
+        """Tap a node from the most recent actual hierarchy without a second idle wait."""
         x1, y1, x2, y2 = self.bounds(node)
         hierarchy = f"ui-before-tap-{len(self.report['steps']):03d}.xml"
         (self.output / hierarchy).write_text(self.last_xml)
@@ -166,18 +170,89 @@ class Capture:
             self.swipe()
         raise CaptureError(f"Could not scroll to {label}")
 
-    def screenshot(self, name):
+    def screenshot(self, name, hierarchy=True):
         time.sleep(1)
         path = self.output / f"{name}.png"
         data = self.run(["exec-out", "screencap", "-p"], binary=True)
         if not data.startswith(b"\x89PNG\r\n\x1a\n"):
             raise CaptureError("screencap did not return PNG data")
         path.write_bytes(data)
-        self.dump()
-        (self.output / f"{name}.xml").write_text(self.last_xml)
+        if hierarchy:
+            self.dump()
+            (self.output / f"{name}.xml").write_text(self.last_xml)
         self.report["screenshots"].append({"file": path.name, "sha256": hashlib.sha256(data).hexdigest(),
-                                           "capturedAt": self.now()})
+                                           "capturedAt": self.now(), "hierarchyCaptured": hierarchy})
         self.save()
+
+    def configure_recording_audio(self):
+        """Use normal device/host volume, preserving before/after evidence."""
+        for stage in ("before", "after"):
+            volume = self.shell("cmd", "media_session", "volume", "--stream", "3", "--get")
+            (self.output / f"android-music-volume-{stage}.txt").write_text(volume)
+            match = re.search(r"volume is (\d+) in range \[(\d+)\.\.(\d+)\]", volume)
+            if not match:
+                raise CaptureError("Android did not report a readable MUSIC volume range.")
+            current, _, maximum = map(int, match.groups())
+            if stage == "before":
+                self.shell("cmd", "audio", "adj-unmute", "3")
+                self.shell("cmd", "audio", "set-volume", "3", maximum)
+            elif current != maximum:
+                raise CaptureError("Android MUSIC volume did not reach the requested normal maximum.")
+        self.report["audioCaptureConfiguration"] = {"androidMusicVolume": current,
+            "androidMusicMaximum": maximum, "postCaptureAmplification": False}
+        (self.output / "android-audio-before-proof.txt").write_text(self.shell("dumpsys", "audio"))
+        if self.audio_source == "readassist_demo.monitor":
+            def pulse(*args):
+                return subprocess.check_output(["pactl", *args], text=True, timeout=15)
+            for stage in ("before", "after"):
+                values = {}
+                for kind in ("sinks", "sink-inputs", "sources", "source-outputs"):
+                    raw = pulse("--format=json", "list", kind)
+                    (self.output / f"pulse-{kind}-{stage}-proof.json").write_text(raw)
+                    values[kind] = json.loads(raw)
+                if stage == "before":
+                    sink = next(item for item in values["sinks"] if item["name"] == "readassist_demo")
+                    pulse("set-sink-mute", "readassist_demo", "0")
+                    pulse("set-sink-volume", "readassist_demo", "100%")
+                    pulse("set-source-mute", self.audio_source, "0")
+                    pulse("set-source-volume", self.audio_source, "100%")
+                    for stream in values["sink-inputs"]:
+                        if stream["sink"] == sink["index"]:
+                            pulse("set-sink-input-mute", str(stream["index"]), "0")
+                            pulse("set-sink-input-volume", str(stream["index"]), "100%")
+
+    def inspect_cached_demo_audio(self):
+        """Read only CC0 demo cache WAVs for diagnosis; never use them as a soundtrack."""
+        evidence = {"purpose": "Diagnose generated sample speech independently of live audio routing",
+                    "recordingSubstitutionAllowed": False, "files": []}
+        try:
+            prefix = ["su", "0"]
+            if self.shell(*prefix, "id", "-u", check=False).strip() != "0":
+                self.run(["root"], check=False)
+                self.run(["wait-for-device"], timeout=30)
+                if self.shell("id", "-u").strip() != "0":
+                    raise CaptureError("This isolated emulator does not permit read-only cache diagnostics.")
+                prefix = []
+            folder = "/data/user/0/app.readflow/no_backup/audio"
+            names = self.shell(*prefix, "ls", folder).splitlines()
+            candidates = []
+            for name in names:
+                if re.fullmatch(r"[0-9a-f]{16,64}\.wav", name):
+                    size = int(self.shell(*prefix, "stat", "-c", "%s", folder + "/" + name).strip())
+                    if 44 < size <= 5 * 1024 * 1024:
+                        candidates.append((size, name))
+            destination = self.output / "diagnostic-generated-audio"
+            destination.mkdir(exist_ok=True)
+            for size, name in sorted(candidates, reverse=True)[:3]:
+                data = self.run(["exec-out", *prefix, "cat", folder + "/" + name], binary=True, timeout=15)
+                if len(data) != size or data[:4] != b"RIFF" or data[8:12] != b"WAVE":
+                    raise CaptureError("Generated audio cache read was incomplete or not WAV.")
+                (destination / name).write_bytes(data)
+                evidence["files"].append({"file": name, "bytes": size,
+                                          "sha256": hashlib.sha256(data).hexdigest()})
+        except Exception as error:
+            evidence["error"] = str(error)
+        (self.output / "audio-cache-diagnostics.json").write_text(json.dumps(evidence, indent=2) + "\n")
 
     @contextlib.contextmanager
     def recording(self, name):
@@ -380,6 +455,7 @@ class Capture:
             self.tap("Library")
 
     def playback(self):
+        self.configure_recording_audio()
         self.recover_reader()
         self.first_page()
         self.tap("Text view")
@@ -404,6 +480,7 @@ class Capture:
             "outsideProofRecording": True,
             "usesOrdinaryVerifiedAudioCache": True,
         }
+        self.inspect_cached_demo_audio()
         self.tap("Play")
         self.wait("Pause", timeout=150)
         # Wait for the media session to report actual PLAYING, not just preparation.
@@ -438,11 +515,17 @@ class Capture:
         with self.recording("06-background-playback"):
             time.sleep(2)
             self.tap("Play")
-            self.wait("Pause", timeout=30)
-            self.screenshot("14-reading-aloud")
-            time.sleep(4)
+            deadline = time.monotonic() + 30
+            while time.monotonic() < deadline:
+                if self.media_state(self.shell("dumpsys", "media_session")) == 3:
+                    break
+                time.sleep(.5)
+            else:
+                raise CaptureError("Visible Play did not start actual narration inside the proof recording.")
+            self.screenshot("14-reading-aloud", hierarchy=False)
+            time.sleep(2)
             self.shell("input", "keyevent", "KEYCODE_HOME")
-            time.sleep(3)
+            time.sleep(2)
             background_media = self.shell("dumpsys", "media_session")
             (self.output / "background-media-session.txt").write_text(background_media)
             if self.media_state(background_media) != 3:
@@ -450,9 +533,13 @@ class Capture:
             (self.output / "background-service.txt").write_text(self.shell("dumpsys", "activity", "services", PACKAGE))
             self.shell("cmd", "statusbar", "expand-notifications", check=False)
             time.sleep(2)
-            self.screenshot("15-background-notification")
+            pause = self.wait("Pause", timeout=12, contains=True)
+            (self.output / "15-background-notification.xml").write_text(self.last_xml)
+            self.screenshot("15-background-notification", hierarchy=False)
             # Actual Android media notification transport, no synthesized button.
-            self.tap("Pause", timeout=12, contains=True)
+            if self.media_state(self.shell("dumpsys", "media_session")) != 3:
+                raise CaptureError("Narration ended before the observed notification Pause could be tapped.")
+            self.tap_observed(pause, "Pause")
             time.sleep(2)
             self.screenshot("16-notification-paused")
             paused_media = self.shell("dumpsys", "media_session")

@@ -85,6 +85,11 @@ cleanup_demo() {
   printf '%s\n' "$?" > "$demo_dir/emulator-alive-check-exit-code.txt"
   timeout 10 pactl list short sink-inputs > "$demo_dir/pulse-inputs-at-exit.txt" 2>&1
   timeout 10 pactl list short sinks > "$demo_dir/pulse-sinks-at-exit.txt" 2>&1
+  timeout 10 pactl --format=json list sink-inputs > "$demo_dir/pulse-input-details-at-exit.json" 2>&1
+  timeout 10 pactl --format=json list sinks > "$demo_dir/pulse-sink-details-at-exit.json" 2>&1
+  timeout 10 pactl --format=json list sources > "$demo_dir/pulse-source-details-at-exit.json" 2>&1
+  timeout 10 adb -s emulator-5554 shell dumpsys audio > "$demo_dir/android-audio-at-exit.txt" 2>&1
+  timeout 10 adb -s emulator-5554 shell dumpsys media.audio_flinger > "$demo_dir/android-audio-flinger-at-exit.txt" 2>&1
   # Keep bounded host-crash evidence; never copy an unbounded core image.
   python3 - "$demo_dir" <<'PY'
 import json, pathlib, shutil, sys
