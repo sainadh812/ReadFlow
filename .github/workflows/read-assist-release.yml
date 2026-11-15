@@ -14,6 +14,9 @@ on:
           - inspect_store
           - capture_demo
           - publish_play
+          - publish_store
+          - validate_production
+          - publish_production
       upload_symbols:
         description: Upload this build's matching native symbols to the approved Firebase app
         type: boolean
@@ -153,7 +156,7 @@ jobs:
         run: python3 scripts/ci_prepare_release.py cleanup
 
   play:
-    if: (inputs.operation == 'inspect_play' || inputs.operation == 'inspect_store' || inputs.operation == 'publish_play') && github.repository == 'sainadh812/ReadFlow' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/reader-playback-and-pdf-space')
+    if: (inputs.operation == 'inspect_play' || inputs.operation == 'inspect_store' || inputs.operation == 'publish_play' || inputs.operation == 'publish_store' || inputs.operation == 'validate_production' || inputs.operation == 'publish_production') && github.repository == 'sainadh812/ReadFlow' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/fix/reader-playback-and-pdf-space')
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     defaults:
@@ -198,6 +201,30 @@ jobs:
           READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
         run: python3 scripts/publish_play.py publish
 
+      - name: Publish verified store copy and actual app screenshots
+        if: inputs.operation == 'publish_store'
+        env:
+          READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          python3 -m unittest discover -s scripts -p 'test_publish_store_media.py'
+          python3 scripts/publish_store_media.py --assets store-assets/release-0.3.1 --listing store-assets/listing/en-US.json
+
+      - name: Validate production readiness without committing a release
+        if: inputs.operation == 'validate_production'
+        env:
+          READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          python3 -m unittest discover -s scripts -p 'test_promote_play_production.py'
+          python3 scripts/promote_play_production.py --assets store-assets/release-0.3.1 --validate-only
+
+      - name: Promote the verified 0.3.1 bundle to production
+        if: inputs.operation == 'publish_production'
+        env:
+          READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          python3 -m unittest discover -s scripts -p 'test_promote_play_production.py'
+          python3 scripts/promote_play_production.py --assets store-assets/release-0.3.1
+
       - name: Upload the sanitized Google Play report only
         if: always() && hashFiles('build/play-upload-0.3.1/report.json') != ''
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -214,6 +241,26 @@ jobs:
         with:
           name: Read-Assist-Store-Inspection-${{ github.run_id }}-${{ github.run_attempt }}
           path: build/play-store-inspection/report.json
+          if-no-files-found: error
+          retention-days: 15
+          include-hidden-files: false
+
+      - name: Upload sanitized store publication evidence
+        if: always() && hashFiles('build/play-store-publication/report.json') != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: Read-Assist-Store-Publication-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/play-store-publication/report.json
+          if-no-files-found: error
+          retention-days: 15
+          include-hidden-files: false
+
+      - name: Upload sanitized production publication evidence
+        if: always() && hashFiles('build/play-production-publication/report.json') != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: Read-Assist-Production-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/play-production-publication/report.json
           if-no-files-found: error
           retention-days: 15
           include-hidden-files: false
