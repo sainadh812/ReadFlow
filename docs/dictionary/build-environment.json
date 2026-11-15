@@ -1,0 +1,7 @@
+{
+  "python": "3.10.12",
+  "sqlite": "3.37.2",
+  "unicode": "13.0.0",
+  "extractorCommit": "19f9a3006a405fb7bfb40193dca41c7117a009a5",
+  "wikitextprocessorCommit": "6f96ddf5f3466707f1869fe6618390fd77dfd109"
+}

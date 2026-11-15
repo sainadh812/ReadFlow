@@ -1,0 +1,648 @@
+{
+  "manifest": {
+    "id": "english-dictionary",
+    "version": "2026.10-v1",
+    "name": "English dictionary",
+    "url": "https://github.com/sainadh812/ReadFlow/releases/download/english-dictionary-2026.10-v1/english-dictionary-2026.10-v1.sqlite.gz",
+    "downloadBytes": 96929395,
+    "downloadSha256": "ad8c3f0f26216ed1ea84228cc4135d0ab9fd49827f8687a19d501a2f412ac40e",
+    "installedBytes": 280727552,
+    "installedSha256": "2abc472051994a9b8109119291d89d51bd44a0ad94041c6768dfa30075785ad8",
+    "schemaVersion": 1,
+    "source": "English Wiktionary via Kaikki / Wiktextract, 2026-10-01 dump",
+    "credits": "English Wiktionary contributors; extracted by Kaikki / Wiktextract (Tatu Ylonen and contributors). Read Assist filtered English text, selected definitions and authored examples, normalized lookup keys, resolved word forms, and converted the data to SQLite. Adapted dictionary data: CC BY-SA 4.0. Each definition links to its Wiktionary source and contributor history.",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "source": {
+    "url": "https://kaikki.org/dictionary/raw-wiktextract-data.jsonl.gz",
+    "bytes": 3082476978,
+    "sha256": "5ff2c072f8099f2d2ce484bd6957bf179f046d2ad37bc36555edf8bb84cb5291",
+    "dumpDate": "2026-10-01",
+    "extractedDate": "2026-10-30",
+    "extractorCommit": "19f9a3006a405fb7bfb40193dca41c7117a009a5",
+    "sourcePage": "https://kaikki.org/dictionary/rawdata.html",
+    "downloadedDate": "2026-11-15",
+    "etag": "\"6ae50298-b7baddb2\"",
+    "lastModified": "Fri, 30 Oct 2026 20:48:24 GMT"
+  },
+  "statistics": {
+    "source_records": 11121531,
+    "english_records": 1498656,
+    "eligible_authored_examples": 97945,
+    "excluded_examples": 673992,
+    "entries": 1110658,
+    "entries_with_examples": 75339,
+    "reference_senses": 682461,
+    "empty_headwords": 505,
+    "empty_senses": 1335,
+    "duplicate_senses": 28,
+    "raw_form_links": 934675,
+    "form_resolution_rounds": 4,
+    "forms": 908330,
+    "unresolved_form_lookups": 13287,
+    "headwords": 774851
+  },
+  "coverage": {
+    "the": {
+      "found": true,
+      "senses": 39,
+      "headwords": [
+        "the",
+        "thee",
+        "they",
+        "theo-",
+        "𐑞",
+        "the-"
+      ],
+      "first_senses": [
+        {
+          "headword": "the",
+          "pos": "article",
+          "definition": "Used before a noun phrase, including a simple noun The definite grammatical article that shows that the noun phrase that immediately follows it is definitely identifiable... ...because it has already been mentioned, is to be completely specified in the same sentence, or very shortly thereafter.",
+          "example": "",
+          "labels": ""
+        },
+        {
+          "headword": "the",
+          "pos": "article",
+          "definition": "Used before a noun phrase, including a simple noun The definite grammatical article that shows that the noun phrase that immediately follows it is definitely identifiable... ...because it is presumed to be definitely known in context or from shared knowledge. Used before a noun designating something considered to be unique, or of which there is only one at a time.",
+          "example": "",
+          "labels": ""
+        },
+        {
+          "headword": "the",
+          "pos": "article",
+          "definition": "Used before a noun phrase, including a simple noun The definite grammatical article that shows that the noun phrase that immediately follows it is definitely identifiable... ...because it is presumed to be definitely known in context or from shared knowledge. Used to indicate a certain example of (a noun) which is usually of most concern or most common or familiar.",
+          "example": "",
+          "labels": ""
+        }
+      ]
+    },
+    "because": {
+      "found": true,
+      "senses": 8,
+      "headwords": [
+        "because",
+        "becuz"
+      ],
+      "first_senses": [
+        {
+          "headword": "because",
+          "pos": "conjunction",
+          "definition": "By or for the cause that; on this account that; for the reason that.",
+          "example": "I hid myself because I was afraid.",
+          "labels": ""
+        },
+        {
+          "headword": "because",
+          "pos": "conjunction",
+          "definition": "As is known, inferred, or determined from the fact that.",
+          "example": "It must be broken, because I pressed the button and nothing happened.",
+          "labels": ""
+        },
+        {
+          "headword": "because",
+          "pos": "conjunction",
+          "definition": "So that, in order that.",
+          "example": "",
+          "labels": "obsolete"
+        }
+      ]
+    },
+    "although": {
+      "found": true,
+      "senses": 2,
+      "headwords": [
+        "although"
+      ],
+      "first_senses": [
+        {
+          "headword": "although",
+          "pos": "conjunction",
+          "definition": "Though, even though, in spite of or despite the fact that: introducing a clause that expresses a concession.",
+          "example": "Although it was very muddy, the football game went on.",
+          "labels": ""
+        },
+        {
+          "headword": "although",
+          "pos": "conjunction",
+          "definition": "But, except.",
+          "example": "It was difficult, although not as difficult as we had expected.",
+          "labels": ""
+        }
+      ]
+    },
+    "run": {
+      "found": true,
+      "senses": 119,
+      "headwords": [
+        "run",
+        "rin"
+      ],
+      "first_senses": [
+        {
+          "headword": "run",
+          "pos": "verb",
+          "definition": "To move swiftly. To move forward quickly upon two feet by alternately making a short jump off either foot.",
+          "example": "Run, and you might still catch the train!",
+          "labels": "intransitive"
+        },
+        {
+          "headword": "run",
+          "pos": "verb",
+          "definition": "To move swiftly. To go at a fast pace; to move quickly.",
+          "example": "I have been running all over the building looking for him.",
+          "labels": "intransitive"
+        },
+        {
+          "headword": "run",
+          "pos": "verb",
+          "definition": "To move swiftly. To cover (a course or a distance) by running.",
+          "example": "I can run a mile, but I can't run the cross-country course.",
+          "labels": "transitive"
+        }
+      ]
+    },
+    "running": {
+      "found": true,
+      "senses": 136,
+      "headwords": [
+        "running",
+        "run",
+        "Running"
+      ],
+      "first_senses": [
+        {
+          "headword": "running",
+          "pos": "adjective",
+          "definition": "Moving or advancing at a run.",
+          "example": "",
+          "labels": "not comparable"
+        },
+        {
+          "headword": "running",
+          "pos": "adjective",
+          "definition": "Moving or advancing at a run. Of a horse, having a running gait; not a trotter or pacer.",
+          "example": "",
+          "labels": "not comparable"
+        },
+        {
+          "headword": "running",
+          "pos": "adjective",
+          "definition": "Present, current.",
+          "example": "running month",
+          "labels": "not comparable"
+        }
+      ]
+    },
+    "child": {
+      "found": true,
+      "senses": 16,
+      "headwords": [
+        "child",
+        "childer",
+        "Child"
+      ],
+      "first_senses": [
+        {
+          "headword": "child",
+          "pos": "noun",
+          "definition": "A person who has not yet reached adulthood, whether natural (puberty), cultural (initiation), or legal (majority).",
+          "example": "Go easy on him: he is but a child.",
+          "labels": "broadly"
+        },
+        {
+          "headword": "child",
+          "pos": "noun",
+          "definition": "A person who has not yet reached adulthood, whether natural (puberty), cultural (initiation), or legal (majority). A youth aged 1 to 9 years, whereas neonates are aged 0 to 1 month, infants are aged 1 to 12 months, and adolescents are aged 10 to 20 years.",
+          "example": "",
+          "labels": "broadly, sometimes, in a stricter sense"
+        },
+        {
+          "headword": "child",
+          "pos": "noun",
+          "definition": "One's direct descendant by birth, regardless of age; one's offspring; a son or daughter.",
+          "example": "My youngest child is forty-three this year.",
+          "labels": "with possessive"
+        }
+      ]
+    },
+    "children": {
+      "found": true,
+      "senses": 15,
+      "headwords": [
+        "child",
+        "childer",
+        "Children"
+      ],
+      "first_senses": [
+        {
+          "headword": "child",
+          "pos": "noun",
+          "definition": "A person who has not yet reached adulthood, whether natural (puberty), cultural (initiation), or legal (majority).",
+          "example": "Go easy on him: he is but a child.",
+          "labels": "broadly"
+        },
+        {
+          "headword": "child",
+          "pos": "noun",
+          "definition": "A person who has not yet reached adulthood, whether natural (puberty), cultural (initiation), or legal (majority). A youth aged 1 to 9 years, whereas neonates are aged 0 to 1 month, infants are aged 1 to 12 months, and adolescents are aged 10 to 20 years.",
+          "example": "",
+          "labels": "broadly, sometimes, in a stricter sense"
+        },
+        {
+          "headword": "child",
+          "pos": "noun",
+          "definition": "One's direct descendant by birth, regardless of age; one's offspring; a son or daughter.",
+          "example": "My youngest child is forty-three this year.",
+          "labels": "with possessive"
+        }
+      ]
+    },
+    "go": {
+      "found": true,
+      "senses": 95,
+      "headwords": [
+        "go",
+        "GO",
+        "Go",
+        "go jump in the lake",
+        "-got-",
+        "-gov-",
+        "-go-",
+        "Goh"
+      ],
+      "first_senses": [
+        {
+          "headword": "go",
+          "pos": "verb",
+          "definition": "To move, either physically or in an abstract sense: To move through space (especially to or through a place). (May be used of tangible things such as people or cars, or intangible things such as moods or information.)",
+          "example": "Why don’t you go with us?",
+          "labels": "intransitive"
+        },
+        {
+          "headword": "go",
+          "pos": "verb",
+          "definition": "To move, either physically or in an abstract sense: To move or travel through time (either literally—in a fictional or hypothetical situation in which time travel is possible—or in one's mind or knowledge of the historical record). (See also go back.)",
+          "example": "Yesterday was the second-wettest day on record; you have to go all the way back to 1896 to find a day when more rain fell.",
+          "labels": "intransitive"
+        },
+        {
+          "headword": "go",
+          "pos": "verb",
+          "definition": "To move, either physically or in an abstract sense: To navigate (to a file or folder on a computer, a site on the internet, a memory, etc.).",
+          "example": "For the best definitions, go to wiktionary.org",
+          "labels": "intransitive"
+        }
+      ]
+    },
+    "went": {
+      "found": true,
+      "senses": 101,
+      "headwords": [
+        "went",
+        "go",
+        "wend",
+        "ween",
+        "gan",
+        "Went"
+      ],
+      "first_senses": [
+        {
+          "headword": "went",
+          "pos": "noun",
+          "definition": "A course; a way, a path; a journey.",
+          "example": "",
+          "labels": "obsolete"
+        },
+        {
+          "headword": "go",
+          "pos": "verb",
+          "definition": "To move, either physically or in an abstract sense: To move through space (especially to or through a place). (May be used of tangible things such as people or cars, or intangible things such as moods or information.)",
+          "example": "Why don’t you go with us?",
+          "labels": "intransitive"
+        },
+        {
+          "headword": "go",
+          "pos": "verb",
+          "definition": "To move, either physically or in an abstract sense: To move or travel through time (either literally—in a fictional or hypothetical situation in which time travel is possible—or in one's mind or knowledge of the historical record). (See also go back.)",
+          "example": "Yesterday was the second-wettest day on record; you have to go all the way back to 1896 to find a day when more rain fell.",
+          "labels": "intransitive"
+        }
+      ]
+    },
+    "resilient": {
+      "found": true,
+      "senses": 4,
+      "headwords": [
+        "resilient"
+      ],
+      "first_senses": [
+        {
+          "headword": "resilient",
+          "pos": "adjective",
+          "definition": "Returning quickly to original shape after force is applied; elastic. (of objects or substances)",
+          "example": "",
+          "labels": ""
+        },
+        {
+          "headword": "resilient",
+          "pos": "adjective",
+          "definition": "Returning quickly to original shape after force is applied; elastic. (of objects or substances) Having the ability to absorb energy when deformed.",
+          "example": "",
+          "labels": "materials science"
+        },
+        {
+          "headword": "resilient",
+          "pos": "adjective",
+          "definition": "Returning quickly to normal after damaging events or conditions. (of systems, organisms or people)",
+          "example": "",
+          "labels": ""
+        }
+      ]
+    },
+    "serendipity": {
+      "found": true,
+      "senses": 3,
+      "headwords": [
+        "serendipity"
+      ],
+      "first_senses": [
+        {
+          "headword": "serendipity",
+          "pos": "noun",
+          "definition": "The phenomenon of making an unplanned, fortunate discovery through a combination of unexpected circumstances and insightful recognition.",
+          "example": "",
+          "labels": "countable, uncountable"
+        },
+        {
+          "headword": "serendipity",
+          "pos": "noun",
+          "definition": "An unsought, unintended or unexpected, but fortunate, discovery or learning experience that occurs by accident.",
+          "example": "",
+          "labels": "countable, uncountable"
+        },
+        {
+          "headword": "serendipity",
+          "pos": "noun",
+          "definition": "The occurrence and development of events by chance in a happy or beneficial way.",
+          "example": "",
+          "labels": "countable, uncountable"
+        }
+      ]
+    },
+    "well-being": {
+      "found": true,
+      "senses": 1,
+      "headwords": [
+        "well-being"
+      ],
+      "first_senses": [
+        {
+          "headword": "well-being",
+          "pos": "noun",
+          "definition": "A state of health, happiness or prosperity.",
+          "example": "",
+          "labels": "uncountable, usually"
+        }
+      ]
+    },
+    "colour": {
+      "found": true,
+      "senses": 37,
+      "headwords": [
+        "colour",
+        "color"
+      ],
+      "first_senses": [
+        {
+          "headword": "colour",
+          "pos": "noun",
+          "definition": "Commonwealth and Ireland standard spelling of color.",
+          "example": "",
+          "labels": "countable, uncountable"
+        },
+        {
+          "headword": "colour",
+          "pos": "adjective",
+          "definition": "Commonwealth and Ireland standard spelling of color.",
+          "example": "",
+          "labels": "not comparable"
+        },
+        {
+          "headword": "colour",
+          "pos": "verb",
+          "definition": "Commonwealth and Ireland standard spelling of color.",
+          "example": "",
+          "labels": ""
+        }
+      ]
+    },
+    "color": {
+      "found": true,
+      "senses": 37,
+      "headwords": [
+        "color",
+        "colour"
+      ],
+      "first_senses": [
+        {
+          "headword": "color",
+          "pos": "noun",
+          "definition": "The spectral composition of visible light.",
+          "example": "Humans and birds can perceive color.",
+          "labels": "uncountable"
+        },
+        {
+          "headword": "color",
+          "pos": "noun",
+          "definition": "A subset thereof: A particular set of visible spectral compositions, perceived or named as a class.",
+          "example": "Most languages have names for the colors black, white, red, and green.",
+          "labels": "countable"
+        },
+        {
+          "headword": "color",
+          "pos": "noun",
+          "definition": "A subset thereof: Hue as opposed to achromatic colors (black, white and grays).",
+          "example": "The accident victim's face was white, drained of all color.",
+          "labels": "uncountable"
+        }
+      ]
+    },
+    "photosynthesis": {
+      "found": true,
+      "senses": 2,
+      "headwords": [
+        "photosynthesis"
+      ],
+      "first_senses": [
+        {
+          "headword": "photosynthesis",
+          "pos": "noun",
+          "definition": "Any process by which plants and other photoautotrophs convert light energy into chemical energy. Principally, oxygenic photosynthesis, any process by which plants and algae convert water and carbon dioxide into carbohydrates and waste oxygen using solar energy.",
+          "example": "",
+          "labels": "uncountable, usually"
+        },
+        {
+          "headword": "photosynthesis",
+          "pos": "noun",
+          "definition": "Any process by which plants and other photoautotrophs convert light energy into chemical energy. Also, nonoxygenic photosynthesis, used by purple and green bacteria, heliobacteria, and acidobacteria.",
+          "example": "",
+          "labels": "uncountable, usually"
+        }
+      ]
+    },
+    "can't": {
+      "found": true,
+      "senses": 3,
+      "headwords": [
+        "can't"
+      ],
+      "first_senses": [
+        {
+          "headword": "can't",
+          "pos": "verb",
+          "definition": "Cannot (negative modal auxiliary); be unable to; not have the ability to (whether due to lacking relevant strength or skill or knowledge or supplies, or due to logical impossibility, etc).",
+          "example": "I can’t quite get it to work.",
+          "labels": ""
+        },
+        {
+          "headword": "can't",
+          "pos": "verb",
+          "definition": "To be forbidden to; to be not permitted to.",
+          "example": "You can’t enter the hall without a ticket.",
+          "labels": ""
+        },
+        {
+          "headword": "can't",
+          "pos": "verb",
+          "definition": "To be unwilling to; to not have the desire of; to don’t want to.",
+          "example": "Will you come to dinner with us tonight? Can't; already have plans this evening.",
+          "labels": "euphemistic, slang"
+        }
+      ]
+    },
+    "word,": {
+      "found": true,
+      "senses": 43,
+      "headwords": [
+        "word",
+        "worth",
+        "Word"
+      ],
+      "first_senses": [
+        {
+          "headword": "word",
+          "pos": "noun",
+          "definition": "The smallest unit of language that has a particular meaning and can be expressed by itself; the smallest discrete, meaningful unit of language. (contrast morpheme.)",
+          "example": "",
+          "labels": "countable, uncountable"
+        },
+        {
+          "headword": "word",
+          "pos": "noun",
+          "definition": "The smallest unit of language that has a particular meaning and can be expressed by itself; the smallest discrete, meaningful unit of language. (contrast morpheme.) The smallest discrete unit of spoken language with a particular meaning, composed of one or more phonemes and one or more morphemes.",
+          "example": "",
+          "labels": "countable, uncountable"
+        },
+        {
+          "headword": "word",
+          "pos": "noun",
+          "definition": "The smallest unit of language that has a particular meaning and can be expressed by itself; the smallest discrete, meaningful unit of language. (contrast morpheme.) The smallest discrete unit of written language with a particular meaning, composed of one or more letters or symbols and one or more morphemes.",
+          "example": "",
+          "labels": "countable, uncountable"
+        }
+      ]
+    },
+    "Polish": {
+      "found": true,
+      "senses": 11,
+      "headwords": [
+        "Polish",
+        "polish"
+      ],
+      "first_senses": [
+        {
+          "headword": "Polish",
+          "pos": "adjective",
+          "definition": "Of, from or native to Poland, or relating to the Polish language.",
+          "example": "",
+          "labels": "not comparable"
+        },
+        {
+          "headword": "Polish",
+          "pos": "noun",
+          "definition": "The language spoken in Poland.",
+          "example": "",
+          "labels": "uncountable"
+        },
+        {
+          "headword": "Polish",
+          "pos": "noun",
+          "definition": "A breed of chickens with a large crest of feathers.",
+          "example": "",
+          "labels": "uncountable"
+        }
+      ]
+    },
+    "polish": {
+      "found": true,
+      "senses": 11,
+      "headwords": [
+        "polish",
+        "Polish"
+      ],
+      "first_senses": [
+        {
+          "headword": "polish",
+          "pos": "noun",
+          "definition": "A substance used to polish.",
+          "example": "A good silver polish will remove tarnish easily.",
+          "labels": "countable, uncountable"
+        },
+        {
+          "headword": "polish",
+          "pos": "noun",
+          "definition": "Cleanliness; smoothness, shininess.",
+          "example": "The floor was waxed to a high polish.",
+          "labels": "countable, uncountable"
+        },
+        {
+          "headword": "polish",
+          "pos": "noun",
+          "definition": "Refinement; cleanliness in performance or presentation.",
+          "example": "The lecturer showed a lot of polish at his last talk.",
+          "labels": "countable, uncountable"
+        }
+      ]
+    },
+    "reader’s": {
+      "found": false,
+      "senses": 0,
+      "headwords": [],
+      "first_senses": []
+    },
+    "well‑being": {
+      "found": true,
+      "senses": 1,
+      "headwords": [
+        "well-being"
+      ],
+      "first_senses": [
+        {
+          "headword": "well-being",
+          "pos": "noun",
+          "definition": "A state of health, happiness or prosperity.",
+          "example": "",
+          "labels": "uncountable, usually"
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "First sense is stable source order, not context-aware ranking.",
+    "A coverage sample is not a guarantee that every English word is included.",
+    "Missing forms are not guessed; unresolved references remain unavailable.",
+    "Exact definitions and explicit form matches may legitimately return multiple headwords."
+  ]
+}

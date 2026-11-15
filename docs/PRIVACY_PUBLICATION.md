@@ -1,6 +1,6 @@
 # Publishing the Read Assist privacy policy
 
-Status: **27 October 2026 revision published and verified.** The [public URL](https://sainadh812.github.io/ReadFlow/privacy.html) returns HTTP 200 and exactly matches the current [source](../site/privacy.html), which adds optional Crashlytics, reduced support email and production removal of GitHub upload/token entry. See the [machine-readable publication evidence](evidence/privacy-policy/publication.json). The GitHub workflow accepts the existing Firebase config secret under its earlier spelling; configured-build validation passed in run 40529659238; real delivery testing remains pending.
+Status: **15 November 2026 revision published and verified.** The [public URL](https://sainadh812.github.io/ReadFlow/privacy.html) returns HTTP 200 and exactly matches the current [source](../site/privacy.html). The revision adds the optional dictionary download, offline lookup, removal and source/license links. See [publication evidence](evidence/privacy-policy/publication.json), including the preserved October revisions.
 
 The developer remains **Oh My Pi**, with **xperimenting.ai@gmail.com** for privacy, support and deletion requests. Support correspondence/reports received by the developer are deleted within 90 days after resolution; payment records remain only as needed for accounting/legal requirements. Firebase's separate crash/identifier retention is stated explicitly. Version 0.2.5/code 21 retains the default URL first added in 0.2.4; 0.2.3 artifacts lack that link.
 
@@ -32,7 +32,7 @@ After GitHub's Pages deployment finishes:
 python3 scripts/verify_privacy_page.py --url https://sainadh812.github.io/ReadFlow/privacy.html
 ```
 
-This performs an unauthenticated HTTPS GET and checks HTTP 200, HTML content type, the complete page and an exact byte match with the finalized source. **Current verification passed:** effective 27 October 2026, `gh-pages` commit `b4aea432664121f5bf82504cd165738f57e982c0`, SHA-256 `cf51f940459aa7ceb246790508aefe5637c5a7c09f6ecff65a5edd94de01f32f`. Pages build `1318678057` completed with status `built`, created at `2026-10-27T12:27:45Z` and updated at `2026-10-27T12:28:17Z`; the evidence JSON records the latest exact-byte check time.
+This performs an unauthenticated HTTPS GET and checks HTTP 200, HTML content type, the complete page and an exact byte match with the finalized source. **Current verification passed:** effective 15 November 2026, `gh-pages` commit `81d3be27c4f42abe9101feeff043f54398b5eea3`, SHA-256 `0bd9eb1e31a99fefb8da580b98ae9f4c8ceafbd4d99fbac7f610f56df01d197a`. Pages reported `built` at `2026-11-15T13:33:13Z`; the evidence JSON records the exact-byte check time. The 27 October publication is retained under `previousPublication`.
 
 The previous 26 October page was verified at commit `2e3aa9c1092dc20d1bc72adc1b45d0aa8b6e9a93`, SHA-256 `48483d2dc25a971765d77c553cfeb6b242c47c7bb6851dfd4a28bee2a1fbc1d1`; its record is preserved under `previousPublication`. Also open the current URL in a signed-out browser on the phone. Repeat and record verification after future changes; a deployment request alone is not evidence that the URL works.
 

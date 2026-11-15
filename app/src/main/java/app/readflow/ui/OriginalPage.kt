@@ -10,19 +10,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.positionChanged
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
 import app.readflow.core.Transform
 import app.readflow.core.PageContent
+import app.readflow.core.SourceWord
 import app.readflow.diagnostics.documentIssueInput
 import app.readflow.playback.ReaderPlayback
 import app.readflow.playback.failedSentenceIds
@@ -31,7 +36,8 @@ import kotlin.math.abs
 
 @Composable internal fun OriginalPage(vm: ReaderViewModel, state: ReaderPlayback, modifier: Modifier, follow: Boolean,
     rotation: Int, fitWidth: Boolean, swipePages: Boolean, rightAdvances: Boolean,
-    pageTurn: PageTurnState? = null, onReady: (Boolean) -> Unit = {}, manual: () -> Unit) {
+    pageTurn: PageTurnState? = null, onReady: (Boolean) -> Unit = {}, define: (SourceWord) -> Unit = {},
+    lookupWordId: String? = null, manual: () -> Unit) {
     val page = state.page
     val document = state.document ?: return
     val failedIds = remember(page, state.failedSentences, document.id) {
@@ -42,8 +48,10 @@ import kotlin.math.abs
     val pageKey = document.id to pageIndex
     var bitmap by remember(pageKey) { mutableStateOf<Bitmap?>(null) }
     var error by remember(pageKey) { mutableStateOf<String?>(null) }
-    var zoom by remember(pageKey, rotation, fitWidth) { mutableFloatStateOf(1f) }
-    var pan by remember(pageKey, rotation, fitWidth) { mutableStateOf(Offset.Zero) }
+    var zoom by rememberSaveable(pageKey, rotation, fitWidth) { mutableFloatStateOf(1f) }
+    var pan by rememberSaveable(pageKey, rotation, fitWidth, stateSaver = listSaver(
+        save = { listOf(it.x, it.y) }, restore = { Offset(it[0], it[1]) },
+    )) { mutableStateOf(Offset.Zero) }
     var size by remember { mutableStateOf(IntSize.Zero) }
     val readyCallback by rememberUpdatedState(onReady)
     LaunchedEffect(pageKey, bitmap, error) { readyCallback(bitmap != null || error != null) }
@@ -92,8 +100,15 @@ import kotlin.math.abs
     val currentTransform by rememberUpdatedState(transform)
     val currentViewport by rememberUpdatedState(viewport)
     val onManual by rememberUpdatedState(manual)
-    LaunchedEffect(viewport) { pan = viewport.constrain(pan, zoom) }
+    val onDefine by rememberUpdatedState(define)
+    val currentLookupWordId by rememberUpdatedState(lookupWordId)
+    // A second finger cancels word lookup even before a pinch travels beyond touch slop.
+    var wordGestureAllowed by remember(pageKey) { mutableStateOf(true) }
+    LaunchedEffect(viewport) {
+        if (size.width > 0 && size.height > 0) pan = viewport.constrain(pan, zoom)
+    }
     val currentState by rememberUpdatedState(state)
+    val lookupColor = LocalReaderPaper.current.sentence.copy(alpha = .35f).toArgb()
     LaunchedEffect(state.activeWordId, follow, size, rotation, fitWidth) {
         if (follow) page?.words?.firstOrNull { it.id == state.activeWordId }?.boxes?.firstOrNull()?.let { box ->
             val point = transform.map((box.left + box.right) / 2, (box.top + box.bottom) / 2)
@@ -102,6 +117,18 @@ import kotlin.math.abs
     }
     Box(modifier.clipToBounds().background(MaterialTheme.colorScheme.surfaceContainerHighest)) {
         Canvas(Modifier.fillMaxSize().onSizeChanged { size = it }
+            .pointerInput(pageKey) {
+                // Observe the Initial pass without consuming: tap-down consumption must
+                // not hide a second finger from the long-press cancellation guard.
+                awaitEachGesture {
+                    awaitFirstDown(requireUnconsumed = false, pass = PointerEventPass.Initial)
+                    wordGestureAllowed = true
+                    do {
+                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                        if (event.changes.count { it.pressed || it.previousPressed } > 1) wordGestureAllowed = false
+                    } while (event.changes.any { it.pressed })
+                }
+            }
             .pointerInput(pageKey, rotation, fitWidth, swipePages, rightAdvances, size) {
                 val threshold = maxOf(64.dp.toPx(), minOf(size.width * .18f, 120.dp.toPx()))
                 try { awaitEachGesture {
@@ -114,6 +141,7 @@ import kotlin.math.abs
                     val initialZoom = zoom
                     do {
                         val event = awaitPointerEvent()
+                        if (event.changes.count { it.pressed || it.previousPressed } > 1) wordGestureAllowed = false
                         cancelled = event.changes.any { it.isConsumed }
                         if (!cancelled) {
                             val delta = event.calculatePan()
@@ -124,7 +152,7 @@ import kotlin.math.abs
                             if (!dragging) {
                                 val zoomMotion = abs(1 - accumulatedZoom) * event.calculateCentroidSize(useCurrent = false)
                                 dragging = travel.getDistance() > viewConfiguration.touchSlop || zoomMotion > viewConfiguration.touchSlop
-                                if (dragging) onManual()
+                                if (dragging) { wordGestureAllowed = false; onManual() }
                             }
                             if (dragging && event.changes.any { it.pressed && it.previousPressed }) {
                                 if (swipe.horizontal && maxOf(initialZoom, zoom) <= 1.01f && swipePages && pageTurn != null) {
@@ -147,7 +175,12 @@ import kotlin.math.abs
             }
             .pointerInput(pageKey) { detectTapGestures(onTap = { point ->
                 val mapped = currentTransform.inverse().map(point.x, point.y)
-                currentState.page?.words?.firstOrNull { word -> word.boxes.any { it.contains(mapped.first, mapped.second) } }?.let { vm.app.playback.select(it.id) }
+                if (wordGestureAllowed) currentState.page?.words?.firstOrNull { word -> word.boxes.any { it.contains(mapped.first, mapped.second) } }?.let { vm.app.playback.select(it.id) }
+            }, onLongPress = { point ->
+                if (wordGestureAllowed) {
+                    val mapped = currentTransform.inverse().map(point.x, point.y)
+                    currentState.page?.words?.firstOrNull { word -> word.boxes.any { it.contains(mapped.first, mapped.second) } }?.let(onDefine)
+                }
             }) }) {
             val image = bitmap ?: return@Canvas
             val t = transform
@@ -160,14 +193,19 @@ import kotlin.math.abs
                 val active = words.firstOrNull { it.id == currentState.activeWordId }
                 val sentence = active?.sentenceId
                 val fill = Paint().apply { color = 0x304883DF }
+                val lookupFill = Paint().apply { color = lookupColor }
                 val activeFill = Paint().apply { color = 0x701554D1 }
                 val stroke = Paint().apply { color = 0xFF1554D1.toInt(); style = Paint.Style.STROKE; strokeWidth = 2 / scale }
                 words.filter { it.sentenceId !in failedIds &&
-                    (it.sentenceId == sentence || it.id == currentState.selectedWordId) }.forEach { word ->
+                    (it.sentenceId == sentence || it.id == currentState.selectedWordId || it.id == currentLookupWordId) }.forEach { word ->
                     word.boxes.forEach { box ->
                         val rect = RectF(box.left, box.top, box.right, box.bottom)
-                        native.drawRect(rect, if (word.id in currentState.activeWordIds) activeFill else fill)
-                        if (word.id in currentState.activeWordIds || word.id == currentState.selectedWordId) native.drawRect(rect, stroke)
+                        native.drawRect(rect, when {
+                            word.id == currentLookupWordId -> lookupFill
+                            word.id in currentState.activeWordIds -> activeFill
+                            else -> fill
+                        })
+                        if (word.id != currentLookupWordId && (word.id in currentState.activeWordIds || word.id == currentState.selectedWordId)) native.drawRect(rect, stroke)
                     }
                 }
                 // A failed sentence remains red while retrying, including its active/selected word.

@@ -1,0 +1,12 @@
+{
+  "url": "https://kaikki.org/dictionary/raw-wiktextract-data.jsonl.gz",
+  "bytes": 3082476978,
+  "sha256": "5ff2c072f8099f2d2ce484bd6957bf179f046d2ad37bc36555edf8bb84cb5291",
+  "dumpDate": "2026-10-01",
+  "extractedDate": "2026-10-30",
+  "extractorCommit": "19f9a3006a405fb7bfb40193dca41c7117a009a5",
+  "sourcePage": "https://kaikki.org/dictionary/rawdata.html",
+  "downloadedDate": "2026-11-15",
+  "etag": "\"6ae50298-b7baddb2\"",
+  "lastModified": "Fri, 30 Oct 2026 20:48:24 GMT"
+}

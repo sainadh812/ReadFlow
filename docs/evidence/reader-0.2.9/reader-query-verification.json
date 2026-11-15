@@ -1,0 +1,684 @@
+{
+  "checkedAtUtc": "2026-11-15T13:43:41.058119+00:00",
+  "scope": "Production reader SQL on the final real dictionary pack, executed by host SQLite. Python mirrors normalization and sense selection; Android integration is checked separately.",
+  "timingScope": "Host build machine, one read-only SQLite connection; seven warm repeated SQL/normalization/selection lookups after each initial lookup. These are not Android device timings.",
+  "sqliteVersion": "3.37.2",
+  "pack": {
+    "id": "english-dictionary",
+    "version": "2026.10-v1",
+    "installedBytes": 280727552,
+    "installedSha256": "2abc472051994a9b8109119291d89d51bd44a0ad94041c6768dfa30075785ad8"
+  },
+  "sourceHashes": {
+    "app/src/main/java/app/readflow/dictionary/DictionaryRepository.kt": "3d6bc8ece8a17432713c54b6d1485f838373fb0ef94c2ee64be838abf352a976",
+    "app/src/main/java/app/readflow/dictionary/DictionaryModels.kt": "45133f908f596646025d8552d866816f0665e5d38616f88981269f418da7dcd9"
+  },
+  "exactReaderSql": "WITH matches AS (\n                            SELECT id, headword, pos, definition, example, ipa, source_url, labels,\n                                CASE WHEN lookup = ? THEN CASE WHEN headword = ? THEN 0 ELSE 2 END ELSE 1 END AS match_rank,\n                                row_number() OVER (PARTITION BY headword, pos ORDER BY id) AS sense_rank\n                            FROM entries WHERE lookup = ? OR headword IN (\n                                SELECT DISTINCT headword FROM forms WHERE lookup = ? ORDER BY headword LIMIT 8\n                            )\n                        ) SELECT id, headword, pos, definition, example, ipa, source_url, labels FROM (\n                            SELECT *, row_number() OVER (PARTITION BY pos ORDER BY sense_rank, match_rank, id) AS pos_rank FROM matches\n                        ) ORDER BY pos_rank, sense_rank, match_rank, id LIMIT 128",
+  "maxSenses": 32,
+  "checks": [
+    {
+      "query": "running",
+      "normalized": "running",
+      "passed": true,
+      "candidateCount": 128,
+      "selectedCount": 32,
+      "headwordPartsOfSpeech": [
+        [
+          "Running",
+          "proper noun"
+        ],
+        [
+          "run",
+          "adjective"
+        ],
+        [
+          "run",
+          "noun"
+        ],
+        [
+          "run",
+          "verb"
+        ],
+        [
+          "running",
+          "adjective"
+        ],
+        [
+          "running",
+          "adverb"
+        ],
+        [
+          "running",
+          "noun"
+        ],
+        [
+          "running",
+          "preposition"
+        ]
+      ],
+      "firstSenseId": 119872,
+      "firstHeadword": "running",
+      "initialHostMs": 2.778,
+      "warmMedianHostMs": 1.212,
+      "problems": []
+    },
+    {
+      "query": "run",
+      "normalized": "run",
+      "passed": true,
+      "candidateCount": 119,
+      "selectedCount": 32,
+      "headwordPartsOfSpeech": [
+        [
+          "rin",
+          "noun"
+        ],
+        [
+          "rin",
+          "verb"
+        ],
+        [
+          "run",
+          "adjective"
+        ],
+        [
+          "run",
+          "noun"
+        ],
+        [
+          "run",
+          "verb"
+        ]
+      ],
+      "firstSenseId": 24598,
+      "firstHeadword": "run",
+      "initialHostMs": 1.148,
+      "warmMedianHostMs": 1.125,
+      "problems": []
+    },
+    {
+      "query": "children",
+      "normalized": "children",
+      "passed": true,
+      "candidateCount": 15,
+      "selectedCount": 15,
+      "headwordPartsOfSpeech": [
+        [
+          "Children",
+          "proper noun"
+        ],
+        [
+          "child",
+          "noun"
+        ],
+        [
+          "child",
+          "verb"
+        ],
+        [
+          "childer",
+          "noun"
+        ]
+      ],
+      "firstSenseId": 12128,
+      "firstHeadword": "child",
+      "initialHostMs": 0.283,
+      "warmMedianHostMs": 0.193,
+      "problems": []
+    },
+    {
+      "query": "went",
+      "normalized": "went",
+      "passed": true,
+      "candidateCount": 101,
+      "selectedCount": 32,
+      "headwordPartsOfSpeech": [
+        [
+          "Went",
+          "proper noun"
+        ],
+        [
+          "gan",
+          "verb"
+        ],
+        [
+          "go",
+          "adjective"
+        ],
+        [
+          "go",
+          "noun"
+        ],
+        [
+          "go",
+          "verb"
+        ],
+        [
+          "ween",
+          "noun"
+        ],
+        [
+          "ween",
+          "verb"
+        ],
+        [
+          "wend",
+          "noun"
+        ],
+        [
+          "wend",
+          "verb"
+        ],
+        [
+          "went",
+          "noun"
+        ]
+      ],
+      "firstSenseId": 21212,
+      "firstHeadword": "went",
+      "initialHostMs": 1.177,
+      "warmMedianHostMs": 0.948,
+      "problems": []
+    },
+    {
+      "query": "can't",
+      "normalized": "can't",
+      "passed": true,
+      "candidateCount": 3,
+      "selectedCount": 3,
+      "headwordPartsOfSpeech": [
+        [
+          "can't",
+          "verb"
+        ]
+      ],
+      "firstSenseId": 49946,
+      "firstHeadword": "can't",
+      "initialHostMs": 0.173,
+      "warmMedianHostMs": 0.079,
+      "problems": []
+    },
+    {
+      "query": "can’t",
+      "normalized": "can't",
+      "passed": true,
+      "candidateCount": 3,
+      "selectedCount": 3,
+      "headwordPartsOfSpeech": [
+        [
+          "can't",
+          "verb"
+        ]
+      ],
+      "firstSenseId": 49946,
+      "firstHeadword": "can't",
+      "initialHostMs": 0.079,
+      "warmMedianHostMs": 0.079,
+      "problems": []
+    },
+    {
+      "query": "won't",
+      "normalized": "won't",
+      "passed": true,
+      "candidateCount": 2,
+      "selectedCount": 2,
+      "headwordPartsOfSpeech": [
+        [
+          "won't",
+          "verb"
+        ]
+      ],
+      "firstSenseId": 51013,
+      "firstHeadword": "won't",
+      "initialHostMs": 0.151,
+      "warmMedianHostMs": 0.067,
+      "problems": []
+    },
+    {
+      "query": "Polish",
+      "normalized": "polish",
+      "passed": true,
+      "candidateCount": 11,
+      "selectedCount": 11,
+      "headwordPartsOfSpeech": [
+        [
+          "Polish",
+          "adjective"
+        ],
+        [
+          "Polish",
+          "noun"
+        ],
+        [
+          "polish",
+          "noun"
+        ],
+        [
+          "polish",
+          "verb"
+        ]
+      ],
+      "firstSenseId": 2709,
+      "firstHeadword": "Polish",
+      "initialHostMs": 0.218,
+      "warmMedianHostMs": 0.172,
+      "problems": []
+    },
+    {
+      "query": "polish",
+      "normalized": "polish",
+      "passed": true,
+      "candidateCount": 11,
+      "selectedCount": 11,
+      "headwordPartsOfSpeech": [
+        [
+          "Polish",
+          "adjective"
+        ],
+        [
+          "Polish",
+          "noun"
+        ],
+        [
+          "polish",
+          "noun"
+        ],
+        [
+          "polish",
+          "verb"
+        ]
+      ],
+      "firstSenseId": 155028,
+      "firstHeadword": "polish",
+      "initialHostMs": 0.196,
+      "warmMedianHostMs": 0.153,
+      "problems": []
+    },
+    {
+      "query": "good",
+      "normalized": "good",
+      "passed": true,
+      "candidateCount": 59,
+      "selectedCount": 32,
+      "headwordPartsOfSpeech": [
+        [
+          "Good",
+          "proper noun"
+        ],
+        [
+          "better",
+          "adjective"
+        ],
+        [
+          "better",
+          "adverb"
+        ],
+        [
+          "better",
+          "noun"
+        ],
+        [
+          "better",
+          "verb"
+        ],
+        [
+          "double-plus-good",
+          "adjective"
+        ],
+        [
+          "good",
+          "adjective"
+        ],
+        [
+          "good",
+          "adverb"
+        ],
+        [
+          "good",
+          "interjection"
+        ],
+        [
+          "good",
+          "noun"
+        ],
+        [
+          "good",
+          "verb"
+        ]
+      ],
+      "firstSenseId": 12652,
+      "firstHeadword": "good",
+      "initialHostMs": 0.806,
+      "warmMedianHostMs": 0.598,
+      "problems": []
+    },
+    {
+      "query": "good₹%&",
+      "normalized": "good",
+      "passed": true,
+      "candidateCount": 59,
+      "selectedCount": 32,
+      "headwordPartsOfSpeech": [
+        [
+          "Good",
+          "proper noun"
+        ],
+        [
+          "better",
+          "adjective"
+        ],
+        [
+          "better",
+          "adverb"
+        ],
+        [
+          "better",
+          "noun"
+        ],
+        [
+          "better",
+          "verb"
+        ],
+        [
+          "double-plus-good",
+          "adjective"
+        ],
+        [
+          "good",
+          "adjective"
+        ],
+        [
+          "good",
+          "adverb"
+        ],
+        [
+          "good",
+          "interjection"
+        ],
+        [
+          "good",
+          "noun"
+        ],
+        [
+          "good",
+          "verb"
+        ]
+      ],
+      "firstSenseId": 12652,
+      "firstHeadword": "good",
+      "initialHostMs": 0.705,
+      "warmMedianHostMs": 0.599,
+      "problems": []
+    },
+    {
+      "query": "well-being",
+      "normalized": "well-being",
+      "passed": true,
+      "candidateCount": 1,
+      "selectedCount": 1,
+      "headwordPartsOfSpeech": [
+        [
+          "well-being",
+          "noun"
+        ]
+      ],
+      "firstSenseId": 135910,
+      "firstHeadword": "well-being",
+      "initialHostMs": 0.105,
+      "warmMedianHostMs": 0.062,
+      "problems": []
+    },
+    {
+      "query": "“well–being,”",
+      "normalized": "well-being",
+      "passed": true,
+      "candidateCount": 1,
+      "selectedCount": 1,
+      "headwordPartsOfSpeech": [
+        [
+          "well-being",
+          "noun"
+        ]
+      ],
+      "firstSenseId": 135910,
+      "firstHeadword": "well-being",
+      "initialHostMs": 0.064,
+      "warmMedianHostMs": 0.062,
+      "problems": []
+    },
+    {
+      "query": "resilient",
+      "normalized": "resilient",
+      "passed": true,
+      "candidateCount": 4,
+      "selectedCount": 4,
+      "headwordPartsOfSpeech": [
+        [
+          "resilient",
+          "adjective"
+        ]
+      ],
+      "firstSenseId": 163014,
+      "firstHeadword": "resilient",
+      "initialHostMs": 0.214,
+      "warmMedianHostMs": 0.097,
+      "problems": []
+    },
+    {
+      "query": "serendipity",
+      "normalized": "serendipity",
+      "passed": true,
+      "candidateCount": 3,
+      "selectedCount": 3,
+      "headwordPartsOfSpeech": [
+        [
+          "serendipity",
+          "noun"
+        ]
+      ],
+      "firstSenseId": 84226,
+      "firstHeadword": "serendipity",
+      "initialHostMs": 0.108,
+      "warmMedianHostMs": 0.08,
+      "problems": []
+    },
+    {
+      "query": "colour",
+      "normalized": "colour",
+      "passed": true,
+      "candidateCount": 37,
+      "selectedCount": 32,
+      "headwordPartsOfSpeech": [
+        [
+          "color",
+          "adjective"
+        ],
+        [
+          "color",
+          "noun"
+        ],
+        [
+          "color",
+          "verb"
+        ],
+        [
+          "colour",
+          "adjective"
+        ],
+        [
+          "colour",
+          "noun"
+        ],
+        [
+          "colour",
+          "verb"
+        ]
+      ],
+      "firstSenseId": 14423,
+      "firstHeadword": "colour",
+      "initialHostMs": 0.491,
+      "warmMedianHostMs": 0.423,
+      "problems": []
+    },
+    {
+      "query": "photosynthesis",
+      "normalized": "photosynthesis",
+      "passed": true,
+      "candidateCount": 2,
+      "selectedCount": 2,
+      "headwordPartsOfSpeech": [
+        [
+          "photosynthesis",
+          "noun"
+        ]
+      ],
+      "firstSenseId": 145408,
+      "firstHeadword": "photosynthesis",
+      "initialHostMs": 0.128,
+      "warmMedianHostMs": 0.063,
+      "problems": []
+    },
+    {
+      "query": "the",
+      "normalized": "the",
+      "passed": true,
+      "candidateCount": 39,
+      "selectedCount": 32,
+      "headwordPartsOfSpeech": [
+        [
+          "the",
+          "adverb"
+        ],
+        [
+          "the",
+          "article"
+        ],
+        [
+          "the",
+          "preposition"
+        ],
+        [
+          "the-",
+          "prefix"
+        ],
+        [
+          "thee",
+          "noun"
+        ],
+        [
+          "thee",
+          "pronoun"
+        ],
+        [
+          "thee",
+          "verb"
+        ],
+        [
+          "theo-",
+          "prefix"
+        ],
+        [
+          "they",
+          "determiner"
+        ],
+        [
+          "they",
+          "noun"
+        ],
+        [
+          "they",
+          "pronoun"
+        ],
+        [
+          "they",
+          "verb"
+        ],
+        [
+          "𐑞",
+          "article"
+        ],
+        [
+          "𐑞",
+          "character"
+        ]
+      ],
+      "firstSenseId": 1874,
+      "firstHeadword": "the",
+      "initialHostMs": 0.859,
+      "warmMedianHostMs": 0.546,
+      "problems": []
+    },
+    {
+      "query": "because",
+      "normalized": "because",
+      "passed": true,
+      "candidateCount": 8,
+      "selectedCount": 8,
+      "headwordPartsOfSpeech": [
+        [
+          "because",
+          "adverb"
+        ],
+        [
+          "because",
+          "conjunction"
+        ],
+        [
+          "because",
+          "interjection"
+        ],
+        [
+          "because",
+          "preposition"
+        ],
+        [
+          "becuz",
+          "conjunction"
+        ]
+      ],
+      "firstSenseId": 3926,
+      "firstHeadword": "because",
+      "initialHostMs": 0.341,
+      "warmMedianHostMs": 0.136,
+      "problems": []
+    },
+    {
+      "query": "although",
+      "normalized": "although",
+      "passed": true,
+      "candidateCount": 2,
+      "selectedCount": 2,
+      "headwordPartsOfSpeech": [
+        [
+          "although",
+          "conjunction"
+        ]
+      ],
+      "firstSenseId": 18164,
+      "firstHeadword": "although",
+      "initialHostMs": 0.119,
+      "warmMedianHostMs": 0.074,
+      "problems": []
+    },
+    {
+      "query": "zzzxqv_not_a_real_english_word_8391",
+      "normalized": "zzzxqv_not_a_real_english_word_8391",
+      "passed": true,
+      "candidateCount": 0,
+      "selectedCount": 0,
+      "headwordPartsOfSpeech": [],
+      "firstSenseId": null,
+      "firstHeadword": null,
+      "initialHostMs": 0.089,
+      "warmMedianHostMs": 0.031,
+      "problems": []
+    }
+  ],
+  "failures": [],
+  "timings": {
+    "warmLookups": 147,
+    "warmMedianHostMs": 0.136,
+    "warmMaxHostMs": 1.373
+  },
+  "passed": true
+}

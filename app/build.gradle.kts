@@ -103,8 +103,8 @@ android {
         applicationId = "app.readflow"
         minSdk = 35
         targetSdk = 36
-        versionCode = 24
-        versionName = "0.2.8"
+        versionCode = 25
+        versionName = "0.2.9"
         buildConfigField("String", "PRIVACY_POLICY_URL", "\"$privacyPolicyUrl\"")
         buildConfigField("boolean", "FIREBASE_CONFIGURED", firebaseConfigured.toString())
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

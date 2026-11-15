@@ -1,0 +1,112 @@
+Building the Read Assist English dictionary
+
+Requirements: Python 3.10 or newer with its standard sqlite3 module, curl,
+at least 8 GB free disk space. No Python packages or accounts are required.
+The maintained Kaikki English-language Wiktionary extraction includes many
+languages; the importer selects records whose lang_code is exactly "en".
+It reads the compressed JSONL one line at a time and uses SQLite for form
+resolution; it never loads the complete dump into memory.
+
+From the repository root:
+
+    mkdir -p build/dictionary
+    curl --fail --location --retry 3 --continue-at - \
+      --output build/dictionary/raw-wiktextract-data.jsonl.gz \
+      https://kaikki.org/dictionary/raw-wiktextract-data.jsonl.gz
+    python3 -m unittest discover -s scripts/dictionary -p 'test_*.py' -v
+    python3 scripts/dictionary/build.py \
+      --source build/dictionary/raw-wiktextract-data.jsonl.gz
+    python3 scripts/dictionary/verify.py build/dictionary/manifest.json
+
+The upstream download URL moves over time. The importer rejects any byte
+count or SHA-256 that differs from docs/dictionary/source-lock.json. To
+rebuild this exact version, retain the matching source archive. Updating to
+a newer source is an explicit maintenance task: update the source lock,
+pack version and provenance, build, inspect the coverage report and publish
+under a new versioned URL. Never overwrite the already published pack.
+
+Output in the ignored build/dictionary/ directory:
+
+  english-dictionary-2026.10-v1.sqlite
+    Read-only SQLite data with entries, forms and metadata tables.
+  english-dictionary-2026.10-v1.sqlite.gz
+    The installable single gzip stream; deterministic zero gzip timestamp.
+  manifest.json
+    App manifest including download/install bytes and both SHA-256 values.
+  build-report.json
+    Source lock, counts, coverage sample, first senses and known limitations.
+  verification-report.json
+    Artifact checks and a clearly labeled Linux lookup benchmark.
+
+The same source, importer version, Python/Unicode database and SQLite
+version produce a reproducible build. build-environment.json records the
+versions used for the original build. SQLite and Unicode version changes
+can affect byte-identical results, so compare the manifest and rerun coverage
+when changing the build environment. The gzip header contains no filename
+or wall-clock timestamp. Database rows and form mappings use deterministic
+input and sort order. The report does not include elapsed build time.
+
+The source archive is 3,082,476,978 bytes. This is a development input and
+is not downloaded to Android. Actual compressed and installed pack sizes
+are measured in the generated manifest, not inferred from upstream size.
+
+Schema version 1
+
+  metadata(key TEXT PRIMARY KEY, value TEXT NOT NULL)
+  entries(id INTEGER PRIMARY KEY, headword TEXT NOT NULL,
+    lookup TEXT NOT NULL, pos TEXT NOT NULL, definition TEXT NOT NULL,
+    example TEXT NOT NULL DEFAULT '', ipa TEXT NOT NULL DEFAULT '',
+    source_url TEXT NOT NULL, labels TEXT NOT NULL DEFAULT '')
+  forms(lookup TEXT NOT NULL, headword TEXT NOT NULL)
+
+Indexes: entries(lookup), entries(headword), forms(lookup).
+PRAGMA user_version = 1. Each entries row is one retained sense. Metadata
+includes pack_id/id, version, schemaVersion, source, credits, licenseUrl,
+source checksum/date, importer version and extraction revision.
+
+Lookup conversion
+
+NFKC Unicode normalization; U+2018/U+2019/U+02BC/U+FF07 mapped to ASCII
+apostrophe; U+2010 through U+2015, U+2212/U+FE63/U+FF0D mapped to ASCII
+hyphen; trim edge characters except Unicode letters, numbers and combining
+marks; collapse internal whitespace; lowercase. Internal apostrophes and
+hyphens remain. Original headword
+case and source spelling are retained separately for exact-case ranking.
+
+Only explicit source forms, form_of and alt_of references create aliases.
+Pure reference senses are replaced with aliases to substantive entries.
+Qualified references and contractions retain their own glosses; e.g. "isn't"
+is never redirected to "is" with its negation lost.
+Substantive exact entries and inflection aliases coexist (e.g. "running").
+Reference resolution ends at a headword with definitions, detects revisited
+edges and stops after eight rounds. Unresolved references are reported;
+the importer never guesses a meaning by removing a suffix. Duplicate form
+pairs are removed and final pairs sorted. No vocabulary-frequency cutoff
+is applied.
+
+Headwords and forms are limited to 256 UTF-16 units, definitions to 8,192,
+IPA to 256 and selected examples to 1,000 characters. Overlong individual
+senses are omitted and counted instead of truncating their meaning. Empty
+or malformed optional fields are ignored. Invalid JSON in a candidate
+English record fails the build with its line number.
+
+Example handling and redistribution
+
+Only examples explicitly marked type=example without a citation ref are
+eligible; select the first eligible example per sense. Exclude quotations,
+citations and unclassified examples. No audio/media is included. Definitions
+retain their Wiktionary page URLs for attribution and contributor history.
+The pack is adapted CC BY-SA 4.0 dictionary data; distribute ATTRIBUTION.txt
+and CC-BY-SA-4.0.txt with it and expose attribution/license in the app.
+
+Release checks
+
+1. Run importer tests and the app's dictionary tests.
+2. Confirm the full source checksum and SQLite integrity_check pass.
+3. Review build-report.json: coverage, ambiguous words, counts and sizes.
+4. Publish the gzip pack, manifest, report, source lock, importer scripts
+   and license/attribution notices with an immutable versioned release.
+5. Verify public download bytes and SHA-256 before shipping an APK whose
+   dictionary manifest points to it.
+6. Exercise installation, cancellation, corruption, removal and offline
+   lookup on Android; desktop timings alone do not establish phone speed.

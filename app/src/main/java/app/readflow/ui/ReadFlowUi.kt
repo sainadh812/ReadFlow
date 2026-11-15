@@ -196,7 +196,7 @@ private val Accent = Color(0xFF126D63)
     val refreshingText by vm.refreshingText.collectAsStateWithLifecycle()
     val ocrProgress by vm.ocrProgress.collectAsStateWithLifecycle()
     val hasOriginal = state.document?.mime == "application/pdf" || state.document?.mime?.startsWith("image/") == true
-    var original by remember(state.document?.id) { mutableStateOf(hasOriginal) }
+    var original by rememberSaveable(state.document?.id) { mutableStateOf(hasOriginal) }
     var contents by remember { mutableStateOf(false) }
     var searching by remember { mutableStateOf(false) }
     var menu by remember { mutableStateOf(false) }
@@ -205,22 +205,47 @@ private val Accent = Color(0xFF126D63)
     var preparePages by remember { mutableStateOf(false) }
     var appearance by remember { mutableStateOf(false) }
     var readerControls by remember(state.document?.id) { mutableStateOf(false) }
+    var dictionaryOpen by rememberSaveable(state.document?.id) { mutableStateOf(false) }
+    var dictionaryQuery by rememberSaveable(state.document?.id) { mutableStateOf("") }
+    var dictionaryWordId by rememberSaveable(state.document?.id) { mutableStateOf<String?>(null) }
     var pageOnly by rememberSaveable(state.document?.id) { mutableStateOf(false) }
     var query by remember { mutableStateOf("") }
-    var follow by remember(state.document?.id) { mutableStateOf(true) }
+    var follow by rememberSaveable(state.document?.id) { mutableStateOf(true) }
     val page = state.page
     val pageIndex = page?.index ?: state.viewPageIndex
     var originalReady by remember(state.document?.id, pageIndex, original) { mutableStateOf(false) }
     val pageTurn = rememberPageTurnState((state.document?.id to original) to pageIndex, pageIndex,
-        state.document?.pageCount ?: 1, prefs.pageTurnStyle, enabled = !readerControls && !appearance && !contents && !details && !speeds && !preparePages,
+        state.document?.pageCount ?: 1, prefs.pageTurnStyle, enabled = !readerControls && !appearance && !contents && !details && !speeds && !preparePages && !dictionaryOpen,
         rightAdvances = prefs.swipeRightAdvances, onTurn = { delta -> follow = false; vm.page(pageIndex + delta) })
     val adjacentPages = rememberAdjacentReaderPages(vm, state.document, pageIndex, prefs.pageTurnStyle != "off", state.failedSentences)
-    var rotation by remember(state.document?.id, pageIndex) { mutableIntStateOf(0) }
-    var fitWidth by remember(state.document?.id, pageIndex) { mutableStateOf(true) }
+    var rotation by rememberSaveable(state.document?.id, pageIndex) { mutableIntStateOf(0) }
+    var fitWidth by rememberSaveable(state.document?.id, pageIndex) { mutableStateOf(true) }
     val selected = page?.words?.firstOrNull { it.id == state.selectedWordId }
     val clipboard = LocalClipboardManager.current
     val status = ocrProgress ?: if (refreshingText) "Updating text recognition…" else state.error ?: state.status
-    BackHandler(pageOnly) { pageOnly = false }
+    fun pauseForDictionary() {
+        val current = vm.app.playback.state.value
+        // Initial page extraction and silent prepare-ahead are not narration.
+        if (current.playing || current.wantsToPlay || current.fillingBuffer) vm.app.playback.pauseFromControls()
+    }
+    fun openDictionary(word: SourceWord? = null) {
+        // Lookup never changes playback selection or the durable reading position.
+        pauseForDictionary()
+        pageTurn.reset()
+        menu = false
+        readerControls = false
+        appearance = false
+        contents = false
+        details = false
+        speeds = false
+        preparePages = false
+        dictionaryQuery = word?.text.orEmpty()
+        dictionaryWordId = word?.id
+        dictionaryOpen = true
+    }
+    // A saved sheet restored after rotation must remain a paused reading surface, too.
+    LaunchedEffect(dictionaryOpen) { if (dictionaryOpen) pauseForDictionary() }
+    BackHandler(pageOnly && !dictionaryOpen) { pageOnly = false }
     // Reveal recovery controls if playback stops on an error while the chrome is hidden.
     LaunchedEffect(state.error, state.blockedSentence) {
         if (state.error != null || state.blockedSentence != null) pageOnly = false
@@ -247,6 +272,10 @@ private val Accent = Color(0xFF126D63)
                     DropdownMenu(menu, { menu = false }) {
                         DropdownMenuItem(text = { Text("Reader controls") }, onClick = { readerControls = true; menu = false }, leadingIcon = { Icon(Icons.Default.Tune, null) })
                         DropdownMenuItem(text = { Text("Paper, font and size") }, onClick = { appearance = true; menu = false }, leadingIcon = { Icon(Icons.Default.TextFields, null) })
+                        DropdownMenuItem(text = { Text("Dictionary") }, onClick = { openDictionary() }, leadingIcon = { Icon(Icons.AutoMirrored.Filled.MenuBook, null) })
+                        if (selected != null) {
+                            DropdownMenuItem(text = { Text("Define selected word") }, onClick = { openDictionary(selected) }, leadingIcon = { Icon(Icons.Default.Search, null) })
+                        }
                         DropdownMenuItem(text = { Text("Hide controls for more page space") }, onClick = { searching = false; pageOnly = true; menu = false }, leadingIcon = { Icon(Icons.Default.Fullscreen, null) })
                         if (ocrProgress != null || refreshingText) {
                             DropdownMenuItem(text = { Text("Cancel text recognition") }, onClick = { vm.cancelOcr(); menu = false }, leadingIcon = { Icon(Icons.Default.Close, null) })
@@ -305,16 +334,18 @@ private val Accent = Color(0xFF126D63)
                     if (original) OriginalPageTurnPreview(pageTurn, target, rotation, fitWidth, previewPage, failedIds)
                     else ReaderTextTurnPreview(previewPage, prefs, target, failedIds)
                 }) {
-                if (original) OriginalPage(vm, state, Modifier.fillMaxSize(), follow, rotation, fitWidth,
-                    prefs.swipePages && !readerControls, prefs.swipeRightAdvances,
-                    pageTurn = pageTurn, onReady = { originalReady = it }) { follow = false }
+                if (original) OriginalPage(vm, state, Modifier.fillMaxSize(), follow && !dictionaryOpen, rotation, fitWidth,
+                    prefs.swipePages && !readerControls && !dictionaryOpen, prefs.swipeRightAdvances,
+                    pageTurn = pageTurn, onReady = { originalReady = it }, define = { openDictionary(it) },
+                    lookupWordId = dictionaryWordId.takeIf { dictionaryOpen }) { follow = false }
                 else if (page == null) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     if (state.error != null) Text(state.error, Modifier.padding(24.dp), color = MaterialTheme.colorScheme.error)
                     else CircularProgressIndicator()
                 }
                 else key(page.id) {
-                    ReaderText(page, state, prefs, query, follow, { follow = false }, { vm.app.playback.select(it) }, { vm.bookmark(it) },
-                        Modifier.fillMaxSize().readerPageSwipes(page.id, prefs.swipePages && !readerControls, prefs.swipeRightAdvances,
+                    ReaderText(page, state, prefs, query, follow && !dictionaryOpen, { follow = false }, { vm.app.playback.select(it) }, { openDictionary(it) },
+                        dictionaryWordId.takeIf { dictionaryOpen },
+                        Modifier.fillMaxSize().readerPageSwipes(page.id, prefs.swipePages && !readerControls && !dictionaryOpen, prefs.swipeRightAdvances,
                             manualScroll = { follow = false }, turn = { vm.page(pageIndex + it) },
                             onDrag = pageTurn::drag, onRelease = pageTurn::release, onCancel = pageTurn::cancel))
                 }
@@ -340,10 +371,16 @@ private val Accent = Color(0xFF126D63)
             }
         }
         if (!pageOnly && prefs.showPerformance) PerformancePanel(vm, prefs)
-        if (!pageOnly) PlaybackPanel(vm, state, requestNotifications, prefs.speed, { speeds = true }, hasOriginal, original,
-            { original = !original; if (original) searching = false }, selected, status,
-            showDetails = { details = true }, copySelection = { selected?.let { clipboard.setText(AnnotatedString(it.text)) } },
+        if (!pageOnly) PlaybackPanel(vm, state, requestNotifications, prefs.speed, { speeds = true }, selected, status,
+            showDetails = { details = true },
             showControls = { readerControls = true })
+    }
+    if (dictionaryOpen) {
+        val lookupWord = page?.words?.firstOrNull { it.id == dictionaryWordId }
+        DictionarySheet(vm.app.dictionary, dictionaryQuery, lighting.settings,
+            onQuery = { dictionaryQuery = it; dictionaryWordId = null },
+            bookmark = lookupWord?.let { word -> { vm.bookmark(word) } },
+            dismiss = { dictionaryOpen = false })
     }
     if (readerControls) ReaderControlsSheet(vm, state, prefs, lighting = lighting, dismiss = { readerControls = false }, notifications = requestNotifications)
     if (appearance) ReaderAppearanceSheet(prefs, vm::update, lighting.settings) { appearance = false }
@@ -409,13 +446,15 @@ private val Accent = Color(0xFF126D63)
 }
 
 @Composable private fun ReaderText(page: PageContent, state: ReaderPlayback, prefs: Preferences, query: String, follow: Boolean, manualScroll: () -> Unit,
-    tap: (String) -> Unit, bookmark: (SourceWord) -> Unit, modifier: Modifier) {
+    tap: (String) -> Unit, define: (SourceWord) -> Unit, lookupWordId: String?, modifier: Modifier) {
     val paper = LocalReaderPaper.current
     val failedIds = remember(page, state.failedSentences) { state.failedSentenceIds(page) }
     val readerFont = ReaderFonts.family(prefs.readerFont)
     val list = rememberLazyListState()
     val dragging by list.interactionSource.collectIsDraggedAsState()
     val active = page.words.firstOrNull { it.id == state.activeWordId }
+    val onTap by rememberUpdatedState(tap)
+    val onDefine by rememberUpdatedState(define)
     LaunchedEffect(dragging) { if (dragging) manualScroll() }
     LaunchedEffect(active?.paragraphId, follow) {
         if (follow && active != null) {
@@ -450,6 +489,7 @@ private val Accent = Color(0xFF126D63)
                         if (query.isNotBlank() && word.text.contains(query, true)) addStyle(SpanStyle(background = Color(0xFFFFDB75), color = Color(0xFF202020)), start, end)
                         if (word.id in state.activeWordIds) addStyle(SpanStyle(background = paper.accent, color = paper.onAccent), start, end)
                         else if (word.id == state.selectedWordId) addStyle(SpanStyle(background = paper.sentence), start, end)
+                        if (word.id == lookupWordId) addStyle(SpanStyle(background = paper.sentence, color = paper.ink), start, end)
                         if (word.sentenceId in failedIds) addStyle(SpanStyle(color = ReaderFailureInk,
                             background = ReaderFailureBackground), start, end)
                     }
@@ -464,7 +504,7 @@ private val Accent = Color(0xFF126D63)
                     color = paper.ink,
                     fontWeight = if (paragraph.heading) androidx.compose.ui.text.font.FontWeight.Bold else androidx.compose.ui.text.font.FontWeight.Normal,
                     onTextLayout = { layout = it }, modifier = Modifier.fillMaxWidth()
-                        .pointerInput(page.id, paragraph.id) { detectTapGestures(onTap = { point -> hit(point)?.let { tap(it.id) } }, onLongPress = { point -> hit(point)?.let(bookmark) }) }
+                        .pointerInput(page.id, paragraph.id) { detectTapGestures(onTap = { point -> hit(point)?.let { onTap(it.id) } }, onLongPress = { point -> hit(point)?.let(onDefine) }) }
                         .semantics { customActions = listOf(CustomAccessibilityAction("Read this paragraph") { words.firstOrNull()?.let { tap(it.id) }; true }) })
             }
             if (page.words.isEmpty()) item { Text("No readable text on this page.", color = MaterialTheme.colorScheme.onSurfaceVariant) }
@@ -473,25 +513,24 @@ private val Accent = Color(0xFF126D63)
 }
 
 @Composable private fun PlaybackPanel(vm: ReaderViewModel, state: ReaderPlayback, notifications: () -> Unit,
-    speed: Float, changeSpeed: () -> Unit, hasOriginal: Boolean, original: Boolean, toggleOriginal: () -> Unit,
-    selectedWord: SourceWord?, status: String, showDetails: () -> Unit, copySelection: () -> Unit, showControls: () -> Unit) {
+    speed: Float, changeSpeed: () -> Unit, selectedWord: SourceWord?, status: String,
+    showDetails: () -> Unit, showControls: () -> Unit) {
     val openControls by rememberUpdatedState(showControls)
     val selected = selectedWord != null && !state.wantsToPlay && !state.preparing
     val preparingPlayback = state.fillingBuffer || (state.preparing && state.currentChunk == null)
-    val ready = "${state.bufferedSentences} ${if (state.bufferedSentences == 1) "sentence" else "sentences"} ready"
     val playbackStatus = when {
         state.error != null && (state.playing || state.wantsToPlay) -> "Issue ahead · Tap for details"
         state.error != null -> "Reading stopped · Tap for details"
         status != state.status -> status
         state.fillingBuffer && state.bufferedSentences < state.bufferTargetSentences -> "Preparing audio · ${state.bufferedSentences} of ${state.bufferTargetSentences} ahead"
         state.fillingBuffer -> "Preparing audio · ${formatTime(state.bufferedListeningMs)} ready"
-        state.playing && state.bufferedSentences > 0 -> "Playing · $ready"
-        state.playing && state.preparing -> "Playing · Preparing next sentence"
-        state.playing -> "Playing"
         state.preparing -> "Preparing audio…"
-        state.bufferedSentences > 0 -> "Paused · $ready"
         else -> status
     }
+    // Ordinary playback needs just the four controls. Keep actionable progress and
+    // recovery visible, while all other details remain available from the menu.
+    val showStatus = state.error != null || state.blockedSentence != null || state.preparing ||
+        state.fillingBuffer || status != state.status
     Surface(modifier = Modifier.pointerInput(Unit) {
         var travel = 0f
         var opened = false
@@ -501,36 +540,25 @@ private val Accent = Color(0xFF126D63)
             change.consume()
         })
     }, color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp), tonalElevation = 1.dp, shadowElevation = 6.dp) {
-        Column(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp)) {
-            Column(Modifier.fillMaxWidth().heightIn(min = 44.dp)
+        Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
+            Column(Modifier.fillMaxWidth().height(48.dp)
                 .clickable(role = androidx.compose.ui.semantics.Role.Button, onClickLabel = "Open reader controls", onClick = showControls)
                 .semantics { contentDescription = "Reader controls. Swipe up or tap to adjust voice, speed, performance and text recognition." },
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                Box(Modifier.width(32.dp).height(3.dp).background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(2.dp)))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.KeyboardArrowUp, null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.primary)
-                    Text("Reader controls", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
-                }
+                Box(Modifier.width(36.dp).height(4.dp).background(MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(2.dp)))
             }
-            if (selected) Surface(color = MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(12.dp), modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    TextButton(onClick = { notifications(); vm.app.playback.start(wordId = selectedWord?.id) }, modifier = Modifier.weight(1f), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp)) {
-                        Icon(Icons.Default.PlayArrow, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSecondaryContainer)
-                        Spacer(Modifier.width(6.dp))
-                        Text("Read from “${selectedWord?.text}”", maxLines = 1, overflow = TextOverflow.Ellipsis, color = MaterialTheme.colorScheme.onSecondaryContainer)
-                    }
-                    Tool(Icons.Default.ContentCopy, "Copy selected word", copySelection)
+            Row(Modifier.fillMaxWidth().heightIn(min = 64.dp).padding(bottom = 6.dp), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = changeSpeed, modifier = Modifier.sizeIn(minWidth = 56.dp, minHeight = 48.dp)
+                    .semantics { contentDescription = "Playback speed, $speed times" }, contentPadding = PaddingValues(4.dp)) {
+                    Text("${String.format(Locale.US, "%.2f", speed).trimEnd('0').trimEnd('.')}×", style = MaterialTheme.typography.titleMedium)
                 }
-            }
-            Row(Modifier.fillMaxWidth().heightIn(min = 68.dp), horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
-                DockAction("${String.format(Locale.US, "%.2f", speed).trimEnd('0').trimEnd('.')}×", Icons.Default.Speed, "Playback speed", changeSpeed, Modifier.weight(1f))
-                IconButton(onClick = { vm.app.playback.sentence(-1) }, enabled = state.page?.words?.isNotEmpty() == true, modifier = Modifier.size(48.dp)) {
+                IconButton(onClick = { vm.app.playback.sentence(-1) }, enabled = state.page?.words?.isNotEmpty() == true, modifier = Modifier.size(52.dp)) {
                     Icon(Icons.Default.SkipPrevious, "Previous sentence", Modifier.size(28.dp))
                 }
                 FilledIconButton(onClick = {
                     if (!state.wantsToPlay && !state.preparing) notifications()
                     if (selected) vm.app.playback.start(wordId = selectedWord?.id) else vm.app.playback.toggle()
-                }, modifier = Modifier.size(64.dp).semantics {
+                }, modifier = Modifier.size(58.dp).semantics {
                     contentDescription = when {
                         preparingPlayback -> "Cancel preparation"
                         state.wantsToPlay -> "Pause"
@@ -539,44 +567,31 @@ private val Accent = Color(0xFF126D63)
                     }
                 }, enabled = state.page?.words?.isNotEmpty() == true || state.preparing || state.wantsToPlay) {
                     Box(contentAlignment = Alignment.Center) {
-                        if (preparingPlayback) CircularProgressIndicator(Modifier.size(52.dp), color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .65f), strokeWidth = 2.dp)
+                        if (preparingPlayback) CircularProgressIndicator(Modifier.size(48.dp), color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .65f), strokeWidth = 2.dp)
                         Icon(when {
                             preparingPlayback -> Icons.Default.Close
                             state.wantsToPlay -> Icons.Default.Pause
                             else -> Icons.Default.PlayArrow
-                        }, null, Modifier.size(34.dp))
+                        }, null, Modifier.size(32.dp))
                     }
                 }
                 IconButton(onClick = {
                     if (state.blockedSentence != null) { notifications(); vm.app.playback.skipBlockedSentence() }
                     else vm.app.playback.sentence(1)
-                }, enabled = state.page?.words?.isNotEmpty() == true || state.blockedSentence != null, modifier = Modifier.size(48.dp)) {
+                }, enabled = state.page?.words?.isNotEmpty() == true || state.blockedSentence != null, modifier = Modifier.size(52.dp)) {
                     Icon(Icons.Default.SkipNext, if (state.blockedSentence != null) "Skip blocked sentence" else "Next sentence", Modifier.size(28.dp))
                 }
-                if (hasOriginal) DockAction(if (original) "Text" else "Original", if (original) Icons.Default.TextFields else Icons.Default.Description,
-                    if (original) "Show reader text" else "Show original page", toggleOriginal, Modifier.weight(1f))
-                else Spacer(Modifier.weight(1f))
             }
-            Row(Modifier.fillMaxWidth().heightIn(min = 28.dp).clickable(onClickLabel = "Reading details", onClick = showDetails).padding(horizontal = 8.dp, vertical = 4.dp),
+            if (showStatus) Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable(onClickLabel = "Reading details", onClick = showDetails).padding(horizontal = 8.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 Icon(when {
                     state.error != null -> Icons.Default.ErrorOutline
-                    state.bufferedSentences > 0 && !state.fillingBuffer -> Icons.Default.CheckCircle
                     else -> Icons.Default.Headphones
                 }, null, Modifier.size(14.dp), tint = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(Modifier.width(6.dp))
-                Text(playbackStatus, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                Text(playbackStatus, style = MaterialTheme.typography.labelMedium,
                     color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
             }
-        }
-    }
-}
-
-@Composable private fun DockAction(text: String, icon: ImageVector, description: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    TextButton(onClick = onClick, modifier = modifier.heightIn(min = 56.dp).semantics { contentDescription = description }, contentPadding = PaddingValues(horizontal = 2.dp, vertical = 4.dp)) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Icon(icon, null, Modifier.size(20.dp))
-            Text(text, style = MaterialTheme.typography.labelSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }

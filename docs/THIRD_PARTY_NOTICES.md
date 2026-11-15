@@ -29,6 +29,10 @@ This inventory is part of the source delivery. No large model weights or third-p
 
 ## Models and voices
 
+### Optional English dictionary
+
+The `english-dictionary-2026.10-v1` pack adapts English Wiktionary definitions from the pinned Kaikki/Wiktextract extraction. It is distributed as CC BY-SA 4.0 data, separately from the application code. Each definition retains its source-page link; contributor attribution, the complete license and source checksum are also bundled under `assets/licenses/dictionary/` and available in Settings → Privacy and licenses. The dictionary sheet exposes source and license links. See [attribution](dictionary/ATTRIBUTION.txt), [source lock](dictionary/source-lock.json) and [conversion/build instructions](dictionary/BUILD.txt). Only identified uncited usage examples are retained; quotation examples, audio and other media are excluded.
+
 ### Reader fonts and resolved runtime notices
 
 OpenDyslexic, Atkinson Hyperlegible Next, Lexend, Literata, Source Serif 4 and Noto Sans are bundled as unmodified upstream font files under SIL OFL 1.1. Their exact revisions, source URLs, sizes, SHA-256s, copyright statements and license texts are in `app/src/main/assets/licenses/fonts/provenance.json` and adjacent folders. `scripts/verify_reader_fonts.py` checks the repository or a built APK/AAB against this inventory. Font license obligations remain separate from the application license; no medical benefit is asserted.

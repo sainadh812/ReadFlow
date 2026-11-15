@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "checks": "Hashes, gzip bytes, complete integrity, schema, metadata, coverage, forms, contraction negation, case distinction, punctuation, missing-word handling",
+  "manifest": {
+    "id": "english-dictionary",
+    "version": "2026.10-v1",
+    "name": "English dictionary",
+    "url": "https://github.com/sainadh812/ReadFlow/releases/download/english-dictionary-2026.10-v1/english-dictionary-2026.10-v1.sqlite.gz",
+    "downloadBytes": 96929395,
+    "downloadSha256": "ad8c3f0f26216ed1ea84228cc4135d0ab9fd49827f8687a19d501a2f412ac40e",
+    "installedBytes": 280727552,
+    "installedSha256": "2abc472051994a9b8109119291d89d51bd44a0ad94041c6768dfa30075785ad8",
+    "schemaVersion": 1,
+    "source": "English Wiktionary via Kaikki / Wiktextract, 2026-10-01 dump",
+    "credits": "English Wiktionary contributors; extracted by Kaikki / Wiktextract (Tatu Ylonen and contributors). Read Assist filtered English text, selected definitions and authored examples, normalized lookup keys, resolved word forms, and converted the data to SQLite. Adapted dictionary data: CC BY-SA 4.0. Each definition links to its Wiktionary source and contributor history.",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  "runtime": {
+    "python": "3.10.12",
+    "sqlite": "3.37.2",
+    "unicode": "13.0.0"
+  },
+  "lookupBenchmark": {
+    "environment": "Linux build machine; these are not Android device measurements",
+    "queries": 300,
+    "medianMs": 0.058,
+    "p95Ms": 0.161,
+    "maxMs": 0.525
+  }
+}

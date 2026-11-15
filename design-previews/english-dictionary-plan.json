@@ -1,0 +1,214 @@
+{
+  "title": "Read Assist English dictionary feature plan",
+  "updated": "2026-11-15",
+  "status": "Implemented for Read Assist 0.2.9/code 25; data checks passed, signed APK release validation in progress.",
+  "request": "Build an English dictionary into the app; plan the new feature first.",
+  "productGoal": "Understand an English word while reading without leaving the document or losing the reading position.",
+  "deliveryPreference": {
+    "proposedDefault": "One-time dictionary download, then entirely offline lookup.",
+    "userConfirmation": "User approved the plan and UI and requested implementation; use the proposed one-time download default.",
+    "alternative": "Bundle the same dictionary in the APK if the user prefers it and the measured package size is acceptable.",
+    "networkUse": "Download and explicitly requested pack updates only; word lookup does not upload documents or queries."
+  },
+  "readerInteraction": {
+    "primaryEntry": "Long press a word in text view or on a PDF word with available text geometry.",
+    "tapBehavior": "Keep the existing single-tap select/read behavior.",
+    "bookmarkCompatibility": "Text-view long press currently creates a bookmark. Move that operation to the explicit Bookmark selected word action already available in the reader menu; do not remove bookmarking.",
+    "alternativeEntries": [
+      "Define selected word in the reader menu.",
+      "Dictionary in the reader menu opens a search field for manually entered words and accessible lookup."
+    ],
+    "playback": [
+      "Pause narration when the dictionary opens, including safe handling of speech preparation already in progress.",
+      "Keep the lookup word separate from the playback selection; opening a definition must not jump narration to that word.",
+      "Retain the document, page, PDF zoom, scroll position and reading position.",
+      "Closing the dictionary leaves narration paused; the existing Play control resumes from the saved reading position."
+    ],
+    "gestures": [
+      "Cancel long press when a drag or pinch begins.",
+      "Disable underlying page-turn gestures while the dictionary sheet is open.",
+      "Allow only one reader modal at a time; dictionary gestures must not open the reader-controls panel.",
+      "Support Close, Android Back and downward sheet dismissal with predictable focus restoration."
+    ],
+    "scans": "Word lookup on scanned pages requires completed OCR and usable word boxes. Manual dictionary search remains available when the page has no recognized text."
+  },
+  "dictionarySheet": {
+    "appearance": "Compact bottom sheet over the current page, matching the existing reader theme; scroll or expand for longer entries and large text.",
+    "initialContent": [
+      "Selected word or resolved headword.",
+      "Part of speech, such as noun or verb.",
+      "A concise source definition.",
+      "One example sentence when an eligible source example is available.",
+      "More meanings when additional senses exist."
+    ],
+    "secondaryContent": [
+      "An unobtrusive pronunciation transcription when available.",
+      "A source and license link.",
+      "An edit/search action for correcting an OCR word or looking up another word."
+    ],
+    "senseSelection": "Keep source senses, prioritize exact spelling, and balance parts of speech and resolved headwords. Show up to 32 senses per lookup, with More meanings exposing the retained result. Do not claim the first meaning is selected for sentence context.",
+    "lighting": "Honor reader window brightness in the sheet. Keep the existing warm overlay scoped to the document viewport, as it is for other reader controls.",
+    "accessibility": "Label controls, support TalkBack and large text, provide comfortable touch targets and dialog focus, and restore focus to the opener on dismissal.",
+    "states": {
+      "notInstalled": "English dictionary with the measured download size and a Download button.",
+      "downloading": "Progress with Cancel; preserve the pending lookup word for completion.",
+      "ready": "Word, meaning and optional example.",
+      "notFound": "No definition found, with an editable search field and dictionary-backed suggestions if available.",
+      "installFailure": "A short download/storage error and Retry; retain any previously working pack."
+    }
+  },
+  "firstVersion": [
+    "Offline English-to-English definitions.",
+    "Examples and part-of-speech labels where available.",
+    "Lookup of supported inflections and spelling variants.",
+    "Manual word search and honest missing-word handling.",
+    "Text and PDF integration, including scanned pages with usable OCR.",
+    "Dictionary download, installed-size display, removal and explicit updates."
+  ],
+  "laterPossibilities": [
+    "Spoken word pronunciation with a preview path that preserves document playback.",
+    "Saved vocabulary and revision practice.",
+    "Translations and multilingual dictionaries.",
+    "Phrase selection and context-sensitive sense ranking."
+  ],
+  "dataDecision": {
+    "preferredCandidate": "A compact pack built from English-language entries in Wiktionary using the maintained Kaikki/Wiktextract raw extraction.",
+    "status": "Production pack built and verified: 1,110,658 definitions, 774,851 headwords and 908,330 explicit form links. Full integrity/hash/coverage checks and 21 production-query checks pass. See docs/dictionary and docs/evidence/reader-0.2.9.",
+    "reason": "A general reading dictionary needs ordinary function words as well as nouns, verbs, adjectives and adverbs. A direct OEWN 2025 sample check found gaps in basic function words.",
+    "preparation": [
+      "Pin the upstream dump date, download checksum and importer version.",
+      "Filter actual English entries; the English-language Wiktionary extraction also contains entries for hundreds of other languages.",
+      "Keep definitions, part of speech, relevant usage labels, examples, explicit forms, spelling variants, optional IPA and attribution metadata.",
+      "Include identified Wiktionary-authored usage examples; exclude third-party quotations, citation examples and unclassified examples unless redistribution rights are established.",
+      "Resolve form-of references with bounded traversal and cycle detection; preserve multiple valid senses.",
+      "Build an indexed, read-only SQLite database and measure the compressed download and installed sizes.",
+      "Publish the pack with its source attribution, license, conversion notes and a reproducible import procedure."
+    ],
+    "coverageGate": [
+      "Check common function words including the, because and although.",
+      "Check exact headwords plus inflections: run/running, child/children and go/went.",
+      "Check resilient, serendipity, well-being, colour/color and photosynthesis.",
+      "Check contractions, possessives, punctuation, case distinctions and representative vocabulary from reading samples.",
+      "Review the readability and ordering of definitions and examples, and report missing or unresolved entries.",
+      "Do not finalize pack distribution or promise an APK size until the generated database has been measured."
+    ],
+    "licensing": "Preserve Wiktionary attribution, source-page URLs, applicable notices and CC BY-SA requirements for redistributed/adapted data. Include license information with the pack and in the app. Do not assume third-party quotations inherit the license of authored dictionary text. Exclude audio/media from the first pack; their licenses require separate handling.",
+    "alternatives": {
+      "openEnglishWordNet": "Compact and useful for many reading words, but not recommended as the sole general English dictionary after the observed coverage gaps.",
+      "onlineApi": "Not a core dependency for the proposed offline feature. An optional online fallback can be considered separately."
+    },
+    "observedOewnSample": {
+      "release": "Open English WordNet 2025 core JSON",
+      "archiveUrl": "https://en-word.net/static/english-wordnet-2025-json.zip",
+      "downloadedBytes": 9986555,
+      "sha256": "7d749f6e2c39e6970e4997839dcf6e42fd281f3c2fae0171d2192bae8cfa4b51",
+      "absentHeadwordsAndForms": [
+        "the",
+        "because",
+        "although"
+      ],
+      "presentHeadwords": [
+        "run",
+        "running",
+        "child",
+        "go",
+        "resilient",
+        "serendipity",
+        "well-being",
+        "colour",
+        "color",
+        "photosynthesis"
+      ],
+      "explicitForms": {
+        "children": "child",
+        "went": "go",
+        "running": "run"
+      },
+      "lesson": "Combine exact entries and explicit form matches: running has its own noun/adjective entries and is also a verb form of run.",
+      "limit": "This is a small verified coverage sample, not an overall coverage score. Upstream archive bytes are not the mobile pack size."
+    },
+    "measuredPack": {
+      "id": "english-dictionary",
+      "version": "2026.10-v1",
+      "downloadBytes": 96929395,
+      "installedBytes": 280727552,
+      "downloadSha256": "ad8c3f0f26216ed1ea84228cc4135d0ab9fd49827f8687a19d501a2f412ac40e",
+      "installedSha256": "2abc472051994a9b8109119291d89d51bd44a0ad94041c6768dfa30075785ad8"
+    }
+  },
+  "implementationPlan": {
+    "storage": "Keep dictionary content in a separate read-only indexed database, outside the existing readflow.db document and bookmark tables.",
+    "repository": "A DictionaryRepository exposes installed state, lookup and suggestions independently of the underlying data source.",
+    "lookup": [
+      "Preserve source text and offsets; use a separate query-normalization path from speech normalization.",
+      "Trim surrounding punctuation, normalize Unicode and smart apostrophes, and preserve meaningful internal apostrophes and hyphens.",
+      "Rank case-sensitive matches first, then normalized aliases; retain case-distinct entries.",
+      "Combine exact definitions with validated form links, deduplicating senses.",
+      "Do not use blind suffix removal or invented definitions for missing words."
+    ],
+    "download": "Reuse suitable verified/resumable download patterns from PackIO and ModelStore, with a separate dictionary manifest and lifecycle. Check free space, bound extraction, verify checksum/schema/integrity, then atomically activate the pack. Interrupted or invalid updates must retain the working version.",
+    "readerIntegration": [
+      "ReadFlowUi.kt: dictionary state, text long press, menu actions, modal gating and lighting.",
+      "OriginalPage.kt: long-press word hit testing using the existing inverse coordinate transform.",
+      "Reader state: hold the lookup word and source location separately from playback selection.",
+      "ReadingCoordinator: use the existing pause/resume control path without changing the playback target or opening a sample document."
+    ],
+    "performance": "Run bounded indexed SQLite queries off the UI thread without loading the complete dictionary into memory. Record host timings separately; Android device latency and memory remain unmeasured.",
+    "privacy": "No query history by default, no account requirement, and no per-word network requests.",
+    "phases": [
+      "Build and assess a data-pack prototype: coverage, licenses, size and lookup performance.",
+      "Implement pack installation, indexed lookup and form resolution.",
+      "Integrate the minimal sheet, manual search and reader interactions.",
+      "Verify behavior and prepare a signed APK when implementation is requested."
+    ]
+  },
+  "acceptanceChecks": [
+    "Installed definitions and manual search work in airplane mode after restarting the app.",
+    "Test missing/corrupt packs, interrupted downloads, insufficient space and update rollback.",
+    "Verify the coverage fixtures and exact-entry plus form resolution, including running, children and went.",
+    "Verify punctuation, contractions, hyphens, spelling variants and case distinctions without altering document text.",
+    "Verify text/PDF long press, rotated and zoomed PDFs, OCR geometry and manual-search fallback.",
+    "Verify long press does not fire during scroll, pinch, pan or page curl, and that no page turns behind the sheet.",
+    "Verify opening during playback or preparation pauses safely, closing retains the reading position, and Play resumes correctly.",
+    "Verify bookmarks remain accessible and dictionary lookup does not alter red failed-sentence marks.",
+    "Verify Back/Close, rotation, large fonts, TalkBack, dark theme and reader lighting.",
+    "Measure installed/download sizes and lookup latency on a representative Android device; run relevant unit tests, release build and lint."
+  ],
+  "sources": [
+    {
+      "label": "Maintained Kaikki raw Wiktionary downloads",
+      "url": "https://kaikki.org/dictionary/rawdata.html"
+    },
+    {
+      "label": "Wiktextract format and extraction tooling",
+      "url": "https://github.com/tatuylonen/wiktextract"
+    },
+    {
+      "label": "Wikimedia content licensing",
+      "url": "https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use#7._Licensing_of_Content"
+    },
+    {
+      "label": "Wiktionary quotation copyright guidance",
+      "url": "https://en.wiktionary.org/wiki/Wiktionary:Quotations#Copyright"
+    },
+    {
+      "label": "Open English WordNet releases",
+      "url": "https://en-word.net/downloads"
+    },
+    {
+      "label": "Open English WordNet license",
+      "url": "https://github.com/globalwordnet/english-wordnet/blob/main/LICENSE.md"
+    },
+    {
+      "label": "Free Dictionary API, evaluated as an online alternative",
+      "url": "https://dictionaryapi.dev/"
+    }
+  ],
+  "designApproval": {
+    "dictionary": "Approved minimal dictionary sheet with meaning, example, More meanings, search and close.",
+    "playbackPanel": "User selected the medium-size variant after reviewing original and compact versions. One row with speed, previous sentence, Play/Pause and next sentence; retain accessible control-panel handle.",
+    "implementationRequested": "2026-11-15",
+    "version": "0.2.9",
+    "versionCode": 25
+  }
+}

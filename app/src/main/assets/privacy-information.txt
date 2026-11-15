@@ -5,6 +5,9 @@ Read Assist reads documents you choose on this device. Imported text, images, PD
 Network access
 Downloading voice, alignment and optional OCR models contacts the model hosts named in their download information, including Hugging Face and GitHub. These hosts receive connection information such as your IP address. Importing a webpage contacts the website you choose. Your documents are not sent to these hosts for recognition or speech generation.
 
+English dictionary
+The optional English dictionary downloads a verified data pack from GitHub when you choose Download. GitHub and its download infrastructure receive connection information such as your IP address and the requested file. After installation, definitions and word search work on your device without per-word network requests. No dictionary search history is stored. Opening a source or license link contacts that website in your browser. Remove the dictionary from its menu to delete the local pack; your documents and bookmarks remain.
+
 Google ML Kit
 The bundled ML Kit SDK can send diagnostics and usage analytics to Google, including device and application information, installation identifiers, performance measurements, configuration, input/output sizes and error codes. Local document processing does not mean that the app and its SDKs never use the internet. Google's disclosure: https://developers.google.com/ml-kit/android-data-disclosure
 

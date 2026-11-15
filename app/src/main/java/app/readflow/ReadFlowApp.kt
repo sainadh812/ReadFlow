@@ -5,6 +5,7 @@ import android.os.PowerManager
 import app.readflow.data.*
 import app.readflow.ingest.*
 import app.readflow.models.ModelStore
+import app.readflow.dictionary.DictionaryRepository
 import app.readflow.playback.ReadingCoordinator
 import app.readflow.playback.PlaybackDiagnostics
 import app.readflow.playback.isMemoryPressureLevel
@@ -20,6 +21,7 @@ class ReadFlowApp : Application() {
         diagnostics, { benchmarks.busy.value }, paddleOcr) }
     val preferences by lazy { PreferenceStore(this) }
     val models by lazy { ModelStore(this) }
+    val dictionary by lazy { DictionaryRepository(this) }
     val ocrModels by lazy { ModelStore(this, "ocr-model-manifests.json", "-ocr") }
     private val teleOcrInstance = lazy { TeleOcrEngine(this, ocrModels) }
     val teleOcr by teleOcrInstance
