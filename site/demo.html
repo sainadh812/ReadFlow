@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="See Read Assist in action: a product walkthrough and a continuous demonstration of background playback, recorded from the Android app.">
+  <meta name="theme-color" content="#f8f4ec">
+  <title>See Read Assist in action</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f8f4ec;
+      --surface: #fffcf5;
+      --ink: #192b22;
+      --muted: #5e6258;
+      --green: #214f3a;
+      --sage: #e2e6d7;
+      --line: #d8d4c7;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-padding-top: 1.5rem; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 1rem/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--green); text-underline-offset: .2em; }
+    a:hover { text-decoration-thickness: .12em; }
+    a:focus-visible, video:focus-visible {
+      outline: 3px solid var(--green);
+      outline-offset: 5px;
+    }
+    .skip-link {
+      position: absolute;
+      top: .75rem;
+      left: 1rem;
+      z-index: 2;
+      padding: .6rem 1rem;
+      background: var(--surface);
+      transform: translateY(-200%);
+    }
+    .skip-link:focus { transform: translateY(0); }
+    .shell { width: min(100% - 3rem, 70rem); margin-inline: auto; }
+    .masthead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-block: 1.5rem;
+      border-bottom: 1px solid var(--line);
+    }
+    .wordmark {
+      margin: 0;
+      font: 600 1.55rem/1.2 Georgia, "Times New Roman", serif;
+      letter-spacing: -.04em;
+    }
+    .masthead nav { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; font-size: .875rem; }
+    .masthead nav a { color: var(--muted); }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      align-items: end;
+      gap: 2rem 4rem;
+      padding-block: clamp(3rem, 7vw, 5.5rem) 3.5rem;
+    }
+    .eyebrow {
+      margin: 0 0 1.25rem;
+      color: var(--green);
+      font-size: .72rem;
+      font-weight: 650;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; font-weight: 400; }
+    h1 {
+      margin: 0;
+      font-size: clamp(3.2rem, 6.6vw, 5.25rem);
+      line-height: 1.03;
+      letter-spacing: -.055em;
+    }
+    h1 span { display: block; }
+    .hero-copy { max-width: 27rem; padding-bottom: .25rem; }
+    .intro { margin: 0 0 1.6rem; color: var(--muted); font-size: 1.08rem; line-height: 1.75; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3rem;
+      padding: .75rem 1.35rem;
+      border: 1px solid var(--green);
+      border-radius: .55rem;
+      background: var(--green);
+      color: #fff;
+      font-size: .9rem;
+      font-weight: 600;
+      line-height: 1.5;
+      text-decoration: none;
+    }
+    .button:hover { background: #173d2d; }
+    .compatibility { margin: .75rem 0 0; color: var(--muted); font-size: .75rem; }
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: .4rem 1rem;
+      padding-block: 1.3rem;
+      border-top: 1px solid var(--line);
+    }
+    .section-heading h2 { margin: 0; font-size: 1.8rem; letter-spacing: -.035em; }
+    .section-heading p { margin: 0; color: var(--muted); font-size: .8rem; }
+    .video-grid { display: grid; gap: 1.5rem; }
+    .video-card {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      background: var(--surface);
+    }
+    .card-heading { padding: 1.5rem 1.5rem 1.2rem; }
+    .card-meta { display: flex; align-items: center; gap: .7rem; margin-bottom: .6rem; }
+    .number { color: var(--muted); font-size: .75rem; font-variant-numeric: tabular-nums; }
+    .tag {
+      padding: .15rem .6rem;
+      border-radius: 2rem;
+      background: var(--sage);
+      color: #173d2d;
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .025em;
+    }
+    .card-heading h3 { margin: 0; font-size: clamp(1.55rem, 3vw, 1.9rem); line-height: 1.25; letter-spacing: -.035em; }
+    .card-heading p { max-width: 42rem; margin: .65rem 0 0; color: var(--muted); font-size: .875rem; }
+    .player-stage {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      background: #eae5db;
+      border-block: 1px solid var(--line);
+    }
+    video {
+      display: block;
+      width: 100%;
+      max-width: 18.5rem;
+      aspect-ratio: 9 / 16;
+      height: auto;
+      object-fit: contain;
+      border: 1px solid #2b3a31;
+      border-radius: .4rem;
+      background: #121914;
+      box-shadow: 0 .6rem 1.5rem #192b221a;
+    }
+    .video-card--walkthrough video { max-width: none; aspect-ratio: 16 / 9; }
+    .video-card--background {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr auto;
+    }
+    .video-card--background .card-heading { padding: 2rem; }
+    .video-card--background .player-stage {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      border-block: 0;
+      border-left: 1px solid var(--line);
+      background: #e2e6d7;
+    }
+    .video-card--background .card-footer { padding: 1rem 2rem 2rem; }
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: .3rem 1rem;
+      margin-top: auto;
+      padding: 1rem 1.5rem;
+      font-size: .8rem;
+    }
+    .card-footer p { margin: 0; color: var(--muted); font-size: .75rem; }
+    .recording-note {
+      display: grid;
+      grid-template-columns: 1fr 2.1fr;
+      gap: 1.25rem 3rem;
+      padding-block: 2.5rem;
+    }
+    .recording-note h2 { margin: 0; font-size: 1.5rem; line-height: 1.35; letter-spacing: -.025em; }
+    .recording-note p { margin: 0; color: var(--muted); font-size: .875rem; }
+    .recording-note p + p { margin-top: .75rem; }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-block: 1.5rem 2rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .75rem;
+    }
+    .footer p { margin: 0; }
+    .footer nav { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; }
+    @media (max-width: 44rem) {
+      .shell { width: min(100% - 2rem, 35rem); }
+      .masthead { align-items: baseline; padding-block: 1.25rem; }
+      .wordmark { font-size: 1.4rem; }
+      .masthead nav { gap: .5rem 1rem; font-size: .8rem; }
+      .hero { grid-template-columns: 1fr; gap: 1.75rem; padding-block: 3rem 2.5rem; }
+      .hero-copy { max-width: 31rem; }
+      .intro { font-size: 1rem; }
+      .video-card--background { display: flex; }
+      .video-card--background .card-heading { padding: 1.5rem 1.5rem 1.2rem; }
+      .video-card--background .player-stage { border-block: 1px solid var(--line); border-left: 0; }
+      .video-card--background .card-footer { padding: 1rem 1.5rem; }
+      .recording-note { grid-template-columns: 1fr; gap: .75rem; padding-block: 2rem; }
+    }
+    @media (max-width: 23rem) {
+      .masthead { align-items: flex-start; flex-direction: column; gap: .75rem; }
+      .card-heading, .card-footer,
+      .video-card--background .card-heading, .video-card--background .card-footer { padding-inline: 1rem; }
+      .player-stage { padding: 1rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    @media print {
+      .skip-link, video { display: none; }
+      body { background: white; color: black; }
+      .hero { padding-block: 2rem; }
+      .video-card { break-inside: avoid; }
+      .player-stage { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="masthead shell">
+    <p class="wordmark">Read Assist</p>
+    <nav aria-label="Main navigation">
+      <a href="#watch">Watch the demos</a>
+      <a href="privacy.html">Privacy</a>
+    </nav>
+  </header>
+
+  <main id="main" class="shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Your documents. Your pace.</p>
+        <h1 id="page-title">Read. Listen.<span>Understand.</span></h1>
+      </div>
+      <div class="hero-copy">
+        <p class="intro">A comfortable place for your reading. See the Read Assist Android app in action, from the page in front of you to listening on the move.</p>
+        <a class="button" href="https://github.com/sainadh812/ReadFlow/releases/download/v0.3.1-play-candidate/Read-Assist-0.3.1-upload-signed.apk">Download Android APK</a>
+        <p class="compatibility">v0.3.1 release candidate &middot; Android 15+ &middot; ARM64<br>
+          <a href="https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.1-play-candidate">Release details on GitHub</a></p>
+      </div>
+    </section>
+
+    <section id="watch" aria-labelledby="watch-title">
+      <div class="section-heading">
+        <h2 id="watch-title">A look inside</h2>
+        <p>Real app recordings &middot; Play at your own pace</p>
+      </div>
+      <div class="video-grid">
+        <article class="video-card video-card--walkthrough" aria-labelledby="walkthrough-title">
+          <div class="card-heading">
+            <div class="card-meta"><span class="number" aria-hidden="true">01</span><span class="tag">Product walkthrough</span></div>
+            <h3 id="walkthrough-title">Make reading your own</h3>
+            <p id="walkthrough-description">A guided look at the reader, playback controls and reading preferences.</p>
+          </div>
+          <div class="player-stage">
+            <video controls playsinline preload="metadata" aria-labelledby="walkthrough-title" aria-describedby="walkthrough-description capture-description">
+              <source src="media/Read-Assist-0.3.1-product-demo.mp4" type="video/mp4">
+              <p>Your browser cannot play this video. <a href="media/Read-Assist-0.3.1-product-demo.mp4" download>Download the Read Assist product walkthrough (MP4)</a>.</p>
+            </video>
+          </div>
+          <div class="card-footer">
+            <a href="media/Read-Assist-0.3.1-product-demo.mp4" download>Download walkthrough <span aria-hidden="true">&#8595;</span></a>
+            <p>MP4 &middot; Edited walkthrough</p>
+          </div>
+        </article>
+
+        <article class="video-card video-card--background" aria-labelledby="background-title">
+          <div class="card-heading">
+            <div class="card-meta"><span class="number" aria-hidden="true">02</span><span class="tag">Background playback</span></div>
+            <h3 id="background-title">Keep the story going</h3>
+            <p id="background-description">Follow narration beyond the reader and use the playback controls in the Android notification.</p>
+          </div>
+          <div class="player-stage">
+            <video controls playsinline preload="metadata" aria-labelledby="background-title" aria-describedby="background-description capture-description">
+              <source src="media/Read-Assist-0.3.1-foreground-service.mp4" type="video/mp4">
+              <p>Your browser cannot play this video. <a href="media/Read-Assist-0.3.1-foreground-service.mp4" download>Download the continuous background-playback demonstration (MP4)</a>.</p>
+            </video>
+          </div>
+          <div class="card-footer">
+            <a href="media/Read-Assist-0.3.1-foreground-service.mp4" download>Download playback demo <span aria-hidden="true">&#8595;</span></a>
+            <p>MP4 &middot; Continuous recording</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <aside class="recording-note" aria-labelledby="capture-title">
+      <h2 id="capture-title">Recorded from the app</h2>
+      <div>
+        <p id="capture-description">These videos show Read Assist running in an Android emulator with project-created sample documents. The product walkthrough is edited for length. The background-playback demonstration keeps the continuous original screen recording.</p>
+        <p>See the <a href="MEDIA_CREDITS.md">recording notes and content credits</a> for capture provenance and licenses.</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="footer shell">
+    <p>Read Assist &middot; A little more room to read.</p>
+    <nav aria-label="Footer navigation">
+      <a href="privacy.html">Privacy policy</a>
+      <a href="https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.1-play-candidate">GitHub release</a>
+      <a href="mailto:xperimenting.ai@gmail.com">Support</a>
+    </nav>
+  </footer>
+</body>
+</html>
