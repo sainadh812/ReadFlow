@@ -242,6 +242,30 @@ class Capture:
             self.swipe()
         raise CaptureError(f"Document title is not visible: {BOOK}")
 
+    def first_page(self):
+        if self.find("Page 1 of 3", contains=True) is not None:
+            return
+        self.tap("Reader menu")
+        self.tap("Contents and bookmarks")
+        self.wait("Contents")
+        self.tap("Page 1")
+        self.wait("Page 1 of 3", contains=True)
+
+    @staticmethod
+    def media_state(dump):
+        """Read this app's state, including Android's named form PLAYING(3)."""
+        for match in re.finditer(r"(?m)^(?P<indent>[ \t]*)package=" + re.escape(PACKAGE) + r"[ \t]*$", dump):
+            indent = len(match.group("indent"))
+            for line in dump[match.end():].splitlines():
+                if not line.strip():
+                    continue
+                if len(line) - len(line.lstrip()) < indent or line.strip().startswith("package="):
+                    break
+                state = re.match(r"\s*state=(?:PlaybackState\s*\{state=)?(?:[A-Z_]+\()?([0-9]+)\)?(?=[,\s}]|$)", line)
+                if state:
+                    return int(state.group(1))
+        return None
+
     def seed(self, models, dictionary):
         args = ["shell", "am", "instrument", "-w", "-r", "-e", "class", "app.readflow.StoreDemoSeedTest",
                 "-e", "demo", "true", "-e", "models", str(models).lower(),
@@ -269,6 +293,7 @@ class Capture:
     def reader(self):
         self.open_book()
         self.wait("PDF view", timeout=30)
+        self.first_page()
         self.tap("PDF view")
         with self.recording("02-reading"):
             self.screenshot("03-reader-pdf")
@@ -336,6 +361,7 @@ class Capture:
 
     def playback(self):
         self.recover_reader()
+        self.first_page()
         self.tap("Text view")
         self.tap("Play")
         self.wait("Pause", timeout=150)
@@ -344,7 +370,7 @@ class Capture:
         playing = False
         while time.monotonic() < deadline:
             media = self.shell("dumpsys", "media_session")
-            if PACKAGE in media and re.search(r"state=(?:PlaybackState\s*\{state=)?3\b", media):
+            if self.media_state(media) == 3:
                 playing = True
                 break
             time.sleep(2)
@@ -366,7 +392,7 @@ class Capture:
             time.sleep(3)
             background_media = self.shell("dumpsys", "media_session")
             (self.output / "background-media-session.txt").write_text(background_media)
-            if PACKAGE not in background_media or not re.search(r"state=(?:PlaybackState\s*\{state=)?3\b", background_media):
+            if self.media_state(background_media) != 3:
                 raise CaptureError("Media session did not remain PLAYING after Home.")
             (self.output / "background-service.txt").write_text(self.shell("dumpsys", "activity", "services", PACKAGE))
             self.shell("cmd", "statusbar", "expand-notifications", check=False)
@@ -378,7 +404,7 @@ class Capture:
             self.screenshot("16-notification-paused")
             paused_media = self.shell("dumpsys", "media_session")
             (self.output / "playback-session-paused.txt").write_text(paused_media)
-            if PACKAGE not in paused_media or not re.search(r"state=(?:PlaybackState\s*\{state=)?2\b", paused_media):
+            if self.media_state(paused_media) != 2:
                 raise CaptureError("Notification control did not result in a PAUSED media session.")
         self.report["backgroundPlaybackEvidenceRecorded"] = True
         self.back()
