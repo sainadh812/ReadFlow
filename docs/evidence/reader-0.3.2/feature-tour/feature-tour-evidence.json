@@ -1,0 +1,187 @@
+{
+  "artifact": "Read-Assist-0.3.2-feature-tour.mp4",
+  "localOriginalFilename": "Read-Assist-0.3.2-product-demo.mp4",
+  "sha256": "dc45e670e69ceeb38b07248fce4e23b4fd2e612d0180f134eca487b52213fef3",
+  "bytes": 1206617,
+  "durationSeconds": 49.02,
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "purpose": "Feature walkthrough from actual app recordings; no foreground-service playback proof included.",
+  "foregroundServiceProofIncluded": false,
+  "narrationDemonstrationIncluded": false,
+  "syntheticFootageAdded": false,
+  "syntheticUiAdded": false,
+  "musicAdded": false,
+  "sourcePlaybackSpeedMultiplier": 1,
+  "humanListeningPerformed": false,
+  "visualReview": "Raw feature frames, genuine PDF curl sequence, and full editorial output frames inspected. Ten matching-time source/output phone-frame comparisons passed.",
+  "sourceCaptureWorkflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+  "sourceCaptureReportSha256": "8dbd48f74c5f57068303b42779228e02089ddad7d56775052dc4cfc893661a6f",
+  "sourceCaptureStatus": "partial; five selected feature clips are decoded and reviewed; no claim of a successful full capture run.",
+  "appVersion": "0.3.2",
+  "versionCode": 28,
+  "emulatorApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+  "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+  "decodeValidation": "passed",
+  "timelineVerification": {
+    "file": "timeline-verification/report.json",
+    "sha256": "38c038085df47db9615cdc803b810c65f63c3a89d2e3f1b794c8fe36344e0262",
+    "comparisons": 10,
+    "allPassed": true
+  },
+  "fullBuildEvidence": {
+    "file": "video-build-report.json",
+    "sha256": "b1b28b45f14294196258cb2bf0c9c8ffffaebd78ad2afe8b79dc5ea5b7162972"
+  },
+  "recipe": {
+    "file": "edit-recipe-used.json",
+    "sha256": "0b8744404155148e20b83f95fd8af38a95b9bcd238f9a45df7a80df28023dab0"
+  },
+  "credits": {
+    "file": "MEDIA_CREDITS.md",
+    "sha256": "488bc672dd90410ece2f45bd7631a68208083836dd9ffba7cb397acec1dcf008"
+  },
+  "segments": [
+    {
+      "file": "01-library.mp4",
+      "start": 7.0,
+      "duration": 7.0,
+      "title": "A place for\nevery page",
+      "caption": "Bring PDFs, images and saved web articles into your library.",
+      "sourceSha256": "dc26c0093a177ce8066287dfb402e7344147e45f2e8b6677d719b72dfeacc597",
+      "measuredSource": {
+        "durationSeconds": 15.54,
+        "width": 1080,
+        "height": 1920,
+        "fps": 2.57,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "01-library-audio.wav",
+      "sourceAudioSha256": "3bcd392bad15a75118c0772f42bddc82c50b66b442539d64ba4ad1f29af79093",
+      "appliedAudioLeadSeconds": 0.000400616000035825,
+      "output": "render-parts/scene-00.mp4"
+    },
+    {
+      "file": "02-reading.mp4",
+      "start": 2.0,
+      "duration": 6.0,
+      "title": "Turn the page.\nKeep your place.",
+      "caption": "Swipe forward like a book. Choose the original PDF or a clear text view.",
+      "sourceSha256": "7b4b9bd8a2720aa90492a0f2807e9be4b1782aed12b1f701a278a790f79e27aa",
+      "measuredSource": {
+        "durationSeconds": 25.58,
+        "width": 1080,
+        "height": 1920,
+        "fps": 1.99,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "02-reading-audio.wav",
+      "sourceAudioSha256": "0d686f23f1452519594b6b4b5fb3e127633362bf66cb1d804f527efaa40db538",
+      "appliedAudioLeadSeconds": 0.0005782529999578401,
+      "output": "render-parts/scene-01.mp4"
+    },
+    {
+      "file": "03-reading-light.mp4",
+      "start": 15.0,
+      "duration": 9.0,
+      "title": "Read in your\nown light",
+      "caption": "Adjust brightness and add a warm glow from the reader controls.",
+      "sourceSha256": "08f3b776a8067a5e87f993ad620ff5102c360bc2e6fd041e5fae2c88912ff2c6",
+      "measuredSource": {
+        "durationSeconds": 49.69,
+        "width": 1080,
+        "height": 1920,
+        "fps": 3.2,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "03-reading-light-audio.wav",
+      "sourceAudioSha256": "85a0c423a690f1608febad83494b0383b74d9dbe244ce7929fc5d29ec4e24c30",
+      "appliedAudioLeadSeconds": 0.0011277220000351917,
+      "output": "render-parts/scene-02.mp4"
+    },
+    {
+      "file": "03-reading-light.mp4",
+      "start": 43.0,
+      "duration": 5.0,
+      "title": "Set your pace",
+      "caption": "Keep voice, reading speed and accuracy controls close at hand.",
+      "sourceSha256": "08f3b776a8067a5e87f993ad620ff5102c360bc2e6fd041e5fae2c88912ff2c6",
+      "measuredSource": {
+        "durationSeconds": 49.69,
+        "width": 1080,
+        "height": 1920,
+        "fps": 3.2,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "03-reading-light-audio.wav",
+      "sourceAudioSha256": "85a0c423a690f1608febad83494b0383b74d9dbe244ce7929fc5d29ec4e24c30",
+      "appliedAudioLeadSeconds": 0.0011277220000351917,
+      "output": "render-parts/scene-03.mp4"
+    },
+    {
+      "file": "04-dictionary.mp4",
+      "start": 30.0,
+      "duration": 8.0,
+      "title": "Stay with\nthe story",
+      "caption": "Look up English words in the reader. Definitions work offline after download.",
+      "sourceSha256": "6e8e8cb4fc76eecabf2480149f42d5152b22f3e17cc4a6fe2c7114618ce1629b",
+      "measuredSource": {
+        "durationSeconds": 43.63,
+        "width": 1080,
+        "height": 1920,
+        "fps": 4.86,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "04-dictionary-audio.wav",
+      "sourceAudioSha256": "2e8132e2ab2a1ee40cf0add104510df877eda956480a0f8dde10061a8cf40563",
+      "appliedAudioLeadSeconds": 0.0009553209999921819,
+      "output": "render-parts/scene-04.mp4"
+    },
+    {
+      "file": "05-library-themes.mp4",
+      "start": 5.5,
+      "duration": 7.0,
+      "title": "Make it yours",
+      "caption": "Choose Warm Library, Modern Focus or Night Reader in Settings.",
+      "sourceSha256": "e49eafff544902d9255b5338ce0d98a40e9bd3be0e9e2f3ef27b5cafabd2ff5e",
+      "measuredSource": {
+        "durationSeconds": 47.98,
+        "width": 1080,
+        "height": 1920,
+        "fps": 3.92,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "05-library-themes-audio.wav",
+      "sourceAudioSha256": "6214b94b6c7400ec058a8ae0cd68db72348bbe164f2fab1cc3eb59478a847cfd",
+      "appliedAudioLeadSeconds": 0.0004040310000164027,
+      "output": "render-parts/scene-05.mp4"
+    },
+    {
+      "file": "05-library-themes.mp4",
+      "start": 22.5,
+      "duration": 7.0,
+      "title": "A quieter look",
+      "caption": "Night Reader gives your library a darker palette.",
+      "sourceSha256": "e49eafff544902d9255b5338ce0d98a40e9bd3be0e9e2f3ef27b5cafabd2ff5e",
+      "measuredSource": {
+        "durationSeconds": 47.98,
+        "width": 1080,
+        "height": 1920,
+        "fps": 3.92,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "05-library-themes-audio.wav",
+      "sourceAudioSha256": "6214b94b6c7400ec058a8ae0cd68db72348bbe164f2fab1cc3eb59478a847cfd",
+      "appliedAudioLeadSeconds": 0.0004040310000164027,
+      "output": "render-parts/scene-06.mp4"
+    }
+  ]
+}

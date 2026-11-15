@@ -1,0 +1,220 @@
+{
+  "startedAt": "2026-11-15T19:56:13.604892+00:00",
+  "status": "complete_with_fgs_review_pending",
+  "createdBy": "scripts/build_demo_video.py",
+  "layout": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "fullPortraitFrame": [
+      1240,
+      60,
+      540,
+      960
+    ]
+  },
+  "speedMultiplier": 1,
+  "musicAdded": false,
+  "syntheticUiAdded": false,
+  "sourceFootageModified": false,
+  "notes": [
+    "Editorial titles and warm background are outside the app footage.",
+    "Cuts omit time between scenes; retained footage plays at its original speed.",
+    "Models may have been prepared before capture; this is not a cold-start performance demonstration.",
+    "Audio signal checks do not establish audible speech quality or exact synchronization."
+  ],
+  "ffmpeg": "ffmpeg version n9.0.2-17-g2a571b6068-20260930 Copyright (c) 2000-2026 the FFmpeg developers",
+  "captureReportSha256": "8dbd48f74c5f57068303b42779228e02089ddad7d56775052dc4cfc893661a6f",
+  "captureProvenance": {
+    "sourceCommit": "29f768dfde141cf0c319b561037c600f7ebd6af7",
+    "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43753190368",
+    "deviceFingerprint": "google/sdk_gphone64_x86_64/emu64xa:15/AE3A.240806.043/12960925:userdebug/dev-keys",
+    "deviceAbi": "x86_64",
+    "captureKind": "authentic emulator recording",
+    "status": "partial",
+    "errors": [
+      {
+        "section": "playback",
+        "error": "Media session did not confirm actual PLAYING; foreground-service proof incomplete.",
+        "time": "2026-11-15T19:46:15.047518+00:00"
+      },
+      {
+        "section": "reader",
+        "error": "Visible control not found: Page 2 of 3",
+        "time": "2026-11-15T19:47:12.743414+00:00"
+      }
+    ],
+    "notes": [
+      "Generated original CC0 demo documents; no user documents.",
+      "Emulator-specific signing and ABI; not the Play-delivered ARM64 artifact.",
+      "No synthetic UI, word highlights, playback state, or performance measurements."
+    ]
+  },
+  "recipeSha256": "1876cd5f66b8322f70a4f6d57a4ddeb56912f15c4bc2d79cf4b7a32423ec471d",
+  "segments": [
+    {
+      "file": "01-library.mp4",
+      "start": 7.0,
+      "duration": 7.0,
+      "title": "A place for\nevery page",
+      "caption": "Bring PDFs, images and saved web articles into your library.",
+      "sourceSha256": "dc26c0093a177ce8066287dfb402e7344147e45f2e8b6677d719b72dfeacc597",
+      "measuredSource": {
+        "durationSeconds": 15.54,
+        "width": 1080,
+        "height": 1920,
+        "fps": 2.57,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "01-library-audio.wav",
+      "sourceAudioSha256": "3bcd392bad15a75118c0772f42bddc82c50b66b442539d64ba4ad1f29af79093",
+      "appliedAudioLeadSeconds": 0.000400616000035825,
+      "output": "render-parts/scene-00.mp4"
+    },
+    {
+      "file": "02-reading.mp4",
+      "start": 2.0,
+      "duration": 6.0,
+      "title": "Turn the page.\nKeep your place.",
+      "caption": "Swipe forward like a book. Choose the original PDF or a clear text view.",
+      "sourceSha256": "7b4b9bd8a2720aa90492a0f2807e9be4b1782aed12b1f701a278a790f79e27aa",
+      "measuredSource": {
+        "durationSeconds": 25.58,
+        "width": 1080,
+        "height": 1920,
+        "fps": 1.99,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "02-reading-audio.wav",
+      "sourceAudioSha256": "0d686f23f1452519594b6b4b5fb3e127633362bf66cb1d804f527efaa40db538",
+      "appliedAudioLeadSeconds": 0.0005782529999578401,
+      "output": "render-parts/scene-01.mp4"
+    },
+    {
+      "file": "03-reading-light.mp4",
+      "start": 15.0,
+      "duration": 9.0,
+      "title": "Read in your\nown light",
+      "caption": "Adjust brightness and add a warm glow from the reader controls.",
+      "sourceSha256": "08f3b776a8067a5e87f993ad620ff5102c360bc2e6fd041e5fae2c88912ff2c6",
+      "measuredSource": {
+        "durationSeconds": 49.69,
+        "width": 1080,
+        "height": 1920,
+        "fps": 3.2,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "03-reading-light-audio.wav",
+      "sourceAudioSha256": "85a0c423a690f1608febad83494b0383b74d9dbe244ce7929fc5d29ec4e24c30",
+      "appliedAudioLeadSeconds": 0.0011277220000351917,
+      "output": "render-parts/scene-02.mp4"
+    },
+    {
+      "file": "03-reading-light.mp4",
+      "start": 43.0,
+      "duration": 5.0,
+      "title": "Set your pace",
+      "caption": "Keep voice, reading speed and accuracy controls close at hand.",
+      "sourceSha256": "08f3b776a8067a5e87f993ad620ff5102c360bc2e6fd041e5fae2c88912ff2c6",
+      "measuredSource": {
+        "durationSeconds": 49.69,
+        "width": 1080,
+        "height": 1920,
+        "fps": 3.2,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "03-reading-light-audio.wav",
+      "sourceAudioSha256": "85a0c423a690f1608febad83494b0383b74d9dbe244ce7929fc5d29ec4e24c30",
+      "appliedAudioLeadSeconds": 0.0011277220000351917,
+      "output": "render-parts/scene-03.mp4"
+    },
+    {
+      "file": "04-dictionary.mp4",
+      "start": 30.0,
+      "duration": 8.0,
+      "title": "Stay with\nthe story",
+      "caption": "Look up English words in the reader. Definitions work offline after download.",
+      "sourceSha256": "6e8e8cb4fc76eecabf2480149f42d5152b22f3e17cc4a6fe2c7114618ce1629b",
+      "measuredSource": {
+        "durationSeconds": 43.63,
+        "width": 1080,
+        "height": 1920,
+        "fps": 4.86,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "04-dictionary-audio.wav",
+      "sourceAudioSha256": "2e8132e2ab2a1ee40cf0add104510df877eda956480a0f8dde10061a8cf40563",
+      "appliedAudioLeadSeconds": 0.0009553209999921819,
+      "output": "render-parts/scene-04.mp4"
+    },
+    {
+      "file": "05-library-themes.mp4",
+      "start": 5.5,
+      "duration": 7.0,
+      "title": "Make it yours",
+      "caption": "Choose Warm Library, Modern Focus or Night Reader in Settings.",
+      "sourceSha256": "e49eafff544902d9255b5338ce0d98a40e9bd3be0e9e2f3ef27b5cafabd2ff5e",
+      "measuredSource": {
+        "durationSeconds": 47.98,
+        "width": 1080,
+        "height": 1920,
+        "fps": 3.92,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "05-library-themes-audio.wav",
+      "sourceAudioSha256": "6214b94b6c7400ec058a8ae0cd68db72348bbe164f2fab1cc3eb59478a847cfd",
+      "appliedAudioLeadSeconds": 0.0004040310000164027,
+      "output": "render-parts/scene-05.mp4"
+    },
+    {
+      "file": "05-library-themes.mp4",
+      "start": 22.5,
+      "duration": 7.0,
+      "title": "A quieter look",
+      "caption": "Night Reader gives your library a darker palette.",
+      "sourceSha256": "e49eafff544902d9255b5338ce0d98a40e9bd3be0e9e2f3ef27b5cafabd2ff5e",
+      "measuredSource": {
+        "durationSeconds": 47.98,
+        "width": 1080,
+        "height": 1920,
+        "fps": 3.92,
+        "hasVideo": true,
+        "hasAudio": false
+      },
+      "sourceAudio": "05-library-themes-audio.wav",
+      "sourceAudioSha256": "6214b94b6c7400ec058a8ae0cd68db72348bbe164f2fab1cc3eb59478a847cfd",
+      "appliedAudioLeadSeconds": 0.0004040310000164027,
+      "output": "render-parts/scene-06.mp4"
+    }
+  ],
+  "productDemo": {
+    "file": "Read-Assist-0.3.2-product-demo.mp4",
+    "sha256": "dc45e670e69ceeb38b07248fce4e23b4fd2e612d0180f134eca487b52213fef3",
+    "bytes": 1206617,
+    "probe": {
+      "durationSeconds": 49.02,
+      "width": 1920,
+      "height": 1080,
+      "fps": 30.0,
+      "hasVideo": true,
+      "hasAudio": true
+    },
+    "decodeValidation": "passed",
+    "expectedDurationSeconds": 49.0
+  },
+  "foregroundService": {
+    "rawVideoUnchanged": true,
+    "foregroundServiceReady": false,
+    "automaticChecksPassed": false,
+    "playbackReviewConfirmed": false,
+    "unavailable": "Background-playback clip is missing."
+  },
+  "creditsSha256": "488bc672dd90410ece2f45bd7631a68208083836dd9ffba7cb397acec1dcf008",
+  "finishedAt": "2026-11-15T19:56:46.386021+00:00"
+}

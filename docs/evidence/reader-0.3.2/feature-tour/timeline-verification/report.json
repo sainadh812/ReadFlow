@@ -1,0 +1,109 @@
+{
+  "method": "Pixel comparison of full rendered phone region against identical source times sampled at30fps; losses from video compression are allowed. No source time remapping.",
+  "productSha256": "dc45e670e69ceeb38b07248fce4e23b4fd2e612d0180f134eca487b52213fef3",
+  "expectedFps": 30,
+  "measuredProduct": {
+    "durationSeconds": 49.02,
+    "width": 1920,
+    "height": 1080,
+    "fps": 30.0,
+    "hasVideo": true,
+    "hasAudio": true
+  },
+  "frames": [
+    {
+      "segment": 0,
+      "source": "01-library.mp4",
+      "sourceTimeSeconds": 9.5,
+      "outputTimeSeconds": 2.5,
+      "meanAbsoluteChannelDifference": 1.524,
+      "rmsChannelDifference": 1.978,
+      "passed": true
+    },
+    {
+      "segment": 1,
+      "source": "02-reading.mp4",
+      "sourceTimeSeconds": 4.2,
+      "outputTimeSeconds": 9.2,
+      "meanAbsoluteChannelDifference": 1.564,
+      "rmsChannelDifference": 2.34,
+      "passed": true
+    },
+    {
+      "segment": 1,
+      "source": "02-reading.mp4",
+      "sourceTimeSeconds": 4.5,
+      "outputTimeSeconds": 9.5,
+      "meanAbsoluteChannelDifference": 1.576,
+      "rmsChannelDifference": 2.394,
+      "passed": true
+    },
+    {
+      "segment": 1,
+      "source": "02-reading.mp4",
+      "sourceTimeSeconds": 4.8,
+      "outputTimeSeconds": 9.8,
+      "meanAbsoluteChannelDifference": 1.546,
+      "rmsChannelDifference": 2.386,
+      "passed": true
+    },
+    {
+      "segment": 1,
+      "source": "02-reading.mp4",
+      "sourceTimeSeconds": 5.2,
+      "outputTimeSeconds": 10.2,
+      "meanAbsoluteChannelDifference": 1.436,
+      "rmsChannelDifference": 1.798,
+      "passed": true
+    },
+    {
+      "segment": 2,
+      "source": "03-reading-light.mp4",
+      "sourceTimeSeconds": 17.5,
+      "outputTimeSeconds": 15.5,
+      "meanAbsoluteChannelDifference": 1.018,
+      "rmsChannelDifference": 1.662,
+      "passed": true
+    },
+    {
+      "segment": 3,
+      "source": "03-reading-light.mp4",
+      "sourceTimeSeconds": 45.5,
+      "outputTimeSeconds": 24.5,
+      "meanAbsoluteChannelDifference": 1.002,
+      "rmsChannelDifference": 1.61,
+      "passed": true
+    },
+    {
+      "segment": 4,
+      "source": "04-dictionary.mp4",
+      "sourceTimeSeconds": 32.5,
+      "outputTimeSeconds": 29.5,
+      "meanAbsoluteChannelDifference": 0.993,
+      "rmsChannelDifference": 1.59,
+      "passed": true
+    },
+    {
+      "segment": 5,
+      "source": "05-library-themes.mp4",
+      "sourceTimeSeconds": 8.0,
+      "outputTimeSeconds": 37.5,
+      "meanAbsoluteChannelDifference": 1.345,
+      "rmsChannelDifference": 1.887,
+      "passed": true
+    },
+    {
+      "segment": 6,
+      "source": "05-library-themes.mp4",
+      "sourceTimeSeconds": 25.0,
+      "outputTimeSeconds": 44.5,
+      "meanAbsoluteChannelDifference": 1.393,
+      "rmsChannelDifference": 1.905,
+      "passed": true
+    }
+  ],
+  "allFramesPassed": true,
+  "wholeFrameReviewContactSheets": [
+    "whole-frame-contact-00.jpg"
+  ]
+}
