@@ -63,6 +63,8 @@ class FakeAPI:
 class PublishingOrchestrationTest(unittest.TestCase):
     def publish(self, api):
         with tempfile.TemporaryDirectory() as tmp, \
+                patch.object(publisher, "AAB_SHA256", "a" * 64), \
+                patch.object(publisher, "AAB_BYTES", 1234), \
                 patch.object(publisher, "authenticate", return_value="test-token"), \
                 patch.object(publisher, "API", return_value=api), \
                 patch.object(publisher, "download_aab", return_value=pathlib.Path(tmp) / "approved.aab"):
@@ -76,7 +78,8 @@ class PublishingOrchestrationTest(unittest.TestCase):
         puts = [call for call in api.calls if call[0] == "PUT"]
         self.assertEqual(len(puts), 1)
         self.assertTrue(puts[0][1].endswith("/tracks/internal"))
-        self.assertEqual(puts[0][2]["json"]["releases"][0]["versionCodes"], ["27"])
+        self.assertEqual(puts[0][2]["json"]["releases"][0]["versionCodes"], [str(publisher.VERSION_CODE)])
+        self.assertEqual(puts[0][2]["json"]["releases"][0]["name"], f"Read Assist {publisher.VERSION_NAME}")
         commits = [call for call in api.calls if call[1].endswith(":commit")]
         self.assertEqual(len(commits), 1)
         self.assertEqual(commits[0][2]["params"], {"changesInReviewBehavior": "ERROR_IF_IN_REVIEW"})
@@ -85,7 +88,7 @@ class PublishingOrchestrationTest(unittest.TestCase):
         report = self.publish(FakeAPI(draft_only=True))
         self.assertEqual(report["status"], "draft", report)
         self.assertTrue(report["commitAccepted"])
-        self.assertEqual(report["verifiedVersionCode"], 27)
+        self.assertEqual(report["verifiedVersionCode"], publisher.VERSION_CODE)
 
     def test_ambiguous_commit_is_reconciled_without_retry(self):
         api = FakeAPI(ambiguous_commit=True)
@@ -101,8 +104,40 @@ class PublishingOrchestrationTest(unittest.TestCase):
     def test_completed_track_alone_does_not_prove_availability(self):
         self.assertEqual(publisher.lifecycle_status({}), "committed_availability_unconfirmed")
 
+    def test_unverified_artifact_never_downloads_or_authenticates(self):
+        with tempfile.TemporaryDirectory() as tmp, \
+                patch.object(publisher, "AAB_SHA256", "UNVERIFIED"), \
+                patch.object(publisher, "AAB_BYTES", 0), \
+                patch.object(publisher, "download_aab") as download, \
+                patch.object(publisher, "authenticate") as auth:
+            report = publisher.run("publish", pathlib.Path(tmp) / "report.json")
+        self.assertEqual(report["status"], "failed")
+        self.assertIn("UNVERIFIED", report["error"]["message"])
+        download.assert_not_called()
+        auth.assert_not_called()
+
+    def test_inspection_remains_available_with_unverified_artifact(self):
+        with tempfile.TemporaryDirectory() as tmp, \
+                patch.object(publisher, "AAB_SHA256", "UNVERIFIED"), \
+                patch.object(publisher, "AAB_BYTES", 0), \
+                patch.object(publisher, "authenticate", return_value="test-token"), \
+                patch.object(publisher, "API", return_value=FakeAPI()):
+            report = publisher.run("inspect", pathlib.Path(tmp) / "report.json")
+        self.assertEqual(report["status"], "inspected")
+
 
 class PublishingSafeguardsTest(unittest.TestCase):
+    def setUp(self):
+        for name, value in (("AAB_SHA256", "a" * 64), ("AAB_BYTES", 1234)):
+            patcher = patch.object(publisher, name, value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
+    def test_incomplete_artifact_pins_are_rejected(self):
+        for sha, size in (("UNVERIFIED", 1234), ("a" * 64, 0), ("a" * 64, -1), ("a" * 64, True)):
+            with self.subTest(sha=sha, size=size), self.assertRaisesRegex(publisher.PublishError, "UNVERIFIED"):
+                publisher.validate_artifact_pin(sha, size)
+
     def credential_info(self):
         return {
             "type": "service_account",
@@ -177,7 +212,7 @@ class PublishingSafeguardsTest(unittest.TestCase):
 
     def test_higher_internal_release_stops_downgrade(self):
         with self.assertRaises(publisher.PublishError):
-            publisher.validate_existing_state([self.track(code=28)], [])
+            publisher.validate_existing_state([self.track(code=publisher.VERSION_CODE + 1)], [])
 
     def test_active_rollout_is_not_overwritten(self):
         for status in ["inProgress", "halted"]:
@@ -198,7 +233,7 @@ class PublishingSafeguardsTest(unittest.TestCase):
         for code, status, message in [
             (403, "PERMISSION_DENIED", "The caller does not have permission"),
             (400, "FAILED_PRECONDITION", "CHANGES_ALREADY_IN_REVIEW"),
-            (400, "INVALID_ARGUMENT", "Version code 27 has already been used"),
+            (400, "INVALID_ARGUMENT", f"Version code {publisher.VERSION_CODE} has already been used"),
             (500, "INTERNAL", "Only releases with status draft may be created on draft app."),
         ]:
             with self.subTest(message=message, code=code):

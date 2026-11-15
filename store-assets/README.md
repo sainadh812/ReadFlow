@@ -59,7 +59,7 @@ no configured Firebase; they are not the signed ARM64 Play artifacts. Capture
 reports retain source/build provenance, errors and media hashes. Review those
 reports before selecting images or footage. [Workflow details](../docs/GITHUB_RELEASE_BUILD.md).
 
-Keep selected original PNGs and caption JSON under `store-assets/release-0.3.1/`
+Keep selected original PNGs and caption JSON under `store-assets/release-0.3.2/`
 before running the image generator with that directory as `--output`. This gives
 the Play uploader reproducible source paths in its checkout. Inspect every final
 PNG; a generated manifest alone is not visual approval.
@@ -71,7 +71,7 @@ environment, then use the downloaded raw capture directory:
 build/store-media-venv/bin/python scripts/build_demo_video.py \
   --capture build/store-capture-RUN/build/store-media/capture \
   --output build/store-media/rendered \
-  --recipe store-assets/release-0.3.1/video-recipe.json
+  --recipe store-assets/release-0.3.2/video-recipe.json
 ```
 
 The recipe selects actual clip times and captions. Footage retains its original

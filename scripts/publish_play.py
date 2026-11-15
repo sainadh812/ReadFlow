@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inspect or publish the approved 0.3.1 bundle to Google Play Internal testing.
+"""Inspect or publish the approved 0.3.2 bundle to Google Play Internal testing.
 
 Credentials are consumed from the Actions secret in memory. This script never
 changes testers, another track, signing settings, or the approved artifact.
@@ -16,21 +16,20 @@ import sys
 from datetime import datetime, timezone
 
 PACKAGE = "app.readflow"
-VERSION_CODE = 27
-VERSION_NAME = "0.3.1"
+VERSION_CODE = 28
+VERSION_NAME = "0.3.2"
 EXPECTED_PROJECT = "read-assist-fbd21"
 EXPECTED_EMAIL = "play-publisher@read-assist-fbd21.iam.gserviceaccount.com"
-AAB_BYTES = 72436099
-AAB_SHA256 = "a247863362aec730e6c50ebe85a403de8cb572821276077d38a3c0b2f8e7e1f6"
-AAB_URL = "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.1-play-candidate/Read-Assist-0.3.1-upload-signed.aab"
-DEFAULT_REPORT = Path("build/play-upload-0.3.1/report.json")
+AAB_BYTES = 0  # Set only from the independently verified signed 0.3.2 build.
+AAB_SHA256 = "UNVERIFIED_0_3_2_AAB_SHA256"
+AAB_URL = "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-upload-signed.aab"
+DEFAULT_REPORT = Path("build/play-upload-0.3.2/report.json")
 API_ROOT = "https://androidpublisher.googleapis.com"
 APP_PATH = f"/androidpublisher/v3/applications/{PACKAGE}"
 RELEASE_NOTES = (
-    "The reader now has a Text/PDF switch in the bottom panel, with evenly spaced playback "
-    "controls and a centered Play/Pause button. Use the up arrow or swipe up to open reader "
-    "settings, and the down arrow to close them. Switching views keeps your reading position, "
-    "PDF zoom and text scroll. Playback speed is easier to reach from the expanded controls."
+    "Fixes English dictionary lookup on Android. Keep reading with book-style page turns, "
+    "Text/PDF switching, an adjustable playback panel, brightness and warm light controls, "
+    "and three app themes. Voice and dictionary packs are available for download."
 )
 _SECRETS: list[str] = []
 
@@ -118,22 +117,29 @@ def authenticate() -> str:
     return token
 
 
+def validate_artifact_pin(sha256: str, size: int) -> None:
+    if not isinstance(sha256, str) or not re.fullmatch(r"[0-9a-f]{64}", sha256) or type(size) is not int or size <= 0:
+        raise PublishError(f"The signed {VERSION_NAME} AAB is UNVERIFIED; pin its independently verified SHA256 and byte size before publishing.")
+
+
 def verify_aab(path: Path) -> str:
+    validate_artifact_pin(AAB_SHA256, AAB_BYTES)
     path = Path(path)
     if path.stat().st_size != AAB_BYTES:
-        raise PublishError("AAB size does not match the approved 0.3.1 artifact.")
+        raise PublishError("AAB size does not match the approved 0.3.2 artifact.")
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     if digest.hexdigest() != AAB_SHA256:
-        raise PublishError("AAB SHA256 does not match the approved 0.3.1 artifact.")
+        raise PublishError("AAB SHA256 does not match the approved 0.3.2 artifact.")
     return digest.hexdigest()
 
 
 def download_aab(directory: Path) -> Path:
+    validate_artifact_pin(AAB_SHA256, AAB_BYTES)
     import requests
-    path = directory / "Read-Assist-0.3.1-upload-signed.aab"
+    path = directory / "Read-Assist-0.3.2-upload-signed.aab"
     directory.mkdir(parents=True, exist_ok=True)
     with requests.Session() as session:
         session.trust_env = False
@@ -171,12 +177,12 @@ def validate_existing_state(tracks: list[dict], bundles: list[dict]) -> dict | N
             raise PublishError("Internal testing has an in-progress or halted release; reconcile it before publishing.")
     matches = [b for b in bundles if int(b.get("versionCode", -1)) == VERSION_CODE]
     if len(matches) > 1:
-        raise PublishError("Google returned duplicate bundle records for version 27.")
+        raise PublishError(f"Google returned duplicate bundle records for version {VERSION_CODE}.")
     target = matches[0] if matches else None
     if target and target.get("sha256", "").lower() != AAB_SHA256:
-        raise PublishError("Existing Google Play version 27 has a different SHA256; no upload will be attempted.")
+        raise PublishError(f"Existing Google Play version {VERSION_CODE} has a different SHA256; no upload will be attempted.")
     if target is None and any(VERSION_CODE in codes(release) for release in releases):
-        raise PublishError("Internal version 27 exists but its bundle hash cannot be verified.")
+        raise PublishError(f"Internal version {VERSION_CODE} exists but its bundle hash cannot be verified.")
     return target
 
 
@@ -298,6 +304,8 @@ def inspect_fresh(api: API, report: dict, key: str) -> tuple[list[dict], list[di
 
 
 def execute(action: str, report: dict, directory: Path) -> None:
+    if action == "publish":
+        validate_artifact_pin(AAB_SHA256, AAB_BYTES)
     artifact = download_aab(directory) if action == "publish" else None
     if artifact:
         report["artifactVerified"] = True
@@ -348,7 +356,7 @@ def execute(action: str, report: dict, directory: Path) -> None:
 
     def prepare(status: str) -> None:
         api.request("PUT", prefix + "/tracks/internal", json={"track": "internal", "releases": [{
-            "name": "Read Assist 0.3.1", "versionCodes": [str(VERSION_CODE)], "status": status,
+            "name": f"Read Assist {VERSION_NAME}", "versionCodes": [str(VERSION_CODE)], "status": status,
             "releaseNotes": [{"language": "en-US", "text": RELEASE_NOTES}],
         }]})
         api.request("POST", prefix + ":validate")
@@ -380,7 +388,7 @@ def execute(action: str, report: dict, directory: Path) -> None:
                 report["commitAmbiguous"] = safe_error(error)
                 report["commitReconciliationLifecycle"] = api.lifecycles(tracks)
                 # A new edit would invalidate the possibly pending edit. Only open
-                # verification after the non-edit endpoint confirms version 27.
+                # verification after the non-edit endpoint confirms the target version.
                 state_now = lifecycle_status(report["commitReconciliationLifecycle"])
                 state_before = lifecycle_status(before["lifecycles"])
                 confirmed = state_now != "committed_availability_unconfirmed" and state_now != state_before
@@ -399,7 +407,7 @@ def execute(action: str, report: dict, directory: Path) -> None:
     final_bundle = validate_existing_state(after_tracks, after_bundles)
     final_releases = internal_track(after_tracks).get("releases", [])
     if final_bundle is None or not any(VERSION_CODE in codes(r) and r.get("status") == release_status for r in final_releases):
-        raise PublishError("Version 27 was not confirmed on Internal testing after the commit attempt; no commit was retried.")
+        raise PublishError(f"Version {VERSION_CODE} was not confirmed on Internal testing after the commit attempt; no commit was retried.")
     report["verifiedVersionCode"] = VERSION_CODE
     report["verifiedSha256"] = final_bundle["sha256"]
     report["status"] = "draft" if release_status == "draft" else lifecycle_status(report["after"]["lifecycles"])

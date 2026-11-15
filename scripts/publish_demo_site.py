@@ -18,8 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO = "sainadh812/ReadFlow"
 URL = "https://sainadh812.github.io/ReadFlow/demo.html"
 VIDEOS = {
-    "productDemo": "Read-Assist-0.3.1-product-demo.mp4",
-    "foregroundService": "Read-Assist-0.3.1-foreground-service.mp4",
+    "productDemo": "Read-Assist-0.3.2-product-demo.mp4",
+    "foregroundService": "Read-Assist-0.3.2-foreground-service.mp4",
 }
 
 

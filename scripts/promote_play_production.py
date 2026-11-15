@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Promote the exact approved Read Assist 0.3.1 bundle to production.
+"""Promote the exact approved Read Assist 0.3.2 bundle to production.
 
 This changes only the production track. It never uploads another bundle,
 rebuilds the app, submits policy answers, or changes other tracks or testers.
@@ -16,8 +16,8 @@ import sys
 
 from inspect_play_store import clean_report
 from publish_play import (
-    AAB_SHA256, API, APP_PATH, PACKAGE, VERSION_CODE, VERSION_NAME,
-    ApiError, PublishError, authenticate, safe_error,
+    AAB_BYTES, AAB_SHA256, API, APP_PATH, PACKAGE, VERSION_CODE, VERSION_NAME,
+    ApiError, PublishError, authenticate, safe_error, validate_artifact_pin,
 )
 from publish_store_media import IMAGE_TYPES, LANGUAGE, digest, load_assets, load_listing, snapshot
 
@@ -94,7 +94,7 @@ def validate_ready(state: dict, assets: list[dict], approved_listing: dict) -> d
                 raise PublishError("Production has an in-progress or halted rollout; reconcile it before promotion.")
     internal = state["tracks"].get("internal", {}).get("releases", [])
     if not any(release.get("status") == "completed" and VERSION_CODE in version_codes(release) for release in internal):
-        raise PublishError("Internal testing must already contain completed version 27 before production promotion.")
+        raise PublishError(f"Internal testing must already contain completed version {VERSION_CODE} before production promotion.")
     approved = []
     for bundle in state["bundles"]:
         try:
@@ -106,7 +106,7 @@ def validate_ready(state: dict, assets: list[dict], approved_listing: dict) -> d
         if code == VERSION_CODE:
             approved.append(bundle)
     if len(approved) != 1 or str(approved[0].get("sha256", "")).lower() != AAB_SHA256:
-        raise PublishError("Google Play's version 27 bundle does not match the approved AAB SHA256.")
+        raise PublishError(f"Google Play's version {VERSION_CODE} bundle does not match the approved AAB SHA256.")
     return approved[0]
 
 
@@ -177,7 +177,7 @@ def verify_fresh(api: API, before: dict, assets: list[dict], approved_listing: d
         validate_ready(after, assets, approved_listing)
         verify_unchanged(before, after)
         if not production_complete(after):
-            raise PublishError("Production did not confirm completed version 27 after the commit attempt.")
+            raise PublishError(f"Production did not confirm completed version {VERSION_CODE} after the commit attempt.")
         report.update(trackVerified=True, otherTracksUnchanged=True,
                       verifiedVersionCode=VERSION_CODE, verifiedSha256=AAB_SHA256)
     finally:
@@ -190,6 +190,7 @@ def verify_fresh(api: API, before: dict, assets: list[dict], approved_listing: d
 
 def promote(api: API, assets: list[dict], report: dict, validate_only: bool = False,
             approved_listing: dict | None = None) -> None:
+    validate_artifact_pin(AAB_SHA256, AAB_BYTES)
     if approved_listing is None:
         approved_listing = load_listing(DEFAULT_LISTING)
     report["phase"] = "create_edit"
@@ -214,7 +215,7 @@ def promote(api: API, assets: list[dict], report: dict, validate_only: bool = Fa
             return
         report["phase"] = "stage_production"
         release = {"track": "production", "releases": [{
-            "name": "Read Assist 0.3.1", "versionCodes": [str(VERSION_CODE)], "status": "completed",
+            "name": f"Read Assist {VERSION_NAME}", "versionCodes": [str(VERSION_CODE)], "status": "completed",
             "releaseNotes": [{"language": LANGUAGE, "text": RELEASE_NOTES}],
         }]}
         if len(RELEASE_NOTES) > 500:
@@ -273,10 +274,12 @@ def run(assets_dir: Path, report_path: Path = DEFAULT_REPORT, validate_only: boo
     report = {"action": "validate_production" if validate_only else "promote_production",
               "package": PACKAGE, "track": "production", "versionName": VERSION_NAME,
               "versionCode": VERSION_CODE, "aabSha256": AAB_SHA256,
-              "status": "started", "phase": "validate_local_assets", "validateOnly": validate_only,
+              "status": "started", "phase": "validate_artifact_pin", "validateOnly": validate_only,
               "committed": False, "trackVerified": False, "testersModified": False,
               "policyDeclarationsModified": False, "startedAt": datetime.now(timezone.utc).isoformat()}
     try:
+        validate_artifact_pin(AAB_SHA256, AAB_BYTES)
+        report["phase"] = "validate_local_assets"
         assets = load_assets(assets_dir)
         approved_listing = load_listing(listing_file)
         report["manifestSha256"] = digest((assets_dir / "manifest.json").read_bytes())

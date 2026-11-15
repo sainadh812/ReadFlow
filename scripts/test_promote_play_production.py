@@ -21,7 +21,9 @@ ASSETS = [
 ]
 
 
-def lifecycle(state="PUBLISHED", code=27, track="production"):
+def lifecycle(state="PUBLISHED", code=None, track="production"):
+    if code is None:
+        code = production.VERSION_CODE
     return {"releases": [{"track": track, "activeArtifacts": [{"versionCode": code}],
                           "releaseLifecycleState": "RELEASE_LIFECYCLE_STATE_" + state}]}
 
@@ -29,7 +31,7 @@ def lifecycle(state="PUBLISHED", code=27, track="production"):
 class FakeProductionAPI(media_fixtures.FakeAPI):
     def __init__(self):
         super().__init__()
-        self.live["bundles"] = [{"versionCode": 27, "sha256": production.AAB_SHA256}]
+        self.live["bundles"] = [{"versionCode": production.VERSION_CODE, "sha256": production.AAB_SHA256}]
         for asset in ASSETS:
             self.live["images"][asset["image_type"]].append({"sha256": asset["sha256"]})
         self.lifecycle = lifecycle()
@@ -65,6 +67,10 @@ class FakeProductionAPI(media_fixtures.FakeAPI):
 
 class ProductionPromotionTests(unittest.TestCase):
     def setUp(self):
+        for name, value in (("AAB_SHA256", "a" * 64), ("AAB_BYTES", 1234)):
+            patcher = patch.object(production, name, value)
+            patcher.start()
+            self.addCleanup(patcher.stop)
         self.api = FakeProductionAPI()
         self.approved_listing = copy.deepcopy(self.api.live["listings"][0])
         self.report = {"status": "started", "committed": False, "trackVerified": False}
@@ -154,11 +160,11 @@ class ProductionPromotionTests(unittest.TestCase):
                     production.promote(api, ASSETS, {"committed": False}, approved_listing=self.approved_listing)
 
     def test_newer_track_or_uploaded_bundle_blocks_promotion(self):
-        self.api.live["tracks"].append({"track": "beta", "releases": [{"status": "draft", "versionCodes": ["28"]}]})
+        self.api.live["tracks"].append({"track": "beta", "releases": [{"status": "draft", "versionCodes": [str(production.VERSION_CODE + 1)]}]})
         with self.assertRaisesRegex(production.PublishError, "newer version"):
             self.promote()
         self.api = FakeProductionAPI()
-        self.api.live["bundles"].append({"versionCode": 28, "sha256": "f" * 64})
+        self.api.live["bundles"].append({"versionCode": production.VERSION_CODE + 1, "sha256": "f" * 64})
         with self.assertRaisesRegex(production.PublishError, "newer bundle"):
             self.promote()
 
@@ -172,7 +178,7 @@ class ProductionPromotionTests(unittest.TestCase):
                 self.assertFalse(any(method == "PUT" for method, _, _ in api.calls))
 
     def test_already_completed_production_reconciles_without_commit(self):
-        self.api.live["tracks"][1]["releases"] = [{"status": "completed", "versionCodes": ["27"]}]
+        self.api.live["tracks"][1]["releases"] = [{"status": "completed", "versionCodes": [str(production.VERSION_CODE)]}]
         self.promote()
         self.assertEqual(self.report["status"], "published")
         self.assertTrue(self.report["alreadyPresent"])
@@ -283,6 +289,26 @@ class ProductionPromotionTests(unittest.TestCase):
             auth.assert_not_called()
             self.assertEqual(report["status"], "failed")
             self.assertEqual(report["phase"], "validate_local_assets")
+
+    def test_unverified_artifact_prevents_validation_and_publication(self):
+        for validate_only in (False, True):
+            with self.subTest(validate_only=validate_only), tempfile.TemporaryDirectory() as directory, \
+                    patch.object(production, "AAB_SHA256", "UNVERIFIED"), \
+                    patch.object(production, "AAB_BYTES", 0), \
+                    patch.object(production, "authenticate") as auth, \
+                    patch.object(production, "load_assets") as assets:
+                report = production.run(Path(directory), Path(directory) / "report.json", validate_only)
+            self.assertEqual(report["status"], "failed")
+            self.assertEqual(report["phase"], "validate_artifact_pin")
+            self.assertIn("UNVERIFIED", report["error"]["message"])
+            self.assertFalse(report["committed"])
+            auth.assert_not_called()
+            assets.assert_not_called()
+
+    def test_direct_promotion_with_unverified_artifact_creates_no_edit(self):
+        with patch.object(production, "AAB_SHA256", "UNVERIFIED"), self.assertRaisesRegex(production.PublishError, "UNVERIFIED"):
+            self.promote()
+        self.assertEqual(self.api.created, 0)
 
     def test_run_preserves_api_blocker_without_credential_leaks(self):
         token = "synthetic-secret-token-12345"

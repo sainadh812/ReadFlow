@@ -303,7 +303,7 @@ def foreground_service(ff: FFmpeg, directory: Path, output: Path, capture: dict,
     audio_probe = ff.probe(audio)
     if audio_probe["durationSeconds"] - max(lead, 0) + max(-lead, 0) < duration - .5:
         raise MediaError("Captured FGS audio ends more than half a second before the video; investigate synchronization.")
-    destination = output / "Read-Assist-0.3.1-foreground-service.mp4"
+    destination = output / "Read-Assist-0.3.2-foreground-service.mp4"
     af = f"atrim=start={max(0, lead)},asetpts=PTS-STARTPTS"
     if lead < 0:
         af += f",adelay={round(-lead * 1000)}:all=1"
@@ -381,7 +381,7 @@ def build(directory: Path, output: Path, recipe_path: Path | None) -> dict:
                                        "appliedAudioLeadSeconds": lead, "output": part.relative_to(output).as_posix()})
         concat = work / "concat.txt"
         concat.write_text("".join(f"file 'scene-{index:02d}.mp4'\n" for index in range(len(segments))))
-        final = output / "Read-Assist-0.3.1-product-demo.mp4"
+        final = output / "Read-Assist-0.3.2-product-demo.mp4"
         ff.call(["-y", "-v", "error", "-f", "concat", "-safe", "1", "-i", str(concat), "-c", "copy", "-movflags", "+faststart", str(final)])
         ff.decode_check(final)
         measured = ff.probe(final)

@@ -13,6 +13,7 @@ import zlib
 
 import publish_play
 import publish_store_media as media
+from publish_play import VERSION_CODE
 
 
 def synthetic_png(width: int, height: int, alpha: bool = False, shade: int = 100) -> bytes:
@@ -27,7 +28,7 @@ class FakeAPI:
     """A transactional in-memory API; never makes a network request."""
     def __init__(self):
         self.live = {
-            "tracks": [{"track": "internal", "releases": [{"status": "completed", "versionCodes": ["27"]}]},
+            "tracks": [{"track": "internal", "releases": [{"status": "completed", "versionCodes": [str(VERSION_CODE)]}]},
                        {"track": "production", "releases": []}],
             "listings": [{"language": "en-US", "title": "Read Assist", "shortDescription": "Old summary",
                           "fullDescription": "Old description", "video": "https://youtu.be/abcdefghijk"},
@@ -338,7 +339,7 @@ class StoreMediaTests(unittest.TestCase):
 
     def test_concurrent_track_change_detected_after_commit(self):
         api = FakeAPI()
-        api.change_after_commit = lambda state: state["tracks"][0]["releases"][0].update(versionCodes=["28"])
+        api.change_after_commit = lambda state: state["tracks"][0]["releases"][0].update(versionCodes=[str(VERSION_CODE + 1)])
         with self.assertRaisesRegex(media.PublishError, "tracks changed"):
             media.publish(api, self.assets(), self.listing, self.report)
         self.assertTrue(self.report["committed"])
