@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Capture the real installed app on an isolated Android emulator, using only adb.
+"""Capture the real installed app on an isolated Android emulator.
 
 Seed first with the opt-in StoreDemoSeedTest. No screenshot pixels or playback
 state are fabricated. screenrecord has no audio; an optional host PulseAudio
 recording is kept separately with timing metadata for later synchronization.
+The playback proof can use scrcpy's synchronized live device audio/video instead.
 """
 from __future__ import annotations
 
@@ -16,6 +17,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import signal
 import subprocess
 import time
 import xml.etree.ElementTree as ET
@@ -30,11 +32,14 @@ class CaptureError(RuntimeError):
 
 
 class Capture:
-    def __init__(self, output: Path, serial: str | None = None, audio_source: str | None = None):
+    def __init__(self, output: Path, serial: str | None = None, audio_source: str | None = None,
+                 scrcpy: str | None = None):
         self.output = output
         output.mkdir(parents=True, exist_ok=True)
         self.adb = ["adb"] + (["-s", serial] if serial else [])
         self.audio_source = audio_source
+        self.serial = serial
+        self.scrcpy = scrcpy
         self.report = {"startedAt": self.now(), "package": PACKAGE, "captureKind": "authentic emulator recording",
                        "sourceCommit": os.environ.get("CAPTURE_SOURCE_SHA"),
                        "workflowRun": os.environ.get("CAPTURE_RUN_URL"),
@@ -256,6 +261,10 @@ class Capture:
 
     @contextlib.contextmanager
     def recording(self, name):
+        if name == "06-background-playback" and self.scrcpy:
+            with self.device_recording(name):
+                yield
+            return
         remote = f"/sdcard/{name}.mp4"
         self.shell("rm", "-f", remote)
         log = (self.output / f"{name}-screenrecord.log").open("wb")
@@ -315,6 +324,84 @@ class Capture:
             entry["sha256"] = hashlib.sha256(clip.read_bytes()).hexdigest() if clip.exists() else None
             self.report["clips"].append(entry)
             self.save()
+
+    @contextlib.contextmanager
+    def device_recording(self, name):
+        """Record original synchronized device output upstream of the host PCM path."""
+        clip = self.output / f"{name}.mp4"
+        log_path = self.output / f"{name}-scrcpy.log"
+        command = [self.scrcpy, "--no-playback", "--no-control", "--no-window",
+                   "--require-audio", "--audio-source=output", "--audio-codec=aac",
+                   "--video-codec=h264", "--video-bit-rate=8000000", "--max-fps=30",
+                   "--time-limit=180", f"--record={clip}"]
+        if self.serial:
+            command.extend(["--serial", self.serial])
+        version = subprocess.check_output([self.scrcpy, "--version"], text=True, timeout=10)
+        if not version.startswith("scrcpy 5.0.1 "):
+            raise CaptureError("Playback recorder is not the reviewed scrcpy 5.0.1 release.")
+        (self.output / "scrcpy-version.txt").write_text(version)
+        entry = {"file": clip.name, "startedAt": self.now(), "embeddedDeviceAudio": True,
+                 "recorder": "scrcpy 5.0.1",
+                 "recorderArchiveSha256": "9f969d30cc574816077edecda65719c1c70b0aee1df1ba5fa00779ac07b8fd6e",
+                 "audioCaptureMethod": "Live Android REMOTE_SUBMIX output via scrcpy --audio-source=output",
+                 "audioSynchronization": "Original audio/video packet timestamps captured on device; multiplexed together by scrcpy.",
+                 "deviceSpeakerOutputRedirectedDuringRecording": True,
+                 "postCaptureAmplification": False}
+        started = time.monotonic()
+        with log_path.open("wb") as log:
+            process = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT)
+            finalization_errors = []
+            try:
+                deadline = time.monotonic() + 30
+                while time.monotonic() < deadline:
+                    if process.poll() is not None:
+                        raise CaptureError("Device recorder exited before capture: " + log_path.read_text()[-1500:])
+                    if "Recording started to mp4 file:" in log_path.read_text():
+                        break
+                    time.sleep(.25)
+                else:
+                    raise CaptureError("Device recorder did not confirm recording startup within 30 seconds.")
+                entry["recordingReadyAt"] = self.now()
+                yield
+            finally:
+                if process.poll() is None:
+                    process.send_signal(signal.SIGINT)
+                try:
+                    process.wait(timeout=20)
+                except subprocess.TimeoutExpired:
+                    finalization_errors.append("Device recorder did not finalize within 20 seconds.")
+                    process.terminate()
+                    try:
+                        process.wait(timeout=5)
+                    except subprocess.TimeoutExpired:
+                        process.kill()
+                        process.wait()
+                if process.returncode != 0:
+                    finalization_errors.append(f"Device recorder exited with code {process.returncode}.")
+                try:
+                    probe = json.loads(subprocess.check_output(
+                        ["ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", str(clip)],
+                        text=True, timeout=15))
+                    streams = probe.get("streams", [])
+                    if not any(s.get("codec_type") == "video" and s.get("codec_name") == "h264" for s in streams):
+                        raise CaptureError("Device recording lacks the expected H.264 video stream.")
+                    if not any(s.get("codec_type") == "audio" and s.get("codec_name") == "aac" for s in streams):
+                        raise CaptureError("Device recording lacks the required live AAC audio stream.")
+                    if float(probe.get("format", {}).get("duration", 0)) < 1:
+                        raise CaptureError("Device recording is unexpectedly short.")
+                    (self.output / f"{name}-streams.json").write_text(json.dumps(probe, indent=2) + "\n")
+                    entry["recordedDurationSeconds"] = float(probe["format"]["duration"])
+                except Exception as error:
+                    finalization_errors.append(f"Validate device audio/video streams: {error}")
+                entry["durationWallSeconds"] = round(time.monotonic() - started, 3)
+                entry["bytes"] = clip.stat().st_size if clip.exists() else 0
+                entry["sha256"] = hashlib.sha256(clip.read_bytes()).hexdigest() if clip.exists() else None
+                if finalization_errors:
+                    entry["finalizationErrors"] = finalization_errors
+                self.report["clips"].append(entry)
+                self.save()
+        if finalization_errors:
+            raise CaptureError("; ".join(finalization_errors))
 
     def save(self):
         (self.output / "capture-report.json").write_text(json.dumps(self.report, indent=2) + "\n")
@@ -583,11 +670,12 @@ def main():
     parser.add_argument("--models", action="store_true")
     parser.add_argument("--dictionary", action="store_true")
     parser.add_argument("--audio-source", default=os.environ.get("READFLOW_DEMO_AUDIO_SOURCE"))
+    parser.add_argument("--scrcpy", help="Verified scrcpy 5.0.1 executable for synchronized playback proof")
     # Keep host-renderer stress from page curling last, preserving independent
     # recordings if a graphics-driver crash happens again.
     parser.add_argument("--sections", default="library,controls,dictionary,themes,playback,reader")
     args = parser.parse_args()
-    capture = Capture(args.output, args.serial, args.audio_source)
+    capture = Capture(args.output, args.serial, args.audio_source, args.scrcpy)
     try:
         capture.check_emulator()
         if args.stage in ("seed", "all"):

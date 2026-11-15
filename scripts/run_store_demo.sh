@@ -34,6 +34,30 @@ record = {'appVersion':'0.3.2', 'versionCode':28, 'applicationSourceRevision':'a
 pathlib.Path('build/store-media/capture/capture-build.json').write_text(json.dumps(record,indent=2)+'\n')
 PY
 export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+demo_phase 'prepare-verified-device-recorder'
+# Capture live Android output before the emulator's failing speaker PCM path.
+# Pin the official static release and verify it before executing any binary.
+python3 - <<'PY'
+import hashlib, json, pathlib, tarfile, urllib.request
+version = '5.0.1'
+sha = '9f969d30cc574816077edecda65719c1c70b0aee1df1ba5fa00779ac07b8fd6e'
+name = f'scrcpy-linux-x86_64-v{version}'
+url = f'https://github.com/Genymobile/scrcpy/releases/download/v{version}/{name}.tar.gz'
+root = pathlib.Path('build/store-media/tools')
+root.mkdir(parents=True, exist_ok=True)
+archive = root / (name + '.tar.gz')
+with urllib.request.urlopen(url, timeout=60) as response:
+    archive.write_bytes(response.read())
+if hashlib.sha256(archive.read_bytes()).hexdigest() != sha:
+    raise SystemExit('Official scrcpy archive SHA-256 does not match the reviewed release.')
+with tarfile.open(archive) as bundle:
+    bundle.extractall(root, filter='data')
+record = {'name':'scrcpy', 'version':version, 'officialArchive':url, 'archiveSha256':sha,
+          'purpose':'Genuine synchronized live device audio and video, not generated-cache substitution'}
+pathlib.Path('build/store-media/capture/device-recorder.json').write_text(json.dumps(record,indent=2)+'\n')
+PY
+demo_scrcpy="$PWD/build/store-media/tools/scrcpy-linux-x86_64-v5.0.1/scrcpy"
+"$demo_scrcpy" --version > "$demo_dir/scrcpy-version.txt"
 # The current avdmanager and emulator may choose different default user folders.
 # Give both tools one explicit AVD location (without changing the user's HOME).
 export ANDROID_AVD_HOME="$PWD/build/store-media/avd"
@@ -178,7 +202,8 @@ if ! grep -Eq 'OK \([0-9]+ tests?\)' "$demo_dir/seed-instrumentation.txt"; then
   exit 1
 fi
 demo_phase 'capture-real-ui-and-playback'
-python3 scripts/capture_demo.py capture --output "$demo_dir" --audio-source readassist_demo.monitor --sections "$demo_capture_sections"
+python3 scripts/capture_demo.py capture --output "$demo_dir" --audio-source readassist_demo.monitor \
+  --scrcpy "$demo_scrcpy" --sections "$demo_capture_sections"
 adb shell dumpsys media_session > "$demo_dir/final-media-session.txt"
 adb logcat -d -v threadtime > "$demo_dir/device-logcat.txt"
 demo_phase 'complete'
