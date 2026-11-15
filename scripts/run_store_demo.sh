@@ -68,7 +68,7 @@ adb start-server
 demo_phase 'launch-emulator'
 xvfb-run -a -e "$demo_dir/xvfb.log" -s '-screen 0 1280x1024x24' \
   emulator -avd readassist_store_demo -no-snapshot -no-boot-anim \
-  -gpu swiftshader_indirect -accel on -cores 2 -memory 4096 \
+  -gpu swiftshader -accel on -cores 2 -memory 4096 \
   -camera-back none -camera-front none > "$demo_dir/emulator.log" 2>&1 &
 emulator_pid=$!
 cleanup_demo() {
@@ -80,6 +80,29 @@ cleanup_demo() {
   printf '%s\n' "$?" > "$demo_dir/emulator-alive-check-exit-code.txt"
   timeout 10 pactl list short sink-inputs > "$demo_dir/pulse-inputs-at-exit.txt" 2>&1
   timeout 10 pactl list short sinks > "$demo_dir/pulse-sinks-at-exit.txt" 2>&1
+  # Keep bounded host-crash evidence; never copy an unbounded core image.
+  python3 - "$demo_dir" <<'PY'
+import json, pathlib, shutil, sys
+destination = pathlib.Path(sys.argv[1]) / 'host-crash-diagnostics'
+destination.mkdir(exist_ok=True)
+records, total = [], 0
+for folder in pathlib.Path('/tmp').glob('android-*/emu-crash-*.db'):
+    for source in folder.rglob('*'):
+        if not source.is_file() or source.is_symlink():
+            continue
+        size = source.stat().st_size
+        copied = size <= 32 * 1024 * 1024 and total + size <= 128 * 1024 * 1024
+        records.append({'path': str(source), 'bytes': size, 'copied': copied})
+        if copied:
+            target = destination / folder.name / source.relative_to(folder)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, target)
+            total += size
+(destination / 'manifest.json').write_text(json.dumps(records, indent=2) + '\n')
+PY
+  if command -v coredumpctl >/dev/null 2>&1; then
+    timeout 10 coredumpctl --no-pager info > "$demo_dir/host-coredump-info.txt" 2>&1
+  fi
   if [[ "$demo_exit" != 0 ]]; then
     timeout 15 adb devices -l > "$demo_dir/failure-adb-devices.txt" 2>&1
     timeout 15 adb -s emulator-5554 logcat -d > "$demo_dir/failure-logcat.txt" 2>&1

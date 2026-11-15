@@ -185,12 +185,20 @@ class Capture:
         try:
             yield
         finally:
-            self.shell("pkill", "-2", "screenrecord", check=False)
+            finalization_errors = []
+            try:
+                self.shell("pkill", "-2", "screenrecord", timeout=10, check=False)
+            except Exception as error:
+                finalization_errors.append(f"Stop Android recording: {error}")
             try:
                 process.wait(timeout=20)
             except subprocess.TimeoutExpired:
                 process.terminate()
-                process.wait(timeout=10)
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait()
             log.close()
             if audio is not None:
                 audio.terminate()
@@ -200,7 +208,12 @@ class Capture:
                     audio.kill()
                     audio.wait()
                 audio_log.close()
-            self.run(["pull", remote, str(self.output / f"{name}.mp4")], check=False)
+            try:
+                self.run(["pull", remote, str(self.output / f"{name}.mp4")], timeout=15, check=False)
+            except Exception as error:
+                finalization_errors.append(f"Pull Android recording: {error}")
+            if finalization_errors:
+                entry["finalizationErrors"] = finalization_errors
             entry["durationWallSeconds"] = round(time.monotonic()-started, 3)
             clip = self.output / f"{name}.mp4"
             entry["bytes"] = clip.stat().st_size if clip.exists() else 0
@@ -256,6 +269,7 @@ class Capture:
     def reader(self):
         self.open_book()
         self.wait("PDF view", timeout=30)
+        self.tap("PDF view")
         with self.recording("02-reading"):
             self.screenshot("03-reader-pdf")
             self.swipe(.84, .46, .16, .46, 800)
@@ -264,11 +278,11 @@ class Capture:
             self.swipe(.16, .46, .84, .46, 800)
             self.wait("Page 1 of 3", contains=True)
             self.tap("Text view")
-            self.screenshot("05-reader-text")
             time.sleep(3)
 
     def controls(self):
         with self.recording("03-reading-light"):
+            self.screenshot("05-reader-text")
             self.tap("Open reader controls")
             self.wait("Reading light")
             self.screenshot("06-reader-controls")
@@ -376,10 +390,10 @@ class Capture:
         for name in sections:
             print(f"Capturing {name}…", flush=True)
             try:
-                if name not in ("library", "reader") and (self.report["errors"] or len(sections) == 1):
+                if name in ("controls", "dictionary", "themes"):
                     self.recover_reader()
                     self.tap("Text view")
-                if name == "reader" and (self.report["errors"] or len(sections) == 1):
+                if name == "reader":
                     self.recover_reader()
                     self.tap("Back")
                 actions[name]()
@@ -402,7 +416,9 @@ def main():
     parser.add_argument("--models", action="store_true")
     parser.add_argument("--dictionary", action="store_true")
     parser.add_argument("--audio-source", default=os.environ.get("READFLOW_DEMO_AUDIO_SOURCE"))
-    parser.add_argument("--sections", default="library,reader,controls,dictionary,themes,playback")
+    # Keep host-renderer stress from page curling last, preserving independent
+    # recordings if a graphics-driver crash happens again.
+    parser.add_argument("--sections", default="library,controls,dictionary,themes,playback,reader")
     args = parser.parse_args()
     capture = Capture(args.output, args.serial, args.audio_source)
     try:
