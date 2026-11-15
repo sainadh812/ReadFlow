@@ -1,0 +1,334 @@
+{
+  "README.txt": {
+    "sha256": "1d3ce28b76f70fb3d1a16319fa9ec7a986ca038667d3e3af4eda2a0498cc02af",
+    "bytes": 4233
+  },
+  "Read-Assist-0.3.2-upload-signed.aab": {
+    "sha256": "809f7fc41c0662c085abc313dc88269e4be1c1c416ff983405bcbc670461f12b",
+    "bytes": 72436186
+  },
+  "Read-Assist-0.3.2-upload-signed.apk": {
+    "sha256": "a38cf6ca0c80214a67b3959391742d4b209ef9208f2bad38321a98105a413af9",
+    "bytes": 131451127
+  },
+  "aab-signature.txt": {
+    "sha256": "7fe86c4c8869f8973e86b3ea3d0618d4b248ea38a4a83ac7faa74cd8c37029d3",
+    "bytes": 685837
+  },
+  "apk-16kb-alignment.txt": {
+    "sha256": "7232488155fcd4a3919ec56e938823e9d7505ab90aa98c1ad1ffa88cd0cb8cde",
+    "bytes": 75141
+  },
+  "apk-signature.txt": {
+    "sha256": "63531280f1f1e81f6e05fdad590b785a8047a8d4c2346e446a48d55333546875",
+    "bytes": 955
+  },
+  "font-verification.json": {
+    "sha256": "8e23b9d294044f55dc1635f9f8934eb0d3ea4bbb5f38343d2a963866aac6ff54",
+    "bytes": 165
+  },
+  "lint-results-release.xml": {
+    "sha256": "dfdd497b614de1543705640dd8163e5c26ca71db6386ba5ee8c614611141e8cd",
+    "bytes": 39476
+  },
+  "native-symbols/arm64-v8a/libandroidx.graphics.path.so": {
+    "sha256": "41e9a793c43a0f4fddb19e33f346bace464f30f888ba7b9eaf96294ea115bfb6",
+    "bytes": 10096
+  },
+  "native-symbols/arm64-v8a/libcrashlytics-common.so": {
+    "sha256": "fb4a3190e4669455b66e40af74a6a246e957969a9a9c1db1e209da024314a912",
+    "bytes": 864920
+  },
+  "native-symbols/arm64-v8a/libcrashlytics-handler.so": {
+    "sha256": "f8d77113b80d7017b05e8f12e594f64be3e593fa5c39d13f956f61cdac362e53",
+    "bytes": 222248
+  },
+  "native-symbols/arm64-v8a/libcrashlytics-trampoline.so": {
+    "sha256": "9322d4956c09fdbb647951ef626b633f607ae61ba097321d78e190ef3b76ab30",
+    "bytes": 9408
+  },
+  "native-symbols/arm64-v8a/libcrashlytics.so": {
+    "sha256": "e081f8e49f3093e41767f51d7d82ef8ce05d101b83dc658de27d270ad611a0b0",
+    "bytes": 232152
+  },
+  "native-symbols/arm64-v8a/libdatastore_shared_counter.so": {
+    "sha256": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1",
+    "bytes": 7112
+  },
+  "native-symbols/arm64-v8a/libmlkit_google_ocr_pipeline.so": {
+    "sha256": "fa41d509a661e8aa8b3e3ac1a28541f8823f308414fcad733fe26d61feea2646",
+    "bytes": 11064544
+  },
+  "native-symbols/arm64-v8a/libonnxruntime.so": {
+    "sha256": "999ecfdb5b5a13e4097487773b6d71ce8a075408a237daab072e8f5e817bd78e",
+    "bytes": 18214224
+  },
+  "native-symbols/arm64-v8a/libonnxruntime4j_jni.so": {
+    "sha256": "5614bd018cca9031c4dbcfc2a3bece42fae52861a92ff09c4bd2491bd93ac758",
+    "bytes": 100600
+  },
+  "native-symbols/arm64-v8a/libreadflow_misaki.so": {
+    "sha256": "1e52a13f974269240058b5b2bcca40b312b92a66c06738d10d168047316c6921",
+    "bytes": 30815848
+  },
+  "native-symbols/arm64-v8a/libreadflow_teleocr.so": {
+    "sha256": "e13933b697e5a1d0ed257d3887f042597d856bc9dfe191a085bc6f844966154c",
+    "bytes": 74031136
+  },
+  "native-symbols/misaki-build.json": {
+    "sha256": "ce2826fa2ab1e188bf5b2e1648714f29164c6548fe3f06942882b2bcdf0442b0",
+    "bytes": 1143
+  },
+  "native-symbols.json": {
+    "sha256": "e8e7809c201fcc2e81c86aabb8ed25d55b9ba40fb3ae714f7bf442f79f7ccbec",
+    "bytes": 5926
+  },
+  "packaging.json": {
+    "sha256": "d5e90868d088fb20b64267a30c8785d8db0712478be9683a01da362cf0f13a05",
+    "bytes": 3938
+  },
+  "privacy-verification.txt": {
+    "sha256": "d66b90c2675d2e6e684310871c2e05afa6370eea70131c44f0564dcfc0df8a3b",
+    "bytes": 225
+  },
+  "release-evidence.json": {
+    "sha256": "eb7a8ea485841cbf47238669e656fa9a31d56c826fd51bc39c68e4b29c4c28ea",
+    "bytes": 827
+  },
+  "resolved-runtime.json": {
+    "sha256": "5e45bfde4363b2c59721c03aa6d602fd35da0f9f95f2a20cb5e57fd3c8cb2e25",
+    "bytes": 71994
+  },
+  "unit-tests/TEST-app.readflow.benchmark.BenchmarkMetricsTest.xml": {
+    "sha256": "5ebe1ad67d54b98b94c3763d2f2b0ef05bc477855f18c2bc6f32e44b579a25c0",
+    "bytes": 1845
+  },
+  "unit-tests/TEST-app.readflow.benchmark.BenchmarkSamplingTest.xml": {
+    "sha256": "5e5e3267a1dd5a3c842b18f0441bd93e6b9528f9a6a8c0939440775aadd5afd2",
+    "bytes": 1288
+  },
+  "unit-tests/TEST-app.readflow.benchmark.BenchmarkStoreTest.xml": {
+    "sha256": "9662fdbf8806888be4266d6ca27c29f0c57de65fd14b090b47785883723e8ec1",
+    "bytes": 1445
+  },
+  "unit-tests/TEST-app.readflow.core.AccentedSpeechTest.xml": {
+    "sha256": "f0a308c71a1814cdb36dfc5d81cf73df4f2f406b672f3ed673212fe022c7c28a",
+    "bytes": 1745
+  },
+  "unit-tests/TEST-app.readflow.core.ArticleHtmlTest.xml": {
+    "sha256": "9791cd63615436833ffa90ce77eb99ccd1f516bece6b31ef3b83ce773da65f41",
+    "bytes": 452
+  },
+  "unit-tests/TEST-app.readflow.core.CoreTest.xml": {
+    "sha256": "7424f02cf4a1911355752dfade1b0d65b7a3e8baad06b046c4572853c1060e09",
+    "bytes": 1725
+  },
+  "unit-tests/TEST-app.readflow.core.DocumentReadingOrderTest.xml": {
+    "sha256": "6e3562ca958fa854ba428def950b23dcfd98388eee8563e1f566b269030defc9",
+    "bytes": 1791
+  },
+  "unit-tests/TEST-app.readflow.core.IntegrityTest.xml": {
+    "sha256": "ce55caa63d9428469ff5150c48cda654606ccd8b138d004a72723eb7393cd12e",
+    "bytes": 794
+  },
+  "unit-tests/TEST-app.readflow.core.NumericSpeechTest.xml": {
+    "sha256": "ae151393d590def69bf5251c058b5276a1f6ec76e6b003275bfa58a7375129a8",
+    "bytes": 1852
+  },
+  "unit-tests/TEST-app.readflow.core.OcrSpeechTest.xml": {
+    "sha256": "12c7c751037273fb26fc735ef6a34c187b5f1fc50ac6db9ccd1f46428b11d945",
+    "bytes": 1211
+  },
+  "unit-tests/TEST-app.readflow.core.PlaybackAlignmentTest.xml": {
+    "sha256": "c9342783f59fbf87f1588c2744157994d895da28bdf1c2fa04c9334a96570a5a",
+    "bytes": 1142
+  },
+  "unit-tests/TEST-app.readflow.core.RealAudioTest.xml": {
+    "sha256": "5e4b33fededadf5f41a9bd90008a8d5b7614bdc65a94c7dd93e00c342319a00c",
+    "bytes": 1108
+  },
+  "unit-tests/TEST-app.readflow.core.SpeechPlanningTest.xml": {
+    "sha256": "0ebc303b3302ca72241babe64bf31712df86a93d3f4fec509541dee77f6df3a3",
+    "bytes": 2500
+  },
+  "unit-tests/TEST-app.readflow.core.SymbolSpeechTest.xml": {
+    "sha256": "d775d2ab3bf722276653fcd3667c1b8760552557c9fdad9576ba6ea9d5f23564",
+    "bytes": 1711
+  },
+  "unit-tests/TEST-app.readflow.core.WebSpeechTest.xml": {
+    "sha256": "5245de4aac6de84be419145c2d3387dc0e179f12e581efd2059f1a4109c2b17a",
+    "bytes": 1192
+  },
+  "unit-tests/TEST-app.readflow.data.AppThemeTest.xml": {
+    "sha256": "67a65d1eaf3acf01fb61d9cf867adce204924cacbad629f8516cd1b0607f34be",
+    "bytes": 596
+  },
+  "unit-tests/TEST-app.readflow.data.ManualHistoryWriterTest.xml": {
+    "sha256": "2ad8cb8b0dba5daae90534b0add054e98d8f328bc6adbca4b19f26ca3a8523bf",
+    "bytes": 615
+  },
+  "unit-tests/TEST-app.readflow.data.ReaderAppearancePreferencesTest.xml": {
+    "sha256": "422b50b7df075c93adc4ca2620dcf3894c493aa15d7c003d9506edd53d1d507a",
+    "bytes": 1087
+  },
+  "unit-tests/TEST-app.readflow.data.ReaderLightingPreferencesTest.xml": {
+    "sha256": "5cc9bbe0df9c08842e7432cb769697c5e44e56ce82ea8f4fe393555d54eea2f8",
+    "bytes": 749
+  },
+  "unit-tests/TEST-app.readflow.diagnostics.CrashReportingConsentTest.xml": {
+    "sha256": "b230008000fa3ca5a71bbe30d85d776e9f0bdc883f39c59387a29d2804315159",
+    "bytes": 2511
+  },
+  "unit-tests/TEST-app.readflow.diagnostics.DiagnosticSubmissionTest.xml": {
+    "sha256": "fbc1d8dc759eb33a3133997fb8a909d791f6dbca1d6d3605396c75f60d56ad0f",
+    "bytes": 1467
+  },
+  "unit-tests/TEST-app.readflow.diagnostics.GitHubDiagnosticsTest.xml": {
+    "sha256": "01bda089ed354ea0597d57c532e75dafa3e219eacf3c95a1342f3db2b1f8c81a",
+    "bytes": 2706
+  },
+  "unit-tests/TEST-app.readflow.diagnostics.IssueLogsTest.xml": {
+    "sha256": "1503d42a2af2bbf28115542cfc775979bbe7a00d3a9fdcb95447608d2996cf72",
+    "bytes": 3120
+  },
+  "unit-tests/TEST-app.readflow.diagnostics.ReportedFailureTest.xml": {
+    "sha256": "0c6324090658379571c02317fef93c614c3a96156e35fbf22918f04c38d8d5f8",
+    "bytes": 595
+  },
+  "unit-tests/TEST-app.readflow.diagnostics.TechnicalDiagnosticsTest.xml": {
+    "sha256": "70c05ef7af967f0c7c93f1e835909c53d046fecfc0af88b0a16f5573676e2d97",
+    "bytes": 1885
+  },
+  "unit-tests/TEST-app.readflow.dictionary.DictionaryPackTest.xml": {
+    "sha256": "028a2df070a281a280ab8758e5b61458b81b8a3e87d9c6f7dae93619eeacd583",
+    "bytes": 1451
+  },
+  "unit-tests/TEST-app.readflow.dictionary.DictionaryQueryTest.xml": {
+    "sha256": "e8daa1d7e0d82e25610d1c4d6b0d5c305d19353bb2707f4fe310f4bd15edd83a",
+    "bytes": 1804
+  },
+  "unit-tests/TEST-app.readflow.ingest.OcrQualityTest.xml": {
+    "sha256": "1b4a1abcb70aa7ddc69408ac26922284757920f6d5580a07aa450c9e75fc90e8",
+    "bytes": 1054
+  },
+  "unit-tests/TEST-app.readflow.ingest.OcrRefinementTest.xml": {
+    "sha256": "93175100c60c548fbf5a7bc71b25a63e7e30f0019e155df615280bd4211d9d32",
+    "bytes": 2365
+  },
+  "unit-tests/TEST-app.readflow.ingest.PaddleOcrPostprocessTest.xml": {
+    "sha256": "8c0fd5e922e032fba249f85d2dc8b0c1b40b1d916e49ae016c9bb17af7ae2e7b",
+    "bytes": 2098
+  },
+  "unit-tests/TEST-app.readflow.ingest.TeleOcrOutputTest.xml": {
+    "sha256": "19c681815fbf81c8e11e069ef3479f43b569bce8864728d561adccd917c468cb",
+    "bytes": 3520
+  },
+  "unit-tests/TEST-app.readflow.models.PackInstallTest.xml": {
+    "sha256": "6d4165d9bbe0304405699e7f9d889c023ed009635f04db9483a25c472c6e2cdd",
+    "bytes": 2924
+  },
+  "unit-tests/TEST-app.readflow.models.PlayModelManifestTest.xml": {
+    "sha256": "e1ced2a2cd868f5b82bb62639ef3c305bb0975e331dec2fbe8dbe042224d1e71",
+    "bytes": 966
+  },
+  "unit-tests/TEST-app.readflow.performance.BenchmarkCoordinatorTest.xml": {
+    "sha256": "6897e73fe4c11dd1fc00570f0ba4f3ef7cd50e06ab68bb4155a0fd8f75455480",
+    "bytes": 1614
+  },
+  "unit-tests/TEST-app.readflow.playback.AudioReservePolicyTest.xml": {
+    "sha256": "36e3b9fd0f80650c9956b3f8a22f2dddb78de55f3795db3bdfe9b430942b05ab",
+    "bytes": 2960
+  },
+  "unit-tests/TEST-app.readflow.playback.PlaybackDiagnosticsTest.xml": {
+    "sha256": "f5992e649435a577073fa7fc494f0eab23ec32a14d536bfe3989b860d54b3a31",
+    "bytes": 3181
+  },
+  "unit-tests/TEST-app.readflow.playback.PreparedRangeBudgetTest.xml": {
+    "sha256": "0875ad6870dc8e95a035767855397f6dc61e40310384a9c08274546f5d31bb33",
+    "bytes": 869
+  },
+  "unit-tests/TEST-app.readflow.playback.SentenceFailuresTest.xml": {
+    "sha256": "87f89bcf0b7e84bc082075b9ea45d5557bd3d8cdecc63e4f0783d380d5b4c964",
+    "bytes": 3066
+  },
+  "unit-tests/TEST-app.readflow.playback.SessionPlaybackPlayerTest.xml": {
+    "sha256": "e01d88fe5602ef9296e07c41ab018602cd8eea9dbf5e74bf2b4c91e234906d3b",
+    "bytes": 1127
+  },
+  "unit-tests/TEST-app.readflow.speech.BandLimitedResamplerTest.xml": {
+    "sha256": "ce6435c22577a937e4a298500d93563b1fabc620febb22fa71e2af69dc1287ce",
+    "bytes": 1278
+  },
+  "unit-tests/TEST-app.readflow.speech.MisakiKokoroEngineTest.xml": {
+    "sha256": "96fa4e64de1195dc81e77a70c4ca796257bf91292e24b3cf0106af19c09c1fe5",
+    "bytes": 2171
+  },
+  "unit-tests/TEST-app.readflow.speech.PcmWaveTest.xml": {
+    "sha256": "8537bac961abe73a86f2e9dd91de72a8c67d6e280e4d242a055c0e3e5507a17c",
+    "bytes": 1164
+  },
+  "unit-tests/TEST-app.readflow.speech.PlaySpeechDistributionTest.xml": {
+    "sha256": "59954b4f1b4197e99741d7de2705ef95a34dd7af1d951f97f0522bfebc678fb6",
+    "bytes": 601
+  },
+  "unit-tests/TEST-app.readflow.speech.SpeechPreferencesTest.xml": {
+    "sha256": "14f52b137b72dae5c4e295f1b90365bd69d8a7591d313ae41b4a88e929421581",
+    "bytes": 731
+  },
+  "unit-tests/TEST-app.readflow.speech.SpeechRecipeTest.xml": {
+    "sha256": "265aa6aa0fdae9e11b2acfaf9f7440fdfb20749b6794e1d3d89ed7d4412bd4f5",
+    "bytes": 582
+  },
+  "unit-tests/TEST-app.readflow.speech.SpeechRuntimeConfigTest.xml": {
+    "sha256": "dfced16f3be3aa792a63f9fedb068cc729a9c84fcd98d59eb06af280bbaf6ded",
+    "bytes": 726
+  },
+  "unit-tests/TEST-app.readflow.ui.LibraryStateTest.xml": {
+    "sha256": "552fcd9ec0f101659858a3a4c4fca9fd025d7ae247cb00e250d291ebfcbcd157",
+    "bytes": 866
+  },
+  "unit-tests/TEST-app.readflow.ui.PageSwipeGestureTest.xml": {
+    "sha256": "f9a957faf5ba6a07059d193ad87e8f58f883fe54c1d8d45181a42bdc5883cd74",
+    "bytes": 1093
+  },
+  "unit-tests/TEST-app.readflow.ui.PageTurnGeometryTest.xml": {
+    "sha256": "cebe1b0f9b206d0581eb9b368596de0f9ebf345e292e2ff349cd1c8b2e5e0765",
+    "bytes": 968
+  },
+  "unit-tests/TEST-app.readflow.ui.PageTurnStateTest.xml": {
+    "sha256": "8294b87f04cc9c5c083c18158802571c4c252abbd7b4109c7fc52203da9f23f3",
+    "bytes": 1243
+  },
+  "unit-tests/TEST-app.readflow.ui.PageViewportTest.xml": {
+    "sha256": "c3deb434c399a1b92ef4b4a854d6127381cd2643974e73c6367d3f546e20485d",
+    "bytes": 944
+  },
+  "unit-tests/TEST-app.readflow.ui.ReaderFailureContrastTest.xml": {
+    "sha256": "61096a7244baea171804b10847bbbbd6c6a55e6da2147771cf7c90392d4bccc7",
+    "bytes": 486
+  },
+  "unit-tests/TEST-app.readflow.ui.ReaderLightingTest.xml": {
+    "sha256": "61bb241ca8ad0c6a41739367baa6bbc54cdc5be5e16f70b0cfb3fcac6e6a9c8c",
+    "bytes": 1033
+  },
+  "unit-tests/TEST-app.readflow.ui.ReaderNavigationTest.xml": {
+    "sha256": "78c5380ca2b87b5694056fe8cc21a89833e1979277f96ff6b8b3402712ff9821",
+    "bytes": 716
+  },
+  "unit-tests/TEST-app.readflow.ui.ReaderPaperContrastTest.xml": {
+    "sha256": "bcff333a7fd934a7c30e1acdcf19d648bd77b57ee42fabedb02aee675175f052",
+    "bytes": 457
+  },
+  "unit-tests/TEST-app.readflow.ui.ReportProblemDetailsTest.xml": {
+    "sha256": "aca3197eba0372fdb3403664c6bca7a92e2ed28cfc5e8bda8d7160a4bf18551e",
+    "bytes": 759
+  },
+  "unit-tests/TEST-app.readflow.ui.SupportTipDetailsTest.xml": {
+    "sha256": "4d200598e12b92e1435dc2c817da81de40e69ace20c7f57466636c8ee93e0d9a",
+    "bytes": 716
+  },
+  "unit-tests/TEST-app.readflow.ui.ThumbnailPolicyTest.xml": {
+    "sha256": "4267d3bb25756b0bf9676781ba677e7589937c430ea6e902b4f77ea3a0c5bf9e",
+    "bytes": 882
+  }
+}

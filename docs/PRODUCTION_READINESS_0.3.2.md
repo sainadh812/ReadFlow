@@ -1,6 +1,6 @@
 # Read Assist 0.3.2: production candidate
 
-**Pending signed-artifact verification and publication.** The owner authorized full publication, including store graphics and demo videos. Version **0.3.2/code 28** replaces code 27 as the candidate after actual Android emulator testing exposed a dictionary failure. The [0.3.1 Internal release evidence](evidence/reader-0.3.1/play-release-summary.json) remains historical; it does not establish a code 28 upload or production release.
+**Signed artifacts verified; Android capture and publication pending.** The owner authorized full publication, including store graphics and demo videos. Version **0.3.2/code 28** replaces code 27 as the candidate after actual Android emulator testing exposed a dictionary failure. The [0.3.1 Internal release evidence](evidence/reader-0.3.1/play-release-summary.json) remains historical; it does not establish a code 28 upload or production release.
 
 ## Fix and evidence boundary
 
@@ -8,27 +8,30 @@ Android's ICU regular-expression engine rejects the JVM-only `(?U)` flag used by
 
 The targeted desktop `DictionaryQueryTest` passed **10 tests**, and the corrected expression passed a native ICU probe on the host for **25 whitespace characters**. The complete Android dictionary integration/capture run remains pending; these narrower checks do not establish that result. [Focused regression evidence](evidence/reader-0.3.2/dictionary-regression-summary.json).
 
-Compared with the signed 0.3.1 application's source revision `94006546634355658abfba7ce1a7a442d8825828`, the sole change under `app/src/main` and `app/src/release` is `DictionaryModels.kt`. No privacy, model, dictionary-pack, font or license asset changed in those source trees. The Gradle version and test/capture infrastructure also changed. This source comparison does not replace verification of the new signed files or an Android runtime result.
+Compared with the signed 0.3.1 application's source revision `94006546634355658abfba7ce1a7a442d8825828`, the sole change under `app/src/main` and `app/src/release` is `DictionaryModels.kt`. No privacy, model, dictionary-pack, font or license asset changed in those source trees. The Gradle version and test/capture infrastructure also changed. The new signed files were independently verified as described below; the source comparison and artifact checks do not establish an Android runtime result.
 
 | Item | Current target or evidence |
 | --- | --- |
 | App | Read Assist, package `app.readflow`, version `0.3.2`, code `28` |
 | Application fix revision | `a6c99f33f6e8934f4a304355a3e093b1b569dfa8` |
 | Dispatched build/capture revision | `e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3` |
-| Signed build | [Run 43749924111](https://github.com/sainadh812/ReadFlow/actions/runs/43749924111); outcome and artifact verification pending |
+| Signed build | [Run 43749924111](https://github.com/sainadh812/ReadFlow/actions/runs/43749924111); completed successfully and exact downloaded artifacts verified |
 | Android capture | [Run 43749926901](https://github.com/sainadh812/ReadFlow/actions/runs/43749926901); dictionary regression and usable recordings pending |
-| Signed AAB | Expected `Read-Assist-0.3.2-upload-signed.aab`; **SHA-256 and byte count UNVERIFIED** |
+| Signed AAB | `Read-Assist-0.3.2-upload-signed.aab`; **72,436,186 bytes**, SHA-256 `809f7fc41c0662c085abc313dc88269e4be1c1c416ff983405bcbc670461f12b` |
+| Signed APK | `Read-Assist-0.3.2-upload-signed.apk`; **131,451,127 bytes**, SHA-256 `a38cf6ca0c80214a67b3959391742d4b209ef9208f2bad38321a98105a413af9` |
 | GitHub release target | `v0.3.2-play-candidate`; existence/download verification pending |
 | Device support in source | Android 15/API 35+, ARM64; target API 36 |
 | Internal/production | No code 28 publication is established by this document |
 | Play permissions | Owner reports adding store-presence, production-release and policy-declaration grants to the existing service account. Actual relevant API/Console access still needs verification. |
 
-Keep `READFLOW_PLAY_SERVICE_ACCOUNT_JSON` and the existing upload key. The publishers deliberately contain `UNVERIFIED_0_3_2_AAB_SHA256` and byte count `0` until the exact new signed artifact is audited. Internal upload and production validation/promotion fail before credential or API access while these placeholders remain. Inspection and store-media operations remain available.
+The [independent signed-artifact verification](evidence/reader-0.3.2/signed-artifact-verification.json) checked all **83 downloaded file hashes**, both signatures against the existing upload certificate, bundle validation and APK 16 KB alignment. All 11 native libraries passed packaging checks. The build reported **462 tests, zero failures/errors and three skips**, with **zero lint errors and 38 warnings**. The fixed dictionary expression is present in the release DEX and the demo test is absent. The inventory contains 144 runtime dependencies; 290 license files are unchanged from 0.3.1. See the [build evidence](evidence/reader-0.3.2/release-evidence.json), [checksums](evidence/reader-0.3.2/SHA256SUMS.json), [packaging](evidence/reader-0.3.2/packaging.json) and [font checks](evidence/reader-0.3.2/font-verification.json). These checks do not establish device testing, crash delivery or Play publication; native symbols were not uploaded.
+
+Keep `READFLOW_PLAY_SERVICE_ACCOUNT_JSON` and the existing upload key. `scripts/publish_play.py` now pins the verified code 28 AAB hash and byte count above. Its artifact checks and production bundle-hash checks remain enforced; the new GitHub candidate must exist and its downloaded bytes must match before publication. The publisher/promoter safeguard suite passed **46 tests** after updating the pins.
 
 ## Complete this candidate in order
 
-1. Confirm the signed build checks and Android dictionary regression pass. Download the exact APK/AAB and evidence, verify every recorded checksum, signature/upload certificate, version/package and packaging checks, and preserve results under `docs/evidence/reader-0.3.2/`. Record actual test and lint totals; do not copy code 27 results.
-2. Publish the verified files to the new GitHub candidate release. Set `AAB_SHA256` and `AAB_BYTES` in `scripts/publish_play.py` from those verified bytes; never substitute the code 27 hash. Keep its version/code/download URL consistent, then rerun publishing safeguards.
+1. Finish the Android dictionary regression/capture review. Signed build and exact-artifact verification are complete, with evidence preserved under `docs/evidence/reader-0.3.2/`; the emulator integration result remains pending.
+2. Publish the verified files to the new GitHub candidate release and verify the downloaded release assets against the recorded hashes. `AAB_SHA256` and `AAB_BYTES` already match the independently verified code 28 artifact; do not rebuild or substitute the code 27 bytes.
 3. Inspect Play and publish the exact code 28 bundle to Internal testing. Preserve the sanitized report at `build/play-upload-0.3.2/report.json` and verify the bundle hash and actual lifecycle before claiming availability.
 4. Review actual code 28 captures and audio. Generate approved graphics from original captures under `store-assets/release-0.3.2/`; retain hashes, captions and source provenance. Produce `Read-Assist-0.3.2-product-demo.mp4` and the continuous `Read-Assist-0.3.2-foreground-service.mp4`. Emulator APKs use local debug signing and are not physical-device or Play-installed ARM64 evidence. Never relabel the failed code 27 recordings as code 28.
 5. Publish the reviewed demo page/media/credits and verify public access. Publish the en-US listing and approved image manifest with `publish_store`. Store preview placement requires a valid YouTube URL; a separately hosted foreground-service proof is not automatically a YouTube store preview.

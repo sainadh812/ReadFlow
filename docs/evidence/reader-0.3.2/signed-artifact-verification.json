@@ -1,0 +1,96 @@
+{
+  "status": "passed",
+  "githubRunId": 43749924111,
+  "sourceCommit": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+  "versionName": "0.3.2",
+  "versionCode": 28,
+  "filesVerified": 83,
+  "aab": {
+    "file": "Read-Assist-0.3.2-upload-signed.aab",
+    "bytes": 72436186,
+    "sha256": "809f7fc41c0662c085abc313dc88269e4be1c1c416ff983405bcbc670461f12b"
+  },
+  "apk": {
+    "file": "Read-Assist-0.3.2-upload-signed.apk",
+    "bytes": 131451127,
+    "sha256": "a38cf6ca0c80214a67b3959391742d4b209ef9208f2bad38321a98105a413af9"
+  },
+  "certificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+  "aabStrictSignatureExitCode": 4,
+  "signatureNote": "Expected self-signed upload-certificate trust warning; signatures verified.",
+  "bundleValidation": "passed",
+  "apk16KbAlignment": "passed",
+  "nativeLibraries": [
+    {
+      "name": "libandroidx.graphics.path.so",
+      "packagedSha256": "41e9a793c43a0f4fddb19e33f346bace464f30f888ba7b9eaf96294ea115bfb6",
+      "buildId": "a7846ae06d6bf6cf63fa7c5e056b5de493c71567"
+    },
+    {
+      "name": "libcrashlytics-common.so",
+      "packagedSha256": "fb4a3190e4669455b66e40af74a6a246e957969a9a9c1db1e209da024314a912",
+      "buildId": "2d94672e5de51cbb3cca32fb23847114694a7d11"
+    },
+    {
+      "name": "libcrashlytics-handler.so",
+      "packagedSha256": "f8d77113b80d7017b05e8f12e594f64be3e593fa5c39d13f956f61cdac362e53",
+      "buildId": "f02a3e85d68f72121358a90d8f9b2d72f5df8e8e"
+    },
+    {
+      "name": "libcrashlytics-trampoline.so",
+      "packagedSha256": "cda75d75e16763de7eeda2240cef0f0465a81437c9d14c456b6907f22091f8b2",
+      "buildId": "1d12b552f1d603506e13dbf51d40dfbe48b24446"
+    },
+    {
+      "name": "libcrashlytics.so",
+      "packagedSha256": "e081f8e49f3093e41767f51d7d82ef8ce05d101b83dc658de27d270ad611a0b0",
+      "buildId": "012df348f8c6344ddf9592abf181fd813513d169"
+    },
+    {
+      "name": "libdatastore_shared_counter.so",
+      "packagedSha256": "d3e48717c9aa147e0ab21063ba0e8e0211cabf8bf40b222640829519edbf58e1",
+      "buildId": "17db37bd6770ac00dd2d1d2828839fd23a7959a3"
+    },
+    {
+      "name": "libmlkit_google_ocr_pipeline.so",
+      "packagedSha256": "fa41d509a661e8aa8b3e3ac1a28541f8823f308414fcad733fe26d61feea2646",
+      "buildId": "dda3fa6fd714a2427bcbb5fa672d4d14"
+    },
+    {
+      "name": "libonnxruntime.so",
+      "packagedSha256": "3fc3e79539f06f67360a810e60eb5c513db5febc16f7bc71e5d9e8ce39e3d775",
+      "buildId": "c3b77e8b1f5d988f59094b66325830fe6e6d3af4"
+    },
+    {
+      "name": "libonnxruntime4j_jni.so",
+      "packagedSha256": "adcaf5e11ff65ad7b54725b2869118568b14ce2f3596d1b6f082ed0c774f2539",
+      "buildId": "5f5c0e523160b39bf689996eb969bcf541548f2c"
+    },
+    {
+      "name": "libreadflow_misaki.so",
+      "packagedSha256": "aec24cddba3c53064dab9c9a55dc2dbba5d2f8cdb264f017a08b87c446c1d3a9",
+      "buildId": "7b4680bbcfbd75fdaf9d626a6e7c3c08d410c725"
+    },
+    {
+      "name": "libreadflow_teleocr.so",
+      "packagedSha256": "17a73f10a3e26ecd4880d481dc821e51ad745793058ffe77d457473322d63953",
+      "buildId": "4f41c86b6832f25a074caaf6a46204d2a1e28ded"
+    }
+  ],
+  "unitTests": {
+    "tests": 462,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "dictionaryQueryTests": 10,
+  "lintErrors": 0,
+  "lintWarnings": 38,
+  "portableDictionaryRegexPresentInDex": true,
+  "storeDemoTestAbsentFromDex": true,
+  "resolvedRuntimeDependencies": 144,
+  "licenseFilesUnchangedFrom031": 290,
+  "nativeSymbolsUploaded": false,
+  "deviceTestClaim": false,
+  "playUploadPerformedByThisReview": false
+}

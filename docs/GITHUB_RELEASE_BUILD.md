@@ -5,8 +5,8 @@ manual only; every operation checks out the immutable dispatched commit
 (`github.sha`) on an allowed branch. The owner authorized **full publication**,
 including store copy, screenshots, demo videos and production for `app.readflow`.
 The current candidate is **0.3.2/code 28**, which fixes a dictionary lookup failure
-found during actual Android emulator testing. New signed-artifact verification,
-usable recordings and publication are pending; see the
+found during actual Android emulator testing. The new signed artifacts are
+verified; Android capture, usable recordings and publication remain pending. See the
 [current readiness handoff](PRODUCTION_READINESS_0.3.2.md). Historical code 27
 Internal testing publication is recorded below and does not establish code 28
 availability or production publication.
@@ -56,7 +56,7 @@ an `operation`:
 | `inspect_play` | Check API access and inspect the existing app and Internal testing state without committing a release. |
 | `inspect_store` | Read listing copy, image hashes, bundles, tracks and available lifecycle information; delete the temporary inspection edit without committing. |
 | `capture_demo` | Build an isolated emulator variant and attempt actual app screenshots, videos and background-playback evidence. No Play upload or production signing key is used. |
-| `publish_play` | Upload the exact verified 0.3.2 AAB after its pins are finalized and commit it to Internal testing. |
+| `publish_play` | Upload the exact hash-pinned 0.3.2 AAB from its GitHub candidate release and commit it to Internal testing. |
 | `publish_store` | Publish approved en-US listing copy and verified icon, feature graphic and actual app screenshots; preserve tracks, other locales and app details. |
 | `validate_production` | Stage promotion of the existing verified code 28 bundle, call Play validation, then delete the owned edit without committing. |
 | `publish_production` | Promote the existing verified code 28 bundle to production, validate and commit, then check the resulting release state. No bundle upload or rebuild occurs. |
@@ -83,7 +83,7 @@ stops promotion. Other tracks and store metadata must remain unchanged.
 
 `capture_demo` runs only from the approved release branch. Its source-tree guard
 requires `app/src/main` and `app/src/release` to match the reviewed 0.3.2
-application source; signed-artifact verification is still required independently.
+application source. Signed-artifact verification is recorded independently below.
 Capture provenance records the actual commit, APK hash and emulator build:
 x86_64 release runtime, local debug signing and no configured Firebase. These
 recordings are not physical-device or Play-installed ARM64 verification. Review
@@ -108,14 +108,22 @@ The current publishing target is:
 - Asset: `Read-Assist-0.3.2-upload-signed.aab`, package `app.readflow`, **0.3.2/code 28**.
 - Application fix revision: `a6c99f33f6e8934f4a304355a3e093b1b569dfa8`.
 - Dispatched build/capture revision: `e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3`.
-- Signed build: [run 43749924111](https://github.com/sainadh812/ReadFlow/actions/runs/43749924111);
-  capture: [run 43749926901](https://github.com/sainadh812/ReadFlow/actions/runs/43749926901).
-  These links record dispatches, not verified outcomes.
-- **New AAB byte count and SHA-256 remain unverified.** The publishers use size `0`
-  and `UNVERIFIED_0_3_2_AAB_SHA256` and fail before credentials/API access for upload
-  or production validation/promotion. Set both pins only from independently audited
-  code 28 bytes; never reuse the code 27 hash. Inspection and store operations
-  remain available.
+- Signed build: [run 43749924111](https://github.com/sainadh812/ReadFlow/actions/runs/43749924111)
+  completed successfully; all 83 downloaded file hashes and both signatures were
+  independently verified. Build results: 462 tests, zero failures/errors, three
+  skips; lint zero errors and 38 warnings. Bundle validation, APK 16 KB alignment
+  and packaging checks for all 11 native libraries passed.
+- AAB: **72,436,186 bytes**, SHA-256
+  `809f7fc41c0662c085abc313dc88269e4be1c1c416ff983405bcbc670461f12b`.
+- APK: **131,451,127 bytes**, SHA-256
+  `a38cf6ca0c80214a67b3959391742d4b209ef9208f2bad38321a98105a413af9`.
+- [Independent artifact verification](evidence/reader-0.3.2/signed-artifact-verification.json)
+  records the existing upload certificate and confirms the fixed dictionary
+  expression is present in the release DEX. The publisher now pins this exact
+  code 28 AAB; 46 publisher/promoter safeguard tests passed after updating the pins.
+- Android capture [run 43749926901](https://github.com/sainadh812/ReadFlow/actions/runs/43749926901)
+  remains pending. Signed build checks do not establish an Android dictionary
+  runtime result, usable media, GitHub release availability or Play publication.
 
 Dispatch inspection from the approved release branch:
 
@@ -128,9 +136,10 @@ gh workflow run read-assist-release.yml \
 ```
 
 Select another operation using the same command; keep capture reuse disabled.
-Verify the new signed artifact and Android regression, publish the exact GitHub
-candidate, finalize its hash/size pins, inspect Play and publish code 28 to Internal
-testing. Review actual media and commit the approved assets before `publish_store`.
+The signed files and hash/size pins are verified. Complete the Android regression,
+publish the exact GitHub candidate and verify its downloaded hashes, then inspect
+Play and publish code 28 to Internal testing. Review actual media and commit the
+approved assets before `publish_store`.
 Resolve outstanding declarations, then run `validate_production` before
 `publish_production`. These operations do not submit policy declarations or resolve
 account/testing prerequisites automatically.
