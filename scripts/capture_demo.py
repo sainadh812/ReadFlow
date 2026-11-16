@@ -605,6 +605,7 @@ class Capture:
             raise CaptureError("Android media Pause did not pause the actual warmed narration.")
         self.wait("Play")
         self.report["playbackClipUsesPreviouslyPreparedAudio"] = True
+        self.report["foregroundReadingDwellSeconds"] = 14
         with self.recording("06-background-playback"):
             time.sleep(2)
             self.tap("Play")
@@ -616,7 +617,9 @@ class Capture:
             else:
                 raise CaptureError("Visible Play did not start actual narration inside the proof recording.")
             self.screenshot("14-reading-aloud", hierarchy=False)
-            time.sleep(2)
+            # Keep actual speech and word highlighting visible long enough for
+            # a continuous listening demonstration before the Home/Pause proof.
+            time.sleep(14)
             self.shell("input", "keyevent", "KEYCODE_HOME")
             time.sleep(2)
             background_media = self.shell("dumpsys", "media_session")
