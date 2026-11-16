@@ -1,0 +1,597 @@
+{
+  "schemaVersion": 1,
+  "status": "complete",
+  "generatedAt": "2026-11-16T03:07:39.018489+00:00",
+  "sourceVideo": {
+    "file": "build/store-media/rendered/Read-Assist-0.3.2-product-demo.mp4",
+    "bytes": 2142928,
+    "sha256": "cda2837be33ece81a7e6ad205d59cf328d9695498c0323162511892b9057b2c2"
+  },
+  "sourceVideoSha256": "cda2837be33ece81a7e6ad205d59cf328d9695498c0323162511892b9057b2c2",
+  "script": {
+    "file": "store-assets/release-0.3.2/narration-script.json",
+    "bytes": 2540,
+    "sha256": "a8411d8928edf1d9a1b513805995907993bd6e46840b455328668562f05737ee"
+  },
+  "synthesisReport": {
+    "file": "build/store-media/narrated/speech/synthesis-report.json",
+    "bytes": 14925,
+    "sha256": "1a7c55841b85d66730dab170ff740e926cf78f6b3226c780a6e88995f76f537d"
+  },
+  "renderer": {
+    "file": "scripts/build_narrated_demo.py",
+    "bytes": 17611,
+    "sha256": "252be43dd3fcbe5ad044ec88568f445c32b0afcd782647d6cf3f1dcd409ccbd8"
+  },
+  "ffmpeg": "ffmpeg version n9.0.2-17-g2a571b6068-20260930 Copyright (c) 2000-2026 the FFmpeg developers",
+  "timelineDurationSeconds": 74.02135416666667,
+  "description": "Separate post-production explanatory voiceover edition with an excerpt of genuine recorded app speech.",
+  "humanListeningPerformed": false,
+  "segments": [
+    {
+      "id": "library",
+      "start": 0.35,
+      "end": 5.953666666666667,
+      "text": "Meet Read Assist. Your library for documents, pictures, and web articles.",
+      "kind": "generated-explanatory-narration",
+      "input": {
+        "file": "build/store-media/narrated/speech/library.wav",
+        "bytes": 269020,
+        "sha256": "ec975842ca5c8f310dd522e909c987108247a39ac6b9da0987ba6b040df19285"
+      },
+      "normalization": {
+        "inputLoudness": {
+          "integratedLufs": -25.22,
+          "truePeakDbtp": -8.81,
+          "loudnessRangeLu": 2.7
+        },
+        "constantGainDb": 5.8100000000000005,
+        "outputLoudness": {
+          "integratedLufs": -19.41,
+          "truePeakDbtp": -3.0,
+          "loudnessRangeLu": 2.7
+        },
+        "stats": {
+          "sampleRate": 48000,
+          "channels": 1,
+          "sampleCount": 268976,
+          "durationSeconds": 5.603666666666666,
+          "peakLinear": 0.7042239656305007,
+          "peakDbfs": -3.0457839884982114,
+          "rmsDbfs": -19.32021399007137,
+          "clippedSamples": 0
+        },
+        "edgeFadeSeconds": 0.05,
+        "dynamicCompression": false,
+        "timeStretch": false
+      },
+      "windowEnd": 6.7,
+      "durationSeconds": 5.603666666666666
+    },
+    {
+      "id": "page-turn",
+      "start": 7.25,
+      "end": 12.628458333333333,
+      "text": "Swipe right to left to turn forward. Switch between PDF and text.",
+      "kind": "generated-explanatory-narration",
+      "input": {
+        "file": "build/store-media/narrated/speech/page-turn.wav",
+        "bytes": 258210,
+        "sha256": "00d60c98b702dc0d40c1162d5621787144daf8f9fb297419c828a1792671e065"
+      },
+      "normalization": {
+        "inputLoudness": {
+          "integratedLufs": -24.98,
+          "truePeakDbtp": -8.99,
+          "loudnessRangeLu": 1.1
+        },
+        "constantGainDb": 5.99,
+        "outputLoudness": {
+          "integratedLufs": -19.0,
+          "truePeakDbtp": -3.0,
+          "loudnessRangeLu": 1.1
+        },
+        "stats": {
+          "sampleRate": 48000,
+          "channels": 1,
+          "sampleCount": 258166,
+          "durationSeconds": 5.378458333333334,
+          "peakLinear": 0.707769424490799,
+          "peakDbfs": -3.002164054703154,
+          "rmsDbfs": -19.624470574360522,
+          "clippedSamples": 0
+        },
+        "edgeFadeSeconds": 0.05,
+        "dynamicCompression": false,
+        "timeStretch": false
+      },
+      "windowEnd": 12.75,
+      "durationSeconds": 5.378458333333334
+    },
+    {
+      "id": "lighting",
+      "start": 13.3,
+      "end": 19.454,
+      "text": "Swipe up for reading controls. Adjust the brightness and add a warm tint to suit your reading.",
+      "kind": "generated-explanatory-narration",
+      "input": {
+        "file": "build/store-media/narrated/speech/lighting.wav",
+        "bytes": 295436,
+        "sha256": "b7f31cd96147898020be1f269fd59ba0d0ee600c55e9a536a9233d41d0ba9162"
+      },
+      "normalization": {
+        "inputLoudness": {
+          "integratedLufs": -24.38,
+          "truePeakDbtp": -7.73,
+          "loudnessRangeLu": 1.6
+        },
+        "constantGainDb": 4.73,
+        "outputLoudness": {
+          "integratedLufs": -19.67,
+          "truePeakDbtp": -3.0,
+          "loudnessRangeLu": 1.5
+        },
+        "stats": {
+          "sampleRate": 48000,
+          "channels": 1,
+          "sampleCount": 295392,
+          "durationSeconds": 6.154,
+          "peakLinear": 0.7058355357118131,
+          "peakDbfs": -3.025929612208622,
+          "rmsDbfs": -20.173585328215143,
+          "clippedSamples": 0
+        },
+        "edgeFadeSeconds": 0.05,
+        "dynamicCompression": false,
+        "timeStretch": false
+      },
+      "windowEnd": 21.6,
+      "durationSeconds": 6.154
+    },
+    {
+      "id": "voice-controls",
+      "start": 22.25,
+      "end": 26.555875,
+      "text": "Choose your voice, reading speed, and accuracy settings.",
+      "kind": "generated-explanatory-narration",
+      "input": {
+        "file": "build/store-media/narrated/speech/voice-controls.wav",
+        "bytes": 206726,
+        "sha256": "785776f4b7d5630c1dddd96dbe4349a2efb0cba7978d6620d92c36d759522d22"
+      },
+      "normalization": {
+        "inputLoudness": {
+          "integratedLufs": -24.62,
+          "truePeakDbtp": -6.5,
+          "loudnessRangeLu": 1.1
+        },
+        "constantGainDb": 3.5,
+        "outputLoudness": {
+          "integratedLufs": -21.12,
+          "truePeakDbtp": -3.0,
+          "loudnessRangeLu": 1.1
+        },
+        "stats": {
+          "sampleRate": 48000,
+          "channels": 1,
+          "sampleCount": 206682,
+          "durationSeconds": 4.305875,
+          "peakLinear": 0.7075710921882811,
+          "peakDbfs": -3.0045983699542322,
+          "rmsDbfs": -22.288871008188757,
+          "clippedSamples": 0
+        },
+        "edgeFadeSeconds": 0.05,
+        "dynamicCompression": false,
+        "timeStretch": false
+      },
+      "windowEnd": 26.75,
+      "durationSeconds": 4.305875
+    },
+    {
+      "id": "dictionary",
+      "start": 27.25,
+      "end": 34.184666666666665,
+      "text": "Look up English words as you go. Download the dictionary pack once to use definitions offline.",
+      "kind": "generated-explanatory-narration",
+      "input": {
+        "file": "build/store-media/narrated/speech/dictionary.wav",
+        "bytes": 332908,
+        "sha256": "d8af51605570dec2fc7d045fa1ce176ed926e7d0a878d4b93c71e0126643fb89"
+      },
+      "normalization": {
+        "inputLoudness": {
+          "integratedLufs": -24.48,
+          "truePeakDbtp": -6.6,
+          "loudnessRangeLu": 1.8
+        },
+        "constantGainDb": 3.5999999999999996,
+        "outputLoudness": {
+          "integratedLufs": -20.88,
+          "truePeakDbtp": -3.0,
+          "loudnessRangeLu": 1.8
+        },
+        "stats": {
+          "sampleRate": 48000,
+          "channels": 1,
+          "sampleCount": 332864,
+          "durationSeconds": 6.934666666666667,
+          "peakLinear": 0.7036058053367154,
+          "peakDbfs": -3.0534117181374643,
+          "rmsDbfs": -21.195024377513697,
+          "clippedSamples": 0
+        },
+        "edgeFadeSeconds": 0.05,
+        "dynamicCompression": false,
+        "timeStretch": false
+      },
+      "windowEnd": 34.7,
+      "durationSeconds": 6.934666666666667
+    },
+    {
+      "id": "themes",
+      "start": 35.3,
+      "end": 40.80458333333333,
+      "text": "Choose a style you like: Warm Library, Modern Focus, or Night Reader.",
+      "kind": "generated-explanatory-narration",
+      "input": {
+        "file": "build/store-media/narrated/speech/themes.wav",
+        "bytes": 264264,
+        "sha256": "eab8446edc97aa7fffbdbda460a26c1ed16d3dd300b2b612a6dd1fca6c628b88"
+      },
+      "normalization": {
+        "inputLoudness": {
+          "integratedLufs": -25.27,
+          "truePeakDbtp": -9.79,
+          "loudnessRangeLu": 2.4
+        },
+        "constantGainDb": 6.789999999999999,
+        "outputLoudness": {
+          "integratedLufs": -18.48,
+          "truePeakDbtp": -3.0,
+          "loudnessRangeLu": 2.4
+        },
+        "stats": {
+          "sampleRate": 48000,
+          "channels": 1,
+          "sampleCount": 264220,
+          "durationSeconds": 5.504583333333334,
+          "peakLinear": 0.706595230522035,
+          "peakDbfs": -3.016585967090903,
+          "rmsDbfs": -18.754463668286018,
+          "clippedSamples": 0
+        },
+        "edgeFadeSeconds": 0.05,
+        "dynamicCompression": false,
+        "timeStretch": false
+      },
+      "windowEnd": 41.7,
+      "durationSeconds": 5.504583333333334
+    },
+    {
+      "id": "night",
+      "start": 42.3,
+      "end": 47.73533333333334,
+      "text": "Night Reader brings a darker look to your library. Change themes whenever you like.",
+      "kind": "generated-explanatory-narration",
+      "input": {
+        "file": "build/store-media/narrated/speech/night.wav",
+        "bytes": 260940,
+        "sha256": "df586684227f94e9783d648b83e1596a52b967eb4b2f8b54b0c83e953372279b"
+      },
+      "normalization": {
+        "inputLoudness": {
+          "integratedLufs": -24.56,
+          "truePeakDbtp": -8.1,
+          "loudnessRangeLu": 1.9
+        },
+        "constantGainDb": 5.1,
+        "outputLoudness": {
+          "integratedLufs": -19.46,
+          "truePeakDbtp": -3.0,
+          "loudnessRangeLu": 1.9
+        },
+        "stats": {
+          "sampleRate": 48000,
+          "channels": 1,
+          "sampleCount": 260896,
+          "durationSeconds": 5.435333333333333,
+          "peakLinear": 0.7049150396117619,
+          "peakDbfs": -3.0372644701371696,
+          "rmsDbfs": -20.161483048789957,
+          "clippedSamples": 0
+        },
+        "edgeFadeSeconds": 0.05,
+        "dynamicCompression": false,
+        "timeStretch": false
+      },
+      "windowEnd": 48.7,
+      "durationSeconds": 5.435333333333333
+    },
+    {
+      "id": "background",
+      "start": 49.3,
+      "end": 56.68516666666667,
+      "text": "Start narration, then switch apps. Reading continues in the background, with playback controls close by.",
+      "kind": "generated-explanatory-narration",
+      "input": {
+        "file": "build/store-media/narrated/speech/background.wav",
+        "bytes": 354532,
+        "sha256": "6afbc4a12520e1571b4d7a1a02d3c1b2011d8f2ab5fb265c341fe02c0da73cfa"
+      },
+      "normalization": {
+        "inputLoudness": {
+          "integratedLufs": -24.8,
+          "truePeakDbtp": -7.6,
+          "loudnessRangeLu": 3.5
+        },
+        "constantGainDb": 4.6,
+        "outputLoudness": {
+          "integratedLufs": -20.2,
+          "truePeakDbtp": -3.0,
+          "loudnessRangeLu": 3.5
+        },
+        "stats": {
+          "sampleRate": 48000,
+          "channels": 1,
+          "sampleCount": 354488,
+          "durationSeconds": 7.385166666666667,
+          "peakLinear": 0.7062861168521991,
+          "peakDbfs": -3.0203866079156114,
+          "rmsDbfs": -20.171864898699774,
+          "clippedSamples": 0
+        },
+        "edgeFadeSeconds": 0.05,
+        "dynamicCompression": false,
+        "timeStretch": false
+      },
+      "windowEnd": 56.9,
+      "durationSeconds": 7.385166666666667
+    },
+    {
+      "id": "pause",
+      "start": 66.3,
+      "end": 71.05966666666667,
+      "text": "When you are ready for a break, pause from Android media controls.",
+      "kind": "generated-explanatory-narration",
+      "input": {
+        "file": "build/store-media/narrated/speech/pause.wav",
+        "bytes": 228508,
+        "sha256": "21c68117c5ba30c2f5a5c20c3f6fa10824d83c2fa5d9f447d8903cc4b6748a99"
+      },
+      "normalization": {
+        "inputLoudness": {
+          "integratedLufs": -24.6,
+          "truePeakDbtp": -9.0,
+          "loudnessRangeLu": 1.2
+        },
+        "constantGainDb": 6.0,
+        "outputLoudness": {
+          "integratedLufs": -18.6,
+          "truePeakDbtp": -3.0,
+          "loudnessRangeLu": 1.2
+        },
+        "stats": {
+          "sampleRate": 48000,
+          "channels": 1,
+          "sampleCount": 228464,
+          "durationSeconds": 4.759666666666667,
+          "peakLinear": 0.7013949161721403,
+          "peakDbfs": -3.0807477256454407,
+          "rmsDbfs": -19.223646488339902,
+          "clippedSamples": 0
+        },
+        "edgeFadeSeconds": 0.05,
+        "dynamicCompression": false,
+        "timeStretch": false
+      },
+      "windowEnd": 72.8,
+      "durationSeconds": 4.759666666666667
+    }
+  ],
+  "artifacts": {
+    "Read-Assist-0.3.2-narrated-demo.mp4": {
+      "file": "build/store-media/narrated/Read-Assist-0.3.2-narrated-demo.mp4",
+      "bytes": 2750807,
+      "sha256": "533bad2d141c17e258a868dd96bd49861ae9669f83691765deb46ccefa40a08d"
+    },
+    "Read-Assist-0.3.2-explanatory-audio.mp3": {
+      "file": "build/store-media/narrated/Read-Assist-0.3.2-explanatory-audio.mp3",
+      "bytes": 1481950,
+      "sha256": "0620e49bfe93f15a42ca8a3d68cf652a124865e1412a0ceaa238edb2416ffdad"
+    },
+    "Read-Assist-0.3.2-narrated-demo.en.srt": {
+      "file": "build/store-media/narrated/Read-Assist-0.3.2-narrated-demo.en.srt",
+      "bytes": 1193,
+      "sha256": "7cdaa3c15e27780900ec2f02d90c73636eec023b55c9b1c0670085e0fdf1b88b"
+    },
+    "Read-Assist-0.3.2-narrated-demo.en.vtt": {
+      "file": "build/store-media/narrated/Read-Assist-0.3.2-narrated-demo.en.vtt",
+      "bytes": 1201,
+      "sha256": "7a762fdeaacf17541d10c262ab42e2a35890e8616c937ee110a2bed79f4500d2"
+    }
+  },
+  "normalization": {
+    "method": "Independent constant gain after 50ms edge fades; no compression, stretching, or speech truncation.",
+    "targetIntegratedLufs": -18.0,
+    "truePeakCeilingDbtp": -3.0
+  },
+  "originalAppAudioExcerpt": {
+    "start": 57.5,
+    "end": 64.15,
+    "sourceSha256": "cda2837be33ece81a7e6ad205d59cf328d9695498c0323162511892b9057b2c2",
+    "normalization": {
+      "inputLoudness": {
+        "integratedLufs": -28.5,
+        "truePeakDbtp": -10.93,
+        "loudnessRangeLu": 1.0
+      },
+      "constantGainDb": 7.93,
+      "outputLoudness": {
+        "integratedLufs": -20.57,
+        "truePeakDbtp": -3.0,
+        "loudnessRangeLu": 1.0
+      },
+      "stats": {
+        "sampleRate": 48000,
+        "channels": 1,
+        "sampleCount": 319200,
+        "durationSeconds": 6.65,
+        "peakLinear": 0.7079250233593297,
+        "peakDbfs": -3.000254723763332,
+        "rmsDbfs": -20.338149719041713,
+        "clippedSamples": 0
+      },
+      "edgeFadeSeconds": 0.05,
+      "dynamicCompression": false,
+      "timeStretch": false
+    },
+    "otherOriginalAudioMuted": true,
+    "continuousEvidenceVideoUnchanged": true
+  },
+  "masterAudio": {
+    "sampleRate": 48000,
+    "channels": 1,
+    "sampleCount": 3553025,
+    "durationSeconds": 74.02135416666667,
+    "peakLinear": 0.7079250233593297,
+    "peakDbfs": -3.000254723763332,
+    "rmsDbfs": -21.085543836684735,
+    "clippedSamples": 0,
+    "loudness": {
+      "integratedLufs": -19.45,
+      "truePeakDbtp": -3.0,
+      "loudnessRangeLu": 6.8
+    }
+  },
+  "outputAudioAnalysis": {
+    "Read-Assist-0.3.2-narrated-demo.mp4": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "sampleCount": 3553025,
+      "durationSeconds": 74.02135416666667,
+      "peakLinear": 0.7072650790214539,
+      "peakDbfs": -3.0083556906820883,
+      "rmsDbfs": -21.091456722380187,
+      "clippedSamples": 0,
+      "loudness": {
+        "integratedLufs": -19.46,
+        "truePeakDbtp": -3.0,
+        "loudnessRangeLu": 6.8
+      }
+    },
+    "Read-Assist-0.3.2-explanatory-audio.mp3": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "sampleCount": 3553025,
+      "durationSeconds": 74.02135416666667,
+      "peakLinear": 0.6724486947059631,
+      "peakDbfs": -3.4468169017846106,
+      "rmsDbfs": -21.52815760966294,
+      "clippedSamples": 0,
+      "loudness": {
+        "integratedLufs": -19.9,
+        "truePeakDbtp": -3.44,
+        "loudnessRangeLu": 6.9
+      }
+    }
+  },
+  "decodeValidation": "passed",
+  "videoStreamUnchanged": true,
+  "videoPacketTimestampsUnchanged": true,
+  "sourceEncodedVideoSha256": "864aa395e273ccb2e77a0c03ebeb84e63c26da9f12eb2bca8abb435b49ad52f1",
+  "outputEncodedVideoSha256": "864aa395e273ccb2e77a0c03ebeb84e63c26da9f12eb2bca8abb435b49ad52f1",
+  "videoPacketCount": 2220,
+  "videoTimebase": "1/15360",
+  "outputTimelineDurationSeconds": 74.02135416666667,
+  "captionValidation": {
+    "status": "passed",
+    "cueCount": 11,
+    "overlap": false,
+    "narrationTiming": "Actual generated clip placement and duration; no word-level alignment claimed.",
+    "originalAppTiming": "Two reviewed original-speech cues supplied in the narration script.",
+    "cues": [
+      {
+        "id": "library",
+        "start": 0.35,
+        "end": 5.953666666666667,
+        "text": "Meet Read Assist. Your library for documents, pictures, and web articles.",
+        "kind": "generated-explanatory-narration"
+      },
+      {
+        "id": "page-turn",
+        "start": 7.25,
+        "end": 12.628458333333333,
+        "text": "Swipe right to left to turn forward. Switch between PDF and text.",
+        "kind": "generated-explanatory-narration"
+      },
+      {
+        "id": "lighting",
+        "start": 13.3,
+        "end": 19.454,
+        "text": "Swipe up for reading controls. Adjust the brightness and add a warm tint to suit your reading.",
+        "kind": "generated-explanatory-narration"
+      },
+      {
+        "id": "voice-controls",
+        "start": 22.25,
+        "end": 26.555875,
+        "text": "Choose your voice, reading speed, and accuracy settings.",
+        "kind": "generated-explanatory-narration"
+      },
+      {
+        "id": "dictionary",
+        "start": 27.25,
+        "end": 34.184666666666665,
+        "text": "Look up English words as you go. Download the dictionary pack once to use definitions offline.",
+        "kind": "generated-explanatory-narration"
+      },
+      {
+        "id": "themes",
+        "start": 35.3,
+        "end": 40.80458333333333,
+        "text": "Choose a style you like: Warm Library, Modern Focus, or Night Reader.",
+        "kind": "generated-explanatory-narration"
+      },
+      {
+        "id": "night",
+        "start": 42.3,
+        "end": 47.73533333333334,
+        "text": "Night Reader brings a darker look to your library. Change themes whenever you like.",
+        "kind": "generated-explanatory-narration"
+      },
+      {
+        "id": "background",
+        "start": 49.3,
+        "end": 56.68516666666667,
+        "text": "Start narration, then switch apps. Reading continues in the background, with playback controls close by.",
+        "kind": "generated-explanatory-narration"
+      },
+      {
+        "start": 57.7,
+        "end": 60.15,
+        "text": "Each sentence adds something new to the picture.",
+        "kind": "original-recorded-app-speech"
+      },
+      {
+        "start": 60.3,
+        "end": 64.1,
+        "text": "Listen to the words, or let your eyes move gently across the page.",
+        "kind": "original-recorded-app-speech"
+      },
+      {
+        "id": "pause",
+        "start": 66.3,
+        "end": 71.05966666666667,
+        "text": "When you are ready for a break, pause from Android media controls.",
+        "kind": "generated-explanatory-narration"
+      }
+    ]
+  },
+  "voicesOverlap": false,
+  "sourcePreserved": true,
+  "limitations": [
+    "Human listening and pronunciation review were not performed.",
+    "The narrated edition is edited promotional media, not continuous playback evidence."
+  ]
+}

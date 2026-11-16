@@ -1,0 +1,83 @@
+{
+  "appVersion": "0.3.2",
+  "language": "en-US",
+  "voiceIndex": 0,
+  "speed": 1.0,
+  "model": "Kokoro-82M v0.19",
+  "purpose": "Explanatory voiceover added in post-production to the reviewed product walkthrough; separate from the unchanged continuous playback evidence.",
+  "sourceVideo": "Read-Assist-0.3.2-product-demo.mp4",
+  "sourceVideoSha256": "cda2837be33ece81a7e6ad205d59cf328d9695498c0323162511892b9057b2c2",
+  "segments": [
+    {
+      "id": "library",
+      "start": 0.35,
+      "end": 6.7,
+      "text": "Meet Read Assist. Your library for documents, pictures, and web articles."
+    },
+    {
+      "id": "page-turn",
+      "start": 7.25,
+      "end": 12.75,
+      "text": "Swipe right to left to turn forward. Switch between PDF and text."
+    },
+    {
+      "id": "lighting",
+      "start": 13.3,
+      "end": 21.6,
+      "text": "Swipe up for reading controls. Adjust the brightness and add a warm tint to suit your reading."
+    },
+    {
+      "id": "voice-controls",
+      "start": 22.25,
+      "end": 26.75,
+      "text": "Choose your voice, reading speed, and accuracy settings."
+    },
+    {
+      "id": "dictionary",
+      "start": 27.25,
+      "end": 34.7,
+      "text": "Look up English words as you go. Download the dictionary pack once to use definitions offline."
+    },
+    {
+      "id": "themes",
+      "start": 35.3,
+      "end": 41.7,
+      "text": "Choose a style you like: Warm Library, Modern Focus, or Night Reader."
+    },
+    {
+      "id": "night",
+      "start": 42.3,
+      "end": 48.7,
+      "text": "Night Reader brings a darker look to your library. Change themes whenever you like."
+    },
+    {
+      "id": "background",
+      "start": 49.3,
+      "end": 56.9,
+      "text": "Start narration, then switch apps. Reading continues in the background, with playback controls close by."
+    },
+    {
+      "id": "pause",
+      "start": 66.3,
+      "end": 72.8,
+      "text": "When you are ready for a break, pause from Android media controls."
+    }
+  ],
+  "originalAppAudioWindow": {
+    "start": 57.5,
+    "end": 64.15,
+    "note": "Preserve two complete sentences of genuine recorded app speech; mute the original track outside this window in the narrated edition to avoid competing speech.",
+    "captions": [
+      {
+        "start": 57.7,
+        "end": 60.15,
+        "text": "Each sentence adds something new to the picture."
+      },
+      {
+        "start": 60.3,
+        "end": 64.1,
+        "text": "Listen to the words, or let your eyes move gently across the page."
+      }
+    ]
+  }
+}

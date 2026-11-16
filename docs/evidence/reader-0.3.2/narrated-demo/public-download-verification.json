@@ -1,0 +1,76 @@
+{
+  "checkedAt": "2026-11-16T03:10:08Z",
+  "artifacts": [
+    {
+      "origin": "pages",
+      "url": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-narrated-demo.mp4",
+      "status": 200,
+      "bytes": 2750807,
+      "sha256": "533bad2d141c17e258a868dd96bd49861ae9669f83691765deb46ccefa40a08d",
+      "contentType": "video/mp4"
+    },
+    {
+      "origin": "github",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-narrated-demo.mp4",
+      "status": 200,
+      "bytes": 2750807,
+      "sha256": "533bad2d141c17e258a868dd96bd49861ae9669f83691765deb46ccefa40a08d",
+      "contentType": "application/octet-stream"
+    },
+    {
+      "origin": "pages",
+      "url": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-explanatory-audio.mp3",
+      "status": 200,
+      "bytes": 1481950,
+      "sha256": "0620e49bfe93f15a42ca8a3d68cf652a124865e1412a0ceaa238edb2416ffdad",
+      "contentType": "audio/mp3"
+    },
+    {
+      "origin": "github",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-explanatory-audio.mp3",
+      "status": 200,
+      "bytes": 1481950,
+      "sha256": "0620e49bfe93f15a42ca8a3d68cf652a124865e1412a0ceaa238edb2416ffdad",
+      "contentType": "application/octet-stream"
+    },
+    {
+      "origin": "pages",
+      "url": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-narrated-demo.en.srt",
+      "status": 200,
+      "bytes": 1193,
+      "sha256": "7cdaa3c15e27780900ec2f02d90c73636eec023b55c9b1c0670085e0fdf1b88b",
+      "contentType": "application/x-subrip"
+    },
+    {
+      "origin": "github",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-narrated-demo.en.srt",
+      "status": 200,
+      "bytes": 1193,
+      "sha256": "7cdaa3c15e27780900ec2f02d90c73636eec023b55c9b1c0670085e0fdf1b88b",
+      "contentType": "application/octet-stream"
+    },
+    {
+      "origin": "pages",
+      "url": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-narrated-demo.en.vtt",
+      "status": 200,
+      "bytes": 1201,
+      "sha256": "7a762fdeaacf17541d10c262ab42e2a35890e8616c937ee110a2bed79f4500d2",
+      "contentType": "text/vtt; charset=utf-8"
+    },
+    {
+      "origin": "github",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-narrated-demo.en.vtt",
+      "status": 200,
+      "bytes": 1201,
+      "sha256": "7a762fdeaacf17541d10c262ab42e2a35890e8616c937ee110a2bed79f4500d2",
+      "contentType": "application/octet-stream"
+    }
+  ],
+  "preserved": {
+    "privacy.html": "0bd9eb1e31a99fefb8da580b98ae9f4c8ceafbd4d99fbac7f610f56df01d197a",
+    "media/Read-Assist-0.3.2-foreground-service.mp4": "720119d77d9d39b0ac3ddf0e058e6555756b5ae3c2612fbe7aa46e1ed7c79fea",
+    "media/Read-Assist-0.3.2-product-demo.mp4": "cda2837be33ece81a7e6ad205d59cf328d9695498c0323162511892b9057b2c2"
+  },
+  "pageMatchesSource": true,
+  "verified": true
+}

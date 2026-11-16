@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Publish reviewed app videos alongside the existing Read Assist privacy site.
 
-Only demo.html, MEDIA_CREDITS.md and the selected versioned MP4s may change. Hosting
+Only demo.html, the selected credits and versioned media may change. Hosting
 configuration, privacy.html, index.html and all other tracked files are preserved.
 A successful push still requires independent public HTTP verification.
 """
@@ -22,6 +22,12 @@ VIDEOS = {
     "foregroundService": "Read-Assist-0.3.2-foreground-service.mp4",
 }
 FEATURE_TOUR = "Read-Assist-0.3.2-feature-tour.mp4"
+NARRATED_FILES = (
+    "Read-Assist-0.3.2-narrated-demo.mp4",
+    "Read-Assist-0.3.2-explanatory-audio.mp3",
+    "Read-Assist-0.3.2-narrated-demo.en.srt",
+    "Read-Assist-0.3.2-narrated-demo.en.vtt",
+)
 
 
 def sha(path):
@@ -77,14 +83,41 @@ def feature_tour_inputs(directory):
     return files, expected, hashlib.sha256(evidence_bytes).hexdigest()
 
 
-def publish(render_dir, report_path, *, feature_tour_dir=None):
+def narrated_inputs(directory):
+    evidence_path = directory / "narrated-build-report.json"
+    evidence = json.loads(evidence_path.read_bytes())
+    if (evidence.get("status") != "complete"
+            or evidence.get("decodeValidation") != "passed"
+            or evidence.get("videoStreamUnchanged") is not True
+            or evidence.get("sourceVideoSha256") != "cda2837be33ece81a7e6ad205d59cf328d9695498c0323162511892b9057b2c2"):
+        raise ValueError("Narrated demo lacks verified audio and unchanged source video evidence.")
+    files = {"demo.html": ROOT / "site/demo.html",
+             "NARRATION_CREDITS.md": ROOT / "store-assets/release-0.3.2/NARRATION_CREDITS.md"}
+    for name in NARRATED_FILES:
+        path = directory / name
+        item = evidence.get("artifacts", {}).get(name, {})
+        if (Path(item.get("file", "")).name != name or item.get("sha256") != sha(path)
+                or item.get("bytes") != path.stat().st_size
+                or not 0 < path.stat().st_size < 100 * 1024 * 1024):
+            raise ValueError("Narrated artifact does not match verified bytes: " + name)
+        files["media/" + name] = path
+    expected = {name: {"sha256": sha(path), "bytes": path.stat().st_size} for name, path in files.items()}
+    return files, expected, sha(evidence_path)
+
+
+def publish(render_dir, report_path, *, feature_tour_dir=None, narrated_dir=None):
     report = {"startedAt": datetime.now(timezone.utc).isoformat(), "pageUrl": URL,
               "status": "started", "hostingConfigurationModified": False,
               "pushAttempted": False, "pushSucceeded": False}
     try:
-        if (render_dir is None) == (feature_tour_dir is None):
-            raise ValueError("Choose exactly one full-render or feature-tour input directory.")
-        if feature_tour_dir is not None:
+        if sum(value is not None for value in (render_dir, feature_tour_dir, narrated_dir)) != 1:
+            raise ValueError("Choose exactly one full-render, feature-tour or narrated input directory.")
+        if narrated_dir is not None:
+            files, expected, evidence_sha = narrated_inputs(narrated_dir)
+            report.update({"publicationScope": "narrated_walkthrough", "renderReportSha256": evidence_sha,
+                           "pageSource": "site/demo.html", "originalVideosPreserved": True,
+                           "creditsSource": "store-assets/release-0.3.2/NARRATION_CREDITS.md"})
+        elif feature_tour_dir is not None:
             files, expected, evidence_sha = feature_tour_inputs(feature_tour_dir)
             report.update({"publicationScope": "feature_tour_only", "featureTourEvidenceSha256": evidence_sha,
                            "foregroundServiceProofIncluded": False, "narrationDemonstrationIncluded": False,
@@ -171,7 +204,8 @@ if __name__ == "__main__":
     inputs = parser.add_mutually_exclusive_group(required=True)
     inputs.add_argument("--render-dir", type=Path)
     inputs.add_argument("--feature-tour-dir", type=Path)
+    inputs.add_argument("--narrated-dir", type=Path)
     parser.add_argument("--report", type=Path, default=Path("build/demo-site-publication.json"))
     args = parser.parse_args()
-    result = publish(args.render_dir, args.report, feature_tour_dir=args.feature_tour_dir)
+    result = publish(args.render_dir, args.report, feature_tour_dir=args.feature_tour_dir, narrated_dir=args.narrated_dir)
     print(json.dumps({"status": result["status"], "url": URL, "report": str(args.report)}))

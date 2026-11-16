@@ -1,0 +1,151 @@
+{
+  "status": "passed",
+  "sampleRate": 48000,
+  "audioLengthMatchesMaster": true,
+  "captionRoundTripMatches": true,
+  "allArtifactHashesMatch": true,
+  "scriptAndSynthesisHashesMatch": true,
+  "segmentChecks": [
+    {
+      "artifact": "Read-Assist-0.3.2-narrated-demo.mp4",
+      "segment": "library",
+      "start": 0.35,
+      "end": 5.953666666666667,
+      "zeroLagCorrelationWithMaster": 0.9999847322386399
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-narrated-demo.mp4",
+      "segment": "page-turn",
+      "start": 7.25,
+      "end": 12.628458333333333,
+      "zeroLagCorrelationWithMaster": 0.9999752767556823
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-narrated-demo.mp4",
+      "segment": "lighting",
+      "start": 13.3,
+      "end": 19.454,
+      "zeroLagCorrelationWithMaster": 0.999972719587987
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-narrated-demo.mp4",
+      "segment": "voice-controls",
+      "start": 22.25,
+      "end": 26.555875,
+      "zeroLagCorrelationWithMaster": 0.9999851467854673
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-narrated-demo.mp4",
+      "segment": "dictionary",
+      "start": 27.25,
+      "end": 34.184666666666665,
+      "zeroLagCorrelationWithMaster": 0.9999722042703774
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-narrated-demo.mp4",
+      "segment": "themes",
+      "start": 35.3,
+      "end": 40.80458333333333,
+      "zeroLagCorrelationWithMaster": 0.9999815147602573
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-narrated-demo.mp4",
+      "segment": "night",
+      "start": 42.3,
+      "end": 47.73533333333334,
+      "zeroLagCorrelationWithMaster": 0.999931405874255
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-narrated-demo.mp4",
+      "segment": "background",
+      "start": 49.3,
+      "end": 56.68516666666667,
+      "zeroLagCorrelationWithMaster": 0.9997845381103965
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-narrated-demo.mp4",
+      "segment": "pause",
+      "start": 66.3,
+      "end": 71.05966666666667,
+      "zeroLagCorrelationWithMaster": 0.9999656196443119
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-narrated-demo.mp4",
+      "segment": "recorded-app-audio",
+      "start": 57.5,
+      "end": 64.15,
+      "zeroLagCorrelationWithMaster": 0.9999698064721353
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-explanatory-audio.mp3",
+      "segment": "library",
+      "start": 0.35,
+      "end": 5.953666666666667,
+      "zeroLagCorrelationWithMaster": 0.9992754065567916
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-explanatory-audio.mp3",
+      "segment": "page-turn",
+      "start": 7.25,
+      "end": 12.628458333333333,
+      "zeroLagCorrelationWithMaster": 0.9990872217270472
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-explanatory-audio.mp3",
+      "segment": "lighting",
+      "start": 13.3,
+      "end": 19.454,
+      "zeroLagCorrelationWithMaster": 0.999077306624542
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-explanatory-audio.mp3",
+      "segment": "voice-controls",
+      "start": 22.25,
+      "end": 26.555875,
+      "zeroLagCorrelationWithMaster": 0.9989976144422322
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-explanatory-audio.mp3",
+      "segment": "dictionary",
+      "start": 27.25,
+      "end": 34.184666666666665,
+      "zeroLagCorrelationWithMaster": 0.9989435766911023
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-explanatory-audio.mp3",
+      "segment": "themes",
+      "start": 35.3,
+      "end": 40.80458333333333,
+      "zeroLagCorrelationWithMaster": 0.9989906410329397
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-explanatory-audio.mp3",
+      "segment": "night",
+      "start": 42.3,
+      "end": 47.73533333333334,
+      "zeroLagCorrelationWithMaster": 0.9989625106154119
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-explanatory-audio.mp3",
+      "segment": "background",
+      "start": 49.3,
+      "end": 56.68516666666667,
+      "zeroLagCorrelationWithMaster": 0.9990233281547095
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-explanatory-audio.mp3",
+      "segment": "pause",
+      "start": 66.3,
+      "end": 71.05966666666667,
+      "zeroLagCorrelationWithMaster": 0.999171250524029
+    },
+    {
+      "artifact": "Read-Assist-0.3.2-explanatory-audio.mp3",
+      "segment": "recorded-app-audio",
+      "start": 57.5,
+      "end": 64.15,
+      "zeroLagCorrelationWithMaster": 0.9983987843311241
+    }
+  ],
+  "humanListeningPerformed": false
+}

@@ -1,0 +1,384 @@
+{
+  "schemaVersion": 1,
+  "status": "ALL_SEGMENTS_FIT",
+  "script": "store-assets/release-0.3.2/narration-script.json",
+  "scriptSha256": "a8411d8928edf1d9a1b513805995907993bd6e46840b455328668562f05737ee",
+  "generator": "scripts/synthesize_demo_narration.py",
+  "generatorSha256": "34c39e8d85bfc6fee66e078572198903c1c350b6a92de513f0e3d1fddb984a78",
+  "generatedNarration": true,
+  "model": "Kokoro v0.19",
+  "voiceIndex": 0,
+  "voice": "Default (af)",
+  "speed": 1.0,
+  "sampleRate": 24000,
+  "modelSha256": {
+    "kokoro/model.onnx": "10ff414106a038ce7e9e0126c6461e4dc8a86efaa89dc91d2009d69fe635e339",
+    "kokoro/tokens.txt": "4f31c71282d14af4e926cd12462078fe9d20d00c589e63fe2750a8f56d6d7f7b",
+    "kokoro/voices.bin": "a372c67b056ef0b695c375d39b99630d23fb07ad4c8d87aa32a19a62fca523ad",
+    "alignment/model.onnx": "1d9a366c27b2966625cd5035ac3db8847c53bba617169912bb251b42975a3a22",
+    "alignment/vocab.json": "4178db26b3c7570f6a47f14ac6a1c7b32950b8c2800fb097287e53776934f1c5"
+  },
+  "frontendRevision": "ec904cda37a171003dc0d2ef9011f8a30c32e7a1",
+  "frontendLibrarySha256": "d4470d0205475509ed025578b3dded3f14f87b6d35289b1601c82d5ad02d2302",
+  "frontendOrtLibrarySha256": "3da6146e14e7b8aaec625dde11d6114c7457c87a5f93d744897da8781e35c673",
+  "pythonOnnxRuntime": "1.20.1",
+  "edgeTrim": {
+    "absoluteSilenceThreshold": 0.0001,
+    "retainedPaddingSeconds": 0.08
+  },
+  "processing": {
+    "timeStretch": false,
+    "internalPauseShortening": false,
+    "speechTruncation": false,
+    "amplitudeNormalization": false
+  },
+  "limitations": [
+    "Generated explanatory voiceover, not live app speech.",
+    "Greedy CTC transcripts may contain recognition mistakes; they are not a human listening or pronunciation review.",
+    "Window fit measures duration only; the narration still needs review against the video."
+  ],
+  "segments": [
+    {
+      "id": "library",
+      "start": 0.35,
+      "end": 6.7,
+      "text": "Meet Read Assist. Your library for documents, pictures, and web articles.",
+      "file": "build/store-media/narrated/speech/library.wav",
+      "wavSha256": "ec975842ca5c8f310dd522e909c987108247a39ac6b9da0987ba6b040df19285",
+      "sampleRate": 24000,
+      "rawSamples": 141000,
+      "rawDurationSeconds": 5.875,
+      "trimmedLeadingSamples": 3092,
+      "trimmedTrailingSamples": 3420,
+      "samples": 134488,
+      "durationSeconds": 5.603666666666666,
+      "windowSeconds": 6.3500000000000005,
+      "remainingSeconds": 0.7463333333333342,
+      "fitsWindow": true,
+      "peak": 0.35964903235435486,
+      "peakDbfs": -8.882422076858196,
+      "finite": true,
+      "frontendPhones": "mˈit ɹˈid əsˈɪst. jˌʊɹ lˈIbɹˌɛɹi fɔɹ dˈɑkjəmənts, pˈɪkʧəɹz, ænd wˈɛb ˈɑɹTəkᵊlz.",
+      "adaptedPhones": "mˈit ɹˈid əsˈɪst. jˌʊɹ lˈaɪbɹˌɛɹi fɔɹ dˈɑkjəmənts, pˈɪktʃəɹz, ænd wˈɛb ˈɑɹɾəkəlz.",
+      "phonemeCount": 81,
+      "fallbackCalls": 0,
+      "greedyCtcTranscript": "MEET REDESSIST YOUR LIBRARY FOR DOCUMENTS PICTURES AND WEB ARTICLES",
+      "ctcWordSimilarity": 0.8571428571428571,
+      "ctcWordDifferences": [
+        {
+          "kind": "replace",
+          "expected": [
+            "READ",
+            "ASSIST"
+          ],
+          "recognized": [
+            "REDESSIST"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "page-turn",
+      "start": 7.25,
+      "end": 12.75,
+      "text": "Swipe right to left to turn forward. Switch between PDF and text.",
+      "file": "build/store-media/narrated/speech/page-turn.wav",
+      "wavSha256": "00d60c98b702dc0d40c1162d5621787144daf8f9fb297419c828a1792671e065",
+      "sampleRate": 24000,
+      "rawSamples": 135000,
+      "rawDurationSeconds": 5.625,
+      "trimmedLeadingSamples": 3092,
+      "trimmedTrailingSamples": 2825,
+      "samples": 129083,
+      "durationSeconds": 5.378458333333334,
+      "windowSeconds": 5.5,
+      "remainingSeconds": 0.12154166666666644,
+      "fitsWindow": true,
+      "peak": 0.35496440529823303,
+      "peakDbfs": -8.996303888622357,
+      "finite": true,
+      "frontendPhones": "swˈIp ɹˈIt tə lˈɛft tə tˈɜɹn fˈɔɹwəɹd. swˈɪʧ bətwˈin pˌidˌiˈɛf ænd tˈɛkst.",
+      "adaptedPhones": "swˈaɪp ɹˈaɪt tə lˈɛft tə tˈɜɹn fˈɔɹwəɹd. swˈɪtʃ bətwˈin pˌidˌiˈɛf ænd tˈɛkst.",
+      "phonemeCount": 77,
+      "fallbackCalls": 0,
+      "greedyCtcTranscript": "SWITE RIGHT TO LEFT TO TURN FORWARD SWITCH BETWEEN P D F AND TEXT",
+      "ctcWordSimilarity": 0.7692307692307693,
+      "ctcWordDifferences": [
+        {
+          "kind": "replace",
+          "expected": [
+            "SWIPE"
+          ],
+          "recognized": [
+            "SWITE"
+          ]
+        },
+        {
+          "kind": "replace",
+          "expected": [
+            "PDF"
+          ],
+          "recognized": [
+            "P",
+            "D",
+            "F"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lighting",
+      "start": 13.3,
+      "end": 21.6,
+      "text": "Swipe up for reading controls. Adjust the brightness and add a warm tint to suit your reading.",
+      "file": "build/store-media/narrated/speech/lighting.wav",
+      "wavSha256": "b7f31cd96147898020be1f269fd59ba0d0ee600c55e9a536a9233d41d0ba9162",
+      "sampleRate": 24000,
+      "rawSamples": 153600,
+      "rawDurationSeconds": 6.4,
+      "trimmedLeadingSamples": 3095,
+      "trimmedTrailingSamples": 2809,
+      "samples": 147696,
+      "durationSeconds": 6.154,
+      "windowSeconds": 8.3,
+      "remainingSeconds": 2.146000000000001,
+      "fitsWindow": true,
+      "peak": 0.4092540740966797,
+      "peakDbfs": -7.760139770445048,
+      "finite": true,
+      "frontendPhones": "swˈIp ˌʌp fɔɹ ɹˈidɪŋ kəntɹˈOlz. əʤˈʌst ðə bɹˈItnəs ænd ˈæd ɐ wˈɔɹm tˈɪnt tə sˈut jʊɹ ɹˈidɪŋ.",
+      "adaptedPhones": "swˈaɪp ˌʌp fɔɹ ɹˈidɪŋ kəntɹˈoʊlz. ədʒˈʌst ðə bɹˈaɪtnəs ænd ˈæd ɐ wˈɔɹm tˈɪnt tə sˈut jʊɹ ɹˈidɪŋ.",
+      "phonemeCount": 96,
+      "fallbackCalls": 0,
+      "greedyCtcTranscript": "SWIPE UP FOR READING CONTROLS ADJUST THE BRIGHTNESS AND ADD A WARM TINT TO SUIT YOUR READING",
+      "ctcWordSimilarity": 1.0,
+      "ctcWordDifferences": []
+    },
+    {
+      "id": "voice-controls",
+      "start": 22.25,
+      "end": 26.75,
+      "text": "Choose your voice, reading speed, and accuracy settings.",
+      "file": "build/store-media/narrated/speech/voice-controls.wav",
+      "wavSha256": "785776f4b7d5630c1dddd96dbe4349a2efb0cba7978d6620d92c36d759522d22",
+      "sampleRate": 24000,
+      "rawSamples": 109200,
+      "rawDurationSeconds": 4.55,
+      "trimmedLeadingSamples": 3095,
+      "trimmedTrailingSamples": 2764,
+      "samples": 103341,
+      "durationSeconds": 4.305875,
+      "windowSeconds": 4.5,
+      "remainingSeconds": 0.19412499999999966,
+      "fitsWindow": true,
+      "peak": 0.47267600893974304,
+      "peakDbfs": -6.5087288022386245,
+      "finite": true,
+      "frontendPhones": "ʧˈuz jʊɹ vˈYs, ɹˈidɪŋ spˈid, ænd ˈækjəɹəsi sˈɛTɪŋz.",
+      "adaptedPhones": "tʃˈuz jʊɹ vˈɔɪs, ɹˈidɪŋ spˈid, ænd ˈækjəɹəsi sˈɛɾɪŋz.",
+      "phonemeCount": 53,
+      "fallbackCalls": 0,
+      "greedyCtcTranscript": "CHOOSE YOUR VOICE RIADING SPEED AND ACCURACY SETTINGS",
+      "ctcWordSimilarity": 0.875,
+      "ctcWordDifferences": [
+        {
+          "kind": "replace",
+          "expected": [
+            "READING"
+          ],
+          "recognized": [
+            "RIADING"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dictionary",
+      "start": 27.25,
+      "end": 34.7,
+      "text": "Look up English words as you go. Download the dictionary pack once to use definitions offline.",
+      "file": "build/store-media/narrated/speech/dictionary.wav",
+      "wavSha256": "d8af51605570dec2fc7d045fa1ce176ed926e7d0a878d4b93c71e0126643fb89",
+      "sampleRate": 24000,
+      "rawSamples": 172200,
+      "rawDurationSeconds": 7.175,
+      "trimmedLeadingSamples": 3092,
+      "trimmedTrailingSamples": 2676,
+      "samples": 166432,
+      "durationSeconds": 6.934666666666667,
+      "windowSeconds": 7.450000000000003,
+      "remainingSeconds": 0.5153333333333361,
+      "fitsWindow": true,
+      "peak": 0.4626533091068268,
+      "peakDbfs": -6.694886544276175,
+      "finite": true,
+      "frontendPhones": "lˈʊk ˌʌp ˈɪŋɡlɪʃ wˈɜɹdz æz ju ɡˌO. dˈWnlˌOd ðə dˈɪkʃənˌɛɹi pˈæk wˈʌns tə jˈuz dˌɛfənˈɪʃənz ˌɔflˈIn.",
+      "adaptedPhones": "lˈʊk ˌʌp ˈɪŋɡlɪʃ wˈɜɹdz æz ju ɡˌoʊ. dˈaʊnlˌoʊd ðə dˈɪkʃənˌɛɹi pˈæk wˈʌns tə jˈuz dˌɛfənˈɪʃənz ˌɔflˈaɪn.",
+      "phonemeCount": 103,
+      "fallbackCalls": 0,
+      "greedyCtcTranscript": "LOOK UP ENGLISH WORDS AS YOU GO DOWNLOAD THE DICTIONARY PACK ONCE TO USE DEFINITIONS OFF LINE",
+      "ctcWordSimilarity": 0.9090909090909091,
+      "ctcWordDifferences": [
+        {
+          "kind": "replace",
+          "expected": [
+            "OFFLINE"
+          ],
+          "recognized": [
+            "OFF",
+            "LINE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "themes",
+      "start": 35.3,
+      "end": 41.7,
+      "text": "Choose a style you like: Warm Library, Modern Focus, or Night Reader.",
+      "file": "build/store-media/narrated/speech/themes.wav",
+      "wavSha256": "eab8446edc97aa7fffbdbda460a26c1ed16d3dd300b2b612a6dd1fca6c628b88",
+      "sampleRate": 24000,
+      "rawSamples": 138000,
+      "rawDurationSeconds": 5.75,
+      "trimmedLeadingSamples": 3092,
+      "trimmedTrailingSamples": 2798,
+      "samples": 132110,
+      "durationSeconds": 5.504583333333334,
+      "windowSeconds": 6.400000000000006,
+      "remainingSeconds": 0.8954166666666721,
+      "fitsWindow": true,
+      "peak": 0.32319149374961853,
+      "peakDbfs": -9.810801563531763,
+      "finite": true,
+      "frontendPhones": "ʧˈuz ɐ stˈIl ju lˈIk: wˈɔɹm lˈIbɹˌɛɹi, mˈɑdəɹn fˈOkəs, ɔɹ nˈIt ɹˈidəɹ.",
+      "adaptedPhones": "tʃˈuz ɐ stˈaɪl ju lˈaɪk: wˈɔɹm lˈaɪbɹˌɛɹi, mˈɑdəɹn fˈoʊkəs, ɔɹ nˈaɪt ɹˈidəɹ.",
+      "phonemeCount": 76,
+      "fallbackCalls": 0,
+      "greedyCtcTranscript": "CHISE A STYLE YOU LIKE WARM LIBRARY MODERN FOCUS OR NIGHT READER",
+      "ctcWordSimilarity": 0.9166666666666666,
+      "ctcWordDifferences": [
+        {
+          "kind": "replace",
+          "expected": [
+            "CHOOSE"
+          ],
+          "recognized": [
+            "CHISE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "night",
+      "start": 42.3,
+      "end": 48.7,
+      "text": "Night Reader brings a darker look to your library. Change themes whenever you like.",
+      "file": "build/store-media/narrated/speech/night.wav",
+      "wavSha256": "df586684227f94e9783d648b83e1596a52b967eb4b2f8b54b0c83e953372279b",
+      "sampleRate": 24000,
+      "rawSamples": 136200,
+      "rawDurationSeconds": 5.675,
+      "trimmedLeadingSamples": 3076,
+      "trimmedTrailingSamples": 2676,
+      "samples": 130448,
+      "durationSeconds": 5.435333333333333,
+      "windowSeconds": 6.400000000000006,
+      "remainingSeconds": 0.9646666666666723,
+      "fitsWindow": true,
+      "peak": 0.39168038964271545,
+      "peakDbfs": -8.141363436704482,
+      "finite": true,
+      "frontendPhones": "nˈIt ɹˈidəɹ bɹˈɪŋz ɐ dˈɑɹkəɹ lˈʊk tə jʊɹ lˈIbɹˌɛɹi. ʧˈAnʤ θˈimz wənˈɛvəɹ ju lˈIk.",
+      "adaptedPhones": "nˈaɪt ɹˈidəɹ bɹˈɪŋz ɐ dˈɑɹkəɹ lˈʊk tə jʊɹ lˈaɪbɹˌɛɹi. tʃˈeɪndʒ θˈimz wənˈɛvəɹ ju lˈaɪk.",
+      "phonemeCount": 87,
+      "fallbackCalls": 0,
+      "greedyCtcTranscript": "NIGHT READER BRINGS A DARKER LOOK TO YOUR LIBRARY CHANGE THEMES WHENEVER YOU LIKE",
+      "ctcWordSimilarity": 1.0,
+      "ctcWordDifferences": []
+    },
+    {
+      "id": "background",
+      "start": 49.3,
+      "end": 56.9,
+      "text": "Start narration, then switch apps. Reading continues in the background, with playback controls close by.",
+      "file": "build/store-media/narrated/speech/background.wav",
+      "wavSha256": "6afbc4a12520e1571b4d7a1a02d3c1b2011d8f2ab5fb265c341fe02c0da73cfa",
+      "sampleRate": 24000,
+      "rawSamples": 183000,
+      "rawDurationSeconds": 7.625,
+      "trimmedLeadingSamples": 3092,
+      "trimmedTrailingSamples": 2664,
+      "samples": 177244,
+      "durationSeconds": 7.385166666666667,
+      "windowSeconds": 7.600000000000001,
+      "remainingSeconds": 0.21483333333333476,
+      "fitsWindow": true,
+      "peak": 0.4119488298892975,
+      "peakDbfs": -7.703134527728805,
+      "finite": true,
+      "frontendPhones": "stˈɑɹt nɛɹˈAʃən, ðˈɛn swˈɪʧ ˈæps. ɹˈidɪŋ kəntˈɪnjuz ɪn ðə bˈækɡɹˌWnd, wɪð plˈAbˌæk kəntɹˈOlz klˈOs bˈI.",
+      "adaptedPhones": "stˈɑɹt nɛɹˈeɪʃən, ðˈɛn swˈɪtʃ ˈæps. ɹˈidɪŋ kəntˈɪnjuz ɪn ðə bˈækɡɹˌaʊnd, wɪð plˈeɪbˌæk kəntɹˈoʊlz klˈoʊs bˈaɪ.",
+      "phonemeCount": 110,
+      "fallbackCalls": 0,
+      "greedyCtcTranscript": "START NARRATION THEN SWITCH APTS READING CONTINUES IN THE BACKGROUND WITH CLAYBACK CONTROLS CLOSE BY",
+      "ctcWordSimilarity": 0.8666666666666667,
+      "ctcWordDifferences": [
+        {
+          "kind": "replace",
+          "expected": [
+            "APPS"
+          ],
+          "recognized": [
+            "APTS"
+          ]
+        },
+        {
+          "kind": "replace",
+          "expected": [
+            "PLAYBACK"
+          ],
+          "recognized": [
+            "CLAYBACK"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pause",
+      "start": 66.3,
+      "end": 72.8,
+      "text": "When you are ready for a break, pause from Android media controls.",
+      "file": "build/store-media/narrated/speech/pause.wav",
+      "wavSha256": "21c68117c5ba30c2f5a5c20c3f6fa10824d83c2fa5d9f447d8903cc4b6748a99",
+      "sampleRate": 24000,
+      "rawSamples": 120000,
+      "rawDurationSeconds": 5.0,
+      "trimmedLeadingSamples": 3092,
+      "trimmedTrailingSamples": 2676,
+      "samples": 114232,
+      "durationSeconds": 4.759666666666667,
+      "windowSeconds": 6.5,
+      "remainingSeconds": 1.740333333333333,
+      "fitsWindow": true,
+      "peak": 0.3452807366847992,
+      "peakDbfs": -9.236553007865245,
+      "finite": true,
+      "frontendPhones": "wˌɛn ju ɑɹ ɹˈɛdi fɔɹ ɐ bɹˈAk, pˈɔz fɹʌm ˈændɹˌYd mˈidiə kəntɹˈOlz.",
+      "adaptedPhones": "wˌɛn ju ɑɹ ɹˈɛdi fɔɹ ɐ bɹˈeɪk, pˈɔz fɹʌm ˈændɹˌɔɪd mˈidiə kəntɹˈoʊlz.",
+      "phonemeCount": 69,
+      "fallbackCalls": 0,
+      "greedyCtcTranscript": "WHEN YOU ARE READY FOR BREAK PAUSE FROM ANDROID MEDIA CONTROLS",
+      "ctcWordSimilarity": 0.9565217391304348,
+      "ctcWordDifferences": [
+        {
+          "kind": "delete",
+          "expected": [
+            "A"
+          ],
+          "recognized": []
+        }
+      ]
+    }
+  ]
+}
