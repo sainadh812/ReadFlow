@@ -1,0 +1,25 @@
+{
+  "purpose": "Product pitch with a connected benefit-led narrative; timings follow the generated voice performance.",
+  "appVersion": "0.3.2",
+  "language": "en-US",
+  "paragraphs": [
+    {
+      "id": "hook",
+      "text": "Your reading list keeps growing. But finding time to sit down with it isn't always easy. Read Assist lets you listen to the documents you've been meaning to read."
+    },
+    {
+      "id": "experience",
+      "text": "Open a PDF and press play. Follow the text, keep the original page on screen, or switch apps and let the reading continue while you get on with your day."
+    },
+    {
+      "id": "understand",
+      "text": "When a word stops you, its meaning is right there in the reader. And when you're ready to settle in, adjust the brightness and warm the page until it feels right for you."
+    },
+    {
+      "id": "close",
+      "text": "Download the voice and dictionary packs once for offline listening and definitions. No account. No ads. Read Assist. Read when you can. Listen when you like."
+    }
+  ],
+  "direction": "Warm, conversational, grounded and confident. Speak to one reader, with natural pauses. The story leads the edit; do not time-stretch speech to fit scenes.",
+  "claimsNote": "Offline listening and definitions require initial voice and dictionary pack downloads. This is a narrated product preview, not proof of production availability."
+}

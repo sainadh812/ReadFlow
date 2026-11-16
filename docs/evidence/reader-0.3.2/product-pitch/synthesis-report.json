@@ -1,0 +1,1277 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-11-16T03:26:32.582918+00:00",
+  "status": "TEMPORARY_EDITING_GUIDE",
+  "script": {
+    "file": "store-assets/release-0.3.2/product-pitch/script.json",
+    "bytes": 1400,
+    "sha256": "8421d767fb4e59d113a1756d55a4e9bc8a8ebe0f193ba96e8a072cd8eb3ef288"
+  },
+  "generator": {
+    "file": "scripts/synthesize_product_pitch.py",
+    "bytes": 17162,
+    "sha256": "82a9ec744da2590a0b518a74c2c90df44c427254773de9b54d1de46b80d9fae8"
+  },
+  "model": "Kokoro v1.0 full FP32 ONNX",
+  "voice": "af_heart",
+  "nativeSynthesisSpeed": 0.85,
+  "threads": 2,
+  "modelAssets": [
+    {
+      "file": "build/product-pitch/kokoro-v1/kokoro-v1.0.onnx",
+      "bytes": 325532387,
+      "sha256": "7d5df8ecf7d4b1878015a32686053fd0eebe2bc377234608764cc0ef3636a6c5",
+      "source": "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx",
+      "digestOrigin": "Locally recorded from primary-source download; release API supplied no digest"
+    },
+    {
+      "file": "build/product-pitch/kokoro-v1/voices-v1.0.bin",
+      "bytes": 28214398,
+      "sha256": "bca610b8308e8d99f32e6fe4197e7ec01679264efed0cac9140fe9c29f1fbf7d",
+      "source": "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin",
+      "digestOrigin": "Locally recorded from primary-source download; release API supplied no digest"
+    },
+    {
+      "file": "build/product-pitch/kokoro-v1/model-config.json",
+      "bytes": 2351,
+      "sha256": "5abb01e2403b072bf03d04fde160443e209d7a0dad49a423be15196b9b43c17f",
+      "source": "https://huggingface.co/hexgrad/Kokoro-82M/resolve/f3ff3571791e39611d31c381e3a41a3af07b4987/config.json",
+      "digestOrigin": "Locally recorded from primary-source download; release API supplied no digest"
+    }
+  ],
+  "sampleRate": 48000,
+  "narration": {
+    "file": "build/product-pitch/narration/narration.wav",
+    "bytes": 6197958,
+    "sha256": "a7c1770084fb7a3d281e2a7e98cc868b645544c32bf14e959721bd49b53e7e1f"
+  },
+  "totalDurationSeconds": 43.04066666666667,
+  "paragraphs": [
+    {
+      "id": "hook",
+      "text": "Your reading list keeps growing. But finding time to sit down with it isn't always easy. Read Assist lets you listen to the documents you've been meaning to read.",
+      "durationSeconds": 10.4845,
+      "sampleCount": 503256,
+      "sourceDurationSeconds": 11.075,
+      "trimmedLeadingSamples": 8353,
+      "trimmedTrailingSamples": 13019,
+      "edgePaddingSeconds": 0.15,
+      "synthesisSeconds": 7.858135889284313,
+      "phonemes": "jˌʊɹ ɹˈidɪŋ lˈɪst kˈips ɡɹˈOɪŋ. bˌʌt fˈIndɪŋ tˈIm tə sˈɪt dˌWn wɪð ɪt ˈɪzᵊnt ˈɔlwˌAz ˈizi. ɹˈid əsˈɪst lˈɛts ju lˈɪsᵊn tə ðə dˈɑkjəmənts juv bɪn mˈinɪŋ tə ɹˈid.",
+      "phonemeCount": 160,
+      "chunkCount": 1,
+      "fallbackCalls": 0,
+      "rawAudio": {
+        "file": "build/product-pitch/narration/raw/hook.wav",
+        "bytes": 1063280,
+        "sha256": "17ba9de1d760344df6471e4d5bf55fbe6519080e1ccf8eaf94619013a630337d"
+      },
+      "audio": {
+        "file": "build/product-pitch/narration/hook.wav",
+        "bytes": 1509812,
+        "sha256": "4a6058c1bf0ef4e05962b10d6df71320b673f228d6ff7ad133361145a0ba1135"
+      },
+      "sampleRate": 48000,
+      "start": 0.0,
+      "end": 10.4845,
+      "peakDbfs": -1.5043021066127618,
+      "clippedSamples": 0,
+      "finite": true,
+      "ctcWordAnchors": [
+        {
+          "word": "YOUR",
+          "start": 0.18,
+          "end": 0.32,
+          "globalStart": 0.18,
+          "globalEnd": 0.32
+        },
+        {
+          "word": "READING",
+          "start": 0.4,
+          "end": 0.7000000000000001,
+          "globalStart": 0.4,
+          "globalEnd": 0.7000000000000001
+        },
+        {
+          "word": "LIST",
+          "start": 0.76,
+          "end": 0.9400000000000001,
+          "globalStart": 0.76,
+          "globalEnd": 0.9400000000000001
+        },
+        {
+          "word": "KEEPS",
+          "start": 1.06,
+          "end": 1.3,
+          "globalStart": 1.06,
+          "globalEnd": 1.3
+        },
+        {
+          "word": "GROWING",
+          "start": 1.3800000000000001,
+          "end": 1.8,
+          "globalStart": 1.3800000000000001,
+          "globalEnd": 1.8
+        },
+        {
+          "word": "BUT",
+          "start": 2.38,
+          "end": 2.5,
+          "globalStart": 2.38,
+          "globalEnd": 2.5
+        },
+        {
+          "word": "FINDING",
+          "start": 2.58,
+          "end": 2.94,
+          "globalStart": 2.58,
+          "globalEnd": 2.94
+        },
+        {
+          "word": "TIME",
+          "start": 3.0,
+          "end": 3.3000000000000003,
+          "globalStart": 3.0,
+          "globalEnd": 3.3000000000000003
+        },
+        {
+          "word": "TO",
+          "start": 3.38,
+          "end": 3.46,
+          "globalStart": 3.38,
+          "globalEnd": 3.46
+        },
+        {
+          "word": "SIT",
+          "start": 3.54,
+          "end": 3.7,
+          "globalStart": 3.54,
+          "globalEnd": 3.7
+        },
+        {
+          "word": "DOWN",
+          "start": 3.7800000000000002,
+          "end": 4.0600000000000005,
+          "globalStart": 3.7800000000000002,
+          "globalEnd": 4.0600000000000005
+        },
+        {
+          "word": "WITH",
+          "start": 4.2,
+          "end": 4.34,
+          "globalStart": 4.2,
+          "globalEnd": 4.34
+        },
+        {
+          "word": "IT",
+          "start": 4.38,
+          "end": 4.42,
+          "globalStart": 4.38,
+          "globalEnd": 4.42
+        },
+        {
+          "word": "ISN'T",
+          "start": 4.5,
+          "end": 4.72,
+          "globalStart": 4.5,
+          "globalEnd": 4.72
+        },
+        {
+          "word": "ALWAYS",
+          "start": 4.86,
+          "end": 5.16,
+          "globalStart": 4.86,
+          "globalEnd": 5.16
+        },
+        {
+          "word": "EASY",
+          "start": 5.32,
+          "end": 5.58,
+          "globalStart": 5.32,
+          "globalEnd": 5.58
+        },
+        {
+          "word": "READ",
+          "start": 6.46,
+          "end": 6.68,
+          "globalStart": 6.46,
+          "globalEnd": 6.68
+        },
+        {
+          "word": "ASSIST",
+          "start": 6.8,
+          "end": 7.22,
+          "globalStart": 6.8,
+          "globalEnd": 7.22
+        },
+        {
+          "word": "LETS",
+          "start": 7.54,
+          "end": 7.72,
+          "globalStart": 7.54,
+          "globalEnd": 7.72
+        },
+        {
+          "word": "YOU",
+          "start": 7.76,
+          "end": 7.84,
+          "globalStart": 7.76,
+          "globalEnd": 7.84
+        },
+        {
+          "word": "LISTEN",
+          "start": 7.92,
+          "end": 8.18,
+          "globalStart": 7.92,
+          "globalEnd": 8.18
+        },
+        {
+          "word": "TO",
+          "start": 8.26,
+          "end": 8.32,
+          "globalStart": 8.26,
+          "globalEnd": 8.32
+        },
+        {
+          "word": "THE",
+          "start": 8.38,
+          "end": 8.44,
+          "globalStart": 8.38,
+          "globalEnd": 8.44
+        },
+        {
+          "word": "DOCUMENTS",
+          "start": 8.48,
+          "end": 9.0,
+          "globalStart": 8.48,
+          "globalEnd": 9.0
+        },
+        {
+          "word": "YOU'VE",
+          "start": 9.06,
+          "end": 9.24,
+          "globalStart": 9.06,
+          "globalEnd": 9.24
+        },
+        {
+          "word": "BEEN",
+          "start": 9.28,
+          "end": 9.4,
+          "globalStart": 9.28,
+          "globalEnd": 9.4
+        },
+        {
+          "word": "MEANING",
+          "start": 9.44,
+          "end": 9.74,
+          "globalStart": 9.44,
+          "globalEnd": 9.74
+        },
+        {
+          "word": "TO",
+          "start": 9.8,
+          "end": 9.88,
+          "globalStart": 9.8,
+          "globalEnd": 9.88
+        },
+        {
+          "word": "READ",
+          "start": 9.94,
+          "end": 10.18,
+          "globalStart": 9.94,
+          "globalEnd": 10.18
+        }
+      ],
+      "sentenceAnchors": [
+        {
+          "text": "Your reading list keeps growing.",
+          "start": 0.18,
+          "end": 1.8,
+          "globalStart": 0.18,
+          "globalEnd": 1.8,
+          "matchedCharacterFraction": 1.0
+        },
+        {
+          "text": "But finding time to sit down with it isn't always easy.",
+          "start": 2.38,
+          "end": 5.58,
+          "globalStart": 2.38,
+          "globalEnd": 5.58,
+          "matchedCharacterFraction": 1.0
+        },
+        {
+          "text": "Read Assist lets you listen to the documents you've been meaning to read.",
+          "start": 6.46,
+          "end": 10.18,
+          "globalStart": 6.46,
+          "globalEnd": 10.18,
+          "matchedCharacterFraction": 1.0
+        }
+      ],
+      "ctcTranscript": "YOUR READING LIST KEEPS GROWING BUT FINDING TIME TO SIT DOWN WITH IT ISN'T ALWAYS EASY READ ASSIST LETS YOU LISTEN TO THE DOCUMENTS YOU'VE BEEN MEANING TO READ",
+      "ctcWordSimilarity": 1.0,
+      "ctcWordDifferences": []
+    },
+    {
+      "id": "experience",
+      "text": "Open a PDF and press play. Follow the text, keep the original page on screen, or switch apps and let the reading continue while you get on with your day.",
+      "durationSeconds": 10.586875,
+      "sampleCount": 508170,
+      "sourceDurationSeconds": 11.225,
+      "trimmedLeadingSamples": 8940,
+      "trimmedTrailingSamples": 13575,
+      "edgePaddingSeconds": 0.15,
+      "synthesisSeconds": 6.603494488634169,
+      "phonemes": "ˈOpᵊn ɐ pˌidˌiˈɛf ænd pɹˈɛs plˈA. fˈɑlO ðə tˈɛkst, kˈip ði əɹˈɪʤənᵊl pˈAʤ ˌɔn skɹˈin, ɔɹ swˈɪʧ ˈæps ænd lˈɛt ðə ɹˈidɪŋ kəntˈɪnju wˌIl ju ɡɛt ˌɔn wɪð jʊɹ dˈA.",
+      "phonemeCount": 157,
+      "chunkCount": 1,
+      "fallbackCalls": 0,
+      "rawAudio": {
+        "file": "build/product-pitch/narration/raw/experience.wav",
+        "bytes": 1077680,
+        "sha256": "15987aef8ce8cda890d06d1758626daf4f3a0110d48fc0fdab7f6ba5c56c95a9"
+      },
+      "audio": {
+        "file": "build/product-pitch/narration/experience.wav",
+        "bytes": 1524554,
+        "sha256": "b65fe4332aeee0fffeef0afc14fb03a9b613c31943ffd958739486268417abfd"
+      },
+      "sampleRate": 48000,
+      "start": 10.4845,
+      "end": 21.071375,
+      "peakDbfs": -1.500993188262267,
+      "clippedSamples": 0,
+      "finite": true,
+      "ctcWordAnchors": [
+        {
+          "word": "OPEN",
+          "start": 0.24,
+          "end": 0.46,
+          "globalStart": 10.7245,
+          "globalEnd": 10.944500000000001
+        },
+        {
+          "word": "A",
+          "start": 0.58,
+          "end": 0.6,
+          "globalStart": 11.0645,
+          "globalEnd": 11.0845
+        },
+        {
+          "word": "P",
+          "start": 0.66,
+          "end": 0.7000000000000001,
+          "globalStart": 11.1445,
+          "globalEnd": 11.1845
+        },
+        {
+          "word": "D",
+          "start": 0.92,
+          "end": 0.96,
+          "globalStart": 11.4045,
+          "globalEnd": 11.444500000000001
+        },
+        {
+          "word": "F",
+          "start": 1.3,
+          "end": 1.34,
+          "globalStart": 11.784500000000001,
+          "globalEnd": 11.8245
+        },
+        {
+          "word": "AND",
+          "start": 1.48,
+          "end": 1.56,
+          "globalStart": 11.964500000000001,
+          "globalEnd": 12.044500000000001
+        },
+        {
+          "word": "PRESTPLAY",
+          "start": 1.62,
+          "end": 2.1,
+          "globalStart": 12.104500000000002,
+          "globalEnd": 12.5845
+        },
+        {
+          "word": "FOLLOW",
+          "start": 2.9,
+          "end": 3.14,
+          "globalStart": 13.384500000000001,
+          "globalEnd": 13.624500000000001
+        },
+        {
+          "word": "THE",
+          "start": 3.22,
+          "end": 3.2800000000000002,
+          "globalStart": 13.704500000000001,
+          "globalEnd": 13.764500000000002
+        },
+        {
+          "word": "TEXT",
+          "start": 3.34,
+          "end": 3.74,
+          "globalStart": 13.8245,
+          "globalEnd": 14.2245
+        },
+        {
+          "word": "KEEP",
+          "start": 4.28,
+          "end": 4.46,
+          "globalStart": 14.764500000000002,
+          "globalEnd": 14.944500000000001
+        },
+        {
+          "word": "THE",
+          "start": 4.5200000000000005,
+          "end": 4.62,
+          "globalStart": 15.0045,
+          "globalEnd": 15.104500000000002
+        },
+        {
+          "word": "ORIGINAL",
+          "start": 4.7,
+          "end": 5.08,
+          "globalStart": 15.1845,
+          "globalEnd": 15.5645
+        },
+        {
+          "word": "PAGE",
+          "start": 5.16,
+          "end": 5.5200000000000005,
+          "globalStart": 15.6445,
+          "globalEnd": 16.0045
+        },
+        {
+          "word": "ON",
+          "start": 5.66,
+          "end": 5.7,
+          "globalStart": 16.1445,
+          "globalEnd": 16.1845
+        },
+        {
+          "word": "SCREEN",
+          "start": 5.86,
+          "end": 6.24,
+          "globalStart": 16.3445,
+          "globalEnd": 16.7245
+        },
+        {
+          "word": "OR",
+          "start": 6.68,
+          "end": 6.74,
+          "globalStart": 17.1645,
+          "globalEnd": 17.2245
+        },
+        {
+          "word": "SWITCH",
+          "start": 6.86,
+          "end": 7.12,
+          "globalStart": 17.3445,
+          "globalEnd": 17.6045
+        },
+        {
+          "word": "APS",
+          "start": 7.28,
+          "end": 7.46,
+          "globalStart": 17.7645,
+          "globalEnd": 17.9445
+        },
+        {
+          "word": "AND",
+          "start": 7.72,
+          "end": 7.78,
+          "globalStart": 18.2045,
+          "globalEnd": 18.2645
+        },
+        {
+          "word": "LET",
+          "start": 7.84,
+          "end": 7.98,
+          "globalStart": 18.3245,
+          "globalEnd": 18.4645
+        },
+        {
+          "word": "THE",
+          "start": 8.02,
+          "end": 8.08,
+          "globalStart": 18.5045,
+          "globalEnd": 18.564500000000002
+        },
+        {
+          "word": "READING",
+          "start": 8.120000000000001,
+          "end": 8.38,
+          "globalStart": 18.6045,
+          "globalEnd": 18.8645
+        },
+        {
+          "word": "CONTINUE",
+          "start": 8.44,
+          "end": 8.98,
+          "globalStart": 18.924500000000002,
+          "globalEnd": 19.4645
+        },
+        {
+          "word": "WHILE",
+          "start": 9.1,
+          "end": 9.26,
+          "globalStart": 19.5845,
+          "globalEnd": 19.744500000000002
+        },
+        {
+          "word": "YOU",
+          "start": 9.3,
+          "end": 9.38,
+          "globalStart": 19.7845,
+          "globalEnd": 19.8645
+        },
+        {
+          "word": "GET",
+          "start": 9.44,
+          "end": 9.56,
+          "globalStart": 19.924500000000002,
+          "globalEnd": 20.0445
+        },
+        {
+          "word": "ON",
+          "start": 9.66,
+          "end": 9.72,
+          "globalStart": 20.1445,
+          "globalEnd": 20.204500000000003
+        },
+        {
+          "word": "WITH",
+          "start": 9.78,
+          "end": 9.88,
+          "globalStart": 20.264499999999998,
+          "globalEnd": 20.3645
+        },
+        {
+          "word": "YOUR",
+          "start": 9.92,
+          "end": 10.040000000000001,
+          "globalStart": 20.4045,
+          "globalEnd": 20.524500000000003
+        },
+        {
+          "word": "DAY",
+          "start": 10.08,
+          "end": 10.28,
+          "globalStart": 20.564500000000002,
+          "globalEnd": 20.764499999999998
+        }
+      ],
+      "sentenceAnchors": [
+        {
+          "text": "Open a PDF and press play.",
+          "start": 0.24,
+          "end": 2.1,
+          "globalStart": 10.7245,
+          "globalEnd": 12.5845,
+          "matchedCharacterFraction": 0.95
+        },
+        {
+          "text": "Follow the text, keep the original page on screen, or switch apps and let the reading continue while you get on with your day.",
+          "start": 2.9,
+          "end": 10.28,
+          "globalStart": 13.384500000000001,
+          "globalEnd": 20.764499999999998,
+          "matchedCharacterFraction": 0.99
+        }
+      ],
+      "ctcTranscript": "OPEN A P D F AND PRESTPLAY FOLLOW THE TEXT KEEP THE ORIGINAL PAGE ON SCREEN OR SWITCH APS AND LET THE READING CONTINUE WHILE YOU GET ON WITH YOUR DAY",
+      "ctcWordSimilarity": 0.8524590163934426,
+      "ctcWordDifferences": [
+        {
+          "kind": "replace",
+          "expected": [
+            "PDF"
+          ],
+          "recognized": [
+            "P",
+            "D",
+            "F"
+          ]
+        },
+        {
+          "kind": "replace",
+          "expected": [
+            "PRESS",
+            "PLAY"
+          ],
+          "recognized": [
+            "PRESTPLAY"
+          ]
+        },
+        {
+          "kind": "replace",
+          "expected": [
+            "APPS"
+          ],
+          "recognized": [
+            "APS"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "understand",
+      "text": "When a word stops you, its meaning is right there in the reader. And when you're ready to settle in, adjust the brightness and warm the page until it feels right for you.",
+      "durationSeconds": 10.116208333333333,
+      "sampleCount": 485578,
+      "sourceDurationSeconds": 10.7,
+      "trimmedLeadingSamples": 8206,
+      "trimmedTrailingSamples": 13005,
+      "edgePaddingSeconds": 0.15,
+      "synthesisSeconds": 5.58207964617759,
+      "phonemes": "wˌɛn ɐ wˈɜɹd stˈɑps ju, ɪts mˈinɪŋ ɪz ɹˈIt ðɛɹ ɪn ðə ɹˈidəɹ. ˌænd wˌɛn jʊɹ ɹˈɛdi tə sˈɛTᵊl ˈɪn, əʤˈʌst ðə bɹˈItnəs ænd wˈɔɹm ðə pˈAʤ ˌʌntˈɪl ɪt fˈilz ɹˈIt fɔɹ ju.",
+      "phonemeCount": 162,
+      "chunkCount": 1,
+      "fallbackCalls": 0,
+      "rawAudio": {
+        "file": "build/product-pitch/narration/raw/understand.wav",
+        "bytes": 1027280,
+        "sha256": "9ea60a1f671af3c6ebd3bb1d19c1d411384b29f3715b4511a389d87095e5bd7e"
+      },
+      "audio": {
+        "file": "build/product-pitch/narration/understand.wav",
+        "bytes": 1456778,
+        "sha256": "5194107e4f428b9f8c8cb682cad83f38c9b9fced9ff7b1fcc7e270739c3db587"
+      },
+      "sampleRate": 48000,
+      "start": 21.071375,
+      "end": 31.187583333333333,
+      "peakDbfs": -1.499443797148377,
+      "clippedSamples": 0,
+      "finite": true,
+      "ctcWordAnchors": [
+        {
+          "word": "WHEN",
+          "start": 0.14,
+          "end": 0.24,
+          "globalStart": 21.211375,
+          "globalEnd": 21.311374999999998
+        },
+        {
+          "word": "A",
+          "start": 0.3,
+          "end": 0.32,
+          "globalStart": 21.371375,
+          "globalEnd": 21.391375
+        },
+        {
+          "word": "WORD",
+          "start": 0.36,
+          "end": 0.58,
+          "globalStart": 21.431375,
+          "globalEnd": 21.651374999999998
+        },
+        {
+          "word": "STOPS",
+          "start": 0.68,
+          "end": 1.04,
+          "globalStart": 21.751375,
+          "globalEnd": 22.111375
+        },
+        {
+          "word": "YOU",
+          "start": 1.12,
+          "end": 1.24,
+          "globalStart": 22.191375,
+          "globalEnd": 22.311374999999998
+        },
+        {
+          "word": "ITS",
+          "start": 1.78,
+          "end": 1.9000000000000001,
+          "globalStart": 22.851375,
+          "globalEnd": 22.971375
+        },
+        {
+          "word": "MEANING",
+          "start": 1.96,
+          "end": 2.24,
+          "globalStart": 23.031375,
+          "globalEnd": 23.311374999999998
+        },
+        {
+          "word": "IS",
+          "start": 2.34,
+          "end": 2.4,
+          "globalStart": 23.411375,
+          "globalEnd": 23.471375
+        },
+        {
+          "word": "RIGHT",
+          "start": 2.5,
+          "end": 2.7,
+          "globalStart": 23.571375,
+          "globalEnd": 23.771375
+        },
+        {
+          "word": "THERE",
+          "start": 2.7800000000000002,
+          "end": 2.98,
+          "globalStart": 23.851375,
+          "globalEnd": 24.051375
+        },
+        {
+          "word": "IN",
+          "start": 3.06,
+          "end": 3.1,
+          "globalStart": 24.131375,
+          "globalEnd": 24.171375
+        },
+        {
+          "word": "THE",
+          "start": 3.16,
+          "end": 3.22,
+          "globalStart": 24.231375,
+          "globalEnd": 24.291375
+        },
+        {
+          "word": "READER",
+          "start": 3.2600000000000002,
+          "end": 3.52,
+          "globalStart": 24.331375,
+          "globalEnd": 24.591375
+        },
+        {
+          "word": "AND",
+          "start": 4.36,
+          "end": 4.42,
+          "globalStart": 25.431375,
+          "globalEnd": 25.491374999999998
+        },
+        {
+          "word": "WHEN",
+          "start": 4.46,
+          "end": 4.5600000000000005,
+          "globalStart": 25.531375,
+          "globalEnd": 25.631375
+        },
+        {
+          "word": "YOU",
+          "start": 4.58,
+          "end": 4.66,
+          "globalStart": 25.651375,
+          "globalEnd": 25.731375
+        },
+        {
+          "word": "ARE",
+          "start": 4.68,
+          "end": 4.76,
+          "globalStart": 25.751375,
+          "globalEnd": 25.831375
+        },
+        {
+          "word": "READY",
+          "start": 4.8,
+          "end": 4.98,
+          "globalStart": 25.871375,
+          "globalEnd": 26.051375
+        },
+        {
+          "word": "TO",
+          "start": 5.04,
+          "end": 5.12,
+          "globalStart": 26.111375,
+          "globalEnd": 26.191375
+        },
+        {
+          "word": "SETTLE",
+          "start": 5.18,
+          "end": 5.48,
+          "globalStart": 26.251375,
+          "globalEnd": 26.551375
+        },
+        {
+          "word": "IN",
+          "start": 5.62,
+          "end": 5.7,
+          "globalStart": 26.691375,
+          "globalEnd": 26.771375
+        },
+        {
+          "word": "ADJUST",
+          "start": 6.26,
+          "end": 6.5600000000000005,
+          "globalStart": 27.331375,
+          "globalEnd": 27.631375
+        },
+        {
+          "word": "THE",
+          "start": 6.640000000000001,
+          "end": 6.72,
+          "globalStart": 27.711375,
+          "globalEnd": 27.791375
+        },
+        {
+          "word": "BRIGHTNESS",
+          "start": 6.78,
+          "end": 7.26,
+          "globalStart": 27.851375,
+          "globalEnd": 28.331375
+        },
+        {
+          "word": "AND",
+          "start": 7.44,
+          "end": 7.5,
+          "globalStart": 28.511375,
+          "globalEnd": 28.571375
+        },
+        {
+          "word": "WARM",
+          "start": 7.62,
+          "end": 7.88,
+          "globalStart": 28.691375,
+          "globalEnd": 28.951375
+        },
+        {
+          "word": "THE",
+          "start": 7.98,
+          "end": 8.06,
+          "globalStart": 29.051375,
+          "globalEnd": 29.131375
+        },
+        {
+          "word": "PAGE",
+          "start": 8.120000000000001,
+          "end": 8.5,
+          "globalStart": 29.191375,
+          "globalEnd": 29.571375
+        },
+        {
+          "word": "UNTIL",
+          "start": 8.6,
+          "end": 8.84,
+          "globalStart": 29.671374999999998,
+          "globalEnd": 29.911375
+        },
+        {
+          "word": "IT",
+          "start": 8.9,
+          "end": 8.94,
+          "globalStart": 29.971375000000002,
+          "globalEnd": 30.011375
+        },
+        {
+          "word": "FEELS",
+          "start": 9.0,
+          "end": 9.24,
+          "globalStart": 30.071375,
+          "globalEnd": 30.311374999999998
+        },
+        {
+          "word": "RIGT",
+          "start": 9.32,
+          "end": 9.5,
+          "globalStart": 30.391375,
+          "globalEnd": 30.571375
+        },
+        {
+          "word": "FOR",
+          "start": 9.58,
+          "end": 9.66,
+          "globalStart": 30.651375,
+          "globalEnd": 30.731375
+        },
+        {
+          "word": "YOU",
+          "start": 9.72,
+          "end": 9.8,
+          "globalStart": 30.791375000000002,
+          "globalEnd": 30.871375
+        }
+      ],
+      "sentenceAnchors": [
+        {
+          "text": "When a word stops you, its meaning is right there in the reader.",
+          "start": 0.14,
+          "end": 3.52,
+          "globalStart": 21.211375,
+          "globalEnd": 24.591375,
+          "matchedCharacterFraction": 1.0
+        },
+        {
+          "text": "And when you're ready to settle in, adjust the brightness and warm the page until it feels right for you.",
+          "start": 4.36,
+          "end": 9.8,
+          "globalStart": 25.431375,
+          "globalEnd": 30.871375,
+          "matchedCharacterFraction": 0.9879518072289156
+        }
+      ],
+      "ctcTranscript": "WHEN A WORD STOPS YOU ITS MEANING IS RIGHT THERE IN THE READER AND WHEN YOU ARE READY TO SETTLE IN ADJUST THE BRIGHTNESS AND WARM THE PAGE UNTIL IT FEELS RIGT FOR YOU",
+      "ctcWordSimilarity": 0.9253731343283582,
+      "ctcWordDifferences": [
+        {
+          "kind": "replace",
+          "expected": [
+            "YOU'RE"
+          ],
+          "recognized": [
+            "YOU",
+            "ARE"
+          ]
+        },
+        {
+          "kind": "replace",
+          "expected": [
+            "RIGHT"
+          ],
+          "recognized": [
+            "RIGT"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "close",
+      "text": "Download the voice and dictionary packs once for offline listening and definitions. No account. No ads. Read Assist. Read when you can. Listen when you like.",
+      "durationSeconds": 11.853083333333334,
+      "sampleCount": 568948,
+      "sourceDurationSeconds": 12.375,
+      "trimmedLeadingSamples": 7741,
+      "trimmedTrailingSamples": 11985,
+      "edgePaddingSeconds": 0.15,
+      "synthesisSeconds": 6.351796120405197,
+      "phonemes": "dˈWnlˌOd ðə vˈYs ænd dˈɪkʃənˌɛɹi pˈæks wˈʌns fɔɹ ˌɔflˈIn lˈɪsənɪŋ ænd dˌɛfənˈɪʃənz. nˈO əkˈWnt. nˈO ˈædz. ɹˈid əsˈɪst. ɹˈid wˌɛn ju kˈæn. lˈɪsᵊn wˌɛn ju lˈIk.",
+      "phonemeCount": 158,
+      "chunkCount": 1,
+      "fallbackCalls": 0,
+      "rawAudio": {
+        "file": "build/product-pitch/narration/raw/close.wav",
+        "bytes": 1188080,
+        "sha256": "a1c74bcf5e7def9805e7b70c2098c364b33bf71e382367db5e277a78f0aa214b"
+      },
+      "audio": {
+        "file": "build/product-pitch/narration/close.wav",
+        "bytes": 1706888,
+        "sha256": "7da18b18e64469b9397fc78d49c3760f465d3f3a4ea007a165e828e8dba87a72"
+      },
+      "sampleRate": 48000,
+      "start": 31.187583333333333,
+      "end": 43.04066666666667,
+      "peakDbfs": -1.4995397799890064,
+      "clippedSamples": 0,
+      "finite": true,
+      "ctcWordAnchors": [
+        {
+          "word": "DOWNLOAD",
+          "start": 0.24,
+          "end": 0.66,
+          "globalStart": 31.42758333333333,
+          "globalEnd": 31.847583333333333
+        },
+        {
+          "word": "THE",
+          "start": 0.74,
+          "end": 0.8,
+          "globalStart": 31.92758333333333,
+          "globalEnd": 31.987583333333333
+        },
+        {
+          "word": "VOICE",
+          "start": 0.88,
+          "end": 1.22,
+          "globalStart": 32.06758333333333,
+          "globalEnd": 32.407583333333335
+        },
+        {
+          "word": "AND",
+          "start": 1.34,
+          "end": 1.4000000000000001,
+          "globalStart": 32.52758333333333,
+          "globalEnd": 32.587583333333335
+        },
+        {
+          "word": "DICTIONARY",
+          "start": 1.46,
+          "end": 1.82,
+          "globalStart": 32.64758333333333,
+          "globalEnd": 33.00758333333333
+        },
+        {
+          "word": "PACKS",
+          "start": 1.9000000000000001,
+          "end": 2.2,
+          "globalStart": 33.087583333333335,
+          "globalEnd": 33.38758333333333
+        },
+        {
+          "word": "ONCE",
+          "start": 2.36,
+          "end": 2.48,
+          "globalStart": 33.547583333333336,
+          "globalEnd": 33.66758333333333
+        },
+        {
+          "word": "FOR",
+          "start": 2.54,
+          "end": 2.66,
+          "globalStart": 33.727583333333335,
+          "globalEnd": 33.84758333333333
+        },
+        {
+          "word": "OFF",
+          "start": 2.84,
+          "end": 2.96,
+          "globalStart": 34.02758333333333,
+          "globalEnd": 34.14758333333333
+        },
+        {
+          "word": "LINE",
+          "start": 3.08,
+          "end": 3.3000000000000003,
+          "globalStart": 34.267583333333334,
+          "globalEnd": 34.48758333333333
+        },
+        {
+          "word": "LISTENING",
+          "start": 3.38,
+          "end": 3.7600000000000002,
+          "globalStart": 34.56758333333333,
+          "globalEnd": 34.947583333333334
+        },
+        {
+          "word": "AND",
+          "start": 3.86,
+          "end": 3.94,
+          "globalStart": 35.047583333333336,
+          "globalEnd": 35.127583333333334
+        },
+        {
+          "word": "DEFINITIONS",
+          "start": 3.98,
+          "end": 4.68,
+          "globalStart": 35.16758333333333,
+          "globalEnd": 35.86758333333333
+        },
+        {
+          "word": "NO",
+          "start": 5.5,
+          "end": 5.62,
+          "globalStart": 36.687583333333336,
+          "globalEnd": 36.80758333333333
+        },
+        {
+          "word": "ACCOUNT",
+          "start": 5.74,
+          "end": 6.08,
+          "globalStart": 36.92758333333333,
+          "globalEnd": 37.267583333333334
+        },
+        {
+          "word": "NO",
+          "start": 6.72,
+          "end": 6.86,
+          "globalStart": 37.907583333333335,
+          "globalEnd": 38.047583333333336
+        },
+        {
+          "word": "ADD",
+          "start": 7.16,
+          "end": 7.3,
+          "globalStart": 38.34758333333333,
+          "globalEnd": 38.48758333333333
+        },
+        {
+          "word": "READ",
+          "start": 7.86,
+          "end": 8.02,
+          "globalStart": 39.047583333333336,
+          "globalEnd": 39.20758333333333
+        },
+        {
+          "word": "ASSIST",
+          "start": 8.1,
+          "end": 8.52,
+          "globalStart": 39.28758333333333,
+          "globalEnd": 39.70758333333333
+        },
+        {
+          "word": "READ",
+          "start": 9.120000000000001,
+          "end": 9.36,
+          "globalStart": 40.30758333333333,
+          "globalEnd": 40.547583333333336
+        },
+        {
+          "word": "WHEN",
+          "start": 9.44,
+          "end": 9.540000000000001,
+          "globalStart": 40.627583333333334,
+          "globalEnd": 40.727583333333335
+        },
+        {
+          "word": "YOU",
+          "start": 9.58,
+          "end": 9.66,
+          "globalStart": 40.767583333333334,
+          "globalEnd": 40.84758333333333
+        },
+        {
+          "word": "CAN",
+          "start": 9.72,
+          "end": 9.96,
+          "globalStart": 40.907583333333335,
+          "globalEnd": 41.14758333333333
+        },
+        {
+          "word": "LISTEN",
+          "start": 10.64,
+          "end": 10.94,
+          "globalStart": 41.82758333333334,
+          "globalEnd": 42.127583333333334
+        },
+        {
+          "word": "WHEN",
+          "start": 11.02,
+          "end": 11.120000000000001,
+          "globalStart": 42.20758333333333,
+          "globalEnd": 42.30758333333333
+        },
+        {
+          "word": "YOU",
+          "start": 11.18,
+          "end": 11.26,
+          "globalStart": 42.36758333333333,
+          "globalEnd": 42.447583333333334
+        },
+        {
+          "word": "LIKE",
+          "start": 11.32,
+          "end": 11.540000000000001,
+          "globalStart": 42.50758333333333,
+          "globalEnd": 42.727583333333335
+        }
+      ],
+      "sentenceAnchors": [
+        {
+          "text": "Download the voice and dictionary packs once for offline listening and definitions.",
+          "start": 0.24,
+          "end": 4.68,
+          "globalStart": 31.42758333333333,
+          "globalEnd": 35.86758333333333,
+          "matchedCharacterFraction": 1.0
+        },
+        {
+          "text": "No account.",
+          "start": 5.5,
+          "end": 6.08,
+          "globalStart": 36.687583333333336,
+          "globalEnd": 37.267583333333334,
+          "matchedCharacterFraction": 1.0
+        },
+        {
+          "text": "No ads.",
+          "start": 6.72,
+          "end": 7.2,
+          "globalStart": 37.907583333333335,
+          "globalEnd": 38.38758333333333,
+          "matchedCharacterFraction": 0.8
+        },
+        {
+          "text": "Read Assist.",
+          "start": 7.86,
+          "end": 8.52,
+          "globalStart": 39.047583333333336,
+          "globalEnd": 39.70758333333333,
+          "matchedCharacterFraction": 1.0
+        },
+        {
+          "text": "Read when you can.",
+          "start": 9.120000000000001,
+          "end": 9.96,
+          "globalStart": 40.30758333333333,
+          "globalEnd": 41.14758333333333,
+          "matchedCharacterFraction": 1.0
+        },
+        {
+          "text": "Listen when you like.",
+          "start": 10.64,
+          "end": 11.540000000000001,
+          "globalStart": 41.82758333333334,
+          "globalEnd": 42.727583333333335,
+          "matchedCharacterFraction": 1.0
+        }
+      ],
+      "ctcTranscript": "DOWNLOAD THE VOICE AND DICTIONARY PACKS ONCE FOR OFF LINE LISTENING AND DEFINITIONS NO ACCOUNT NO ADD READ ASSIST READ WHEN YOU CAN LISTEN WHEN YOU LIKE",
+      "ctcWordSimilarity": 0.9056603773584906,
+      "ctcWordDifferences": [
+        {
+          "kind": "replace",
+          "expected": [
+            "OFFLINE"
+          ],
+          "recognized": [
+            "OFF",
+            "LINE"
+          ]
+        },
+        {
+          "kind": "replace",
+          "expected": [
+            "ADS"
+          ],
+          "recognized": [
+            "ADD"
+          ]
+        }
+      ]
+    }
+  ],
+  "normalization": {
+    "method": "Two-pass FFmpeg loudnorm, dynamic gain and true-peak limiting",
+    "targetLufs": -18,
+    "maxTruePeakDbtp": -1.5,
+    "before": {
+      "input_i": "-21.93",
+      "input_tp": "-1.51",
+      "input_lra": "2.10",
+      "input_thresh": "-32.36",
+      "output_i": "-18.18",
+      "output_tp": "-1.50",
+      "output_lra": "2.20",
+      "output_thresh": "-28.57",
+      "normalization_type": "dynamic",
+      "target_offset": "0.18"
+    },
+    "passTwo": {
+      "input_i": "-21.93",
+      "input_tp": "-1.51",
+      "input_lra": "2.10",
+      "input_thresh": "-32.36",
+      "output_i": "-18.00",
+      "output_tp": "-1.50",
+      "output_lra": "2.30",
+      "output_thresh": "-28.40",
+      "normalization_type": "dynamic",
+      "target_offset": "-0.00"
+    },
+    "after": {
+      "input_i": "-18.00",
+      "input_tp": "-1.50",
+      "input_lra": "2.30",
+      "input_thresh": "-28.44",
+      "output_i": "-18.00",
+      "output_tp": "-1.50",
+      "output_lra": "2.20",
+      "output_thresh": "-28.40",
+      "normalization_type": "dynamic",
+      "target_offset": "0.00"
+    },
+    "sampleCountPreserved": true
+  },
+  "timeStretch": false,
+  "dynamicGainAndLimiting": true,
+  "internalPauseShortening": false,
+  "subjectiveListeningPerformed": false,
+  "limitations": [
+    "Temporary synthetic editing guide; user selected HeyGen for final narration.",
+    "Not live app speech; app source audio is unchanged.",
+    "CTC word and sentence anchors are approximate token-peak timings, not manually aligned boundaries.",
+    "CTC may make recognition errors; it is not a human listening or pronunciation review."
+  ]
+}

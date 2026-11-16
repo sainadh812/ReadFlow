@@ -1,0 +1,407 @@
+{
+  "status": "complete",
+  "publicationReady": true,
+  "narrationProvider": "kokoro",
+  "durationSeconds": 48.7,
+  "syntheticUiAdded": false,
+  "sourcePlaybackSpeedMultiplier": 1,
+  "description": "User-approved product pitch finalized by removing only draft labels. The approved scenes, source crops, cuts, timing, captions and Kokoro narration are unchanged.",
+  "narrationManifest": {
+    "file": "build/product-pitch/narration/synthesis-report.json",
+    "bytes": 35841,
+    "sha256": "d789bb400bc17f471e8adc78d782da2c5f638b6df1a4d6620111c858238ebdd9"
+  },
+  "sourceCaptures": [
+    {
+      "file": "build/store-media/combined-capture/01-library.mp4",
+      "bytes": 669958,
+      "sha256": "dc26c0093a177ce8066287dfb402e7344147e45f2e8b6677d719b72dfeacc597"
+    },
+    {
+      "file": "build/store-media/combined-capture/02-reading.mp4",
+      "bytes": 668714,
+      "sha256": "7b4b9bd8a2720aa90492a0f2807e9be4b1782aed12b1f701a278a790f79e27aa"
+    },
+    {
+      "file": "build/store-media/combined-capture/03-reading-light.mp4",
+      "bytes": 2493934,
+      "sha256": "08f3b776a8067a5e87f993ad620ff5102c360bc2e6fd041e5fae2c88912ff2c6"
+    },
+    {
+      "file": "build/store-media/combined-capture/04-dictionary.mp4",
+      "bytes": 2694416,
+      "sha256": "6e8e8cb4fc76eecabf2480149f42d5152b22f3e17cc4a6fe2c7114618ce1629b"
+    },
+    {
+      "file": "build/store-media/combined-capture/06-background-playback.mp4",
+      "bytes": 2650342,
+      "sha256": "180e1bcd6da0d78fa4a0005524f1fea70206e8a81dd5cd2e2872d42a03222fc3"
+    }
+  ],
+  "paragraphPlacements": [
+    {
+      "id": "hook",
+      "start": 0.7,
+      "end": 11.1845
+    },
+    {
+      "id": "experience",
+      "start": 11.833333333333334,
+      "end": 22.420208333333335
+    },
+    {
+      "id": "understand",
+      "start": 23.633333333333333,
+      "end": 33.749541666666666
+    },
+    {
+      "id": "close",
+      "start": 34.833333333333336,
+      "end": 46.68641666666667
+    }
+  ],
+  "scenes": [
+    {
+      "id": "hook",
+      "layout": "opening",
+      "dark": true,
+      "title": "Too much to read.\nToo little time.",
+      "brandXY": [
+        100,
+        95
+      ],
+      "brandSize": 60,
+      "titleXY": [
+        100,
+        295
+      ],
+      "titleSize": 100,
+      "subline": "Make room for the words.",
+      "sublineXY": [
+        104,
+        570
+      ],
+      "file": "01-library.mp4",
+      "sourceStart": 0.5,
+      "crop": [
+        48,
+        684,
+        984,
+        648
+      ],
+      "box": [
+        1030,
+        330,
+        816,
+        538
+      ],
+      "start": 0.0,
+      "end": 6.8,
+      "duration": 6.8,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 7.3
+    },
+    {
+      "id": "library",
+      "layout": "phone",
+      "title": "Your reading.\nReady when\nyou are.",
+      "titleXY": [
+        850,
+        290
+      ],
+      "titleSize": 112,
+      "brandXY": [
+        850,
+        65
+      ],
+      "file": "01-library.mp4",
+      "sourceStart": 0.5,
+      "box": [
+        124,
+        0,
+        608,
+        1080
+      ],
+      "start": 6.8,
+      "end": 11.833333333333334,
+      "duration": 5.033333333333333,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 5.533333333333333
+    },
+    {
+      "id": "play",
+      "layout": "phone",
+      "title": "Let the page\ncome to you.",
+      "titleXY": [
+        850,
+        345
+      ],
+      "titleSize": 112,
+      "brandXY": [
+        850,
+        65
+      ],
+      "file": "06-background-playback.mp4",
+      "sourceStart": 2.4,
+      "box": [
+        124,
+        0,
+        608,
+        1080
+      ],
+      "start": 11.833333333333334,
+      "end": 14.6,
+      "duration": 2.7666666666666666,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 5.166666666666666
+    },
+    {
+      "id": "follow",
+      "layout": "detail",
+      "title": "Stay with\nthe words.",
+      "titleXY": [
+        88,
+        370
+      ],
+      "titleSize": 86,
+      "file": "06-background-playback.mp4",
+      "sourceStart": 7.7,
+      "crop": [
+        48,
+        640,
+        984,
+        600
+      ],
+      "box": [
+        590,
+        230,
+        1250,
+        762
+      ],
+      "start": 14.6,
+      "end": 15.966666666666667,
+      "duration": 1.3666666666666667,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 9.066666666666666
+    },
+    {
+      "id": "pdf",
+      "layout": "phone",
+      "dark": true,
+      "title": "The page\nyou know.",
+      "titleXY": [
+        110,
+        360
+      ],
+      "titleSize": 112,
+      "file": "02-reading.mp4",
+      "sourceStart": 3.5,
+      "box": [
+        1168,
+        0,
+        608,
+        1080
+      ],
+      "start": 15.966666666666667,
+      "end": 18.5,
+      "duration": 2.533333333333333,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 6.033333333333333
+    },
+    {
+      "id": "away",
+      "layout": "phone",
+      "title": "Take the words\nwith you.",
+      "titleXY": [
+        850,
+        345
+      ],
+      "titleSize": 108,
+      "brandXY": [
+        850,
+        65
+      ],
+      "file": "06-background-playback.mp4",
+      "sourceStart": 9.7,
+      "box": [
+        124,
+        0,
+        608,
+        1080
+      ],
+      "start": 18.5,
+      "end": 21.633333333333333,
+      "duration": 3.1333333333333333,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 12.833333333333332
+    },
+    {
+      "id": "media",
+      "layout": "detail",
+      "dark": true,
+      "title": "A little more freedom.",
+      "titleXY": [
+        240,
+        160
+      ],
+      "titleSize": 88,
+      "file": "06-background-playback.mp4",
+      "sourceStart": 13.7,
+      "crop": [
+        32,
+        584,
+        1016,
+        520
+      ],
+      "box": [
+        260,
+        320,
+        1400,
+        716
+      ],
+      "start": 21.633333333333333,
+      "end": 23.633333333333333,
+      "duration": 2.0,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 15.7
+    },
+    {
+      "id": "lookup",
+      "layout": "phone",
+      "title": "A new word.\nNo detour.",
+      "titleXY": [
+        850,
+        345
+      ],
+      "titleSize": 112,
+      "brandXY": [
+        850,
+        65
+      ],
+      "file": "04-dictionary.mp4",
+      "sourceStart": 23.4,
+      "box": [
+        124,
+        0,
+        608,
+        1080
+      ],
+      "start": 23.633333333333333,
+      "end": 25.366666666666667,
+      "duration": 1.7333333333333334,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 25.133333333333333
+    },
+    {
+      "id": "definition",
+      "layout": "detail",
+      "title": "Stay with\nthe meaning.",
+      "titleXY": [
+        95,
+        355
+      ],
+      "titleSize": 108,
+      "file": "04-dictionary.mp4",
+      "sourceStart": 32.2,
+      "crop": [
+        0,
+        800,
+        1080,
+        1080
+      ],
+      "box": [
+        970,
+        170,
+        820,
+        820
+      ],
+      "start": 25.366666666666667,
+      "end": 27.733333333333334,
+      "duration": 2.3666666666666667,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 34.56666666666667
+    },
+    {
+      "id": "light",
+      "layout": "detail",
+      "dark": true,
+      "title": "Settle into\nyour page.",
+      "titleXY": [
+        95,
+        355
+      ],
+      "titleSize": 108,
+      "file": "03-reading-light.mp4",
+      "sourceStart": 15.9,
+      "crop": [
+        40,
+        610,
+        1000,
+        580
+      ],
+      "box": [
+        910,
+        300,
+        930,
+        540
+      ],
+      "start": 27.733333333333334,
+      "end": 33.733333333333334,
+      "duration": 6.0,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 21.9
+    },
+    {
+      "id": "warm",
+      "layout": "phone",
+      "title": "A warmer\nplace to read.",
+      "titleXY": [
+        850,
+        345
+      ],
+      "titleSize": 108,
+      "brandXY": [
+        850,
+        65
+      ],
+      "file": "03-reading-light.mp4",
+      "sourceStart": 28.8,
+      "box": [
+        124,
+        0,
+        608,
+        1080
+      ],
+      "start": 33.733333333333334,
+      "end": 39.93333333333333,
+      "duration": 6.2,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 35.0
+    },
+    {
+      "id": "closing",
+      "layout": "closing",
+      "dark": true,
+      "title": "Read when you can.\nListen when you like.",
+      "titleXY": [
+        130,
+        400
+      ],
+      "titleSize": 100,
+      "brandXY": [
+        130,
+        165
+      ],
+      "brandSize": 112,
+      "start": 39.93333333333333,
+      "end": 48.7,
+      "duration": 8.766666666666667,
+      "sourcePlaybackSpeedMultiplier": 1
+    }
+  ],
+  "reviewNote": "The user explicitly approved the current video for upload. This supersedes the earlier HeyGen plan. The original editing draft and its report remain preserved separately.",
+  "approvedCurrentVersion": true,
+  "approvalBasis": "This video is good to upload.",
+  "approvedDraftSha256": "231821b46755c114ec1c532b0f64bf2c2011ed9cb48fb1d8aab56190dc383279",
+  "draftLabelsRemoved": true
+}

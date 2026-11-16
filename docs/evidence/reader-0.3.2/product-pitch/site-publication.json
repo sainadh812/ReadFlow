@@ -1,0 +1,65 @@
+{
+  "startedAt": "2026-11-16T04:19:01.070016+00:00",
+  "pageUrl": "https://sainadh812.github.io/ReadFlow/demo.html",
+  "status": "pushed_deployment_unverified",
+  "hostingConfigurationModified": false,
+  "pushAttempted": true,
+  "pushSucceeded": true,
+  "publicationScope": "product_pitch",
+  "renderReportSha256": "5ceb56e1ec4da9246a8c2caa7bff227699a311987e4d3b46c9dfb5481c4dd3fb",
+  "pageSource": "site/demo.html",
+  "originalVideosPreserved": true,
+  "creditsSource": "store-assets/release-0.3.2/product-pitch/MEDIA_CREDITS.md",
+  "files": {
+    "demo.html": {
+      "sha256": "24958e0149b5c8853e6647755ba9150b8775afca331643f8bc014ab0bc66f25d",
+      "bytes": 15153
+    },
+    "PRODUCT_PITCH_CREDITS.md": {
+      "sha256": "621d406206bd40ba352662a76ee61e285b690f2ce3f70c08a52aaaa11c8d7fe9",
+      "bytes": 2309
+    },
+    "PRODUCT_PITCH_VOICE_CREDITS.md": {
+      "sha256": "dae8fffc5227fef51671054033b31f047288b8921fb033d422e111963af322d5",
+      "bytes": 4149
+    },
+    "media/Read-Assist-0.3.2-product-pitch.mp4": {
+      "sha256": "a0a2d856dfeedc97739c8a6f00fe05e73654ac0a8ac16394067b0eecb6e606e3",
+      "bytes": 2369938
+    },
+    "media/Read-Assist-0.3.2-product-pitch-audio.mp3": {
+      "sha256": "1894317bec910813cc9befbc0a920f467cea9968b7dd3cff3ef3a4ba5d792e8d",
+      "bytes": 975541
+    },
+    "media/Read-Assist-0.3.2-product-pitch.en.srt": {
+      "sha256": "78baffa1e9820415d484181caa90f93d39aef15052d3540981a9551c679b9f40",
+      "bytes": 1180
+    },
+    "media/Read-Assist-0.3.2-product-pitch.en.vtt": {
+      "sha256": "937f4dc95e8059e5d3ef0d535a703a2cbe848d40a835ab49b476de9fda3e7777",
+      "bytes": 1188
+    },
+    "media/product-pitch-poster.jpg": {
+      "sha256": "caecc261d8090839bd3ef34f0e72c2c830bd4bfcf9921e051d38e8c148e50c34",
+      "bytes": 165668
+    }
+  },
+  "beforeCommit": "c6abd8d8079066e21460170243340b122395938c",
+  "preservedFiles": {
+    ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "MEDIA_CREDITS.md": "1360dd124cc479c8eadd5ebb8b375f04410eed15c3e325db771d052ee7077f51",
+    "NARRATION_CREDITS.md": "874f4f6d9f516a09d6c1b4ddf39f8eb7398510d3faf326fce937adcd7a35cf3e",
+    "index.html": "eaaab2e01ed7255ba4eb458b42e42c87e693c6347b29bd502894645adfa5fcbd",
+    "media/Read-Assist-0.3.2-explanatory-audio.mp3": "0620e49bfe93f15a42ca8a3d68cf652a124865e1412a0ceaa238edb2416ffdad",
+    "media/Read-Assist-0.3.2-feature-tour.mp4": "dc45e670e69ceeb38b07248fce4e23b4fd2e612d0180f134eca487b52213fef3",
+    "media/Read-Assist-0.3.2-foreground-service.mp4": "720119d77d9d39b0ac3ddf0e058e6555756b5ae3c2612fbe7aa46e1ed7c79fea",
+    "media/Read-Assist-0.3.2-narrated-demo.en.srt": "7cdaa3c15e27780900ec2f02d90c73636eec023b55c9b1c0670085e0fdf1b88b",
+    "media/Read-Assist-0.3.2-narrated-demo.en.vtt": "7a762fdeaacf17541d10c262ab42e2a35890e8616c937ee110a2bed79f4500d2",
+    "media/Read-Assist-0.3.2-narrated-demo.mp4": "533bad2d141c17e258a868dd96bd49861ae9669f83691765deb46ccefa40a08d",
+    "media/Read-Assist-0.3.2-product-demo.mp4": "cda2837be33ece81a7e6ad205d59cf328d9695498c0323162511892b9057b2c2",
+    "privacy.html": "0bd9eb1e31a99fefb8da580b98ae9f4c8ceafbd4d99fbac7f610f56df01d197a"
+  },
+  "stagedFilesVerified": true,
+  "publicationCommit": "bf5bce76a27f73b6765705707cf81a98e0a1b088",
+  "finishedAt": "2026-11-16T04:19:05.197159+00:00"
+}

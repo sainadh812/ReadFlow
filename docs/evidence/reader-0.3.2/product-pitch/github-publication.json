@@ -1,0 +1,44 @@
+{
+  "checkedAt": "2026-11-16T04:20:15.417639+00:00",
+  "url": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.2-play-candidate",
+  "newAssets": [
+    {
+      "name": "Read-Assist-0.3.2-product-pitch.mp4",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-product-pitch.mp4",
+      "size": 2369938,
+      "digest": "sha256:a0a2d856dfeedc97739c8a6f00fe05e73654ac0a8ac16394067b0eecb6e606e3",
+      "state": "uploaded"
+    },
+    {
+      "name": "Read-Assist-0.3.2-product-pitch-audio.mp3",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-product-pitch-audio.mp3",
+      "size": 975541,
+      "digest": "sha256:1894317bec910813cc9befbc0a920f467cea9968b7dd3cff3ef3a4ba5d792e8d",
+      "state": "uploaded"
+    },
+    {
+      "name": "Read-Assist-0.3.2-product-pitch.en.srt",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-product-pitch.en.srt",
+      "size": 1180,
+      "digest": "sha256:78baffa1e9820415d484181caa90f93d39aef15052d3540981a9551c679b9f40",
+      "state": "uploaded"
+    },
+    {
+      "name": "Read-Assist-0.3.2-product-pitch.en.vtt",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-product-pitch.en.vtt",
+      "size": 1188,
+      "digest": "sha256:937f4dc95e8059e5d3ef0d535a703a2cbe848d40a835ab49b476de9fda3e7777",
+      "state": "uploaded"
+    },
+    {
+      "name": "product-pitch-poster.jpg",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/product-pitch-poster.jpg",
+      "size": 165668,
+      "digest": "sha256:caecc261d8090839bd3ef34f0e72c2c830bd4bfcf9921e051d38e8c148e50c34",
+      "state": "uploaded"
+    }
+  ],
+  "existingAssetsPreserved": 17,
+  "releaseDescriptionVerified": true,
+  "verified": true
+}

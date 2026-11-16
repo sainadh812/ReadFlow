@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
-  <meta name="description" content="See Read Assist in action: a product walkthrough and a continuous demonstration of background playback, recorded from the Android app.">
+  <meta name="description" content="Read when you can. Listen when you like. See how Read Assist fits your documents into your day, with listening, dictionary lookup and comfortable reading light.">
   <meta name="theme-color" content="#f8f4ec">
   <title>See Read Assist in action</title>
   <style>
@@ -181,6 +181,9 @@
       font-size: .8rem;
     }
     .card-footer p { margin: 0; color: var(--muted); font-size: .75rem; }
+    .transcript { padding: 0 1.5rem 1.5rem; color: var(--muted); font-size: .875rem; }
+    .transcript summary { cursor: pointer; color: var(--green); }
+    .transcript p { max-width: 48rem; margin: .9rem 0 0; }
     .recording-note {
       display: grid;
       grid-template-columns: 1fr 2.1fr;
@@ -265,22 +268,29 @@
       <div class="video-grid">
         <article class="video-card video-card--walkthrough" aria-labelledby="walkthrough-title">
           <div class="card-heading">
-            <div class="card-meta"><span class="number" aria-hidden="true">01</span><span class="tag">Narrated walkthrough</span></div>
-            <h3 id="walkthrough-title">Make reading your own</h3>
-            <p id="walkthrough-description">Follow a spoken guide to the reader, dictionary, lighting and themes, then hear the app reading in the background. English captions are available.</p>
+            <div class="card-meta"><span class="number" aria-hidden="true">01</span><span class="tag">Meet Read Assist</span></div>
+            <h3 id="walkthrough-title">Make room for your reading</h3>
+            <p id="walkthrough-description">Listen to the documents you have been meaning to read. Follow the page, find a word’s meaning, and make the light your own. Watch with sound or turn on English captions.</p>
           </div>
           <div class="player-stage">
-            <video controls playsinline preload="metadata" aria-labelledby="walkthrough-title" aria-describedby="walkthrough-description capture-description">
-              <source src="media/Read-Assist-0.3.2-narrated-demo.mp4" type="video/mp4">
-              <track kind="captions" src="media/Read-Assist-0.3.2-narrated-demo.en.vtt" srclang="en" label="English">
-              <p>Your browser cannot play this video. <a href="media/Read-Assist-0.3.2-narrated-demo.mp4" download>Download the narrated Read Assist walkthrough (MP4)</a>.</p>
+            <video controls playsinline preload="metadata" poster="media/product-pitch-poster.jpg" aria-labelledby="walkthrough-title" aria-describedby="walkthrough-description capture-description">
+              <source src="media/Read-Assist-0.3.2-product-pitch.mp4" type="video/mp4">
+              <track kind="captions" src="media/Read-Assist-0.3.2-product-pitch.en.vtt" srclang="en" label="English">
+              <p>Your browser cannot play this video. <a href="media/Read-Assist-0.3.2-product-pitch.mp4" download>Download the Read Assist product film (MP4)</a>.</p>
             </video>
           </div>
           <div class="card-footer">
-            <a href="media/Read-Assist-0.3.2-narrated-demo.mp4" download>Download narrated video <span aria-hidden="true">&#8595;</span></a>
-            <a href="media/Read-Assist-0.3.2-explanatory-audio.mp3" download>Download audio (MP3)</a>
-            <a href="media/Read-Assist-0.3.2-narrated-demo.en.srt" download>English captions (SRT)</a>
+            <a href="media/Read-Assist-0.3.2-product-pitch.mp4" download>Download product film <span aria-hidden="true">&#8595;</span></a>
+            <a href="media/Read-Assist-0.3.2-product-pitch-audio.mp3" download>Download audio (MP3)</a>
+            <a href="media/Read-Assist-0.3.2-product-pitch.en.srt" download>English captions (SRT)</a>
           </div>
+          <details class="transcript">
+            <summary>Read the narration</summary>
+            <p>Your reading list keeps growing. But finding time to sit down with it isn't always easy. Read Assist lets you listen to the documents you've been meaning to read.</p>
+            <p>Open a PDF and press play. Follow the text, keep the original page on screen, or switch apps and let the reading continue while you get on with your day.</p>
+            <p>When a word stops you, its meaning is right there in the reader. And when you're ready to settle in, adjust the brightness and warm the page until it feels right for you.</p>
+            <p>Download the voice and dictionary packs once for offline listening and definitions. No account. No ads. Read Assist. Read when you can. Listen when you like.</p>
+          </details>
         </article>
 
         <article class="video-card video-card--background" aria-labelledby="background-title">
@@ -306,8 +316,8 @@
     <aside class="recording-note" aria-labelledby="capture-title">
       <h2 id="capture-title">Recorded from the app</h2>
       <div>
-        <p id="capture-description">These videos show Read Assist running in an Android emulator with project-created sample documents. The walkthrough adds a generated English explanation and includes a short sample of the app’s recorded speech. The separate background-playback demonstration is continuous, with its recorded narration made louder for clarity.</p>
-        <p><a href="media/Read-Assist-0.3.2-product-demo.mp4">Watch the original walkthrough</a>, or read the <a href="NARRATION_CREDITS.md">voiceover and recording notes</a>.</p>
+        <p id="capture-description">The product film uses real Android emulator footage, edited with close-ups and an AI-generated English narrator. The app’s recorded audio is muted in this film. The separate background-playback demonstration is continuous and lets you hear the app’s own speech, made louder for clarity.</p>
+        <p><a href="media/Read-Assist-0.3.2-product-demo.mp4">Watch the original walkthrough</a>, or read the <a href="PRODUCT_PITCH_CREDITS.md">film credits</a> and <a href="PRODUCT_PITCH_VOICE_CREDITS.md">narrator details</a>.</p>
         <p><a href="https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-sample-reading.pdf">Download the sample reading PDF</a> to try the same document.</p>
         <p>Voice and dictionary packs need an initial download. <a href="https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-store-media.zip">Download the screenshots and graphics</a>, or see the <a href="MEDIA_CREDITS.md">recording notes and content credits</a> for provenance and licenses.</p>
       </div>

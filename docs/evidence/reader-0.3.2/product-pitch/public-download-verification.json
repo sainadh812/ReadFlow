@@ -1,0 +1,96 @@
+{
+  "checkedAt": "2026-11-16T04:19:47Z",
+  "artifacts": [
+    {
+      "origin": "pages",
+      "url": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-product-pitch.mp4",
+      "status": 200,
+      "bytes": 2369938,
+      "sha256": "a0a2d856dfeedc97739c8a6f00fe05e73654ac0a8ac16394067b0eecb6e606e3",
+      "contentType": "video/mp4"
+    },
+    {
+      "origin": "github",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-product-pitch.mp4",
+      "status": 200,
+      "bytes": 2369938,
+      "sha256": "a0a2d856dfeedc97739c8a6f00fe05e73654ac0a8ac16394067b0eecb6e606e3",
+      "contentType": "application/octet-stream"
+    },
+    {
+      "origin": "pages",
+      "url": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-product-pitch-audio.mp3",
+      "status": 200,
+      "bytes": 975541,
+      "sha256": "1894317bec910813cc9befbc0a920f467cea9968b7dd3cff3ef3a4ba5d792e8d",
+      "contentType": "audio/mp3"
+    },
+    {
+      "origin": "github",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-product-pitch-audio.mp3",
+      "status": 200,
+      "bytes": 975541,
+      "sha256": "1894317bec910813cc9befbc0a920f467cea9968b7dd3cff3ef3a4ba5d792e8d",
+      "contentType": "application/octet-stream"
+    },
+    {
+      "origin": "pages",
+      "url": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-product-pitch.en.srt",
+      "status": 200,
+      "bytes": 1180,
+      "sha256": "78baffa1e9820415d484181caa90f93d39aef15052d3540981a9551c679b9f40",
+      "contentType": "application/x-subrip"
+    },
+    {
+      "origin": "github",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-product-pitch.en.srt",
+      "status": 200,
+      "bytes": 1180,
+      "sha256": "78baffa1e9820415d484181caa90f93d39aef15052d3540981a9551c679b9f40",
+      "contentType": "application/octet-stream"
+    },
+    {
+      "origin": "pages",
+      "url": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-product-pitch.en.vtt",
+      "status": 200,
+      "bytes": 1188,
+      "sha256": "937f4dc95e8059e5d3ef0d535a703a2cbe848d40a835ab49b476de9fda3e7777",
+      "contentType": "text/vtt; charset=utf-8"
+    },
+    {
+      "origin": "github",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-product-pitch.en.vtt",
+      "status": 200,
+      "bytes": 1188,
+      "sha256": "937f4dc95e8059e5d3ef0d535a703a2cbe848d40a835ab49b476de9fda3e7777",
+      "contentType": "application/octet-stream"
+    },
+    {
+      "origin": "pages",
+      "url": "https://sainadh812.github.io/ReadFlow/media/product-pitch-poster.jpg",
+      "status": 200,
+      "bytes": 165668,
+      "sha256": "caecc261d8090839bd3ef34f0e72c2c830bd4bfcf9921e051d38e8c148e50c34",
+      "contentType": "image/jpeg"
+    },
+    {
+      "origin": "github",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/product-pitch-poster.jpg",
+      "status": 200,
+      "bytes": 165668,
+      "sha256": "caecc261d8090839bd3ef34f0e72c2c830bd4bfcf9921e051d38e8c148e50c34",
+      "contentType": "application/octet-stream"
+    }
+  ],
+  "preserved": {
+    "privacy.html": "0bd9eb1e31a99fefb8da580b98ae9f4c8ceafbd4d99fbac7f610f56df01d197a",
+    "media/Read-Assist-0.3.2-foreground-service.mp4": "720119d77d9d39b0ac3ddf0e058e6555756b5ae3c2612fbe7aa46e1ed7c79fea",
+    "media/Read-Assist-0.3.2-product-demo.mp4": "cda2837be33ece81a7e6ad205d59cf328d9695498c0323162511892b9057b2c2"
+  },
+  "credits": {
+    "PRODUCT_PITCH_CREDITS.md": "621d406206bd40ba352662a76ee61e285b690f2ce3f70c08a52aaaa11c8d7fe9",
+    "PRODUCT_PITCH_VOICE_CREDITS.md": "dae8fffc5227fef51671054033b31f047288b8921fb033d422e111963af322d5"
+  },
+  "pageMatchesSource": true,
+  "verified": true
+}

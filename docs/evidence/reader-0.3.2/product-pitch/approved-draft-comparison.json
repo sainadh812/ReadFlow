@@ -1,0 +1,315 @@
+{
+  "status": "passed",
+  "approvedDraftSha256": "231821b46755c114ec1c532b0f64bf2c2011ed9cb48fb1d8aab56190dc383279",
+  "backgroundComparisons": [
+    {
+      "scene": "hook",
+      "approvedBackgroundReproducesExactly": true,
+      "changedPixelCount": 2779,
+      "changedBounds": [
+        101,
+        173,
+        525,
+        192
+      ],
+      "labelBounds": [
+        100,
+        173,
+        526,
+        192
+      ],
+      "onlyDraftLabelPixelsChanged": true
+    },
+    {
+      "scene": "library",
+      "approvedBackgroundReproducesExactly": true,
+      "changedPixelCount": 2779,
+      "changedBounds": [
+        851,
+        114,
+        1275,
+        133
+      ],
+      "labelBounds": [
+        850,
+        114,
+        1276,
+        133
+      ],
+      "onlyDraftLabelPixelsChanged": true
+    },
+    {
+      "scene": "play",
+      "approvedBackgroundReproducesExactly": true,
+      "changedPixelCount": 2779,
+      "changedBounds": [
+        851,
+        114,
+        1275,
+        133
+      ],
+      "labelBounds": [
+        850,
+        114,
+        1276,
+        133
+      ],
+      "onlyDraftLabelPixelsChanged": true
+    },
+    {
+      "scene": "follow",
+      "approvedBackgroundReproducesExactly": true,
+      "changedPixelCount": 2779,
+      "changedBounds": [
+        89,
+        114,
+        513,
+        133
+      ],
+      "labelBounds": [
+        88,
+        114,
+        514,
+        133
+      ],
+      "onlyDraftLabelPixelsChanged": true
+    },
+    {
+      "scene": "pdf",
+      "approvedBackgroundReproducesExactly": true,
+      "changedPixelCount": 2779,
+      "changedBounds": [
+        89,
+        114,
+        513,
+        133
+      ],
+      "labelBounds": [
+        88,
+        114,
+        514,
+        133
+      ],
+      "onlyDraftLabelPixelsChanged": true
+    },
+    {
+      "scene": "away",
+      "approvedBackgroundReproducesExactly": true,
+      "changedPixelCount": 2779,
+      "changedBounds": [
+        851,
+        114,
+        1275,
+        133
+      ],
+      "labelBounds": [
+        850,
+        114,
+        1276,
+        133
+      ],
+      "onlyDraftLabelPixelsChanged": true
+    },
+    {
+      "scene": "media",
+      "approvedBackgroundReproducesExactly": true,
+      "changedPixelCount": 2779,
+      "changedBounds": [
+        89,
+        114,
+        513,
+        133
+      ],
+      "labelBounds": [
+        88,
+        114,
+        514,
+        133
+      ],
+      "onlyDraftLabelPixelsChanged": true
+    },
+    {
+      "scene": "lookup",
+      "approvedBackgroundReproducesExactly": true,
+      "changedPixelCount": 2779,
+      "changedBounds": [
+        851,
+        114,
+        1275,
+        133
+      ],
+      "labelBounds": [
+        850,
+        114,
+        1276,
+        133
+      ],
+      "onlyDraftLabelPixelsChanged": true
+    },
+    {
+      "scene": "definition",
+      "approvedBackgroundReproducesExactly": true,
+      "changedPixelCount": 2779,
+      "changedBounds": [
+        89,
+        114,
+        513,
+        133
+      ],
+      "labelBounds": [
+        88,
+        114,
+        514,
+        133
+      ],
+      "onlyDraftLabelPixelsChanged": true
+    },
+    {
+      "scene": "light",
+      "approvedBackgroundReproducesExactly": true,
+      "changedPixelCount": 2779,
+      "changedBounds": [
+        89,
+        114,
+        513,
+        133
+      ],
+      "labelBounds": [
+        88,
+        114,
+        514,
+        133
+      ],
+      "onlyDraftLabelPixelsChanged": true
+    },
+    {
+      "scene": "warm",
+      "approvedBackgroundReproducesExactly": true,
+      "changedPixelCount": 2779,
+      "changedBounds": [
+        851,
+        114,
+        1275,
+        133
+      ],
+      "labelBounds": [
+        850,
+        114,
+        1276,
+        133
+      ],
+      "onlyDraftLabelPixelsChanged": true
+    },
+    {
+      "scene": "closing",
+      "approvedBackgroundReproducesExactly": true,
+      "changedPixelCount": 2779,
+      "changedBounds": [
+        131,
+        295,
+        555,
+        314
+      ],
+      "labelBounds": [
+        130,
+        295,
+        556,
+        314
+      ],
+      "onlyDraftLabelPixelsChanged": true
+    }
+  ],
+  "decodedFrameComparisons": [
+    {
+      "scene": "hook",
+      "timeSeconds": 3.4,
+      "meanAbsoluteChannelDifferenceOutsideLabelAnd32pxMargin": 0.09600560111104006,
+      "maximumDifference": 20,
+      "interpretation": "Minor codec quantization differences are expected after re-encoding the picture without the label."
+    },
+    {
+      "scene": "library",
+      "timeSeconds": 9.333333333333334,
+      "meanAbsoluteChannelDifferenceOutsideLabelAnd32pxMargin": 0.1538146091273843,
+      "maximumDifference": 26,
+      "interpretation": "Minor codec quantization differences are expected after re-encoding the picture without the label."
+    },
+    {
+      "scene": "play",
+      "timeSeconds": 13.2,
+      "meanAbsoluteChannelDifferenceOutsideLabelAnd32pxMargin": 0.1649415703770748,
+      "maximumDifference": 21,
+      "interpretation": "Minor codec quantization differences are expected after re-encoding the picture without the label."
+    },
+    {
+      "scene": "follow",
+      "timeSeconds": 15.266666666666667,
+      "meanAbsoluteChannelDifferenceOutsideLabelAnd32pxMargin": 0.3187486370247213,
+      "maximumDifference": 60,
+      "interpretation": "Minor codec quantization differences are expected after re-encoding the picture without the label."
+    },
+    {
+      "scene": "pdf",
+      "timeSeconds": 17.233333333333334,
+      "meanAbsoluteChannelDifferenceOutsideLabelAnd32pxMargin": 0.11341561194925551,
+      "maximumDifference": 30,
+      "interpretation": "Minor codec quantization differences are expected after re-encoding the picture without the label."
+    },
+    {
+      "scene": "away",
+      "timeSeconds": 20.066666666666666,
+      "meanAbsoluteChannelDifferenceOutsideLabelAnd32pxMargin": 0.11553652445813022,
+      "maximumDifference": 23,
+      "interpretation": "Minor codec quantization differences are expected after re-encoding the picture without the label."
+    },
+    {
+      "scene": "media",
+      "timeSeconds": 22.633333333333333,
+      "meanAbsoluteChannelDifferenceOutsideLabelAnd32pxMargin": 0.09813569576916077,
+      "maximumDifference": 30,
+      "interpretation": "Minor codec quantization differences are expected after re-encoding the picture without the label."
+    },
+    {
+      "scene": "lookup",
+      "timeSeconds": 24.5,
+      "meanAbsoluteChannelDifferenceOutsideLabelAnd32pxMargin": 0.11319769987161388,
+      "maximumDifference": 22,
+      "interpretation": "Minor codec quantization differences are expected after re-encoding the picture without the label."
+    },
+    {
+      "scene": "definition",
+      "timeSeconds": 26.533333333333335,
+      "meanAbsoluteChannelDifferenceOutsideLabelAnd32pxMargin": 0.12646426586257273,
+      "maximumDifference": 21,
+      "interpretation": "Minor codec quantization differences are expected after re-encoding the picture without the label."
+    },
+    {
+      "scene": "light",
+      "timeSeconds": 30.733333333333334,
+      "meanAbsoluteChannelDifferenceOutsideLabelAnd32pxMargin": 0.09722633505990533,
+      "maximumDifference": 21,
+      "interpretation": "Minor codec quantization differences are expected after re-encoding the picture without the label."
+    },
+    {
+      "scene": "warm",
+      "timeSeconds": 36.833333333333336,
+      "meanAbsoluteChannelDifferenceOutsideLabelAnd32pxMargin": 0.1425489318372989,
+      "maximumDifference": 27,
+      "interpretation": "Minor codec quantization differences are expected after re-encoding the picture without the label."
+    },
+    {
+      "scene": "closing",
+      "timeSeconds": 44.333333333333336,
+      "meanAbsoluteChannelDifferenceOutsideLabelAnd32pxMargin": 0.05629264165514799,
+      "maximumDifference": 22,
+      "interpretation": "Minor codec quantization differences are expected after re-encoding the picture without the label."
+    }
+  ],
+  "sceneCutCropTimingAndSourceInputsUnchanged": true,
+  "encodedAacStreamUnchanged": true,
+  "decodedAudioSamplesIdentical": true,
+  "embeddedCaptionsUnchanged": true,
+  "sidecarCaptionsByteIdentical": true,
+  "frameCount": 1461,
+  "durationSeconds": 48.7
+}
