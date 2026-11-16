@@ -1,0 +1,97 @@
+{
+  "status": "reviewed",
+  "createdAt": "2026-11-16T05:32:36.609342+00:00",
+  "sourceFile": "build/store-capture-43809000286/build/store-media/capture/06-background-playback.mp4",
+  "sourceSha256": "b6ba938c42ca87878929e95843b542ae8ed3630c6342bc17bc56978cf0c35e14",
+  "sourceStart": 7.9,
+  "sourceEnd": 15.733333333333333,
+  "durationSeconds": 7.833333333333332,
+  "frameRate": 30,
+  "sourceFrameCountAt30fps": 235,
+  "crop": [
+    48,
+    640,
+    984,
+    600
+  ],
+  "transcript": "A page gives us time to pause, notice a detail, and follow an idea at our own pace. Each sentence adds something new to the picture.",
+  "captions": [
+    {
+      "sourceStart": 7.9,
+      "sourceEnd": 10.9,
+      "text": "A page gives us time to pause,\nnotice a detail,"
+    },
+    {
+      "sourceStart": 10.9,
+      "sourceEnd": 13.0,
+      "text": "and follow an idea at our own pace."
+    },
+    {
+      "sourceStart": 13.0,
+      "sourceEnd": 15.733333333333333,
+      "text": "Each sentence adds something new\nto the picture."
+    }
+  ],
+  "sourceProvenance": [
+    {
+      "file": "build/store-capture-43809000286/build/store-media/capture/capture-report.json",
+      "sha256": "44696854327669d1a3e7e0553f29a20785acdf04ce6e93cabec752315c88dd54"
+    },
+    {
+      "file": "build/store-capture-43809000286/build/store-media/capture/capture-build.json",
+      "sha256": "c0c304878ce3fe8b1a4129dc1e34e6513a2e1f3856b82758a1a0357380a6cdc7"
+    },
+    {
+      "file": "build/store-capture-43809000286/build/store-media/capture/reused-build.json",
+      "sha256": "889a6f2e5675b348da347049b89ddf1c393f290c6c29a461b1e87ead122fa212"
+    },
+    {
+      "file": "build/store-capture-43809000286/build/store-media/capture/06-background-playback-streams.json",
+      "sha256": "d899b52198c3465739c81182ce0b5240d551ceff0d0325b2eafd36dcdb801bed"
+    },
+    {
+      "file": "build/store-capture-43809000286/capture-source-verification.json",
+      "sha256": "75f0f638957fe1c8362554e02cb5e17e17216428083cd8f4064c7aa3379289c3"
+    },
+    {
+      "file": "build/product-pitch/listening-review/fresh-audio-review.json",
+      "sha256": "2c2dbb619429729a92a6d718837931febfd3c8c02ba943835bb0f5a19ade8a16"
+    },
+    {
+      "file": "build/product-pitch/listening-review/fresh-selected-audio-metrics.json",
+      "sha256": "e8df1e07e80053d4c0bf5a8a052a41fa0b15d4c79c52d1fd176705e95626fe7e"
+    },
+    {
+      "file": "build/product-pitch/listening-review/fresh-selected-highlight-contact.jpg",
+      "sha256": "a52ac945ae88b93873cb5b5412556fa26963bd828d7210ccf4cf5bbb63e1ddac"
+    }
+  ],
+  "sourceAudioStartSeconds": 0.0,
+  "sourceVideoStartSeconds": 0.040433,
+  "captureWorkflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43809000286",
+  "sourceCaptureStatus": "partial",
+  "sourcePlaybackSpeedMultiplier": 1,
+  "alignmentAssessment": "Genuine native word highlighting visibly advances through both spoken sentences. Approximate CTC word timings and sequential images support a read-along demonstration, not a claim of exact synchronization or uninterrupted highlighting.",
+  "audioMetrics": {
+    "sampleFrames": 376000,
+    "sampleRate": 48000,
+    "channels": 2,
+    "peakDbfs": -40.13397360529414,
+    "rmsDbfs": -57.196706073760446,
+    "gainToMinus18Rms": 39.196706073760446,
+    "gainToMinus3Peak": 37.13397360529414
+  },
+  "constantGainRecommendationDb": 37.0,
+  "humanListeningPerformed": false,
+  "subjectiveSpeechQualityAssessed": false,
+  "reviewNotes": [
+    "Two complete sentences are enclosed with quiet margins: first spoken A approximately8.066s; final picture ends approximately15.531s; next Listen starts approximately15.932s.",
+    "Source boundaries are235outputframes at30fps. Preserve native video0.040433s and audio0s offsets by fps=30:start_time=0 before trim and audio async resampling with first_pts=0 before matching atrim. Do not retime either against the other.",
+    "Caption words are the known original document text; cue boundaries use approximate CTC. Recognition substitutes some words, including pause and adds; no exact ASR transcription or subjective listening claim.",
+    "Selected crop includes the complete displayed paragraph and all highlighted words in both sentences; no UI reconstruction, overlay highlighting, or frame interpolation is permitted.",
+    "Highlights clear briefly in the native source (observed around8.3,10.1,11.2,12.7,14.6s) and may lead approximate recognized words by roughly0.2\u20130.4s in some sampled frames. Preserve these actual states and avoid perfect/continuous-alignment wording.",
+    "Source capture is partial because a later notification Pause assertion failed after speech ended; this selected foreground excerpt is valid. Do not replace or relabel the existing successful continuous FGS proof.",
+    "Raw selected audio measured stereo48kHz peak\u221240.134dBFS/RMS\u221257.197dBFS. Constant+37dB predicts peak\u22123.134/RMS\u221220.197dBFS; renderer must recheck encoded true peak and clipping. No soundtrack replacement or time stretch.",
+    "Final output should label this listening passage as actual app audio and avoid promotional narrator speaking over it."
+  ]
+}

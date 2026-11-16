@@ -2,7 +2,7 @@
 
 The narration is AI-generated speech using **Kokoro
 v1.0**, the **af_heart** voice, and the existing Misaki English frontend.
-It is an editorial voiceover, separate from the app speech heard in the continuous recording.
+It is an editorial voiceover, separate from the app speech heard in the inserted listening sample and the continuous background-playback recording.
 The script was written for Read Assist. No human performer recording or
 endorsement is implied.
 
@@ -59,5 +59,12 @@ CTC transcripts and approximate word/sentence anchors are recorded in the build'
 synthesis report. Automated transcription is not a human listening or
 pronunciation review. This media-only
 voice upgrade does not change the app's bundled or downloaded speech models.
-The published MP4 preserves the approved editing preview's encoded narration;
-the MP3 is an additional export of the same soundtrack.
+The revised film preserves the approved narration performance, inserting a pause
+between “Open a PDF and press play” and “Follow the text.” In that pause, a
+continuous excerpt of the app’s own recorded voice accompanies its actual word
+highlights. The app speech uses a constant volume adjustment with short fades
+at the excerpt boundaries, without replacing words, time stretching, or moving
+the highlights. The exact source window and gain are
+recorded in the listening-pitch build report. The combined soundtrack is encoded
+to AAC for the MP4 and separately to MP3; encoded audio bytes differ from the
+earlier pitch because of the insertion.

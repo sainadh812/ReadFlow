@@ -1,0 +1,169 @@
+{
+  "startedAt": "2026-11-16T05:21:15.471951+00:00",
+  "package": "app.readflow",
+  "captureKind": "authentic emulator recording",
+  "sourceCommit": "038ae9ecd09f2aef7070734512350eaa3d3f8aaa",
+  "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43809000286",
+  "screenshots": [
+    {
+      "file": "diagnostic-launcher-anr-01.png",
+      "sha256": "3b6f7b3bf8498e1ac7a25923dc356fede869f41a2fa76887282fc41bc5ff263f",
+      "capturedAt": "2026-11-16T05:21:25.940923+00:00",
+      "hierarchyCaptured": true
+    },
+    {
+      "file": "playback-prepared-page.png",
+      "sha256": "d7dd34c68739feca500fd6a92b2f34a5b7a0b7befbf3aa84d2dc4f67c923200f",
+      "capturedAt": "2026-11-16T05:27:31.732836+00:00",
+      "hierarchyCaptured": true
+    },
+    {
+      "file": "14-reading-aloud.png",
+      "sha256": "7a7ef3f4006e471d01b03b4b777b60f03842cf4ca428b2b7407e19ffd5afa7fc",
+      "capturedAt": "2026-11-16T05:27:52.832312+00:00",
+      "hierarchyCaptured": false
+    },
+    {
+      "file": "15-background-notification.png",
+      "sha256": "79e4d719ef21908ceb0a6e2efbd0ddb8128de4e12ac12aba4f853911a7f2209e",
+      "capturedAt": "2026-11-16T05:28:25.632751+00:00",
+      "hierarchyCaptured": false
+    },
+    {
+      "file": "error-playback.png",
+      "sha256": "79e4d719ef21908ceb0a6e2efbd0ddb8128de4e12ac12aba4f853911a7f2209e",
+      "capturedAt": "2026-11-16T05:28:30.633089+00:00",
+      "hierarchyCaptured": true
+    }
+  ],
+  "clips": [
+    {
+      "file": "06-background-playback.mp4",
+      "startedAt": "2026-11-16T05:27:44.824169+00:00",
+      "embeddedDeviceAudio": true,
+      "recorder": "scrcpy 5.0.1",
+      "recorderArchiveSha256": "9f969d30cc574816077edecda65719c1c70b0aee1df1ba5fa00779ac07b8fd6e",
+      "audioCaptureMethod": "Live Android REMOTE_SUBMIX output via scrcpy --audio-source=output",
+      "audioSynchronization": "Original audio/video packet timestamps captured on device; multiplexed together by scrcpy.",
+      "deviceSpeakerOutputRedirectedDuringRecording": true,
+      "postCaptureAmplification": false,
+      "recordingReadyAt": "2026-11-16T05:27:45.325401+00:00",
+      "recordedDurationSeconds": 40.649083,
+      "durationWallSeconds": 42.138,
+      "bytes": 3265404,
+      "sha256": "b6ba938c42ca87878929e95843b542ae8ed3630c6342bc17bc56978cf0c35e14"
+    }
+  ],
+  "steps": [
+    {
+      "time": "2026-11-16T05:21:27.968345+00:00",
+      "action": "tap",
+      "label": "Close app",
+      "textOnly": false,
+      "hierarchy": "ui-before-tap-000.xml"
+    },
+    {
+      "time": "2026-11-16T05:21:38.014874+00:00",
+      "action": "tap",
+      "label": "A quiet space for thought",
+      "textOnly": true,
+      "hierarchy": "ui-before-tap-001.xml"
+    },
+    {
+      "time": "2026-11-16T05:21:44.900418+00:00",
+      "action": "tap",
+      "label": "Text view",
+      "textOnly": false,
+      "hierarchy": "ui-before-tap-002.xml"
+    },
+    {
+      "time": "2026-11-16T05:21:47.851734+00:00",
+      "action": "tap",
+      "label": "Reader menu",
+      "textOnly": false,
+      "hierarchy": "ui-before-tap-003.xml"
+    },
+    {
+      "time": "2026-11-16T05:21:51.125412+00:00",
+      "action": "tap",
+      "label": "Prepare pages before listening",
+      "textOnly": false,
+      "hierarchy": "ui-before-tap-004.xml"
+    },
+    {
+      "time": "2026-11-16T05:21:55.114455+00:00",
+      "action": "tap",
+      "label": "Last page",
+      "textOnly": false,
+      "hierarchy": "ui-before-tap-005.xml"
+    },
+    {
+      "time": "2026-11-16T05:22:02.306294+00:00",
+      "action": "tap",
+      "label": "Prepare",
+      "textOnly": false,
+      "hierarchy": "ui-before-tap-006.xml"
+    },
+    {
+      "time": "2026-11-16T05:27:34.126456+00:00",
+      "action": "tap",
+      "label": "Play",
+      "textOnly": false,
+      "hierarchy": "ui-before-tap-007.xml"
+    },
+    {
+      "time": "2026-11-16T05:27:49.408176+00:00",
+      "action": "tap",
+      "label": "Play",
+      "textOnly": false,
+      "hierarchy": "ui-before-tap-008.xml"
+    }
+  ],
+  "errors": [
+    {
+      "section": "playback",
+      "error": "Narration ended before the observed notification Pause could be tapped.",
+      "time": "2026-11-16T05:28:26.970164+00:00"
+    }
+  ],
+  "notes": [
+    "Generated original CC0 demo documents; no user documents.",
+    "Emulator-specific signing and ABI; not the Play-delivered ARM64 artifact.",
+    "No synthetic UI, word highlights, playback state, or performance measurements."
+  ],
+  "displayPixels": [
+    1080,
+    1920
+  ],
+  "deviceFingerprint": "google/sdk_gphone64_x86_64/emu64xa:15/AE3A.240806.043/12960925:userdebug/dev-keys",
+  "deviceAbi": "x86_64",
+  "installedPackage": "Activity Resolver Table:\n  Full MIME Types:\n      application/pdf:\n        184329f app.readflow/.MainActivity filter 64bb64a\n          Action: \"android.intent.action.SEND\"\n          Category: \"android.intent.category.DEFAULT\"\n          StaticType: \"application/pdf\"\n          StaticType: \"image\"\n          mPriority=0, mOrder=0, mHasStaticPartialTypes=true, mHasDynamicPartialTypes=false\n      text/plain:\n        184329f app.readflow/.MainActivity filter 267fb5\n          Action: \"android.intent.action.SEND\"\n          Category: \"android.intent.category.DEFAULT\"\n          StaticType: \"text/plain\"\n      image/*:\n        184329f app.readflow/.MainActivity filter 64bb64a\n          Action: \"android.intent.action.SEND\"\n          Category: \"android.intent.category.DEFAULT\"\n          StaticType: \"application/pdf\"\n          StaticType: \"image\"\n          mPriority=0, mOrder=0, mHasStaticPartialTypes=true, mHasDynamicPartialTypes=false\n\n  Base MIME Types:\n      text:\n        184329f app.readflow/.MainActivity filter 267fb5\n          Action: \"android.intent.action.SEND\"\n          Category: \"android.intent.category.DEFAULT\"\n          StaticType: \"text/plain\"\n      application:\n        184329f app.readflow/.MainActivity filter 64bb64a\n          Action: \"android.intent.action.SEND\"\n          Category: \"android.intent.category.DEFAULT\"\n          StaticType: \"application/pdf\"\n          StaticType: \"image\"\n          mPriority=0, mOrder=0, mHasStaticPartialTypes=true, mHasDynamicPartialTypes=false\n\n  Wild MIME Types:\n      image:\n        184329f app.readflow/.MainActivity filter 64bb64a\n          Action: \"android.intent.action.SEND\"\n          Category: \"android.intent.category.DEFAULT\"\n          StaticType: \"application/pdf\"\n          StaticType: \"image\"\n          mPriority=0, mOrder=0, mHasStaticPartialTypes=true, mHasDynamicPartialTypes=false\n\n  Non-Data Actions:\n      android.intent.action.MAIN:\n        184329f app.readflow/.MainActivity filter 2b02fec\n          Action: \"android.intent.action.MAIN\"\n          Category: \"android.intent.category.LAUNCHER\"\n\n  MIME Typed Actions:\n      android.intent.action.SEND:\n        184329f app.readflow/.MainActivity filter 267fb5\n          Action: \"android.intent.action.SEND\"\n          Category: \"android.intent.category.DEFAULT\"\n          StaticType: \"text/plain\"\n        184329f app.readflow/.MainActivity filter 64bb64a\n          Action: \"android.intent.action.SEND\"\n          Category: \"android.intent.category.DEFAULT\"\n          StaticType: \"application/pdf\"\n          StaticType: \"image\"\n          mPriority=0, mOrder=0, mHasStaticPartialTypes=true, mHasDynamicPartialTypes=false\n\nReceiver Resolver Table:\n  Non-Data Actions:\n      androidx.profileinstaller.action.SAVE_PROFILE:\n        70359bb app.readflow/androidx.profileinstaller.ProfileInstallReceiver filter 296ed16\n          Action: \"androidx.profileinstaller.action.SAVE_PROFILE\"\n      androidx.profileinstaller.action.INSTALL_PROFILE:\n        70359bb app.readflow/androidx.profileinstaller.ProfileInstallReceiver filter 3665ed8\n          Action: \"androidx.profileinstaller.action.INSTALL_PROFILE\"\n      androidx.profileinstaller.action.SKIP_FILE:\n        70359bb app.readflow/androidx.profileinstaller.ProfileInstallReceiver filter 68c6231\n          Action: \"androidx.profileinstaller.action.SKIP_FILE\"\n      androidx.profileinstaller.action.BENCHMARK_OPERATION:\n        70359bb app.readflow/androidx.profileinstaller.ProfileInstallReceiver filter b83d697\n          Action: \"androidx.profileinstaller.action.BENCHMARK_OPERATION\"\n\nService Resolver Table:\n  Non-Data Actions:\n      androidx.media3.session.MediaSessionService:\n        24e9084 app.readflow/.playback.ReadingService filter 593f06d\n          Action: \"androidx.media3.session.MediaSessionService\"\n\nDomain verification status:\n\nPermissions:\n  Permission [app.readflow.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION] (78f79b3):\n    sourcePackage=app.readflow\n    uid=10209 gids=[] type=0 prot=signature\n    perm=PermissionInfo{29d8b70 app.readflow.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION}\n    flags=0x0\n\nRegistered ContentProviders:\n  app.readflow/com.google.mlkit.common.internal.MlKitInitProvider:\n    Provider{630aee9 app.readflow/com.google.mlkit.common.internal.MlKitInitProvider}\n  app.readflow/androidx.startup.InitializationProvider:\n    Provider{93ba76e app.readflow/androidx.startup.InitializationProvider}\n\nContentProvider Authorities:\n  [app.readflow.mlkitinitprovider]:\n    Provider{630aee9 app.readflow/com.google.mlkit.common.internal.MlKitInitProvider}\n      applicationInfo=ApplicationInfo{87dfe0f app.readflow}\n  [app.readflow.androidx-startup]:\n    Provider{93ba76e app.readflow/androidx.startup.InitializationProvider}\n      applicationInfo=ApplicationInfo{fa7ee9c app.readflow}\n\nKey Set Manager:\n  [app.readflow]\n      Signing KeySets: 59\n\nPackages:\n  Package [app.readflow] (2ea46e7):\n    appId=10209\n    pkg=Package{ddc50a5 app.readflow}\n    codePath=/data/app/~~mn2nwHI_Ji0b8qFtAfkegg==/app.readflow-RI9S1JgviUk_riyB516FrQ==\n    resourcePath=/data/app/~~mn2nwHI_Ji0b8qFtAfkegg==/app.readflow-RI9S1JgviUk_riyB516FrQ==\n    legacyNativeLibraryDir=/data/app/~~mn2nwHI_Ji0b8qFtAfkegg==/app.readflow-RI9S1JgviUk_riyB516FrQ==/lib\n    extractNativeLibs=false\n    primaryCpuAbi=x86_64\n    secondaryCpuAbi=null\n    cpuAbiOverride=null\n    versionCode=28 minSdk=35 targetSdk=36\n    minExtensionVersions=[]\n    versionName=0.3.2\n    hiddenApiEnforcementPolicy=2\n    usesNonSdkApi=false\n    splits=[base]\n    apkSigningVersion=2\n    flags=[ HAS_CODE ALLOW_CLEAR_USER_DATA ]\n    privateFlags=[ PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION ALLOW_AUDIO_PLAYBACK_CAPTURE PARTIALLY_DIRECT_BOOT_AWARE PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING ]\n    forceQueryable=false\n    scannedAsStoppedSystemApp=false\n    supportsScreens=[small, medium, large, xlarge, resizeable, anyDensity]\n    timeStamp=2026-11-16 05:17:57\n    lastUpdateTime=2026-11-16 05:17:57\n    installerPackageName=null\n    installerPackageUid=-1\n    initiatingPackageName=com.android.shell\n    originatingPackageName=null\n    packageSource=1\n    appMetadataFilePath=null\n    appMetadataSource=0\n    signatures=PackageSignatures{bfecc7a version:2, signatures:[f39eea49], past signatures:[]}\n    installPermissionsFixed=false\n    pkgFlags=[ HAS_CODE ALLOW_CLEAR_USER_DATA ]\n    privatePkgFlags=[ PRIVATE_FLAG_ACTIVITIES_RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION ALLOW_AUDIO_PLAYBACK_CAPTURE PARTIALLY_DIRECT_BOOT_AWARE PRIVATE_FLAG_ALLOW_NATIVE_HEAP_POINTER_TAGGING ]\n    apexModuleName=null\n    declared permissions:\n      app.readflow.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION: prot=signature\n    requested permissions:\n      android.permission.POST_NOTIFICATIONS\n      android.permission.FOREGROUND_SERVICE\n      android.permission.INTERNET\n      app.readflow.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION\n      android.permission.ACCESS_NETWORK_STATE\n      android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK\n      android.permission.WAKE_LOCK\n    install permissions:\n      android.permission.FOREGROUND_SERVICE: granted=true\n      android.permission.INTERNET: granted=true\n      app.readflow.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION: granted=true\n      android.permission.ACCESS_NETWORK_STATE: granted=true\n      android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK: granted=true\n      android.permission.WAKE_LOCK: granted=true\n    User 0: ceDataInode=353380 deDataInode=65627 installed=true hidden=false suspended=false distractionFlags=0 stopped=false notLaunched=false enabled=0 instant=false virtual=false quarantined=false\n      installReason=0\n      dataDir=/data/user/0/app.readflow\n      firstInstallTime=2026-11-16 05:17:57\n      uninstallReason=0\n      overlay paths:\n        /product/overlay/NavigationBarModeGestural/NavigationBarModeGesturalOverlay.apk\n        /data/resource-cache/com.android.systemui-neutral-ueMt.frro\n        /data/resource-cache/com.android.systemui-accent-GEbA.frro\n        /data/resource-cache/com.android.systemui-dynamic-G4fO.frro\n      legacy overlay paths:\n        /product/overlay/NavigationBarModeGestural/NavigationBarModeGesturalOverlay.apk\n      gids=[3003]\n      runtime permissions:\n        android.permission.POST_NOTIFICATIONS: granted=true, flags=[ USER_SENSITIVE_WHEN_GRANTED|USER_SENSITIVE_WHEN_DENIED]\n\nQueries:\n  system apps queryable: false\n  queries via forceQueryable:\n  queries via package name:\n    app.readflow:\n      app.readflow.test\n    app.readflow.test:\n      app.readflow\n  queries via component:\n    com.google.android.as:\n      app.readflow\n    com.google.android.settings.intelligence:\n      app.readflow\n    com.google.android.apps.youtube.music:\n      app.readflow\n    com.google.android.apps.maps:\n      app.readflow\n    com.google.android.youtube:\n      app.readflow\n    com.google.android.apps.photos:\n      app.readflow\n  queryable via interaction:\n    User 0:\n      [com.android.inputdevices,com.android.location.fused,com.android.dynsystem,com.android.server.telecom,com.android.settings,com.android.emulator.multidisplay,com.android.providers.settings,com.android.DeviceAsWebcam,com.android.keychain,android,com.android.localtransport]:\n        app.readflow\n      [com.google.android.gsf,com.google.android.gms]:\n        app.readflow\n      app.readflow:\n        [com.android.inputdevices,com.android.location.fused,com.android.dynsystem,com.android.server.telecom,com.android.settings,com.android.emulator.multidisplay,com.android.providers.settings,com.android.DeviceAsWebcam,com.android.keychain,android,com.android.localtransport]\n  queryable via uses-library:\n\nDexopt state:\n  [app.readflow]\n    path: /data/app/~~mn2nwHI_Ji0b8qFtAfkegg==/app.readflow-RI9S1JgviUk_riyB516FrQ==/base.apk\n      x86_64: [status=verify] [reason=install] [primary-abi]\n        [location is /data/app/~~mn2nwHI_Ji0b8qFtAfkegg==/app.readflow-RI9S1JgviUk_riyB516FrQ==/oat/x86_64/base.odex]\n\nCompiler stats:\n  [app.readflow]\n     base.apk - 4439\n",
+  "sectionsRequested": [
+    "playback"
+  ],
+  "audioCaptureConfiguration": {
+    "androidMusicVolume": 15,
+    "androidMusicMaximum": 15,
+    "postCaptureAmplification": false
+  },
+  "environmentRecoveries": [
+    {
+      "time": "2026-11-16T05:21:25.941168+00:00",
+      "dialog": "Pixel Launcher isn't responding",
+      "action": "Close app",
+      "evidence": "diagnostic-launcher-anr-01.png",
+      "beforeRecording": true
+    }
+  ],
+  "playbackPreparation": {
+    "method": "Prepare pages before listening: page 1 through page 1",
+    "readyMessage": "Pages 1\u20131 ready \u00b7 press Play to read",
+    "evidence": "playback-prepared-page.png",
+    "outsideProofRecording": true,
+    "usesOrdinaryVerifiedAudioCache": true
+  },
+  "playbackClipUsesPreviouslyPreparedAudio": true,
+  "foregroundReadingDwellSeconds": 14,
+  "status": "partial",
+  "finishedAt": "2026-11-16T05:28:30.824481+00:00"
+}

@@ -1,0 +1,752 @@
+{
+  "schemaVersion": 1,
+  "status": "complete",
+  "publicationReady": true,
+  "createdAt": "2026-11-16T05:35:26.983802+00:00",
+  "decodeValidation": "passed",
+  "narrationProvider": "kokoro",
+  "authenticAppAudioIncluded": true,
+  "narratorPausedDuringDemo": true,
+  "syntheticUiAdded": false,
+  "sourcePlaybackSpeedMultiplier": 1,
+  "voiceTimeStretch": false,
+  "description": "The approved product pitch now pauses its narrator for a genuine native app-reading sample with recorded word highlights.",
+  "priorApprovedVideo": {
+    "file": "build/product-pitch/final/Read-Assist-0.3.2-product-pitch.mp4",
+    "bytes": 2369938,
+    "sha256": "a0a2d856dfeedc97739c8a6f00fe05e73654ac0a8ac16394067b0eecb6e606e3"
+  },
+  "priorApprovedReport": {
+    "file": "build/product-pitch/final/product-pitch-build-report.json",
+    "bytes": 14676,
+    "sha256": "5ceb56e1ec4da9246a8c2caa7bff227699a311987e4d3b46c9dfb5481c4dd3fb"
+  },
+  "durationSeconds": 56.53333333333333,
+  "frameCount": 1696,
+  "approvedFramesOutsideInsertionUnchanged": true,
+  "approvedNarratorSamplesUnchanged": true,
+  "insertionNarratorPausePeakDbfs": -70.92038921874489,
+  "demo": {
+    "timelineStart": 14.6,
+    "timelineEnd": 22.433333333333334,
+    "sourceStart": 7.9,
+    "sourceEnd": 15.733333333333333,
+    "transcript": "A page gives us time to pause, notice a detail, and follow an idea at our own pace. Each sentence adds something new to the picture.",
+    "gainDb": 35.6,
+    "sourceFile": "build/store-capture-43809000286/build/store-media/capture/06-background-playback.mp4",
+    "sourceSha256": "b6ba938c42ca87878929e95843b542ae8ed3630c6342bc17bc56978cf0c35e14",
+    "crop": [
+      48,
+      640,
+      984,
+      600
+    ],
+    "box": [
+      590,
+      230,
+      1250,
+      762
+    ],
+    "frameMapping": {
+      "outputFirstFrame": 438,
+      "sourceFirstFrameOn30fpsTimeline": 237,
+      "frameCount": 235,
+      "fps": 30,
+      "sourceFilter": "fps=30:start_time=0",
+      "formula": "sourceTime = sourceStart + outputTime - timelineStart"
+    },
+    "editorialPictureFadeSeconds": 0.1,
+    "sourceAudioTimestampHandling": "Decode on native t=0 with aresample=48000:async=1:first_pts=0; preserve initial offset and packet gaps, then cut the same source window as the picture.",
+    "sourceLoudness": {
+      "integratedLufs": -54.59,
+      "truePeakDbtp": -37.1,
+      "loudnessRangeLu": 1.8
+    },
+    "gainedLoudness": {
+      "integratedLufs": -18.99,
+      "truePeakDbtp": -1.5,
+      "loudnessRangeLu": 1.8
+    },
+    "edgeFadeSeconds": 0.03,
+    "constantGainOnly": false,
+    "constantGainAcrossSpokenInterval": true,
+    "audioProcessing": "Constant gain with 30 ms fades at the excerpt boundaries; no compression or retiming.",
+    "speechResynthesis": false,
+    "syntheticHighlightsAdded": false,
+    "audioRetimed": false,
+    "videoRetimed": false,
+    "narratorAudioPresent": false
+  },
+  "narrationSegments": [
+    {
+      "timelineStart": 0,
+      "timelineEnd": 14.6,
+      "originalStart": 0,
+      "originalEnd": 14.6
+    },
+    {
+      "timelineStart": 22.433333333333334,
+      "timelineEnd": 56.53333333333334,
+      "originalStart": 14.6,
+      "originalEnd": 48.7
+    }
+  ],
+  "sampleReview": {
+    "file": "build/product-pitch/listening-review/fresh-selected-window.json",
+    "bytes": 5144,
+    "sha256": "f81c60d0fa89266600160626f126472db2bcf487ae77cfbd9932568f7cc3469d"
+  },
+  "sampleProvenance": [
+    {
+      "file": "build/store-capture-43809000286/build/store-media/capture/capture-report.json",
+      "bytes": 15806,
+      "sha256": "44696854327669d1a3e7e0553f29a20785acdf04ce6e93cabec752315c88dd54"
+    },
+    {
+      "file": "build/store-capture-43809000286/build/store-media/capture/capture-build.json",
+      "bytes": 765,
+      "sha256": "c0c304878ce3fe8b1a4129dc1e34e6513a2e1f3856b82758a1a0357380a6cdc7"
+    },
+    {
+      "file": "build/store-capture-43809000286/build/store-media/capture/reused-build.json",
+      "bytes": 717,
+      "sha256": "889a6f2e5675b348da347049b89ddf1c393f290c6c29a461b1e87ead122fa212"
+    },
+    {
+      "file": "build/store-capture-43809000286/build/store-media/capture/06-background-playback-streams.json",
+      "bytes": 3638,
+      "sha256": "d899b52198c3465739c81182ce0b5240d551ceff0d0325b2eafd36dcdb801bed"
+    },
+    {
+      "file": "build/store-capture-43809000286/capture-source-verification.json",
+      "bytes": 3454,
+      "sha256": "75f0f638957fe1c8362554e02cb5e17e17216428083cd8f4064c7aa3379289c3"
+    },
+    {
+      "file": "build/product-pitch/listening-review/fresh-audio-review.json",
+      "bytes": 59494,
+      "sha256": "2c2dbb619429729a92a6d718837931febfd3c8c02ba943835bb0f5a19ade8a16"
+    },
+    {
+      "file": "build/product-pitch/listening-review/fresh-selected-audio-metrics.json",
+      "bytes": 220,
+      "sha256": "e8df1e07e80053d4c0bf5a8a052a41fa0b15d4c79c52d1fd176705e95626fe7e"
+    },
+    {
+      "file": "build/product-pitch/listening-review/fresh-selected-highlight-contact.jpg",
+      "bytes": 463387,
+      "sha256": "a52ac945ae88b93873cb5b5412556fa26963bd828d7210ccf4cf5bbb63e1ddac"
+    }
+  ],
+  "sourceCaptures": [
+    {
+      "file": "build/store-media/combined-capture/01-library.mp4",
+      "bytes": 669958,
+      "sha256": "dc26c0093a177ce8066287dfb402e7344147e45f2e8b6677d719b72dfeacc597"
+    },
+    {
+      "file": "build/store-media/combined-capture/02-reading.mp4",
+      "bytes": 668714,
+      "sha256": "7b4b9bd8a2720aa90492a0f2807e9be4b1782aed12b1f701a278a790f79e27aa"
+    },
+    {
+      "file": "build/store-media/combined-capture/03-reading-light.mp4",
+      "bytes": 2493934,
+      "sha256": "08f3b776a8067a5e87f993ad620ff5102c360bc2e6fd041e5fae2c88912ff2c6"
+    },
+    {
+      "file": "build/store-media/combined-capture/04-dictionary.mp4",
+      "bytes": 2694416,
+      "sha256": "6e8e8cb4fc76eecabf2480149f42d5152b22f3e17cc4a6fe2c7114618ce1629b"
+    },
+    {
+      "file": "build/store-media/combined-capture/06-background-playback.mp4",
+      "bytes": 2650342,
+      "sha256": "180e1bcd6da0d78fa4a0005524f1fea70206e8a81dd5cd2e2872d42a03222fc3"
+    },
+    {
+      "file": "build/store-capture-43809000286/build/store-media/capture/06-background-playback.mp4",
+      "bytes": 3265404,
+      "sha256": "b6ba938c42ca87878929e95843b542ae8ed3630c6342bc17bc56978cf0c35e14"
+    }
+  ],
+  "timeline": [
+    {
+      "id": "hook",
+      "layout": "opening",
+      "dark": true,
+      "title": "Too much to read.\nToo little time.",
+      "brandXY": [
+        100,
+        95
+      ],
+      "brandSize": 60,
+      "titleXY": [
+        100,
+        295
+      ],
+      "titleSize": 100,
+      "subline": "Make room for the words.",
+      "sublineXY": [
+        104,
+        570
+      ],
+      "file": "01-library.mp4",
+      "sourceStart": 0.5,
+      "crop": [
+        48,
+        684,
+        984,
+        648
+      ],
+      "box": [
+        1030,
+        330,
+        816,
+        538
+      ],
+      "start": 0.0,
+      "end": 6.8,
+      "duration": 6.8,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 7.3,
+      "showDraftLabel": false
+    },
+    {
+      "id": "library",
+      "layout": "phone",
+      "title": "Your reading.\nReady when\nyou are.",
+      "titleXY": [
+        850,
+        290
+      ],
+      "titleSize": 112,
+      "brandXY": [
+        850,
+        65
+      ],
+      "file": "01-library.mp4",
+      "sourceStart": 0.5,
+      "box": [
+        124,
+        0,
+        608,
+        1080
+      ],
+      "start": 6.8,
+      "end": 11.833333333333334,
+      "duration": 5.033333333333333,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 5.533333333333333,
+      "showDraftLabel": false
+    },
+    {
+      "id": "play",
+      "layout": "phone",
+      "title": "Let the page\ncome to you.",
+      "titleXY": [
+        850,
+        345
+      ],
+      "titleSize": 112,
+      "brandXY": [
+        850,
+        65
+      ],
+      "file": "06-background-playback.mp4",
+      "sourceStart": 2.4,
+      "box": [
+        124,
+        0,
+        608,
+        1080
+      ],
+      "start": 11.833333333333334,
+      "end": 14.6,
+      "duration": 2.7666666666666666,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 5.166666666666666,
+      "showDraftLabel": false
+    },
+    {
+      "id": "listening-demo",
+      "layout": "detail",
+      "title": "Listen.\nFollow\nalong.",
+      "titleXY": [
+        88,
+        280
+      ],
+      "titleSize": 86,
+      "showDraftLabel": false,
+      "subline": "Actual app narration",
+      "sublineXY": [
+        92,
+        640
+      ],
+      "sublineSize": 28,
+      "file": "build/store-capture-43809000286/build/store-media/capture/06-background-playback.mp4",
+      "sourceStart": 7.9,
+      "sourceEnd": 15.733333333333333,
+      "crop": [
+        48,
+        640,
+        984,
+        600
+      ],
+      "box": [
+        590,
+        230,
+        1250,
+        762
+      ],
+      "start": 14.6,
+      "end": 22.433333333333334,
+      "duration": 7.833333333333333,
+      "sourcePlaybackSpeedMultiplier": 1
+    },
+    {
+      "id": "follow",
+      "layout": "detail",
+      "title": "Stay with\nthe words.",
+      "titleXY": [
+        88,
+        370
+      ],
+      "titleSize": 86,
+      "file": "06-background-playback.mp4",
+      "sourceStart": 7.7,
+      "crop": [
+        48,
+        640,
+        984,
+        600
+      ],
+      "box": [
+        590,
+        230,
+        1250,
+        762
+      ],
+      "start": 22.433333333333334,
+      "end": 23.8,
+      "duration": 1.3666666666666667,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 9.066666666666666,
+      "showDraftLabel": false
+    },
+    {
+      "id": "pdf",
+      "layout": "phone",
+      "dark": true,
+      "title": "The page\nyou know.",
+      "titleXY": [
+        110,
+        360
+      ],
+      "titleSize": 112,
+      "file": "02-reading.mp4",
+      "sourceStart": 3.5,
+      "box": [
+        1168,
+        0,
+        608,
+        1080
+      ],
+      "start": 23.8,
+      "end": 26.333333333333332,
+      "duration": 2.533333333333333,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 6.033333333333333,
+      "showDraftLabel": false
+    },
+    {
+      "id": "away",
+      "layout": "phone",
+      "title": "Take the words\nwith you.",
+      "titleXY": [
+        850,
+        345
+      ],
+      "titleSize": 108,
+      "brandXY": [
+        850,
+        65
+      ],
+      "file": "06-background-playback.mp4",
+      "sourceStart": 9.7,
+      "box": [
+        124,
+        0,
+        608,
+        1080
+      ],
+      "start": 26.333333333333332,
+      "end": 29.466666666666665,
+      "duration": 3.1333333333333333,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 12.833333333333332,
+      "showDraftLabel": false
+    },
+    {
+      "id": "media",
+      "layout": "detail",
+      "dark": true,
+      "title": "A little more freedom.",
+      "titleXY": [
+        240,
+        160
+      ],
+      "titleSize": 88,
+      "file": "06-background-playback.mp4",
+      "sourceStart": 13.7,
+      "crop": [
+        32,
+        584,
+        1016,
+        520
+      ],
+      "box": [
+        260,
+        320,
+        1400,
+        716
+      ],
+      "start": 29.466666666666665,
+      "end": 31.466666666666665,
+      "duration": 2.0,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 15.7,
+      "showDraftLabel": false
+    },
+    {
+      "id": "lookup",
+      "layout": "phone",
+      "title": "A new word.\nNo detour.",
+      "titleXY": [
+        850,
+        345
+      ],
+      "titleSize": 112,
+      "brandXY": [
+        850,
+        65
+      ],
+      "file": "04-dictionary.mp4",
+      "sourceStart": 23.4,
+      "box": [
+        124,
+        0,
+        608,
+        1080
+      ],
+      "start": 31.466666666666665,
+      "end": 33.2,
+      "duration": 1.7333333333333334,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 25.133333333333333,
+      "showDraftLabel": false
+    },
+    {
+      "id": "definition",
+      "layout": "detail",
+      "title": "Stay with\nthe meaning.",
+      "titleXY": [
+        95,
+        355
+      ],
+      "titleSize": 108,
+      "file": "04-dictionary.mp4",
+      "sourceStart": 32.2,
+      "crop": [
+        0,
+        800,
+        1080,
+        1080
+      ],
+      "box": [
+        970,
+        170,
+        820,
+        820
+      ],
+      "start": 33.2,
+      "end": 35.56666666666667,
+      "duration": 2.3666666666666667,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 34.56666666666667,
+      "showDraftLabel": false
+    },
+    {
+      "id": "light",
+      "layout": "detail",
+      "dark": true,
+      "title": "Settle into\nyour page.",
+      "titleXY": [
+        95,
+        355
+      ],
+      "titleSize": 108,
+      "file": "03-reading-light.mp4",
+      "sourceStart": 15.9,
+      "crop": [
+        40,
+        610,
+        1000,
+        580
+      ],
+      "box": [
+        910,
+        300,
+        930,
+        540
+      ],
+      "start": 35.56666666666667,
+      "end": 41.56666666666667,
+      "duration": 6.0,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 21.9,
+      "showDraftLabel": false
+    },
+    {
+      "id": "warm",
+      "layout": "phone",
+      "title": "A warmer\nplace to read.",
+      "titleXY": [
+        850,
+        345
+      ],
+      "titleSize": 108,
+      "brandXY": [
+        850,
+        65
+      ],
+      "file": "03-reading-light.mp4",
+      "sourceStart": 28.8,
+      "box": [
+        124,
+        0,
+        608,
+        1080
+      ],
+      "start": 41.56666666666667,
+      "end": 47.766666666666666,
+      "duration": 6.2,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "sourceEnd": 35.0,
+      "showDraftLabel": false
+    },
+    {
+      "id": "closing",
+      "layout": "closing",
+      "dark": true,
+      "title": "Read when you can.\nListen when you like.",
+      "titleXY": [
+        130,
+        400
+      ],
+      "titleSize": 100,
+      "brandXY": [
+        130,
+        165
+      ],
+      "brandSize": 112,
+      "start": 47.766666666666666,
+      "end": 56.53333333333334,
+      "duration": 8.766666666666667,
+      "sourcePlaybackSpeedMultiplier": 1,
+      "showDraftLabel": false
+    }
+  ],
+  "captionCount": 19,
+  "captions": {
+    "cueCount": 19,
+    "cues": [
+      {
+        "start": 0.8099999999999998,
+        "end": 2.54,
+        "text": "Your reading list keeps growing.",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 3.0100000000000002,
+        "end": 6.32,
+        "text": "But finding time to sit down with it isn't always easy.",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 7.09,
+        "end": 10.919999999999998,
+        "text": "Read Assist lets you listen to the documents you've been meaning to read.",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 12.003333333333334,
+        "end": 13.973333333333333,
+        "text": "Open a PDF and press play.",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 14.6,
+        "end": 17.6,
+        "text": "A page gives us time to pause,\nnotice a detail,",
+        "kind": "recorded-app-speech",
+        "vttSettings": "line:10%"
+      },
+      {
+        "start": 17.6,
+        "end": 19.700000000000003,
+        "text": "and follow an idea at our own pace.",
+        "kind": "recorded-app-speech",
+        "vttSettings": "line:10%"
+      },
+      {
+        "start": 19.700000000000003,
+        "end": 22.43333333333333,
+        "text": "Each sentence adds something new\nto the picture.",
+        "kind": "recorded-app-speech",
+        "vttSettings": "line:10%"
+      },
+      {
+        "start": 22.496666666666666,
+        "end": 27.109166666666667,
+        "text": "Follow the text, keep the original page on screen, or switch apps and let the",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 27.109166666666667,
+        "end": 29.986666666666665,
+        "text": "reading continue while you get on with your day.",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 31.536666666666665,
+        "end": 35.026666666666664,
+        "text": "When a word stops you, its meaning is right there in the reader.",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 35.75666666666666,
+        "end": 39.56466666666667,
+        "text": "And when you're ready to settle in, adjust the brightness and warm the page",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 39.56466666666667,
+        "end": 41.30666666666666,
+        "text": "until it feels right for you.",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 42.83666666666667,
+        "end": 46.906666666666666,
+        "text": "Download the voice and dictionary packs once for offline listening and",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 46.906666666666666,
+        "end": 47.38666666666667,
+        "text": "definitions.",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 48.096666666666664,
+        "end": 48.78666666666666,
+        "text": "No account.",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 49.31666666666666,
+        "end": 49.906666666666666,
+        "text": "No ads.",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 50.45666666666666,
+        "end": 51.22666666666666,
+        "text": "Read Assist.",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 51.71666666666667,
+        "end": 52.66666666666667,
+        "text": "Read when you can.",
+        "kind": "explanatory-narration"
+      },
+      {
+        "start": 53.236666666666665,
+        "end": 54.24666666666667,
+        "text": "Listen when you like.",
+        "kind": "explanatory-narration"
+      }
+    ]
+  },
+  "audioAnalysis": {
+    "Read-Assist-0.3.2-listening-pitch.mp4": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "sampleCount": 2713600,
+      "durationSeconds": 56.53333333333333,
+      "peakLinear": 0.8415026664733887,
+      "peakDbfs": -1.4988900707008983,
+      "rmsDbfs": -18.824950226090834,
+      "clippedSamples": 0,
+      "loudness": {
+        "integratedLufs": -18.19,
+        "truePeakDbtp": -1.49,
+        "loudnessRangeLu": 3.2
+      },
+      "nativeExcerptZeroLagCorrelation": 0.9999857477595928
+    },
+    "Read-Assist-0.3.2-listening-pitch-audio.mp3": {
+      "sampleRate": 48000,
+      "channels": 1,
+      "sampleCount": 2713600,
+      "durationSeconds": 56.53333333333333,
+      "peakLinear": 0.8146986365318298,
+      "peakDbfs": -1.7800602103576126,
+      "rmsDbfs": -19.259664414355676,
+      "clippedSamples": 0,
+      "loudness": {
+        "integratedLufs": -18.62,
+        "truePeakDbtp": -1.78,
+        "loudnessRangeLu": 3.2
+      },
+      "nativeExcerptZeroLagCorrelation": 0.998799059651014
+    }
+  },
+  "humanListeningPerformed": false,
+  "renderer": {
+    "file": "scripts/build_listening_pitch.py",
+    "bytes": 17361,
+    "sha256": "c610259bf6901d7c280ca38feb7ba6e6668aa940443a49f72f3989212080a5d6"
+  },
+  "artifacts": {
+    "Read-Assist-0.3.2-listening-pitch.mp4": {
+      "file": "build/product-pitch/listening-final/Read-Assist-0.3.2-listening-pitch.mp4",
+      "bytes": 2954312,
+      "sha256": "303f09b3e28c0acf1dfe4f6ba3be4761bff880576ea15cec08a16bbbfe94a4a5"
+    },
+    "Read-Assist-0.3.2-listening-pitch-audio.mp3": {
+      "file": "build/product-pitch/listening-final/Read-Assist-0.3.2-listening-pitch-audio.mp3",
+      "bytes": 1131952,
+      "sha256": "5be3af6f53397a770fdb4a1214ef5ed1acbfdb09a03b186224b9f13bb8e70f21"
+    },
+    "Read-Assist-0.3.2-listening-pitch.en.srt": {
+      "file": "build/product-pitch/listening-final/Read-Assist-0.3.2-listening-pitch.en.srt",
+      "bytes": 1415,
+      "sha256": "fdae05df59d38e2e3c28c2bce48c3c45cdf77ef8f7f6043d0f10b0db2d660457"
+    },
+    "Read-Assist-0.3.2-listening-pitch.en.vtt": {
+      "file": "build/product-pitch/listening-final/Read-Assist-0.3.2-listening-pitch.en.vtt",
+      "bytes": 1450,
+      "sha256": "b7688c0e3a237f903a473b9a39cf630e6fb125a2bd5aa9008986fec1e6ba3085"
+    },
+    "listening-pitch-poster.jpg": {
+      "file": "build/product-pitch/listening-final/listening-pitch-poster.jpg",
+      "bytes": 165668,
+      "sha256": "caecc261d8090839bd3ef34f0e72c2c830bd4bfcf9921e051d38e8c148e50c34"
+    }
+  },
+  "captionPlacementUpdatedAt": "2026-11-16T05:39:32.791376+00:00",
+  "captionPlacementNote": "WebVTT app-speech cues positioned at10% from the top to keep the recorded word highlights visible. MP4, MP3, SRT and all audio/video remain unchanged."
+}

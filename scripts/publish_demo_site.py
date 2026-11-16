@@ -35,6 +35,13 @@ PITCH_FILES = (
     "Read-Assist-0.3.2-product-pitch.en.vtt",
     "product-pitch-poster.jpg",
 )
+LISTENING_PITCH_FILES = (
+    "Read-Assist-0.3.2-listening-pitch.mp4",
+    "Read-Assist-0.3.2-listening-pitch-audio.mp3",
+    "Read-Assist-0.3.2-listening-pitch.en.srt",
+    "Read-Assist-0.3.2-listening-pitch.en.vtt",
+    "listening-pitch-poster.jpg",
+)
 APPROVED_PITCH_DRAFT_SHA256 = "231821b46755c114ec1c532b0f64bf2c2011ed9cb48fb1d8aab56190dc383279"
 
 
@@ -143,14 +150,51 @@ def pitch_inputs(directory):
     return files, expected, sha(evidence_path)
 
 
-def publish(render_dir, report_path, *, feature_tour_dir=None, narrated_dir=None, pitch_dir=None):
+def listening_pitch_inputs(directory):
+    """Validate the requested revision with genuine app speech and highlighting."""
+    evidence_path = directory / "listening-pitch-build-report.json"
+    evidence = json.loads(evidence_path.read_bytes())
+    if (evidence.get("status") != "complete"
+            or evidence.get("decodeValidation") != "passed"
+            or evidence.get("syntheticUiAdded") is not False
+            or evidence.get("sourcePlaybackSpeedMultiplier") != 1
+            or evidence.get("narrationProvider") != "kokoro"
+            or evidence.get("authenticAppAudioIncluded") is not True
+            or evidence.get("narratorPausedDuringDemo") is not True
+            or evidence.get("publicationReady") is not True):
+        raise ValueError("Listening pitch requires verified native app audio and a separate narrator interval.")
+    files = {
+        "demo.html": ROOT / "site/demo.html",
+        "PRODUCT_PITCH_CREDITS.md": ROOT / "store-assets/release-0.3.2/product-pitch/MEDIA_CREDITS.md",
+        "PRODUCT_PITCH_VOICE_CREDITS.md": ROOT / "store-assets/release-0.3.2/product-pitch/VOICE_CREDITS.md",
+    }
+    for name in LISTENING_PITCH_FILES:
+        path = directory / name
+        item = evidence.get("artifacts", {}).get(name, {})
+        if (Path(item.get("file", "")).name != name or item.get("sha256") != sha(path)
+                or item.get("bytes") != path.stat().st_size
+                or not 0 < path.stat().st_size < 100 * 1024 * 1024):
+            raise ValueError("Listening pitch artifact differs from verified bytes: " + name)
+        files["media/" + name] = path
+    expected = {name: {"sha256": sha(path), "bytes": path.stat().st_size} for name, path in files.items()}
+    return files, expected, sha(evidence_path)
+
+
+def publish(render_dir, report_path, *, feature_tour_dir=None, narrated_dir=None, pitch_dir=None,
+            listening_pitch_dir=None):
     report = {"startedAt": datetime.now(timezone.utc).isoformat(), "pageUrl": URL,
               "status": "started", "hostingConfigurationModified": False,
               "pushAttempted": False, "pushSucceeded": False}
     try:
-        if sum(value is not None for value in (render_dir, feature_tour_dir, narrated_dir, pitch_dir)) != 1:
-            raise ValueError("Choose exactly one full-render, feature-tour, narrated or product-pitch input directory.")
-        if pitch_dir is not None:
+        if sum(value is not None for value in (render_dir, feature_tour_dir, narrated_dir, pitch_dir,
+                                             listening_pitch_dir)) != 1:
+            raise ValueError("Choose exactly one render input directory.")
+        if listening_pitch_dir is not None:
+            files, expected, evidence_sha = listening_pitch_inputs(listening_pitch_dir)
+            report.update({"publicationScope": "listening_product_pitch", "renderReportSha256": evidence_sha,
+                           "pageSource": "site/demo.html", "originalVideosPreserved": True,
+                           "creditsSource": "store-assets/release-0.3.2/product-pitch/MEDIA_CREDITS.md"})
+        elif pitch_dir is not None:
             files, expected, evidence_sha = pitch_inputs(pitch_dir)
             report.update({"publicationScope": "product_pitch", "renderReportSha256": evidence_sha,
                            "pageSource": "site/demo.html", "originalVideosPreserved": True,
@@ -249,8 +293,10 @@ if __name__ == "__main__":
     inputs.add_argument("--feature-tour-dir", type=Path)
     inputs.add_argument("--narrated-dir", type=Path)
     inputs.add_argument("--pitch-dir", type=Path)
+    inputs.add_argument("--listening-pitch-dir", type=Path)
     parser.add_argument("--report", type=Path, default=Path("build/demo-site-publication.json"))
     args = parser.parse_args()
     result = publish(args.render_dir, args.report, feature_tour_dir=args.feature_tour_dir,
-                     narrated_dir=args.narrated_dir, pitch_dir=args.pitch_dir)
+                     narrated_dir=args.narrated_dir, pitch_dir=args.pitch_dir,
+                     listening_pitch_dir=args.listening_pitch_dir)
     print(json.dumps({"status": result["status"], "url": URL, "report": str(args.report)}))

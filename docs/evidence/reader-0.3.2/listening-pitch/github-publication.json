@@ -1,0 +1,45 @@
+{
+  "checkedAt": "2026-11-16T05:41:15.632179+00:00",
+  "releaseUrl": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.2-play-candidate",
+  "priorAssetsPreserved": 22,
+  "newAssets": [
+    {
+      "name": "Read-Assist-0.3.2-listening-pitch.mp4",
+      "size": 2954312,
+      "digest": "sha256:303f09b3e28c0acf1dfe4f6ba3be4761bff880576ea15cec08a16bbbfe94a4a5",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-listening-pitch.mp4"
+    },
+    {
+      "name": "Read-Assist-0.3.2-listening-pitch-audio.mp3",
+      "size": 1131952,
+      "digest": "sha256:5be3af6f53397a770fdb4a1214ef5ed1acbfdb09a03b186224b9f13bb8e70f21",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-listening-pitch-audio.mp3"
+    },
+    {
+      "name": "Read-Assist-0.3.2-listening-pitch.en.srt",
+      "size": 1415,
+      "digest": "sha256:fdae05df59d38e2e3c28c2bce48c3c45cdf77ef8f7f6043d0f10b0db2d660457",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-listening-pitch.en.srt"
+    },
+    {
+      "name": "Read-Assist-0.3.2-listening-pitch.en.vtt",
+      "size": 1450,
+      "digest": "sha256:b7688c0e3a237f903a473b9a39cf630e6fb125a2bd5aa9008986fec1e6ba3085",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-listening-pitch.en.vtt"
+    },
+    {
+      "name": "listening-pitch-poster.jpg",
+      "size": 165668,
+      "digest": "sha256:caecc261d8090839bd3ef34f0e72c2c830bd4bfcf9921e051d38e8c148e50c34",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/listening-pitch-poster.jpg"
+    },
+    {
+      "name": "Read-Assist-0.3.2-listening-capture.zip",
+      "size": 3145327,
+      "digest": "sha256:197fc00c06e35392cfa86f0792ea1337675d9752aabde299b72b238c24e5d00e",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.2-play-candidate/Read-Assist-0.3.2-listening-capture.zip"
+    }
+  ],
+  "releaseNotesMatch": true,
+  "verified": true
+}

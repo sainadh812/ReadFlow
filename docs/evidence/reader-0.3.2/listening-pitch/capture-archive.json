@@ -1,0 +1,63 @@
+{
+  "archive": {
+    "file": "build/product-pitch/listening-final/Read-Assist-0.3.2-listening-capture.zip",
+    "bytes": 3145327,
+    "sha256": "197fc00c06e35392cfa86f0792ea1337675d9752aabde299b72b238c24e5d00e"
+  },
+  "inventory": {
+    "purpose": "Original native capture and review material for the listening insert; this partial capture does not replace the successful continuous foreground-service evidence.",
+    "captureWorkflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43809000286",
+    "files": [
+      {
+        "file": "build/store-capture-43809000286/build/store-media/capture/06-background-playback.mp4",
+        "bytes": 3265404,
+        "sha256": "b6ba938c42ca87878929e95843b542ae8ed3630c6342bc17bc56978cf0c35e14"
+      },
+      {
+        "file": "build/product-pitch/listening-review/fresh-selected-window.json",
+        "bytes": 5144,
+        "sha256": "f81c60d0fa89266600160626f126472db2bcf487ae77cfbd9932568f7cc3469d"
+      },
+      {
+        "file": "build/store-capture-43809000286/build/store-media/capture/capture-report.json",
+        "bytes": 15806,
+        "sha256": "44696854327669d1a3e7e0553f29a20785acdf04ce6e93cabec752315c88dd54"
+      },
+      {
+        "file": "build/store-capture-43809000286/build/store-media/capture/capture-build.json",
+        "bytes": 765,
+        "sha256": "c0c304878ce3fe8b1a4129dc1e34e6513a2e1f3856b82758a1a0357380a6cdc7"
+      },
+      {
+        "file": "build/store-capture-43809000286/build/store-media/capture/reused-build.json",
+        "bytes": 717,
+        "sha256": "889a6f2e5675b348da347049b89ddf1c393f290c6c29a461b1e87ead122fa212"
+      },
+      {
+        "file": "build/store-capture-43809000286/build/store-media/capture/06-background-playback-streams.json",
+        "bytes": 3638,
+        "sha256": "d899b52198c3465739c81182ce0b5240d551ceff0d0325b2eafd36dcdb801bed"
+      },
+      {
+        "file": "build/store-capture-43809000286/capture-source-verification.json",
+        "bytes": 3454,
+        "sha256": "75f0f638957fe1c8362554e02cb5e17e17216428083cd8f4064c7aa3379289c3"
+      },
+      {
+        "file": "build/product-pitch/listening-review/fresh-audio-review.json",
+        "bytes": 59494,
+        "sha256": "2c2dbb619429729a92a6d718837931febfd3c8c02ba943835bb0f5a19ade8a16"
+      },
+      {
+        "file": "build/product-pitch/listening-review/fresh-selected-audio-metrics.json",
+        "bytes": 220,
+        "sha256": "e8df1e07e80053d4c0bf5a8a052a41fa0b15d4c79c52d1fd176705e95626fe7e"
+      },
+      {
+        "file": "build/product-pitch/listening-review/fresh-selected-highlight-contact.jpg",
+        "bytes": 463387,
+        "sha256": "a52ac945ae88b93873cb5b5412556fa26963bd828d7210ccf4cf5bbb63e1ddac"
+      }
+    ]
+  }
+}

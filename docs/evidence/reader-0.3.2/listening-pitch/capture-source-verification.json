@@ -1,0 +1,84 @@
+{
+  "checkedAt": "2026-11-16T05:30:43.291130+00:00",
+  "run": "https://github.com/sainadh812/ReadFlow/actions/runs/43809000286",
+  "captureSource": "038ae9ecd09f2aef7070734512350eaa3d3f8aaa",
+  "captureStatus": "partial",
+  "captureErrors": [
+    {
+      "section": "playback",
+      "error": "Narration ended before the observed notification Pause could be tapped.",
+      "time": "2026-11-16T05:28:26.970164+00:00"
+    }
+  ],
+  "rawNativeClip": {
+    "file": "build/store-capture-43809000286/build/store-media/capture/06-background-playback.mp4",
+    "bytes": 3265404,
+    "sha256": "b6ba938c42ca87878929e95843b542ae8ed3630c6342bc17bc56978cf0c35e14",
+    "matchesRecorderReport": true,
+    "streams": [
+      {
+        "codec_type": "video",
+        "codec_name": "h264",
+        "width": 1080,
+        "height": 1920,
+        "sample_rate": null,
+        "channels": null,
+        "start_time": "0.040433",
+        "duration": "38.609267",
+        "r_frame_rate": "20/1",
+        "avg_frame_rate": "2835000/579139"
+      },
+      {
+        "codec_type": "audio",
+        "codec_name": "aac",
+        "width": null,
+        "height": null,
+        "sample_rate": "48000",
+        "channels": 2,
+        "start_time": "0.000000",
+        "duration": "40.649083",
+        "r_frame_rate": "0/0",
+        "avg_frame_rate": "0/0"
+      }
+    ]
+  },
+  "foregroundDwellSeconds": 14,
+  "appBuild": {
+    "appVersion": "0.3.2",
+    "versionCode": 28,
+    "applicationSourceRevision": "a6c99f33f6e8934f4a304355a3e093b1b569dfa8",
+    "sourceTrees": {
+      "app/src/main": "82a53a2b49b7316d8def3a708550f342a525741b",
+      "app/src/release": "e98f60bab8f45f39833437585503e6b2e86b1648"
+    },
+    "captureSource": "038ae9ecd09f2aef7070734512350eaa3d3f8aaa",
+    "apkBuildSource": "e1a73d4dfed9c7fd0ffcfbcc3cf3c9449201e8d3",
+    "reusedApkBuildRun": "43749926901",
+    "run": "https://github.com/sainadh812/ReadFlow/actions/runs/43809000286",
+    "captureApkSha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+    "buildKind": "release runtime, x86_64 emulator, local debug signing, Firebase unconfigured",
+    "playArtifact": false,
+    "productionUploadKeyUsed": false
+  },
+  "verifiedDownloadedApks": [
+    {
+      "file": "build/store-capture-43809000286/app/build/outputs/apk/release/app-release.apk",
+      "sha256": "eea874334d186b6a5c5be7614a30d3fa31d51923443c203de4a5228723d387e2",
+      "matchesPinnedBuild": true,
+      "bytes": 136492994
+    },
+    {
+      "file": "build/store-capture-43809000286/app/build/outputs/apk/androidTest/release/app-release-androidTest.apk",
+      "sha256": "f880ca95289ef905b928b40186a6b67085bf40fbed556d03377dd368b7ff6a15",
+      "matchesPinnedBuild": true,
+      "bytes": 911187
+    }
+  ],
+  "seedStatus": "complete",
+  "speechAndAlignmentInstalled": true,
+  "backgroundMediaSessionPlaying": true,
+  "notificationPauseConfirmed": false,
+  "useLimit": "Genuine native foreground listening footage; not a completed foreground-service proof. Preserve previous accepted continuous FGS proof.",
+  "backgroundAppMediaSession": "state=PlaybackState {state=PLAYING(3), position=2493, buffered position=3944, speed=1.0, updated=670897, actions=7340027, custom actions=[], active item id=6, error=null}",
+  "sanitization": "Only app-specific capture provenance, artifact checksums, stream metadata, and app media state. No authentication material, logcat, host crash data, or private documents included."
+}

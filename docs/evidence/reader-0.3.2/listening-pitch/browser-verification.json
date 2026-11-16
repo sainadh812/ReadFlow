@@ -1,0 +1,44 @@
+{
+  "url": "https://sainadh812.github.io/ReadFlow/demo.html",
+  "checkedAt": "2026-11-16T05:42:39.685Z",
+  "layouts": [
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "horizontalOverflow": false
+    }
+  ],
+  "video": {
+    "source": "https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-listening-pitch.mp4",
+    "duration": 56.533333,
+    "currentTime": 1.094092,
+    "width": 1920,
+    "height": 1080,
+    "error": null,
+    "captionCues": 19,
+    "audioDecodedBytes": 12347
+  },
+  "listeningSample": {
+    "time": 16.6,
+    "captions": [
+      {
+        "text": "A page gives us time to pause, notice a\ndetail,",
+        "line": 10,
+        "snapToLines": false
+      }
+    ]
+  },
+  "audio": {
+    "duration": 56.533333,
+    "currentTime": 0.764273,
+    "error": null,
+    "readyState": 4
+  },
+  "verified": true,
+  "humanListeningPerformed": false
+}

@@ -1,0 +1,61 @@
+{
+  "status": "passed",
+  "reviewedAt": "2026-11-16T05:36:08.460114+00:00",
+  "finalVideo": "build/product-pitch/listening-final/Read-Assist-0.3.2-listening-pitch.mp4",
+  "finalSha256": "303f09b3e28c0acf1dfe4f6ba3be4761bff880576ea15cec08a16bbbfe94a4a5",
+  "nativeSource": "build/store-capture-43809000286/build/store-media/capture/06-background-playback.mp4",
+  "nativeSha256": "b6ba938c42ca87878929e95843b542ae8ed3630c6342bc17bc56978cf0c35e14",
+  "audioCheck": {
+    "nativeWindow": [
+      7.9,
+      15.733333333333333
+    ],
+    "outputWindow": [
+      14.6,
+      22.433333333333334
+    ],
+    "analysisExcludesEdgeSeconds": 0.1,
+    "sampleRate": 48000,
+    "gainDbLeastSquares": 35.59484582554999,
+    "zeroLagCorrelation": 0.9999857484152932,
+    "delayAdjustmentApplied": 0,
+    "sampleFramesCompared": 366400
+  },
+  "visualCheck": {
+    "method": "Independent sequential fps=30:start_time=0 decoding of final output and comparison with previously inspected exact native source frames.",
+    "outputTimes": [
+      14.8,
+      15.3,
+      16.2,
+      17.2,
+      18.4,
+      20.3,
+      22.0
+    ],
+    "correspondingNativeTimes": [
+      8.1,
+      8.6,
+      9.5,
+      10.5,
+      11.7,
+      13.6,
+      15.3
+    ],
+    "activeWordsObserved": [
+      "page",
+      "gives",
+      "pause",
+      "detail",
+      "at",
+      "sentence",
+      "picture"
+    ],
+    "cropPreserved": true,
+    "headlineNoOverlap": true,
+    "actualAppNarrationLabelVisible": true,
+    "contactSheet": "build/product-pitch/listening-review/inserted-demo-final-contact.jpg"
+  },
+  "humanListeningPerformed": false,
+  "exactSourceWordAlignmentClaimed": false,
+  "conclusion": "Inserted sample preserves actual native audio/video timing and authentic recorded highlight states; no blocking publication issue found."
+}
