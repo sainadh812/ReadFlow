@@ -1,0 +1,205 @@
+{
+  "action": "inspect_store",
+  "package": "app.readflow",
+  "status": "inspected",
+  "readOnly": true,
+  "committed": false,
+  "productionEligibility": "not_determined_by_these_endpoints",
+  "startedAt": "2026-11-16T02:47:00.941620+00:00",
+  "endpointErrors": {},
+  "inspectionEditId": "04711575197727350537",
+  "details": {
+    "defaultLanguage": "en-US",
+    "contactEmail": "xperimenting.ai@gmail.com"
+  },
+  "listings": {
+    "kind": "androidpublisher#listingsListResponse",
+    "listings": [
+      {
+        "language": "en-US",
+        "title": "Read Assist",
+        "fullDescription": "Read Assist turns your documents into audio you can listen to anywhere. Open a document or scan a page, and Read Assist reads it aloud with natural on-device voices. Text recognition and speech are processed entirely on your device, so your documents never leave your phone. No account, no ads, and it works offline. Free to download with all features free.",
+        "shortDescription": "Read documents aloud \u2014 scan, OCR and listen, fully on-device."
+      }
+    ]
+  },
+  "images": {
+    "en-US": {
+      "icon": {
+        "images": [
+          {
+            "id": "16980742958828654337",
+            "url": "https://lh3.googleusercontent.com/a23bme7oICQPNovxDfD99CyOXWErvKDQBRMPVcjXM4Hlti59-zCip7SeExYUD9fiLwjymi2GgH81GP4nxPCU",
+            "sha1": "59d597b6a72c26717cfc3370a938970a015b1c52",
+            "sha256": "d55e29abdbd1a11f70a52641c461385fb61fcb58e9ece60a168084c270bc3ff0",
+            "aiGeneratedState": "aiGeneratedStateUnspecified"
+          }
+        ]
+      },
+      "featureGraphic": {
+        "images": [
+          {
+            "id": "6111074742727623257",
+            "url": "https://lh3.googleusercontent.com/XoZf4FxfC_VrTGalO78LXLbFbZzbUnYH5QiGnoMDmZpVBorYp2gDlZnS-XUt1jpn4LHB4Vas0L8n61NSnh6UVg",
+            "sha1": "118541dc6576a81f203011d736fb6ceb6cca9fd6",
+            "sha256": "9760d013b735fff1970fa4c3811d0913c37bb2613a92fb884b68a0f72035ce2a",
+            "aiGeneratedState": "aiGeneratedStateUnspecified"
+          }
+        ]
+      },
+      "phoneScreenshots": {
+        "images": [
+          {
+            "id": "852551296670032213",
+            "url": "https://lh3.googleusercontent.com/PymtBdcScTCvz4QVuONo7oJQ6v0MYqeuaFIJu2DOCVSgj4NJSC2Ksu6hdJEHicS_IoJGgDaGBgnv9m9QjRHcRw",
+            "sha1": "58c05a84a05c60aa182c682b483f80dc772792c3",
+            "sha256": "d30dd19fbf29043924375714f653742910a95f681568db16f2da3e15f9a47f9d",
+            "aiGeneratedState": "aiGeneratedStateUnspecified"
+          },
+          {
+            "id": "4494386577607080293",
+            "url": "https://lh3.googleusercontent.com/IPYAExd9wYs_vS2blCEAsnV2SzT4gonBfywkK3OZa-BCwqi0qbe2Lo5cjPJkEYPqCNvLD0CVd5OtIhXSSVllPQ",
+            "sha1": "255d097d0658d31ad4c42665ee0b4e1510b4c250",
+            "sha256": "98ccda5c89f6362e30802efc4c1d5063c186002780773666f3adfe7a770d24c0",
+            "aiGeneratedState": "aiGeneratedStateUnspecified"
+          },
+          {
+            "id": "4165308816956841543",
+            "url": "https://lh3.googleusercontent.com/SMp669cO3Fd5F95aeLLtTsahupbPBdSkX1nUlf5sPcdn9UfBWO5aUvvkvzZ3F7deTMD_NbMJqMwAKGjh23hXsg",
+            "sha1": "5bfd0537feaa6469fa8f8f5587f8358f5ee694d8",
+            "sha256": "9ff1eb8cf0d9bc25a66b870318e4cacd0374affce93178191feae226dc1bd0c8",
+            "aiGeneratedState": "aiGeneratedStateUnspecified"
+          },
+          {
+            "id": "10914679040952270583",
+            "url": "https://lh3.googleusercontent.com/d6xlEqKdb04X42P_u4Y0-YYyDEPuqHIZEIz9cTGQ2uSZ4bjoH0j5xDxJ5HS8z-uumQzVD7wnb3RpUtlCmimaug",
+            "sha1": "045c3b01795dd0417ea01b8ab2f3b4b46b73cbc9",
+            "sha256": "4197d155465c8c4606da9ff4aa56bcb0038f011a4467618ac51610ca517426d3",
+            "aiGeneratedState": "aiGeneratedStateUnspecified"
+          },
+          {
+            "id": "1145295449562098478",
+            "url": "https://lh3.googleusercontent.com/_de9FWfwjsdLcElmn2HGXhL7_zvgdz-7FbebqgqBH-kOmY_lhdhFNbuTO_Tx8_KIyGiPm-vFzLIt77pLOfkETw",
+            "sha1": "98f472ef3541b4cb2748f1533f37f915aad48230",
+            "sha256": "a6c381a78f3295dbb2749554d5de8e590b386262e3e8b66ea5088d4b6f87f561",
+            "aiGeneratedState": "aiGeneratedStateUnspecified"
+          },
+          {
+            "id": "1870896541113140427",
+            "url": "https://lh3.googleusercontent.com/P91dSXFCcUV_eX1_QLyVbFTb2_SDTQD07r50f_sbaQVOHGbaMojj6dorbv7nxoCEL7-EFpssRs9NwUBR0Y04l4U",
+            "sha1": "a50a1560af2fae56685681bcce7cd6818c70c1a0",
+            "sha256": "3a89c444555b8ad75af33edf782e74df69cd0fb22170beae92874fba53affa9d",
+            "aiGeneratedState": "aiGeneratedStateUnspecified"
+          },
+          {
+            "id": "12332928939598991932",
+            "url": "https://lh3.googleusercontent.com/9NjsSPgUs6ZQqXxvW_XvUEjomj9iTrBJjCEUAk4Km9_TXHMxKylLgLJPUPhikvZHFJmobHFvT7sWO_60E_36dg",
+            "sha1": "2984a14b1c5803964fe53289c2ae71309c5a581a",
+            "sha256": "4041159457c096d74d0409a3dc72a2fb191120e366098a2ca39a0519058b2279",
+            "aiGeneratedState": "aiGeneratedStateUnspecified"
+          },
+          {
+            "id": "15664302127381792239",
+            "url": "https://lh3.googleusercontent.com/Ae1LzR3ZfW3T_v9o5pxWNzuewIBHBvyKZiC1jpk1hll-nJI6KGeeQjExQ4HdlpAxWjXc21nFFoc_4Tt-b6JX",
+            "sha1": "e043de78dacf6c7ddee57ed8b051f82e982c71b9",
+            "sha256": "2815da73ef587ec2c7bb0203b3dcf488f1cc92adca49194b84bfec855b39969c",
+            "aiGeneratedState": "aiGeneratedStateUnspecified"
+          }
+        ]
+      },
+      "sevenInchScreenshots": {},
+      "tenInchScreenshots": {}
+    }
+  },
+  "tracks": {
+    "kind": "androidpublisher#tracksListResponse",
+    "tracks": [
+      {
+        "track": "production"
+      },
+      {
+        "track": "beta"
+      },
+      {
+        "track": "alpha"
+      },
+      {
+        "track": "internal",
+        "releases": [
+          {
+            "name": "Read Assist 0.3.2",
+            "versionCodes": [
+              "28"
+            ],
+            "releaseNotes": [
+              {
+                "language": "en-US",
+                "text": "Fixes English dictionary lookup on Android. Keep reading with book-style page turns, Text/PDF switching, an adjustable playback panel, brightness and warm light controls, and three app themes. Voice and dictionary packs are available for download."
+              }
+            ],
+            "status": "completed"
+          }
+        ]
+      }
+    ]
+  },
+  "bundles": {
+    "kind": "androidpublisher#bundlesListResponse",
+    "bundles": [
+      {
+        "versionCode": 28,
+        "sha1": "3aebc9f6f71bee7ba7ca70512fb67361e3db6fbc",
+        "sha256": "809f7fc41c0662c085abc313dc88269e4be1c1c416ff983405bcbc670461f12b"
+      }
+    ]
+  },
+  "inspectionEditDeleted": true,
+  "lifecycles": {
+    "alpha": {},
+    "beta": {},
+    "internal": {
+      "releases": [
+        {
+          "releaseName": "Read Assist 0.3.2",
+          "activeArtifacts": [
+            {
+              "versionCode": 28
+            }
+          ],
+          "releaseLifecycleState": "RELEASE_LIFECYCLE_STATE_PUBLISHED",
+          "track": "internal"
+        }
+      ]
+    },
+    "production": {}
+  },
+  "finishedAt": "2026-11-16T02:47:04.909219+00:00",
+  "verification": {
+    "workflowRun": "https://github.com/sainadh812/ReadFlow/actions/runs/43794197823",
+    "sourceCommit": "360b39ddb040cfb45e94e350dac8b239ce1bfdfb",
+    "imageManifestComparison": {
+      "icon": {
+        "expectedCount": 1,
+        "savedCount": 1,
+        "hashesMatch": true,
+        "sameOrder": true
+      },
+      "featureGraphic": {
+        "expectedCount": 1,
+        "savedCount": 1,
+        "hashesMatch": true,
+        "sameOrder": true
+      },
+      "phoneScreenshots": {
+        "expectedCount": 8,
+        "savedCount": 8,
+        "hashesMatch": true,
+        "sameOrder": false
+      }
+    },
+    "previewVideoPresent": false,
+    "changesMade": false,
+    "publicStoreAvailability": "not_established",
+    "note": "All ten prepared images are present in the saved Play snapshot. Screenshot order differs and was preserved. The writer and time of the intervening image save are not established. The listing retains its earlier copy; production has no release. No publication or validation retry was performed."
+  }
+}
