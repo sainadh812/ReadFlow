@@ -128,7 +128,16 @@ jobs:
           READFLOW_UPLOAD_KEY_ALIAS: ${{ secrets.READFLOW_UPLOAD_KEY_ALIAS }}
           READFLOW_UPLOAD_KEY_PASSWORD: ${{ secrets.READFLOW_UPLOAD_KEY_PASSWORD }}
         run: |
-          ./gradlew :app:assembleRelease :app:bundleRelease :app:testReleaseUnitTest :app:lintRelease :app:generateCrashlyticsSymbolFileRelease -PplayPublication=true --console=plain --no-daemon
+          ./gradlew :app:assembleRelease :app:bundleRelease :app:testDebugUnitTest :app:testReleaseUnitTest :app:lintRelease :app:generateCrashlyticsSymbolFileRelease -PplayPublication=true --console=plain --no-daemon
+
+      - name: Preserve debug and floating dock layout test evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: Read-Assist-layout-tests-${{ github.run_id }}-${{ github.run_attempt }}
+          path: app/build/test-results/testDebugUnitTest/TEST-*.xml
+          if-no-files-found: warn
+          retention-days: 15
 
       - name: Audit the exact signed APK and bundle
         run: |
