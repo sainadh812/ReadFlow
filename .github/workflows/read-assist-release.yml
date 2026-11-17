@@ -96,7 +96,9 @@ jobs:
 
       - name: Prepare pinned build dependencies and bundletool
         run: |
-          bash scripts/bootstrap.sh --play
+          # Debug layout tests also compile the debug-only speech adapter.
+          # Release packaging audits still require that adapter to be absent.
+          bash scripts/bootstrap.sh
           curl --fail --location --retry 3 https://github.com/google/bundletool/releases/download/1.18.3/bundletool-all-1.18.3.jar --output .deps/bundletool-all-1.18.3.jar
           printf '%s\n' 'a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29  .deps/bundletool-all-1.18.3.jar' | sha256sum --check --status
           python3 -m unittest discover -s scripts -p 'test_ci_release.py'
