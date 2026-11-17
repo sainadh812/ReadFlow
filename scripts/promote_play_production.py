@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Promote the exact approved Read Assist 0.3.2 bundle to production.
+"""Promote the exact approved Read Assist 0.3.3 bundle to production.
 
 This changes only the production track. It never uploads another bundle,
 rebuilds the app, submits policy answers, or changes other tracks or testers.
@@ -19,17 +19,20 @@ from publish_play import (
     AAB_BYTES, AAB_SHA256, API, APP_PATH, PACKAGE, VERSION_CODE, VERSION_NAME,
     ApiError, PublishError, authenticate, safe_error, validate_artifact_pin,
 )
-from publish_store_media import IMAGE_TYPES, LANGUAGE, digest, load_assets, load_listing, snapshot
+from publish_store_media import (
+    IMAGE_TYPES, LANGUAGE, digest, load_assets, load_listing, preserve_complete_image_order, snapshot,
+)
 
 DEFAULT_REPORT = Path("build/play-production-publication/report.json")
 DEFAULT_LISTING = Path(__file__).resolve().parents[1] / "store-assets/listing/en-US.json"
 RELEASE_NOTES = (
-    "Read and listen to PDFs, scanned pages, images and saved web articles. Switch between "
-    "PDF and text, turn pages with a swipe, and adjust speed, voice, brightness and warm light "
-    "from the reader panel. Look up words with the English dictionary and choose Warm Library, "
-    "Modern Focus or Night Reader. Document processing and speech run on your device; "
-    "downloadable packs are required for some features."
+    "Read and listen with steady floating controls, redesigned Text/PDF buttons, and an option "
+    "to show or hide speech performance info. Your choice is saved. Adjust voice, speed, brightness "
+    "and warm light from the reader panel. Includes book-style page turns, word highlighting, "
+    "an English dictionary and three themes. Speech and document processing run on your device; "
+    "some features require downloadable packs."
 )
+
 LIFECYCLE_STATES = {
     "RELEASE_LIFECYCLE_STATE_PUBLISHED": "published",
     "RELEASE_LIFECYCLE_STATE_IN_REVIEW": "in_review",
@@ -77,10 +80,13 @@ def validate_ready(state: dict, assets: list[dict], approved_listing: dict) -> d
             raise PublishError(f"The live English listing is missing a valid {field}.")
     if any(listing.get(field) != value for field, value in approved_listing.items()):
         raise PublishError("The live English listing differs from the approved local listing copy.")
+    # Existing approved artwork may have been arranged in Play Console. The
+    # exact saved order must still survive promotion via verify_unchanged.
+    assets = preserve_complete_image_order(assets, state["imageHashes"])
     for kind in IMAGE_TYPES:
         wanted = [asset["sha256"] for asset in assets if asset["image_type"] == kind]
         if state["imageHashes"].get(kind) != wanted:
-            raise PublishError("Live store artwork does not match the locally approved image hashes and order.")
+            raise PublishError("Live store artwork does not match the complete locally approved image set.")
     if len(state["imageHashes"].get("phoneScreenshots", [])) < 2:
         raise PublishError("At least two actual app screenshots must already be configured on Play.")
     for name, track in state["tracks"].items():

@@ -8,6 +8,7 @@ testers, declarations, prices, countries, or another language's listing.
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import hashlib
 import json
 from pathlib import Path
@@ -201,6 +202,25 @@ def image_hashes(images: list[dict]) -> list[str]:
     return hashes
 
 
+def preserve_complete_image_order(assets: list[dict], saved_hashes: dict) -> list[dict]:
+    """Reuse a complete approved image set in its saved order, without any media writes.
+
+    A partial set retains manifest order so publication_plan still requires an
+    exact prefix. Compare multisets, not sets, to reject missing/extra copies.
+    """
+    ordered = []
+    for kind in IMAGE_TYPES:
+        wanted = [asset for asset in assets if asset["image_type"] == kind]
+        desired = [asset["sha256"] for asset in wanted]
+        existing = saved_hashes.get(kind, [])
+        if Counter(existing) == Counter(desired):
+            by_hash = {asset["sha256"]: asset for asset in wanted}
+            ordered.extend(by_hash[value] for value in existing)
+        else:
+            ordered.extend(wanted)
+    return ordered
+
+
 def observe_api_call(report: dict | None, phase: str, method: str, endpoint: str, call):
     """Record only a controlled endpoint template, never headers, bodies or tokens."""
     if report is None:
@@ -241,6 +261,7 @@ def snapshot(api: API, edit_id: str, report: dict | None = None, phase: str = "s
 
 
 def publication_plan(before: dict, assets: list[dict], requested: dict) -> tuple[dict, list[dict]]:
+    assets = preserve_complete_image_order(assets, before["imageHashes"])
     current = before["listings"].get(LANGUAGE, {})
     listing = {key: value for key, value in current.items() if key in LISTING_FIELDS}
     listing.update(requested)
@@ -258,6 +279,8 @@ def publication_plan(before: dict, assets: list[dict], requested: dict) -> tuple
 
 
 def verify_snapshot(before: dict, after: dict, assets: list[dict], listing: dict) -> None:
+    # Pin verification to the initial saved order, never a new order in readback.
+    assets = preserve_complete_image_order(assets, before["imageHashes"])
     if before["tracks"] != after["tracks"]:
         raise PublishError("Release tracks changed during the media operation; reconcile external changes.")
     if before["details"] != after["details"]:

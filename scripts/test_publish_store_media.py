@@ -235,6 +235,76 @@ class StoreMediaTests(unittest.TestCase):
         self.assertEqual(report["status"], "already_matches")
         self.assertFalse(any(method in {"PUT", "POST"} for method, _, _ in api.calls))
 
+    def test_complete_approved_set_preserves_saved_order_during_listing_update(self):
+        api = FakeAPI()
+        assets = self.assets()
+        for asset in assets:
+            api.live["images"][asset["image_type"]].append({"sha256": asset["sha256"]})
+        api.live["images"]["phoneScreenshots"].reverse()
+        saved_images = copy.deepcopy(api.live["images"])
+        manifest_order = copy.deepcopy(assets)
+        media.publish(api, assets, self.listing, self.report)
+        self.assertEqual(self.report["status"], "committed_and_verified")
+        self.assertEqual(self.report["plannedUploads"], [])
+        self.assertEqual(self.report["uploaded"], [])
+        self.assertEqual(api.live["images"], saved_images)
+        self.assertEqual(assets, manifest_order)
+        self.assertEqual(self.report["before"]["imageHashes"], self.report["after"]["imageHashes"])
+        self.assertFalse(any(path.startswith("/upload") or method == "DELETE" for method, path, _ in api.calls))
+
+    def test_rerun_with_complete_permuted_set_never_uploads_or_commits(self):
+        api = FakeAPI()
+        media.publish(api, self.assets(), self.listing, self.report)
+        api.live["images"]["phoneScreenshots"].reverse()
+        before = copy.deepcopy(api.live)
+        api.calls.clear()
+        report = {"status": "started", "committed": False}
+        media.publish(api, self.assets(), self.listing, report)
+        self.assertEqual(report["status"], "already_matches")
+        self.assertEqual(api.live, before)
+        self.assertEqual(report["plannedUploads"], [])
+        self.assertFalse(any(method in {"PUT", "POST", "DELETE"} for method, _, _ in api.calls))
+
+    def test_complete_set_with_unknown_or_duplicate_screenshot_never_mutates(self):
+        assets = self.assets()
+        approved = [asset["sha256"] for asset in assets if asset["image_type"] == "phoneScreenshots"]
+        for values in ([approved[0], "f" * 64], [approved[0], approved[0]], approved + ["f" * 64]):
+            with self.subTest(values=values):
+                api = FakeAPI()
+                api.live["images"]["phoneScreenshots"] = [{"sha256": value} for value in values]
+                before = copy.deepcopy(api.live)
+                with self.assertRaises(media.PublishError):
+                    media.publish(api, assets, self.listing, {"status": "started", "committed": False})
+                self.assertEqual(api.live, before)
+                self.assertFalse(any(method in {"PUT", "POST", "DELETE"} for method, _, _ in api.calls))
+
+    def test_saved_order_change_is_rejected_in_pending_and_fresh_readback(self):
+        for change_after_commit in (False, True):
+            with self.subTest(change_after_commit=change_after_commit):
+                api = FakeAPI()
+                assets = self.assets()
+                for asset in assets:
+                    api.live["images"][asset["image_type"]].append({"sha256": asset["sha256"]})
+                api.live["images"]["phoneScreenshots"].reverse()
+                original_request = api.request
+
+                def request(method, path, **kwargs):
+                    result = original_request(method, path, **kwargs)
+                    if method == "PUT" and not change_after_commit:
+                        api.edits["1"]["images"]["phoneScreenshots"].reverse()
+                    return result
+
+                if change_after_commit:
+                    api.change_after_commit = lambda state: state["images"]["phoneScreenshots"].reverse()
+                report = {"status": "started", "committed": False, "verified": False}
+                with patch.object(api, "request", side_effect=request):
+                    with self.assertRaisesRegex(media.PublishError, "screenshot order"):
+                        media.publish(api, assets, self.listing, report)
+                self.assertEqual(report["committed"], change_after_commit)
+                self.assertFalse(report["verified"])
+                self.assertEqual(sum(path.endswith(":commit") for _, path, _ in api.calls), int(change_after_commit))
+                self.assertFalse(any(path.startswith("/upload") or method == "DELETE" for method, path, _ in api.calls))
+
     def test_unknown_existing_image_conflict_never_mutates(self):
         api = FakeAPI()
         api.live["images"]["icon"] = [{"sha256": "f" * 64}]
@@ -248,6 +318,7 @@ class StoreMediaTests(unittest.TestCase):
         api.live["images"]["phoneScreenshots"] = [{"sha256": self.assets()[-1]["sha256"]}]
         with self.assertRaisesRegex(media.PublishError, "conflicts"):
             media.publish(api, self.assets(), self.listing, self.report)
+        self.assertFalse(any(method in {"PUT", "POST", "DELETE"} for method, _, _ in api.calls))
 
     def test_partial_matching_prefix_only_uploads_missing(self):
         api = FakeAPI()

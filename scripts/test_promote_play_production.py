@@ -141,6 +141,35 @@ class ProductionPromotionTests(unittest.TestCase):
             self.promote()
         self.assertFalse(any(method == "PUT" for method, _, _ in self.api.calls))
 
+    def test_complete_approved_image_set_preserves_saved_order_during_promotion(self):
+        self.api.live["images"]["phoneScreenshots"].reverse()
+        saved_images = copy.deepcopy(self.api.live["images"])
+        self.promote()
+        self.assertEqual(self.report["status"], "published")
+        self.assertTrue(self.report["trackVerified"])
+        self.assertEqual(self.api.live["images"], saved_images)
+        self.assertEqual(self.report["before"]["imageHashes"], self.report["after"]["imageHashes"])
+        self.assertFalse(any("/upload" in path or method == "DELETE" for method, path, _ in self.api.calls))
+
+    def test_incomplete_extra_or_duplicate_approved_images_block_track_write(self):
+        for values in (["3" * 64], ["3" * 64, "4" * 64, "f" * 64], ["3" * 64, "3" * 64]):
+            with self.subTest(values=values):
+                api = FakeProductionAPI()
+                api.live["images"]["phoneScreenshots"] = [{"sha256": value} for value in values]
+                before = copy.deepcopy(api.live)
+                with self.assertRaises(production.PublishError):
+                    production.promote(api, ASSETS, {"committed": False}, approved_listing=self.approved_listing)
+                self.assertEqual(api.live, before)
+                self.assertFalse(any(method in {"PUT", "POST", "DELETE"} for method, _, _ in api.calls))
+
+    def test_saved_image_order_change_during_promotion_is_rejected(self):
+        self.api.live["images"]["phoneScreenshots"].reverse()
+        self.api.change_after_commit = lambda state: state["images"]["phoneScreenshots"].reverse()
+        with self.assertRaisesRegex(production.PublishError, "Store metadata changed"):
+            self.promote()
+        self.assertTrue(self.report["committed"])
+        self.assertFalse(self.report["trackVerified"])
+
     def test_internal_must_already_be_completed(self):
         self.api.live["tracks"][0]["releases"][0]["status"] = "draft"
         with self.assertRaisesRegex(production.PublishError, "Internal testing"):
