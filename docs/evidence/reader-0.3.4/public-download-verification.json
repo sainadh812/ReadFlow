@@ -1,0 +1,14 @@
+{
+  "Read-Assist-0.3.4-upload-signed.apk": {
+    "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.4-play-candidate/Read-Assist-0.3.4-upload-signed.apk",
+    "sha256": "60526a82616ea885b65bd38fdf62424de44ce2e90f15d4f5a3c7ed3447e233aa",
+    "bytes": 131467511,
+    "verified": true
+  },
+  "Read-Assist-0.3.4-upload-signed.aab": {
+    "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.4-play-candidate/Read-Assist-0.3.4-upload-signed.aab",
+    "sha256": "7371bdf73cd8dc91e05f2889c481ec896c3b80995ba925a1037f2f5b768ef41c",
+    "bytes": 72436935,
+    "verified": true
+  }
+}

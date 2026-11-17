@@ -1,0 +1,91 @@
+{
+  "recordedAt": "2026-11-17T14:28:02.118480+00:00",
+  "versionName": "0.3.4",
+  "versionCode": 30,
+  "package": "app.readflow",
+  "sourceCommit": "ffb5e0b4a34a28149c13c9d1c570d6f4d4a894f4",
+  "applicationSourceCommit": "bb67d65b958fb96680600c25bb1887ca9865c772",
+  "implementation": "Compact floating reader dock; no Ready/Preparing row or horizontal loading bar; small Tt toggle after Next; preparation ring within primary button; saved optional performance information.",
+  "github": {
+    "status": "published",
+    "releaseUrl": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.4-play-candidate",
+    "apkUrl": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.4-play-candidate/Read-Assist-0.3.4-upload-signed.apk",
+    "publicApkAndAabHashesVerified": true,
+    "apk": {
+      "file": "Read-Assist-0.3.4-upload-signed.apk",
+      "sha256": "60526a82616ea885b65bd38fdf62424de44ce2e90f15d4f5a3c7ed3447e233aa",
+      "bytes": 131467511
+    },
+    "aab": {
+      "file": "Read-Assist-0.3.4-upload-signed.aab",
+      "sha256": "7371bdf73cd8dc91e05f2889c481ec896c3b80995ba925a1037f2f5b768ef41c",
+      "bytes": 72436935
+    }
+  },
+  "validation": {
+    "signedBuildRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44097812814",
+    "androidCaptureRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44097818577",
+    "debugTests": {
+      "suites": 58,
+      "tests": 469,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "releaseTests": {
+      "suites": 58,
+      "tests": 462,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3
+    },
+    "floatingDockLayoutTests": {
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "lintErrors": 0,
+    "lintWarnings": 40,
+    "androidSnapshots": 73,
+    "preparationSamples": 54,
+    "totalLoadingRingSamples": 55,
+    "controlBoundsStable": true,
+    "loadingRingContainedInPrimaryButton": true,
+    "playAndPauseWithPerformanceShownAndHidden": true,
+    "performancePreferencePersistsAcrossRelaunch": true,
+    "textOriginalTogglePassed": true,
+    "visualReview": {
+      "file": "dock-listening-shown.png",
+      "reviewedBy": "root",
+      "result": "Compact card, small Tt after Next, no standalone status or horizontal loading bar, and word highlight visible."
+    },
+    "physicalPhoneTestPerformed": false,
+    "limitation": "Emulator geometry checks cannot establish the absence of every rendering flicker."
+  },
+  "googlePlay": {
+    "internal": {
+      "status": "published",
+      "lifecycleState": "RELEASE_LIFECYCLE_STATE_PUBLISHED",
+      "versionCode": 30,
+      "bundleSha256": "7371bdf73cd8dc91e05f2889c481ec896c3b80995ba925a1037f2f5b768ef41c",
+      "run": "https://github.com/sainadh812/ReadFlow/actions/runs/44102328574",
+      "verifiedByFreshPostCommitReadback": true,
+      "testersModified": false
+    },
+    "production": {
+      "status": "blocked",
+      "promotionAttempted": false,
+      "storeValidationRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44102803443",
+      "phase": "validate_edit",
+      "error": {
+        "httpCode": 403,
+        "status": "PERMISSION_DENIED",
+        "message": "The caller does not have permission"
+      },
+      "listingChangesCommitted": false,
+      "ownedEditDeleted": true
+    }
+  },
+  "evidenceNotes": "release-evidence.json is the immutable signed-build report; its upload/device fields describe build time. This summary and play-publication.json record later publication and emulator validation."
+}

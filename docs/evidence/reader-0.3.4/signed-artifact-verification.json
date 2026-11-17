@@ -1,0 +1,72 @@
+{
+  "status": "passed",
+  "verifiedAt": "2026-11-17T14:08:24.504855+00:00",
+  "versionName": "0.3.4",
+  "versionCode": 30,
+  "package": "app.readflow",
+  "sourceCommit": "ffb5e0b4a34a28149c13c9d1c570d6f4d4a894f4",
+  "githubRunId": 44097812814,
+  "githubRunUrl": "https://github.com/sainadh812/ReadFlow/actions/runs/44097812814",
+  "githubRunConclusion": "success",
+  "filesVerified": 83,
+  "allStagedFilesCoveredByChecksums": true,
+  "apk": {
+    "file": "Read-Assist-0.3.4-upload-signed.apk",
+    "sha256": "60526a82616ea885b65bd38fdf62424de44ce2e90f15d4f5a3c7ed3447e233aa",
+    "bytes": 131467511
+  },
+  "aab": {
+    "file": "Read-Assist-0.3.4-upload-signed.aab",
+    "sha256": "7371bdf73cd8dc91e05f2889c481ec896c3b80995ba925a1037f2f5b768ef41c",
+    "bytes": 72436935
+  },
+  "certificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+  "apkSignatureScheme": "v2",
+  "apkSignatureVerified": true,
+  "aabSignatureVerified": true,
+  "aabStrictSignatureExitCode": 4,
+  "aabSignatureNotes": "Cryptographic JAR verification passed. Strict verification reports the pinned self-signed upload certificate as untrusted. Standard unsigned-timestamp/POSIX metadata and streaming-manifest ordering warnings remain in the raw verification output.",
+  "bundleValidation": "passed",
+  "bundletoolVersion": "1.18.3",
+  "bundletoolJarSha256": "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29",
+  "apk16KbAlignment": "passed",
+  "minSdk": 35,
+  "targetSdk": 36,
+  "supportedAbi": [
+    "arm64-v8a"
+  ],
+  "releaseTests": {
+    "suites": 58,
+    "tests": 462,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "debugTests": {
+    "suites": 58,
+    "tests": 469,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  "floatingDockLayoutTests": {
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lintErrors": 0,
+  "lintWarnings": 40,
+  "lintWarningIds": {
+    "GradleDependency": 17,
+    "ConfigurationScreenWidthHeight": 1,
+    "ModifierParameter": 2,
+    "ExportedService": 1,
+    "UsableSpace": 5,
+    "UseKtx": 14
+  },
+  "newLintWarnings": "Two ModifierParameter convention warnings in ReaderTransportRow; modifier is not the first optional parameter.",
+  "nativeSymbolsUploaded": true,
+  "physicalDeviceTestPerformed": false,
+  "signingNote": "Upload-key-signed APK; Play App Signing uses a separate app-signing certificate."
+}

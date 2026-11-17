@@ -1,0 +1,5262 @@
+{
+  "status": "passed",
+  "snapshots": [
+    {
+      "name": "dock-initial-text",
+      "capturedAt": "2026-11-17T14:10:46.581484+00:00",
+      "hierarchy": "dock-initial-text.xml",
+      "mediaSessionEvidence": "dock-initial-text-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1646,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1625
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    },
+    {
+      "name": "dock-pdf-selected",
+      "capturedAt": "2026-11-17T14:10:53.620978+00:00",
+      "hierarchy": "dock-pdf-selected.xml",
+      "mediaSessionEvidence": "dock-pdf-selected-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "viewToggleAction": "Show reader text",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": false,
+      "selected": {
+        "text": false,
+        "pdf": true
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1646,
+          1054,
+          1836
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    },
+    {
+      "name": "dock-metrics-shown",
+      "capturedAt": "2026-11-17T14:11:19.480914+00:00",
+      "hierarchy": "dock-metrics-shown.xml",
+      "mediaSessionEvidence": "dock-metrics-shown-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance",
+        "0 ms buffered"
+      ]
+    },
+    {
+      "name": "dock-relaunched-shown",
+      "capturedAt": "2026-11-17T14:11:45.021596+00:00",
+      "hierarchy": "dock-relaunched-shown.xml",
+      "mediaSessionEvidence": "dock-relaunched-shown-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance",
+        "0 ms buffered"
+      ]
+    },
+    {
+      "name": "dock-metrics-hidden",
+      "capturedAt": "2026-11-17T14:12:06.000350+00:00",
+      "hierarchy": "dock-metrics-hidden.xml",
+      "mediaSessionEvidence": "dock-metrics-hidden-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1646,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1625
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    },
+    {
+      "name": "dock-relaunched-hidden",
+      "capturedAt": "2026-11-17T14:12:29.814085+00:00",
+      "hierarchy": "dock-relaunched-hidden.xml",
+      "mediaSessionEvidence": "dock-relaunched-hidden-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1646,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1625
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    },
+    {
+      "name": "dock-before-preparation",
+      "capturedAt": "2026-11-17T14:12:50.654882+00:00",
+      "hierarchy": "dock-before-preparation.xml",
+      "mediaSessionEvidence": "dock-before-preparation-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance",
+        "0 ms buffered"
+      ]
+    },
+    {
+      "name": "dock-preparation-007",
+      "capturedAt": "2026-11-17T14:13:13.211410+00:00",
+      "hierarchy": "dock-preparation-007.xml",
+      "mediaSessionEvidence": "dock-preparation-007-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance",
+        "0 ms buffered"
+      ]
+    },
+    {
+      "name": "dock-preparation-008",
+      "capturedAt": "2026-11-17T14:13:21.258267+00:00",
+      "hierarchy": "dock-preparation-008.xml",
+      "mediaSessionEvidence": "dock-preparation-008-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance",
+        "0 ms buffered"
+      ]
+    },
+    {
+      "name": "dock-preparation-009",
+      "capturedAt": "2026-11-17T14:13:26.509094+00:00",
+      "hierarchy": "dock-preparation-009.xml",
+      "mediaSessionEvidence": "dock-preparation-009-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance",
+        "0 ms buffered"
+      ]
+    },
+    {
+      "name": "dock-preparation-010",
+      "capturedAt": "2026-11-17T14:13:35.218741+00:00",
+      "hierarchy": "dock-preparation-010.xml",
+      "mediaSessionEvidence": "dock-preparation-010-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance",
+        "0 ms buffered"
+      ]
+    },
+    {
+      "name": "dock-preparation-011",
+      "capturedAt": "2026-11-17T14:13:40.289210+00:00",
+      "hierarchy": "dock-preparation-011.xml",
+      "mediaSessionEvidence": "dock-preparation-011-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance",
+        "0 ms buffered"
+      ]
+    },
+    {
+      "name": "dock-preparation-012",
+      "capturedAt": "2026-11-17T14:13:45.931061+00:00",
+      "hierarchy": "dock-preparation-012.xml",
+      "mediaSessionEvidence": "dock-preparation-012-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance",
+        "0 ms buffered"
+      ]
+    },
+    {
+      "name": "dock-preparation-013",
+      "capturedAt": "2026-11-17T14:13:51.363705+00:00",
+      "hierarchy": "dock-preparation-013.xml",
+      "mediaSessionEvidence": "dock-preparation-013-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance",
+        "0 ms buffered"
+      ]
+    },
+    {
+      "name": "dock-preparation-014",
+      "capturedAt": "2026-11-17T14:13:56.636410+00:00",
+      "hierarchy": "dock-preparation-014.xml",
+      "mediaSessionEvidence": "dock-preparation-014-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance",
+        "0 ms buffered"
+      ]
+    },
+    {
+      "name": "dock-preparation-015",
+      "capturedAt": "2026-11-17T14:14:02.224040+00:00",
+      "hierarchy": "dock-preparation-015.xml",
+      "mediaSessionEvidence": "dock-preparation-015-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance",
+        "0 ms buffered"
+      ]
+    },
+    {
+      "name": "dock-preparation-016",
+      "capturedAt": "2026-11-17T14:14:07.274484+00:00",
+      "hierarchy": "dock-preparation-016.xml",
+      "mediaSessionEvidence": "dock-preparation-016-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "93 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-017",
+      "capturedAt": "2026-11-17T14:14:12.644139+00:00",
+      "hierarchy": "dock-preparation-017.xml",
+      "mediaSessionEvidence": "dock-preparation-017-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "93 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-018",
+      "capturedAt": "2026-11-17T14:14:17.736402+00:00",
+      "hierarchy": "dock-preparation-018.xml",
+      "mediaSessionEvidence": "dock-preparation-018-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "93 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-019",
+      "capturedAt": "2026-11-17T14:14:24.453691+00:00",
+      "hierarchy": "dock-preparation-019.xml",
+      "mediaSessionEvidence": "dock-preparation-019-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "105 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-020",
+      "capturedAt": "2026-11-17T14:14:29.789745+00:00",
+      "hierarchy": "dock-preparation-020.xml",
+      "mediaSessionEvidence": "dock-preparation-020-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "105 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-021",
+      "capturedAt": "2026-11-17T14:14:34.874447+00:00",
+      "hierarchy": "dock-preparation-021.xml",
+      "mediaSessionEvidence": "dock-preparation-021-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "105 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-022",
+      "capturedAt": "2026-11-17T14:14:40.323098+00:00",
+      "hierarchy": "dock-preparation-022.xml",
+      "mediaSessionEvidence": "dock-preparation-022-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "123 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-023",
+      "capturedAt": "2026-11-17T14:14:45.384253+00:00",
+      "hierarchy": "dock-preparation-023.xml",
+      "mediaSessionEvidence": "dock-preparation-023-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "123 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-024",
+      "capturedAt": "2026-11-17T14:14:50.704216+00:00",
+      "hierarchy": "dock-preparation-024.xml",
+      "mediaSessionEvidence": "dock-preparation-024-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "123 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-025",
+      "capturedAt": "2026-11-17T14:14:56.423250+00:00",
+      "hierarchy": "dock-preparation-025.xml",
+      "mediaSessionEvidence": "dock-preparation-025-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "123 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-026",
+      "capturedAt": "2026-11-17T14:15:03.506418+00:00",
+      "hierarchy": "dock-preparation-026.xml",
+      "mediaSessionEvidence": "dock-preparation-026-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "123 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-027",
+      "capturedAt": "2026-11-17T14:15:08.742303+00:00",
+      "hierarchy": "dock-preparation-027.xml",
+      "mediaSessionEvidence": "dock-preparation-027-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "123 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-028",
+      "capturedAt": "2026-11-17T14:15:14.100286+00:00",
+      "hierarchy": "dock-preparation-028.xml",
+      "mediaSessionEvidence": "dock-preparation-028-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "144 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-029",
+      "capturedAt": "2026-11-17T14:15:19.385274+00:00",
+      "hierarchy": "dock-preparation-029.xml",
+      "mediaSessionEvidence": "dock-preparation-029-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "144 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-030",
+      "capturedAt": "2026-11-17T14:15:25.008345+00:00",
+      "hierarchy": "dock-preparation-030.xml",
+      "mediaSessionEvidence": "dock-preparation-030-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "144 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-031",
+      "capturedAt": "2026-11-17T14:15:30.356116+00:00",
+      "hierarchy": "dock-preparation-031.xml",
+      "mediaSessionEvidence": "dock-preparation-031-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "144 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-032",
+      "capturedAt": "2026-11-17T14:15:35.742858+00:00",
+      "hierarchy": "dock-preparation-032.xml",
+      "mediaSessionEvidence": "dock-preparation-032-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "149 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-033",
+      "capturedAt": "2026-11-17T14:15:41.179588+00:00",
+      "hierarchy": "dock-preparation-033.xml",
+      "mediaSessionEvidence": "dock-preparation-033-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "149 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-034",
+      "capturedAt": "2026-11-17T14:15:46.450977+00:00",
+      "hierarchy": "dock-preparation-034.xml",
+      "mediaSessionEvidence": "dock-preparation-034-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "149 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-035",
+      "capturedAt": "2026-11-17T14:15:51.707776+00:00",
+      "hierarchy": "dock-preparation-035.xml",
+      "mediaSessionEvidence": "dock-preparation-035-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "149 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-036",
+      "capturedAt": "2026-11-17T14:15:58.404185+00:00",
+      "hierarchy": "dock-preparation-036.xml",
+      "mediaSessionEvidence": "dock-preparation-036-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "149 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-037",
+      "capturedAt": "2026-11-17T14:16:03.671083+00:00",
+      "hierarchy": "dock-preparation-037.xml",
+      "mediaSessionEvidence": "dock-preparation-037-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "158 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-038",
+      "capturedAt": "2026-11-17T14:16:10.834337+00:00",
+      "hierarchy": "dock-preparation-038.xml",
+      "mediaSessionEvidence": "dock-preparation-038-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "158 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-039",
+      "capturedAt": "2026-11-17T14:16:16.427777+00:00",
+      "hierarchy": "dock-preparation-039.xml",
+      "mediaSessionEvidence": "dock-preparation-039-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "158 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-040",
+      "capturedAt": "2026-11-17T14:16:21.998910+00:00",
+      "hierarchy": "dock-preparation-040.xml",
+      "mediaSessionEvidence": "dock-preparation-040-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "158 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-041",
+      "capturedAt": "2026-11-17T14:16:27.464109+00:00",
+      "hierarchy": "dock-preparation-041.xml",
+      "mediaSessionEvidence": "dock-preparation-041-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "164 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-042",
+      "capturedAt": "2026-11-17T14:16:32.778333+00:00",
+      "hierarchy": "dock-preparation-042.xml",
+      "mediaSessionEvidence": "dock-preparation-042-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "164 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-043",
+      "capturedAt": "2026-11-17T14:16:38.186335+00:00",
+      "hierarchy": "dock-preparation-043.xml",
+      "mediaSessionEvidence": "dock-preparation-043-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "164 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-044",
+      "capturedAt": "2026-11-17T14:16:43.517901+00:00",
+      "hierarchy": "dock-preparation-044.xml",
+      "mediaSessionEvidence": "dock-preparation-044-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "164 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-045",
+      "capturedAt": "2026-11-17T14:16:49.386814+00:00",
+      "hierarchy": "dock-preparation-045.xml",
+      "mediaSessionEvidence": "dock-preparation-045-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "164 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-046",
+      "capturedAt": "2026-11-17T14:16:55.869854+00:00",
+      "hierarchy": "dock-preparation-046.xml",
+      "mediaSessionEvidence": "dock-preparation-046-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "165 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-047",
+      "capturedAt": "2026-11-17T14:17:01.293875+00:00",
+      "hierarchy": "dock-preparation-047.xml",
+      "mediaSessionEvidence": "dock-preparation-047-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "165 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-048",
+      "capturedAt": "2026-11-17T14:17:06.706164+00:00",
+      "hierarchy": "dock-preparation-048.xml",
+      "mediaSessionEvidence": "dock-preparation-048-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "165 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-049",
+      "capturedAt": "2026-11-17T14:17:11.887693+00:00",
+      "hierarchy": "dock-preparation-049.xml",
+      "mediaSessionEvidence": "dock-preparation-049-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "163 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-050",
+      "capturedAt": "2026-11-17T14:17:17.516273+00:00",
+      "hierarchy": "dock-preparation-050.xml",
+      "mediaSessionEvidence": "dock-preparation-050-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "163 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-051",
+      "capturedAt": "2026-11-17T14:17:22.729217+00:00",
+      "hierarchy": "dock-preparation-051.xml",
+      "mediaSessionEvidence": "dock-preparation-051-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "163 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-052",
+      "capturedAt": "2026-11-17T14:17:28.196072+00:00",
+      "hierarchy": "dock-preparation-052.xml",
+      "mediaSessionEvidence": "dock-preparation-052-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "163 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-053",
+      "capturedAt": "2026-11-17T14:17:33.557294+00:00",
+      "hierarchy": "dock-preparation-053.xml",
+      "mediaSessionEvidence": "dock-preparation-053-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "162 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-054",
+      "capturedAt": "2026-11-17T14:17:39.021114+00:00",
+      "hierarchy": "dock-preparation-054.xml",
+      "mediaSessionEvidence": "dock-preparation-054-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "162 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-055",
+      "capturedAt": "2026-11-17T14:17:44.587224+00:00",
+      "hierarchy": "dock-preparation-055.xml",
+      "mediaSessionEvidence": "dock-preparation-055-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "162 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-056",
+      "capturedAt": "2026-11-17T14:17:51.873766+00:00",
+      "hierarchy": "dock-preparation-056.xml",
+      "mediaSessionEvidence": "dock-preparation-056-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "162 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-057",
+      "capturedAt": "2026-11-17T14:17:57.056595+00:00",
+      "hierarchy": "dock-preparation-057.xml",
+      "mediaSessionEvidence": "dock-preparation-057-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "166 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-058",
+      "capturedAt": "2026-11-17T14:18:02.669209+00:00",
+      "hierarchy": "dock-preparation-058.xml",
+      "mediaSessionEvidence": "dock-preparation-058-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "166 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-059",
+      "capturedAt": "2026-11-17T14:18:07.751923+00:00",
+      "hierarchy": "dock-preparation-059.xml",
+      "mediaSessionEvidence": "dock-preparation-059-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "166 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-060",
+      "capturedAt": "2026-11-17T14:18:13.127313+00:00",
+      "hierarchy": "dock-preparation-060.xml",
+      "mediaSessionEvidence": "dock-preparation-060-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "166 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-061",
+      "capturedAt": "2026-11-17T14:18:17.148696+00:00",
+      "hierarchy": "dock-preparation-061.xml",
+      "mediaSessionEvidence": "dock-preparation-061-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "166 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-playback-before-shown",
+      "capturedAt": "2026-11-17T14:19:02.603511+00:00",
+      "hierarchy": "dock-playback-before-shown.xml",
+      "mediaSessionEvidence": "dock-playback-before-shown-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "166 chars/min",
+        "0 ms buffered \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-playback-shown-063",
+      "capturedAt": "2026-11-17T14:19:09.836609+00:00",
+      "hierarchy": "dock-playback-shown-063.xml",
+      "mediaSessionEvidence": "dock-playback-shown-063-media-session.txt",
+      "mediaState": 6,
+      "primaryLabel": "Cancel preparation",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Saved audio",
+        "21.6 s buffered"
+      ]
+    },
+    {
+      "name": "dock-playback-shown-064",
+      "capturedAt": "2026-11-17T14:19:13.386422+00:00",
+      "hierarchy": "dock-playback-shown-064.xml",
+      "mediaSessionEvidence": "dock-playback-shown-064-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Pause",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Saved audio",
+        "30.2 s buffered"
+      ]
+    },
+    {
+      "name": "dock-playback-shown-065",
+      "capturedAt": "2026-11-17T14:19:19.357289+00:00",
+      "hierarchy": "dock-playback-shown-065.xml",
+      "mediaSessionEvidence": "dock-playback-shown-065-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Pause",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Saved audio",
+        "26.8 s buffered"
+      ]
+    },
+    {
+      "name": "dock-playback-shown-066",
+      "capturedAt": "2026-11-17T14:19:22.779011+00:00",
+      "hierarchy": "dock-playback-shown-066.xml",
+      "mediaSessionEvidence": "dock-playback-shown-066-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Pause",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Saved audio",
+        "23.8 s buffered"
+      ]
+    },
+    {
+      "name": "dock-paused-shown",
+      "capturedAt": "2026-11-17T14:19:27.427887+00:00",
+      "hierarchy": "dock-paused-shown.xml",
+      "mediaSessionEvidence": "dock-paused-shown-media-session.txt",
+      "mediaState": 2,
+      "primaryLabel": "Play",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1496,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1475
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Saved audio",
+        "21.8 s buffered"
+      ]
+    },
+    {
+      "name": "dock-playback-before-hidden",
+      "capturedAt": "2026-11-17T14:19:49.812609+00:00",
+      "hierarchy": "dock-playback-before-hidden.xml",
+      "mediaSessionEvidence": "dock-playback-before-hidden-media-session.txt",
+      "mediaState": 2,
+      "primaryLabel": "Play",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1646,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1625
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    },
+    {
+      "name": "dock-playback-hidden-069",
+      "capturedAt": "2026-11-17T14:19:56.851093+00:00",
+      "hierarchy": "dock-playback-hidden-069.xml",
+      "mediaSessionEvidence": "dock-playback-hidden-069-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Pause",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1646,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1625
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    },
+    {
+      "name": "dock-playback-hidden-070",
+      "capturedAt": "2026-11-17T14:20:02.703088+00:00",
+      "hierarchy": "dock-playback-hidden-070.xml",
+      "mediaSessionEvidence": "dock-playback-hidden-070-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Pause",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1646,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1625
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    },
+    {
+      "name": "dock-playback-hidden-071",
+      "capturedAt": "2026-11-17T14:20:06.056043+00:00",
+      "hierarchy": "dock-playback-hidden-071.xml",
+      "mediaSessionEvidence": "dock-playback-hidden-071-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Pause",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1646,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1625
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    },
+    {
+      "name": "dock-paused-hidden",
+      "capturedAt": "2026-11-17T14:20:10.644153+00:00",
+      "hierarchy": "dock-paused-hidden.xml",
+      "mediaSessionEvidence": "dock-paused-hidden-media-session.txt",
+      "mediaState": 2,
+      "primaryLabel": "Play",
+      "viewToggleAction": "Show original page",
+      "viewStateDescription": null,
+      "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+      "preparationSpinnerBoundsIfExported": null,
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          377,
+          1665,
+          529,
+          1817
+        ],
+        "viewToggle": [
+          729,
+          1678,
+          855,
+          1804
+        ],
+        "expand": [
+          904,
+          1678,
+          1030,
+          1804
+        ],
+        "previous": [
+          227,
+          1678,
+          353,
+          1804
+        ],
+        "next": [
+          554,
+          1678,
+          680,
+          1804
+        ],
+        "speed": [
+          26,
+          1678,
+          202,
+          1804
+        ],
+        "dock": [
+          26,
+          1646,
+          1054,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1625
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    }
+  ],
+  "persistence": {
+    "shown": {
+      "verified": true,
+      "snapshot": "dock-relaunched-shown"
+    },
+    "hidden": {
+      "verified": true,
+      "snapshot": "dock-relaunched-hidden"
+    }
+  },
+  "scope": "Real Android emulator UI, normal Quick settings and actual on-device speech",
+  "limitations": [
+    "Bounds checks do not establish absence of every rendering flicker.",
+    "Explicitly changing performance visibility may resize the card.",
+    "Emulator capture is not a physical-phone or Play-installed ARM64 test."
+  ],
+  "preparingSamples": 54,
+  "preparationBoundsStable": true,
+  "pagePreparation": {
+    "method": "Normal Reading details dialog after the primary action returned to Play",
+    "completionMessage": "Pages 1\u20131 ready \u00b7 press Play to read",
+    "pageCountText": "1/1 pages \u00b7 0:34 audio ready",
+    "evidence": "dock-prepared-page-details.png",
+    "hierarchy": "dock-prepared-page-details.xml"
+  },
+  "playbackBoundsStable-shown": {
+    "verified": true,
+    "playingSamples": 3
+  },
+  "playbackBoundsStable-hidden": {
+    "verified": true,
+    "playingSamples": 3
+  },
+  "finishedAt": "2026-11-17T14:20:11.985206+00:00"
+}

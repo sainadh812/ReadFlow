@@ -1,0 +1,227 @@
+{
+  "status": "passed",
+  "verifiedAt": "2026-11-17T14:25:06.312170+00:00",
+  "captureRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44097818577",
+  "captureSource": "ffb5e0b4a34a28149c13c9d1c570d6f4d4a894f4",
+  "signedBuildSource": "ffb5e0b4a34a28149c13c9d1c570d6f4d4a894f4",
+  "matchingSourceObjects": {
+    "app/src/main": "8dcfcf69fd20b2e0f4f3823825230e9ef6eb6559",
+    "app/src/release": "e98f60bab8f45f39833437585503e6b2e86b1648",
+    "app/src/storeDemoAndroidTest": "7a45438f4213e804eaa9de5655d497e6ee0b7604",
+    "app/build.gradle.kts": "3076ac4006ed404183ecc3a99213d995a776bd63"
+  },
+  "captureStatus": "complete",
+  "regressionStatus": "passed",
+  "verificationMethod": "Reparsed raw Android XML and app-specific media-session dumps for all snapshots; recomputed screenshot and emulator APK hashes; compared Git source objects.",
+  "snapshots": 73,
+  "preparationSamples": 54,
+  "additionalPlaybackStartupBufferingSamples": 1,
+  "loadingProgressSamples": 55,
+  "allLoadingIndicatorsContainedInsidePrimaryButton": true,
+  "removedStatusRowAndPdfSelectorAbsentInAllHierarchies": true,
+  "playingSamplesPerPreference": {
+    "shown": 3,
+    "hidden": 3
+  },
+  "pausedConfirmedWithMetricsShownAndHidden": true,
+  "metricsShownAndHiddenPersisted": true,
+  "textOriginalTogglePassed": true,
+  "textToggleBetweenNextAndExpandInAllSnapshots": true,
+  "allTransportAndModeBoundsIdenticalAcrossSnapshots": true,
+  "viewportAndDockStableWithinEachMetricsPreference": true,
+  "dockBoundsByMetrics": {
+    "shown": [
+      26,
+      1496,
+      1054,
+      1836
+    ],
+    "hidden": [
+      26,
+      1646,
+      1054,
+      1836
+    ]
+  },
+  "observedFreshGenerationCharsPerMinute": {
+    "minimum": 93,
+    "maximum": 166,
+    "distinctValues": [
+      93,
+      105,
+      123,
+      144,
+      149,
+      158,
+      162,
+      163,
+      164,
+      165,
+      166
+    ]
+  },
+  "preparedPageConfirmation": {
+    "method": "Normal Reading details dialog after the primary action returned to Play",
+    "completionMessage": "Pages 1\u20131 ready \u00b7 press Play to read",
+    "pageCountText": "1/1 pages \u00b7 0:34 audio ready",
+    "evidence": "dock-prepared-page-details.png",
+    "hierarchy": "dock-prepared-page-details.xml"
+  },
+  "androidDictionaryLookup": {
+    "query": "curiosity",
+    "entryCount": 3,
+    "error": null,
+    "phase": "READY",
+    "installed": true,
+    "stateError": null
+  },
+  "speechAndAlignmentPacksVerified": true,
+  "screenshotsHashVerified": [
+    {
+      "file": "dock-pdf-selected.png",
+      "sha256": "dbbdfa8471642088dd457ee0a5b7be4bafb0402b3a8279fee8804895390a1736",
+      "bytes": 365903
+    },
+    {
+      "file": "dock-metrics-shown-quick-setting.png",
+      "sha256": "4c3c2de8124ec9674be5a6d2b372f8fbf9be01071073934ac6aa0d7c2be5b843",
+      "bytes": 163588
+    },
+    {
+      "file": "dock-metrics-shown.png",
+      "sha256": "62b1df31fb9781df727d43dd954c6191a0732f7ba5240f1f45fdf3963e21a1f3",
+      "bytes": 245219
+    },
+    {
+      "file": "dock-relaunched-shown.png",
+      "sha256": "c4f15fd2d5b69d5e2afbd2d14a465b276774b09c443109e5aeb76bcbdeb19d8d",
+      "bytes": 245288
+    },
+    {
+      "file": "dock-metrics-hidden-quick-setting.png",
+      "sha256": "59e939ff40b3dfa7184027e0e6dade5a406c71c31714d468ef3a15f95a8890b0",
+      "bytes": 164510
+    },
+    {
+      "file": "dock-metrics-hidden.png",
+      "sha256": "da3b89be9117a084982c3ee5bd4a081377c3ca8ff9883f68925be3794e780175",
+      "bytes": 263778
+    },
+    {
+      "file": "dock-relaunched-hidden.png",
+      "sha256": "7c758423adf1890a986d926be0ce46bc2b7e2bb61b893f12567373249a52837c",
+      "bytes": 263717
+    },
+    {
+      "file": "dock-before-preparation-quick-setting.png",
+      "sha256": "19654bbc0c834529871bd62d663ca5eda3fd2fef7f8e555102d44962824a7e21",
+      "bytes": 163655
+    },
+    {
+      "file": "dock-before-preparation.png",
+      "sha256": "9dd5240d6e694b293c037d76796ac66585989345fbbcf04a7cd948078182b567",
+      "bytes": 245282
+    },
+    {
+      "file": "dock-preparing-audio.png",
+      "sha256": "18e235cc9a616d44f90672e718c7734dc15e18202b3c387a8f70f7a940c505b3",
+      "bytes": 247793
+    },
+    {
+      "file": "dock-prepared-page-details.png",
+      "sha256": "b6de541b58cc5a18c6dbe0e1354166fb1e024c9794b7f067a301fe02acfff757",
+      "bytes": 171926
+    },
+    {
+      "file": "dock-audio-ready.png",
+      "sha256": "9b2e989b87ba3f0a7ba59023da1c388e368a01cb9e17a4e4d0c155da42fa08b0",
+      "bytes": 250105
+    },
+    {
+      "file": "dock-playback-before-shown-quick-setting.png",
+      "sha256": "88e4843d3a16f737c14fcb6d0bc94614bec3d19825dd34de6d4a40f52a64654d",
+      "bytes": 164460
+    },
+    {
+      "file": "dock-playback-before-shown.png",
+      "sha256": "d5035097818526790a879f87deac7588ee966c21a3d378f3c981d47a2a5d17a5",
+      "bytes": 249987
+    },
+    {
+      "file": "dock-listening-shown.png",
+      "sha256": "06bdfc8a42652ed9a7b8060bbfaed8d21efd9095d2bcf8edb58a4107c9e2cce5",
+      "bytes": 254610
+    },
+    {
+      "file": "dock-paused-shown.png",
+      "sha256": "08bc88cb23413d94458648ee717aa866d40c1253338999f4b5c2fdb8c87d5d54",
+      "bytes": 254726
+    },
+    {
+      "file": "dock-playback-before-hidden-quick-setting.png",
+      "sha256": "f4130e2cb324a39c040c4dce217717ef46328c1da61b75e2464f99a3ba9a3598",
+      "bytes": 168362
+    },
+    {
+      "file": "dock-playback-before-hidden.png",
+      "sha256": "0df34f6173365f86cec4bd0e075693b635f7287968b9212d14fd043f1c239d8d",
+      "bytes": 268755
+    },
+    {
+      "file": "dock-listening-hidden.png",
+      "sha256": "684d7b2f8ff2a39323944ca63174d79bfddaa4ca06066acf8be07ff476bd1f35",
+      "bytes": 263702
+    },
+    {
+      "file": "dock-paused-hidden.png",
+      "sha256": "5283b8422d1455827378463f08a78503ddd353a24972236f9e6caa8e8e702939",
+      "bytes": 259740
+    }
+  ],
+  "emulatorApks": [
+    {
+      "path": "app/build/outputs/apk/androidTest/release/app-release-androidTest.apk",
+      "sha256": "138c74d89942f562b859ffcf685b9eb4503f7c612b582aba3f30ed2c34e0cc3a",
+      "bytes": 911187
+    },
+    {
+      "path": "app/build/outputs/apk/release/app-release.apk",
+      "sha256": "35872d2c3da4a485ce655363edd3cfae9e3da194fbb4f95bf5860b14c3c86c7c",
+      "bytes": 136509378
+    }
+  ],
+  "retainedEvidenceFiles": [
+    "capture-build.json",
+    "dock-regression.json",
+    "capture-report.json",
+    "dock-listening-shown.png",
+    "dock-listening-hidden.png",
+    "dock-metrics-shown-quick-setting.png",
+    "dock-preparing-audio.png",
+    "dock-prepared-page-details.png",
+    "dock-prepared-page-details.xml",
+    "dock-initial-text.xml",
+    "dock-pdf-selected.xml",
+    "dock-relaunched-shown.xml",
+    "dock-relaunched-hidden.xml",
+    "dock-metrics-shown-quick-setting.xml",
+    "dock-metrics-hidden-quick-setting.xml",
+    "dock-preparation-008.xml",
+    "dock-preparation-008-media-session.txt",
+    "dock-playback-shown-065.xml",
+    "dock-playback-shown-065-media-session.txt",
+    "dock-playback-hidden-071.xml",
+    "dock-playback-hidden-071-media-session.txt",
+    "dock-paused-shown.xml",
+    "dock-paused-shown-media-session.txt",
+    "dock-paused-hidden.xml",
+    "dock-paused-hidden-media-session.txt"
+  ],
+  "limitations": [
+    "Bounds checks do not establish absence of every rendering flicker.",
+    "Explicitly changing performance visibility may resize the card.",
+    "Emulator capture is not a physical-phone or Play-installed ARM64 test.",
+    "Spinner and mode stateDescription test tags were not exported; loading was independently checked from actual ProgressBar bounds, and current mode from its opposite-mode accessibility action.",
+    "This audit did not visually inspect screenshots; separate visual review is required."
+  ]
+}

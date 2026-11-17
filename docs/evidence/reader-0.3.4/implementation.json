@@ -1,0 +1,21 @@
+{
+  "versionName": "0.3.4",
+  "versionCode": 30,
+  "applicationSourceCommit": "bb67d65b958fb96680600c25bb1887ca9865c772",
+  "buildSourceCommit": "ffb5e0b4a34a28149c13c9d1c570d6f4d4a894f4",
+  "changes": [
+    "Compact two-row floating dock, optional metrics above transport",
+    "Removed standalone status row and horizontal progress bar",
+    "16dp Tt icon after Next with 48dp target, toggles text and original view",
+    "Existing preparation ring and cancellation retained inside primary button",
+    "Metrics display buffered audio, with saved show/hide preference"
+  ],
+  "approvedPreview": "../../../design-previews/stable-reader-panel/B-compact-floating-card-v4.png",
+  "publicProductionBlocker": {
+    "run": "https://github.com/sainadh812/ReadFlow/actions/runs/44102803443",
+    "phase": "validate_edit",
+    "httpCode": 403,
+    "message": "The caller does not have permission",
+    "ownedEditDeleted": true
+  }
+}

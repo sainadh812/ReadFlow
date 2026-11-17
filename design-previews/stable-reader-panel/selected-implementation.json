@@ -1,7 +1,7 @@
 {
   "selectedOption": "B",
   "referenceImage": "B-compact-floating-card-v4.png",
-  "status": "Approved compact design; implementation and release validation in progress for 0.3.4.",
+  "status": "Implemented in 0.3.4 (30); GitHub APK and Google Play internal testing published. Public production blocked by store-listing validation HTTP 403.",
   "behavior": [
     "Opaque compact floating card reserves page space instead of covering reading content.",
     "Only optional performance information and playback controls remain; no status row or linear progress bar.",
@@ -20,7 +20,7 @@
     "app/src/main/java/app/readflow/ui/ReaderTransportRow.kt"
   ],
   "testFile": "app/src/testDebug/java/app/readflow/ui/ReaderFloatingDockTest.kt",
-  "validationScope": "Compose layout/action tests, source unit tests, lint, signed artifact verification, and real Android emulator preparation/playback/toggle-persistence checks. No physical-phone test.",
-  "verification": "implementation-verification.json",
+  "validationScope": "Signed build, unit tests, eight compact Compose layout/action tests, and actual Android emulator checks passed. Across 73 emulator snapshots, controls retained their geometry during preparation and playback; performance preference and text/original toggle verified. No physical-phone test.",
+  "verification": "../../docs/evidence/reader-0.3.4/independent-capture-verification.json",
   "releaseEvidence": "../../docs/evidence/reader-0.3.4/release-summary.json"
 }

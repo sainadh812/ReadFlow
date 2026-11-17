@@ -1,0 +1,68 @@
+{
+  "recordedAt": "2026-11-17T14:00:31.843292+00:00",
+  "sourceCommit": "ffb5e0b4a34a28149c13c9d1c570d6f4d4a894f4",
+  "buildResult": "SUCCESSFUL",
+  "buildDuration": "5m 14s",
+  "buildLog": "build/compact-dock-checks.log",
+  "debugUnitTests": {
+    "suiteCount": 58,
+    "tests": 469,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "reportDirectory": "app/build/test-results/testDebugUnitTest",
+    "earliestSuiteTimestamp": "2026-11-17T13:56:02",
+    "latestSuiteTimestamp": "2026-11-17T13:58:48"
+  },
+  "floatingDockLayoutTests": {
+    "tests": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "timestamp": "2026-11-17T13:58:19",
+    "durationSeconds": 29.284,
+    "evidence": "local-floating-dock-layout-tests.xml"
+  },
+  "lint": {
+    "errors": 0,
+    "fatal": 0,
+    "warnings": 40,
+    "report": "app/build/reports/lint-results-debug.xml",
+    "warningIds": {
+      "GradleDependency": 17,
+      "ConfigurationScreenWidthHeight": 1,
+      "ModifierParameter": 2,
+      "ExportedService": 1,
+      "UsableSpace": 5,
+      "UseKtx": 14
+    },
+    "newWarnings": [
+      {
+        "id": "ModifierParameter",
+        "message": "Modifier parameter should be the first optional parameter",
+        "locations": [
+          {
+            "file": "/home/archgen_guest_1/ReadFlow/app/src/main/java/app/readflow/ui/ReaderTransportRow.kt",
+            "line": "32",
+            "column": "5"
+          }
+        ]
+      },
+      {
+        "id": "ModifierParameter",
+        "message": "Modifier parameter should be the first optional parameter",
+        "locations": [
+          {
+            "file": "/home/archgen_guest_1/ReadFlow/app/src/main/java/app/readflow/ui/ReaderTransportRow.kt",
+            "line": "59",
+            "column": "5"
+          }
+        ]
+      }
+    ]
+  },
+  "tasks": [
+    ":app:testDebugUnitTest",
+    ":app:lintDebug"
+  ]
+}
