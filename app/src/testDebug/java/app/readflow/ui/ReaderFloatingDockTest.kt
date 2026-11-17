@@ -14,8 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -57,8 +60,8 @@ class ReaderFloatingDockTest {
         assertStableAudioStates(width = 640, height = 360, fontScale = 1f)
     }
 
-    @Test fun textOnlyDocumentsKeepTheStatusHeaderAndTransportStill() {
-        assertStableAudioStates(width = 320, height = 800, fontScale = 2f, originalLabel = null)
+    @Test fun textOnlyDocumentsOmitTheViewToggleAndKeepTransportStill() {
+        assertStableAudioStates(width = 320, height = 800, fontScale = 2f, hasOriginal = false)
     }
 
     @Test fun explicitlyHidingMetricsKeepsTransportAnchoredAndSubsequentAudioStatesStable() {
@@ -73,32 +76,41 @@ class ReaderFloatingDockTest {
         val hidden = snapshot(includeMetrics = false)
         assertRectEquals("transport after explicit hide", visible.transport, hidden.transport)
         assertRectEquals("primary action after explicit hide", visible.primary, hidden.primary)
+        assertOptionalRectEquals("view toggle after explicit hide", visible.mode, hidden.mode)
+        assertTrue("Hiding metrics returns space to the page", hidden.page.height > visible.page.height)
+        assertTrue("Transport-only card stays compact", hidden.card.height <= with(compose.density) { 72.dp.toPx() })
         audioStates.forEach { state ->
             compose.runOnIdle { audio.value = state }
             assertSnapshotEquals("metrics hidden: ${state.status}", hidden, snapshot(includeMetrics = false))
+            assertNoModeLabelsOrStatus(state)
+            assertOnlyPlayShowsLoading(state)
         }
 
         compose.runOnIdle { showMetrics.value = true }
         assertSnapshotEquals("metrics restored", visible, snapshot())
     }
 
-    @Test fun viewSelectorAndStatusKeepTheirActionsWhenAudioStateChanges() {
+    @Test fun smallTextToggleSwitchesBothWaysBesideNextWithoutPdfOrTextLabels() {
         val audio = mutableStateOf(AudioState())
         val original = mutableStateOf(false)
-        var detailRequests = 0
         showReader(320, 800, 2f, audio, mutableStateOf(Metrics()), mutableStateOf(false),
-            original = original, showDetails = { detailRequests++ })
+            original = original)
+        val initial = snapshot(includeMetrics = false)
 
-        compose.onNodeWithContentDescription("Text view").assertIsSelected()
-        compose.onNodeWithContentDescription("PDF view").performClick().assertIsSelected()
-        compose.runOnIdle { assertTrue(original.value) }
-        compose.onNodeWithContentDescription("Text view").performClick().assertIsSelected()
-        compose.runOnIdle { assertFalse(original.value) }
-
-        val error = AudioState(status = "Reading stopped · Tap for details", hasIssue = true)
-        compose.runOnIdle { audio.value = error }
-        compose.onNodeWithText(error.status).performClick()
-        compose.runOnIdle { assertEquals(1, detailRequests) }
+        audioStates.forEach { state ->
+            compose.runOnIdle { audio.value = state }
+            compose.onNodeWithContentDescription("Show original page")
+                .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Text view"))
+                .performClick()
+            compose.runOnIdle { assertTrue(original.value) }
+            compose.onNodeWithContentDescription("Show reader text")
+                .assert(SemanticsMatcher.expectValue(SemanticsProperties.StateDescription, "Original view"))
+                .performClick()
+            compose.runOnIdle { assertFalse(original.value) }
+            assertSnapshotEquals("mode switch: ${state.status}", initial, snapshot(includeMetrics = false))
+            assertNoModeLabelsOrStatus(state)
+        }
+        assertTransportTargets(initial)
     }
 
     @Test fun metricsRetainTheirDetailsAndHideActions() {
@@ -118,22 +130,25 @@ class ReaderFloatingDockTest {
         }
     }
 
-    private fun assertStableAudioStates(width: Int, height: Int, fontScale: Float, originalLabel: String? = "PDF") {
+    private fun assertStableAudioStates(width: Int, height: Int, fontScale: Float, hasOriginal: Boolean = true) {
         val audio = mutableStateOf(AudioState())
         val metrics = mutableStateOf(Metrics())
-        showReader(width, height, fontScale, audio, metrics, mutableStateOf(true), originalLabel = originalLabel)
-        val initial = snapshot(includeModes = originalLabel != null)
+        showReader(width, height, fontScale, audio, metrics, mutableStateOf(true), hasOriginal = hasOriginal)
+        val initial = snapshot(includeMode = hasOriginal)
         assertTrue("Page has readable space", initial.page.height > 80f)
         assertTrue("Card does not cover the page", initial.page.bottom <= initial.dock.top)
-        if (originalLabel != null) {
-            compose.onNodeWithContentDescription("Text view").assertIsDisplayed()
-            compose.onNodeWithContentDescription("PDF view").assertIsDisplayed()
+        if (fontScale == 1f) {
+            assertTrue("Metrics and controls fit a compact card", initial.card.height <= with(compose.density) { 130.dp.toPx() })
+        }
+        if (hasOriginal) {
+            compose.onNodeWithTag(MODE).assertIsDisplayed()
         } else {
-            compose.onNodeWithContentDescription("Text view").assertDoesNotExist()
-            compose.onNodeWithContentDescription("PDF view").assertDoesNotExist()
+            compose.onNodeWithTag(MODE).assertDoesNotExist()
         }
         compose.onNodeWithTag(TRANSPORT).assertIsDisplayed()
         assertTransportTargets(initial)
+        assertNoModeLabelsOrStatus(audio.value)
+        assertOnlyPlayShowsLoading(audio.value)
 
         audioStates.forEachIndexed { index, state ->
             compose.runOnIdle {
@@ -144,9 +159,11 @@ class ReaderFloatingDockTest {
                     else -> Metrics("Performance · Saved audio", "No audio measured yet")
                 }
             }
-            val updated = snapshot(includeModes = originalLabel != null)
+            val updated = snapshot(includeMode = hasOriginal)
             assertSnapshotEquals("${width}dp / ${fontScale}×: ${state.status}", initial, updated)
             assertTransportTargets(updated)
+            assertNoModeLabelsOrStatus(state)
+            assertOnlyPlayShowsLoading(state)
         }
     }
 
@@ -157,9 +174,8 @@ class ReaderFloatingDockTest {
         audio: MutableState<AudioState>,
         metrics: MutableState<Metrics>,
         showMetrics: MutableState<Boolean>,
-        originalLabel: String? = "PDF",
+        hasOriginal: Boolean = true,
         original: MutableState<Boolean> = mutableStateOf(false),
-        showDetails: () -> Unit = {},
     ) {
         compose.setContent {
             val density = LocalDensity.current.density
@@ -173,18 +189,18 @@ class ReaderFloatingDockTest {
                                     showDetails = {}, hide = { showMetrics.value = false }, modifier = Modifier.testTag(METRICS))
                             }
                         } else null
-                        ReaderFloatingDock(status = audio.value.status, busy = audio.value.busy,
-                            hasIssue = audio.value.hasIssue, originalLabel = originalLabel, original = original.value,
-                            changeView = { original.value = it }, showDetails = showDetails, showControls = {},
-                            modifier = Modifier.testTag(DOCK), progress = audio.value.progress,
+                        ReaderFloatingDock(showControls = {}, modifier = Modifier.testTag(DOCK),
                             performance = performance,
                             transport = {
                                 ReaderTransportControls(
-                                    state = ReaderPlayback(preparing = audio.value.busy, fillingBuffer = audio.value.busy,
-                                        wantsToPlay = audio.value.status == "Listening",
+                                    state = ReaderPlayback(status = audio.value.status,
+                                        preparing = audio.value.preparing, fillingBuffer = audio.value.fillingBuffer,
+                                        wantsToPlay = audio.value.playing, playing = audio.value.playing,
                                         error = audio.value.status.takeIf { audio.value.hasIssue }),
                                     speed = 1f, changeSpeed = {}, expanded = false, toggleControls = {},
-                                    onPrevious = {}, onPrimary = {}, onNext = {}, modifier = Modifier.testTag(TRANSPORT))
+                                    onPrevious = {}, onPrimary = {}, onNext = {},
+                                    original = original.value.takeIf { hasOriginal }, toggleOriginal = { original.value = !original.value },
+                                    modifier = Modifier.testTag(TRANSPORT))
                             })
                     }
                 }
@@ -192,28 +208,28 @@ class ReaderFloatingDockTest {
         }
     }
 
-    private fun snapshot(includeMetrics: Boolean = true, includeModes: Boolean = true): Bounds {
+    private fun snapshot(includeMetrics: Boolean = true, includeMode: Boolean = true): Bounds {
         compose.waitForIdle()
         fun tagged(tag: String) = compose.onNodeWithTag(tag, useUnmergedTree = true).fetchSemanticsNode().boundsInRoot
         fun described(label: String) = compose.onNodeWithContentDescription(label).fetchSemanticsNode().boundsInRoot
-        return Bounds(tagged(PAGE), tagged(DOCK), tagged(TRANSPORT), tagged("reader-primary-action"),
+        return Bounds(tagged(PAGE), tagged(DOCK), tagged("reader-floating-card"), tagged(TRANSPORT), tagged("reader-primary-action"),
             described("Previous sentence"), described("Next sentence"), described("Open reader controls"),
             described("Playback speed, 1.0 times"),
-            if (includeModes) described("Text view") else null, if (includeModes) described("PDF view") else null,
+            if (includeMode) tagged(MODE) else null,
             if (includeMetrics) tagged(METRICS) else null)
     }
 
     private fun assertSnapshotEquals(context: String, expected: Bounds, actual: Bounds) {
         assertRectEquals("$context: page", expected.page, actual.page)
         assertRectEquals("$context: dock", expected.dock, actual.dock)
+        assertRectEquals("$context: card", expected.card, actual.card)
         assertRectEquals("$context: transport", expected.transport, actual.transport)
         assertRectEquals("$context: primary action", expected.primary, actual.primary)
         assertRectEquals("$context: previous action", expected.previous, actual.previous)
         assertRectEquals("$context: next action", expected.next, actual.next)
         assertRectEquals("$context: open controls action", expected.controls, actual.controls)
         assertRectEquals("$context: speed action", expected.speed, actual.speed)
-        assertOptionalRectEquals("$context: Text button", expected.text, actual.text)
-        assertOptionalRectEquals("$context: PDF button", expected.pdf, actual.pdf)
+        assertOptionalRectEquals("$context: view toggle", expected.mode, actual.mode)
         assertOptionalRectEquals("$context: metrics", expected.metrics, actual.metrics)
     }
 
@@ -227,13 +243,44 @@ class ReaderFloatingDockTest {
         val minimumTouchSize = with(compose.density) { 48.dp.toPx() }
         assertEquals("Primary button keeps its circular width", primarySize, bounds.primary.width, .1f)
         assertEquals("Primary button keeps its circular height", primarySize, bounds.primary.height, .1f)
-        listOf("previous" to bounds.previous, "next" to bounds.next, "controls" to bounds.controls, "speed" to bounds.speed)
+        (listOf("previous" to bounds.previous, "next" to bounds.next, "controls" to bounds.controls, "speed" to bounds.speed) +
+            listOfNotNull(bounds.mode?.let { "view toggle" to it }))
             .forEach { (name, target) ->
                 assertTrue("$name keeps a 48dp touch width", target.width >= minimumTouchSize - .1f)
                 assertTrue("$name keeps a 48dp touch height", target.height >= minimumTouchSize - .1f)
             }
         assertTrue("Previous does not overlap Play", bounds.previous.right <= bounds.primary.left)
         assertTrue("Next does not overlap Play", bounds.primary.right <= bounds.next.left)
+        assertTrue("Speed does not overlap Previous", bounds.speed.right <= bounds.previous.left)
+        bounds.mode?.let {
+            assertTrue("Text toggle sits after Next without overlap", bounds.next.right <= it.left)
+            assertTrue("Text toggle sits before the up arrow without overlap", it.right <= bounds.controls.left)
+        }
+    }
+
+    private fun assertNoModeLabelsOrStatus(state: AudioState) {
+        compose.onNodeWithText("Text").assertDoesNotExist()
+        compose.onNodeWithText("PDF").assertDoesNotExist()
+        compose.onNodeWithContentDescription("Text view").assertDoesNotExist()
+        compose.onNodeWithContentDescription("PDF view").assertDoesNotExist()
+        compose.onNodeWithText(state.status).assertDoesNotExist()
+        compose.onNodeWithContentDescription("Reading status: ${state.status}").assertDoesNotExist()
+    }
+
+    private fun assertOnlyPlayShowsLoading(state: AudioState) {
+        val loading = state.preparing || state.fillingBuffer
+        // Counting progress semantics catches a reintroduced linear loading bar anywhere in the dock.
+        compose.onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.ProgressBarRangeInfo), useUnmergedTree = true)
+            .assertCountEquals(if (loading) 1 else 0)
+        if (!loading) {
+            compose.onNodeWithTag(SPINNER).assertDoesNotExist()
+            return
+        }
+        val spinner = compose.onNodeWithTag(SPINNER, useUnmergedTree = true).assertIsDisplayed().fetchSemanticsNode().boundsInRoot
+        val play = compose.onNodeWithTag("reader-primary-action").fetchSemanticsNode().boundsInRoot
+        assertTrue("Loading stays inside Play", spinner.left >= play.left && spinner.right <= play.right &&
+            spinner.top >= play.top && spinner.bottom <= play.bottom)
+        assertEquals("Loading indicator stays circular", spinner.width, spinner.height, .1f)
     }
 
     private fun assertRectEquals(message: String, expected: Rect, actual: Rect) {
@@ -245,9 +292,10 @@ class ReaderFloatingDockTest {
 
     private data class AudioState(
         val status: String = "Ready to listen",
-        val busy: Boolean = false,
+        val preparing: Boolean = false,
+        val fillingBuffer: Boolean = false,
+        val playing: Boolean = false,
         val hasIssue: Boolean = false,
-        val progress: Float? = null,
     )
 
     private data class Metrics(
@@ -256,9 +304,9 @@ class ReaderFloatingDockTest {
     )
 
     private data class Bounds(
-        val page: Rect, val dock: Rect, val transport: Rect, val primary: Rect,
+        val page: Rect, val dock: Rect, val card: Rect, val transport: Rect, val primary: Rect,
         val previous: Rect, val next: Rect, val controls: Rect, val speed: Rect,
-        val text: Rect?, val pdf: Rect?, val metrics: Rect?,
+        val mode: Rect?, val metrics: Rect?,
     )
 
     companion object {
@@ -266,14 +314,16 @@ class ReaderFloatingDockTest {
         private const val DOCK = "floating-dock"
         private const val TRANSPORT = "transport"
         private const val METRICS = "performance-summary"
+        private const val MODE = "reader-view-toggle"
+        private const val SPINNER = "reader-preparation-spinner"
         private val audioStates = listOf(
-            AudioState("Preparing audio…", busy = true),
-            AudioState("Preparing audio · 0 of 4 ahead", busy = true, progress = 0f),
-            AudioState("Preparing audio · 3 of 4 ahead", busy = true, progress = .75f),
-            AudioState("Listening"),
-            AudioState("Preparing next sentence · 0:02 ready", busy = true),
+            AudioState("Preparing audio…", preparing = true),
+            AudioState("Preparing audio · 0 of 4 ahead", fillingBuffer = true),
+            AudioState("Preparing audio · 3 of 4 ahead", preparing = true, fillingBuffer = true),
+            AudioState("Listening", playing = true),
+            AudioState("Preparing next sentence · 0:02 ready", preparing = true),
             AudioState("Reading stopped · " + "A very long explanation of an audio preparation problem. ".repeat(8), hasIssue = true),
-            AudioState("Preparing page 123 of 456 · 1,234 audio chunks ready", busy = true, progress = .5f),
+            AudioState("Preparing page 123 of 456 · 1,234 audio chunks ready", preparing = true),
             AudioState("Cancelled · prepared audio kept"),
             AudioState(),
         )

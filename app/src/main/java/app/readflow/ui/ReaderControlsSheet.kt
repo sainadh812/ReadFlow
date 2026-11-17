@@ -46,6 +46,8 @@ import kotlinx.coroutines.launch
     lighting: ReaderLightingState,
     dismiss: () -> Unit,
     notifications: () -> Unit = {},
+    original: Boolean? = null,
+    toggleOriginal: () -> Unit = {},
 ) {
     // A partial anchor would place the footer below the screen. Bound the whole sheet instead.
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -133,7 +135,8 @@ import kotlinx.coroutines.launch
                 color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
             HorizontalDivider()
             ReaderTransportRow(vm, state, notifications, prefs.speed,
-                changeSpeed = { advanced = false; revealSpeed = true }, expanded = true, toggleControls = dismiss)
+                changeSpeed = { advanced = false; revealSpeed = true }, expanded = true, toggleControls = dismiss,
+                original = original, toggleOriginal = toggleOriginal)
         }
     }
 }

@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import app.readflow.playback.ReaderPlayback
 import java.util.Locale
 
-/** Identical transport geometry in the dock and sheet; the medium Play control stays centered. */
+/** Stable controls in the dock and sheet; loading never adds a row. */
 @Composable internal fun ReaderTransportRow(
     vm: ReaderViewModel,
     state: ReaderPlayback,
@@ -27,6 +27,8 @@ import java.util.Locale
     changeSpeed: () -> Unit,
     expanded: Boolean,
     toggleControls: () -> Unit,
+    original: Boolean? = null,
+    toggleOriginal: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val selectedWord = state.page?.words?.firstOrNull { it.id == state.selectedWordId }
@@ -40,7 +42,7 @@ import java.util.Locale
         onNext = {
             if (state.blockedSentence != null) { notifications(); vm.app.playback.skipBlockedSentence() }
             else vm.app.playback.sentence(1)
-        }, modifier = modifier)
+        }, original = original, toggleOriginal = toggleOriginal, modifier = modifier)
 }
 
 @Composable internal fun ReaderTransportControls(
@@ -52,12 +54,16 @@ import java.util.Locale
     onPrevious: () -> Unit,
     onPrimary: () -> Unit,
     onNext: () -> Unit,
+    original: Boolean? = null,
+    toggleOriginal: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val selected = state.page?.words?.any { it.id == state.selectedWordId } == true && !state.wantsToPlay && !state.preparing
     val preparing = state.fillingBuffer || (state.preparing && state.currentChunk == null)
     val readable = state.page?.words?.isNotEmpty() == true
-    Row(modifier.fillMaxWidth().heightIn(min = 64.dp).padding(horizontal = 12.dp, vertical = 3.dp),
+    // Five 48dp targets and the 58dp primary action fit a 320dp phone without overlap.
+    Row(modifier.fillMaxWidth().heightIn(min = 64.dp)
+        .padding(horizontal = if (original != null) 0.dp else 12.dp, vertical = 3.dp),
         verticalAlignment = Alignment.CenterVertically) {
         Box(Modifier.weight(1f).heightIn(min = 58.dp), contentAlignment = Alignment.Center) {
             ReaderTransportSpeed(speed, changeSpeed)
@@ -78,7 +84,7 @@ import java.util.Locale
                     }
                 }) {
                 Box(contentAlignment = Alignment.Center) {
-                    if (preparing) CircularProgressIndicator(Modifier.size(48.dp),
+                    if (preparing) CircularProgressIndicator(Modifier.size(48.dp).testTag("reader-preparation-spinner"),
                         color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .65f), strokeWidth = 2.dp)
                     Icon(when {
                         preparing -> Icons.Default.Close
@@ -91,6 +97,15 @@ import java.util.Locale
         Box(Modifier.weight(1f).heightIn(min = 58.dp), contentAlignment = Alignment.Center) {
             IconButton(onClick = onNext, enabled = readable || state.blockedSentence != null, modifier = Modifier.size(48.dp)) {
                 Icon(Icons.Default.SkipNext, if (state.blockedSentence != null) "Skip blocked sentence" else "Next sentence", Modifier.size(28.dp))
+            }
+        }
+        if (original != null) Box(Modifier.weight(1f).heightIn(min = 58.dp), contentAlignment = Alignment.Center) {
+            IconButton(onClick = toggleOriginal, modifier = Modifier.size(48.dp).testTag("reader-view-toggle").semantics {
+                contentDescription = if (original) "Show reader text" else "Show original page"
+                stateDescription = if (original) "Original view" else "Text view"
+            }) {
+                Icon(Icons.Default.TextFields, null, Modifier.size(16.dp),
+                    tint = if (original) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary)
             }
         }
         Box(Modifier.weight(1f).heightIn(min = 58.dp), contentAlignment = Alignment.Center) {

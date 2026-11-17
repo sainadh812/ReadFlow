@@ -417,7 +417,55 @@ class Capture:
         self.launch()
         self.wait("Library")
         self.open_book()
-        self.wait("PDF view", timeout=30)
+        self.wait_reader_view(timeout=30)
+
+    def reader_view(self, root=None):
+        """Read the current mode from the compact toggle's opposite-mode action."""
+        if root is None:
+            root = self.dump()
+        for mode, action in (("original", "Show reader text"), ("text", "Show original page")):
+            node = self.find(action, root=root)
+            if node is not None:
+                return mode, action, node
+        return None
+
+    def wait_reader_view(self, mode=None, timeout=20):
+        deadline = time.monotonic() + timeout
+        while time.monotonic() < deadline:
+            current = self.reader_view()
+            if current is not None and (mode is None or current[0] == mode):
+                return current
+            time.sleep(.7)
+        raise CaptureError(f"Reader view toggle did not expose the requested mode: {mode or 'either'}")
+
+    def select_reader_view(self, mode):
+        """Select a mode idempotently; tapping the new single icon always toggles."""
+        if mode not in ("text", "original"):
+            raise ValueError(f"Unknown reader view: {mode}")
+        current, action, node = self.wait_reader_view()
+        if current != mode:
+            self.tap_observed(node, action)
+        return self.wait_reader_view(mode)
+
+    def confirm_prepared_page(self, name):
+        """Confirm complete cached speech in the normal details dialog, not a dock label."""
+        self.tap("Reader menu")
+        self.scroll_to("Reading details")
+        self.tap("Reading details")
+        self.wait("Reading details")
+        root = self.dump()
+        completion = "Pages 1–1 ready · press Play to read"
+        complete = self.find(completion, contains=True, root=root) is not None
+        page_count = self.find("1/1 pages", contains=True, root=root)
+        self.screenshot(name)
+        detail = {"method": "Normal Reading details dialog after the primary action returned to Play",
+                  "completionMessage": completion if complete else None,
+                  "pageCountText": page_count.get("text") if page_count is not None else None,
+                  "evidence": name + ".png", "hierarchy": name + ".xml"}
+        self.tap("Close")
+        if not complete or page_count is None:
+            raise CaptureError("Whole-page preparation was not confirmed in Reading details; inspect " + name)
+        return detail
 
     def open_book(self):
         # The overflow icon is named "Options for <title>" and can remain
@@ -480,9 +528,9 @@ class Capture:
 
     def reader(self):
         self.open_book()
-        self.wait("PDF view", timeout=30)
+        self.wait_reader_view(timeout=30)
         self.first_page()
-        self.tap("PDF view")
+        self.select_reader_view("original")
         with self.recording("02-reading"):
             self.screenshot("03-reader-pdf")
             self.swipe(.84, .46, .16, .46, 800)
@@ -490,7 +538,7 @@ class Capture:
             self.screenshot("04-page-turned")
             self.swipe(.16, .46, .84, .46, 800)
             self.wait("Page 1 of 3", contains=True)
-            self.tap("Text view")
+            self.select_reader_view("text")
             time.sleep(3)
 
     def controls(self):
@@ -569,11 +617,16 @@ class Capture:
                               if self.find(label, root=root) is not None), None)
         if primary_label is None:
             raise CaptureError("Floating dock has no primary playback control.")
-        controls = {"primary": control(primary_label), "textMode": control("Text view"),
-                    "pdfMode": control("PDF view"), "expand": control("Open reader controls"),
+        view = self.reader_view(root)
+        if view is None:
+            raise CaptureError("Floating dock has no text/original view toggle.")
+        mode, view_action, view_node = view
+        controls = {"primary": control(primary_label), "viewToggle": control(view_action),
+                    "expand": control("Open reader controls"),
                     "previous": control("Previous sentence"), "next": control("Next sentence"),
-                    "speed": control("Playback speed,", contains=True),
-                    "status": control("Reading status:", contains=True)}
+                    "speed": control("Playback speed,", contains=True)}
+        if self.find("Reading status:", contains=True, root=root) is not None or self.find("PDF view", root=root) is not None:
+            raise CaptureError("Removed dock status or PDF selector is still accessible.")
         metrics = self.find("Hide performance metrics", root=root)
         measured = list(controls.values()) + ([metrics] if metrics is not None else [])
         ancestor_sets = [set(ancestors(node)) for node in measured]
@@ -594,25 +647,30 @@ class Capture:
                                and self.bounds(node)[2] - self.bounds(node)[0] > self.width * .6]
         if viewport_candidates:
             geometry["readingViewport"] = max(viewport_candidates, key=lambda box: (box[2]-box[0])*(box[3]-box[1]))
-        selected = {}
-        for key, label in (("text", "Text view"), ("pdf", "PDF view")):
-            node = self.find(label, root=root)
-            selected[key] = any(item.get("selected") == "true" or item.get("checked") == "true"
-                                for item in ancestors(node))
+        # Android's hierarchy does not always export Compose stateDescription.
+        # The action changes with the real mode; record that observation explicitly.
+        selected = {"text": mode == "text", "pdf": mode == "original"}
+        centers = {key: (bounds[0] + bounds[2]) / 2 for key, bounds in geometry.items()}
+        if not centers["next"] < centers["viewToggle"] < centers["expand"]:
+            raise CaptureError("Compact text toggle is not between Next sentence and the up arrow.")
         hierarchy = name + ".xml"
         (self.output / hierarchy).write_text(self.last_xml)
         media_file = name + "-media-session.txt"
         media = self.shell("dumpsys", "media_session")
         (self.output / media_file).write_text(media)
-        status_node = self.find("Reading status:", contains=True, root=root)
+        spinner = next((node for node in root.iter("node")
+                        if node.get("resource-id", "").endswith("reader-preparation-spinner")), None)
         snapshot = {"name": name, "capturedAt": self.now(), "hierarchy": hierarchy,
                     "mediaSessionEvidence": media_file, "mediaState": self.media_state(media),
-                    "primaryLabel": primary_label, "status": status_node.get("content-desc"),
+                    "primaryLabel": primary_label, "viewToggleAction": view_action,
+                    "viewStateDescription": view_node.get("state-description"),
+                    "viewModeEvidence": "Current mode inferred from the opposite-mode accessibility action",
+                    "preparationSpinnerBoundsIfExported": self.bounds(spinner) if spinner is not None else None,
                     "metricsVisible": metrics is not None, "selected": selected, "bounds": geometry,
                     "dockMeasurement": "exported control container" if exported_card else "accessible control envelope",
                     "visibleMetricText": [node.get("text") for node in root.iter("node")
                                           if any(value in node.get("text", "") for value in
-                                                 ("chars/min", "× listening", "Performance ·", "ready", "No audio measured"))]}
+                                                 ("chars/min", "× listening", "Performance", "buffered", "No audio measured"))]}
         self.report["dockRegression"]["snapshots"].append(snapshot)
         self.save()
         return snapshot
@@ -658,25 +716,25 @@ class Capture:
         try:
             self.recover_reader()
             self.first_page()
-            self.tap("Text view")
+            self.select_reader_view("text")
             self.wait("Play")
             initial = self.dock_snapshot("dock-initial-text")
             if initial["selected"] != {"text": True, "pdf": False}:
-                raise CaptureError("Text view did not expose its selected state.")
-            self.tap("PDF view")
+                raise CaptureError("Text view was not reflected by the toggle action.")
+            self.select_reader_view("original")
             pdf = self.dock_snapshot("dock-pdf-selected")
             if pdf["selected"] != {"text": False, "pdf": True}:
-                raise CaptureError("PDF view did not expose its selected state.")
-            for key in ("primary", "textMode", "pdfMode", "expand"):
+                raise CaptureError("Original view was not reflected by the toggle action.")
+            for key in ("primary", "viewToggle", "expand", "previous", "next", "speed"):
                 if initial["bounds"][key] != pdf["bounds"][key]:
                     raise CaptureError("Text/PDF switching moved a fixed dock control: " + key)
             self.screenshot("dock-pdf-selected", hierarchy=False)
-            self.tap("Text view")
+            self.select_reader_view("text")
             for enabled, label in ((True, "shown"), (False, "hidden")):
                 self.dock_performance(enabled, "dock-metrics-" + label)
                 # Force-stop tests persisted preferences, not rememberSaveable state.
                 self.recover_reader()
-                self.tap("Text view")
+                self.select_reader_view("text")
                 persisted = self.dock_snapshot("dock-relaunched-" + label)
                 if persisted["metricsVisible"] != enabled:
                     raise CaptureError("Performance visibility was not persisted after relaunch.")
@@ -699,14 +757,12 @@ class Capture:
             while time.monotonic() < deadline:
                 sample = self.dock_snapshot(f"dock-preparation-{len(evidence['snapshots']):03d}")
                 self.assert_dock_stable(baseline, sample)
-                if sample["primaryLabel"] == "Cancel preparation" or "Preparing" in sample["status"]:
+                if sample["primaryLabel"] == "Cancel preparation":
                     preparing += 1
                     if preparing == 1:
                         self.screenshot("dock-preparing-audio", hierarchy=False)
-                if "Pages 1–1 ready · press Play to read" in sample["status"] and sample["primaryLabel"] == "Play":
+                if sample["primaryLabel"] == "Play":
                     break
-                if any(label in sample["status"] for label in ("Reading stopped", "Sentence needs attention")):
-                    raise CaptureError("Actual speech preparation failed; see the reading status evidence.")
                 time.sleep(2)
             else:
                 raise CaptureError("Page preparation did not finish within 15 minutes.")
@@ -714,6 +770,7 @@ class Capture:
             evidence["preparationBoundsStable"] = preparing > 0
             if preparing == 0:
                 evidence["limitations"].append("Preparation finished before a hierarchy sample; preparation geometry was not observed.")
+            evidence["pagePreparation"] = self.confirm_prepared_page("dock-prepared-page-details")
             self.screenshot("dock-audio-ready", hierarchy=False)
             # Check fixed geometry both with changing metrics and with metrics hidden.
             for show_metrics, label in ((True, "shown"), (False, "hidden")):
@@ -730,8 +787,6 @@ class Capture:
                             self.screenshot("dock-listening-" + label, hierarchy=False)
                         if playing >= 3:
                             break
-                    if any(value in sample["status"] for value in ("Reading stopped", "Sentence needs attention")):
-                        raise CaptureError("Actual playback failed during dock validation.")
                     time.sleep(.5)
                 else:
                     raise CaptureError("Actual PLAYING and three stable dock samples were not observed.")
@@ -756,7 +811,7 @@ class Capture:
         self.configure_recording_audio()
         self.recover_reader()
         self.first_page()
-        self.tap("Text view")
+        self.select_reader_view("text")
         # Prepare an actual page through the shipped user flow. Short heading
         # audio can end while UI automation obtains a hierarchy, so the proof
         # needs a real reserve of cached speech, not a race against that heading.
@@ -768,12 +823,12 @@ class Capture:
             self.shell("input", "keyevent", "KEYCODE_DEL")
         self.shell("input", "text", "1")
         self.tap("Prepare")
-        self.wait("Pages 1–1 ready · press Play to read", timeout=900, contains=True)
-        self.wait("Play", timeout=30)
+        self.wait("Play", timeout=900)
+        preparation = self.confirm_prepared_page("playback-prepared-page-details")
         self.screenshot("playback-prepared-page")
         self.report["playbackPreparation"] = {
             "method": "Prepare pages before listening: page 1 through page 1",
-            "readyMessage": "Pages 1–1 ready · press Play to read",
+            "completionVerification": preparation,
             "evidence": "playback-prepared-page.png",
             "outsideProofRecording": True,
             "usesOrdinaryVerifiedAudioCache": True,
@@ -860,7 +915,7 @@ class Capture:
             try:
                 if name in ("controls", "dictionary", "themes"):
                     self.recover_reader()
-                    self.tap("Text view")
+                    self.select_reader_view("text")
                 if name == "reader":
                     self.recover_reader()
                     self.tap("Back")

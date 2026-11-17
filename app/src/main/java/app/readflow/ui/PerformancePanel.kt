@@ -30,8 +30,8 @@ import kotlinx.coroutines.flow.sample
     val usingSavedAudio = summary.recentCacheHits > 0 && summary.synthesisCharactersPerMinute == null
     val noFreshMeasurement = if (usingSavedAudio) "Saved audio · no fresh measurement" else "Waiting for a generated sample"
     val generation = summary.synthesisCharactersPerMinute?.let { "${metricNumber(it, 0)} chars/min" }
-        ?: if (usingSavedAudio) "Performance · Saved audio" else "Performance · Waiting for audio"
-    val buffer = summary.bufferedListeningMs?.let { "${metricSeconds(it)} ready" } ?: "No audio measured yet"
+        ?: if (usingSavedAudio) "Performance · Saved audio" else "Performance"
+    val buffer = summary.bufferedListeningMs?.let { "${metricSeconds(it)} buffered" } ?: "No audio measured yet"
     val headroom = summary.throughputHeadroom(prefs.speed)?.let { " · ${metricNumber(it)}× listening" }.orEmpty()
     PerformanceSummary(generation, buffer + headroom, showDetails = { expanded = true },
         hide = { vm.update(prefs.copy(showPerformance = false)) })

@@ -1,16 +1,16 @@
 {
   "selectedOption": "B",
-  "referenceImage": "B-floating-card-v3.png",
-  "status": "Implemented and published to GitHub as0.3.3; Google Play internal track accepted code29. Production remains blocked by Play listing validation permission denial.",
+  "referenceImage": "B-compact-floating-card-v4.png",
+  "status": "Approved compact design; implementation and release validation in progress for 0.3.4.",
   "behavior": [
-    "Opaque inset floating card reserves page space instead of covering reading content.",
-    "Inset icon-and-label Text/PDF selector, medium circular primary control, speed and up-arrow.",
-    "Permanent progress rail and status slot retain their geometry across audio states.",
-    "Optional compact performance summary is inside the card, with existing detail and hide actions.",
+    "Opaque compact floating card reserves page space instead of covering reading content.",
+    "Only optional performance information and playback controls remain; no status row or linear progress bar.",
+    "16dp TextFields icon after Next toggles reader text and original page, with a 48dp touch target and no visible labels or PDF icon.",
+    "58dp primary playback action retains its preparation ring and cancellation behavior.",
+    "Audio preparation and metric updates retain identical card and control geometry.",
     "Reader controls > Quick > Show performance info toggles the saved showPerformance preference.",
-    "Changing performance visibility does not invoke speech-performance updates or pause playback.",
-    "Full prepare-ahead progress and Cancel remain available through the card's Reading details action.",
-    "Controls-sheet footer reserves two status lines and prioritizes errors."
+    "Full preparation progress, issues and cancellation remain in Reader menu > Reading details.",
+    "Controls-sheet footer retains detailed feedback and errors."
   ],
   "sourceFiles": [
     "app/src/main/java/app/readflow/ui/ReaderFloatingDock.kt",
@@ -22,5 +22,5 @@
   "testFile": "app/src/testDebug/java/app/readflow/ui/ReaderFloatingDockTest.kt",
   "validationScope": "Compose layout/action tests, source unit tests, lint, signed artifact verification, and real Android emulator preparation/playback/toggle-persistence checks. No physical-phone test.",
   "verification": "implementation-verification.json",
-  "releaseEvidence": "../../docs/evidence/reader-0.3.3/release-summary.json"
+  "releaseEvidence": "../../docs/evidence/reader-0.3.4/release-summary.json"
 }

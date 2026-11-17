@@ -274,11 +274,8 @@ import java.util.Locale
                 Icon(Icons.Default.MyLocation, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text("Follow reading")
             }
         }
-        if (!pageOnly) PlaybackPanel(vm, state, prefs, requestNotifications, { speeds = true }, status,
-            recognizing = refreshingText || ocrProgress != null,
-            originalLabel = if (hasOriginal) { if (state.document?.mime == "application/pdf") "PDF" else "Image" } else null,
-            original = original, changeView = ::showOriginalPage,
-            showDetails = { details = true },
+        if (!pageOnly) PlaybackPanel(vm, state, prefs, requestNotifications, { speeds = true },
+            original = original.takeIf { hasOriginal }, toggleOriginal = { showOriginalPage(!original) },
             showControls = { readerControls = true })
     }
     if (dictionaryOpen) {
@@ -288,7 +285,8 @@ import java.util.Locale
             bookmark = lookupWord?.let { word -> { vm.bookmark(word) } },
             dismiss = { dictionaryOpen = false })
     }
-    if (readerControls) ReaderControlsSheet(vm, state, prefs, lighting = lighting, dismiss = { readerControls = false }, notifications = requestNotifications)
+    if (readerControls) ReaderControlsSheet(vm, state, prefs, lighting = lighting, dismiss = { readerControls = false },
+        notifications = requestNotifications, original = original.takeIf { hasOriginal }, toggleOriginal = { showOriginalPage(!original) })
     if (appearance) ReaderAppearanceSheet(prefs, vm::update, lighting.settings) { appearance = false }
     if (preparePages && state.document != null) {
         var endPage by remember(state.document.id, pageIndex) { mutableStateOf(minOf(pageIndex + 10, state.document.pageCount).toString()) }
@@ -426,29 +424,11 @@ import java.util.Locale
 }
 
 @Composable private fun PlaybackPanel(vm: ReaderViewModel, state: ReaderPlayback, prefs: Preferences, notifications: () -> Unit,
-    changeSpeed: () -> Unit, status: String, recognizing: Boolean,
-    originalLabel: String?, original: Boolean, changeView: (Boolean) -> Unit,
-    showDetails: () -> Unit, showControls: () -> Unit) {
-    val progress = state.prepareAheadProgress
-    val playbackStatus = when {
-        state.error != null && (state.playing || state.wantsToPlay) -> "Issue ahead"
-        state.error != null -> "Reading stopped"
-        state.blockedSentence != null -> "Sentence needs attention"
-        status != state.status -> status
-        progress?.running == true -> "Preparing pages…"
-        state.fillingBuffer || state.preparing -> "Preparing audio…"
-        state.playing || state.wantsToPlay -> "Listening"
-        progress != null -> progress.status
-        else -> "Ready"
-    }
-    ReaderFloatingDock(status = playbackStatus, busy = state.preparing || state.fillingBuffer || progress?.running == true || recognizing,
-        hasIssue = state.error != null || state.blockedSentence != null,
-        originalLabel = originalLabel, original = original, changeView = changeView,
-        showDetails = showDetails, showControls = showControls,
-        progress = progress?.takeIf { it.running }?.let { it.completedPages.toFloat() / it.totalPages.coerceAtLeast(1) },
+    changeSpeed: () -> Unit, original: Boolean?, toggleOriginal: () -> Unit, showControls: () -> Unit) {
+    ReaderFloatingDock(showControls = showControls,
         performance = if (prefs.showPerformance) { { PerformancePanel(vm, prefs) } } else null) {
         ReaderTransportRow(vm, state, notifications, prefs.speed, changeSpeed,
-            expanded = false, toggleControls = showControls)
+            expanded = false, toggleControls = showControls, original = original, toggleOriginal = toggleOriginal)
     }
 }
 
