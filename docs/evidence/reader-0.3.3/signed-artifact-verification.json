@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "versionName": "0.3.3",
+  "versionCode": 29,
+  "sourceCommit": "8f6093246bf42a3c93222dfed4b9775847ba4c96",
+  "githubRunId": 44010845339,
+  "filesVerified": 83,
+  "apk": {
+    "sha256": "c45c772d6f322c038cae32804cc43bbdd32497dc258c6399127f3d2b4aea0a1f",
+    "bytes": 131467511,
+    "file": "Read-Assist-0.3.3-upload-signed.apk"
+  },
+  "aab": {
+    "sha256": "736564d30e2426b78fb9652f9cf2d0a3f7aa07d0985e8be763ebdc45a6f02dea",
+    "bytes": 72443659,
+    "file": "Read-Assist-0.3.3-upload-signed.aab"
+  },
+  "certificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+  "aabStrictSignatureExitCode": 4,
+  "bundleValidation": "passed",
+  "apk16KbAlignment": "passed",
+  "releaseTests": {
+    "tests": 462,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "lintErrors": 0,
+  "nativeSymbolsUploaded": true,
+  "physicalDeviceTestPerformed": false,
+  "signingNote": "Upload-key-signed APK; Play App Signing uses a separate app-signing certificate."
+}

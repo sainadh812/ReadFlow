@@ -1,0 +1,58 @@
+{
+  "versionName": "0.3.3",
+  "versionCode": 29,
+  "package": "app.readflow",
+  "sourceCommit": "8f6093246bf42a3c93222dfed4b9775847ba4c96",
+  "applicationSourceCommit": "6a5f573edf103c7a82689bad1dd08086b24dfc45",
+  "github": {
+    "published": true,
+    "release": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.3-play-candidate",
+    "apk": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.3-play-candidate/Read-Assist-0.3.3-upload-signed.apk",
+    "publicDownloadHashVerified": true
+  },
+  "buildRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44010845339",
+  "captureRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44010605451",
+  "validation": {
+    "debug": {
+      "tests": 469,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "release": {
+      "tests": 462,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3
+    },
+    "floatingDockLayoutTestsPassed": 8,
+    "lintErrors": 0,
+    "emulatorSnapshots": 47,
+    "preparingSamplesStable": 28,
+    "playingSamplesStablePerVisibility": 3,
+    "performanceVisibilityPersistedBothWays": true,
+    "textPdfSwitchingPassed": true,
+    "physicalDeviceTestPerformed": false
+  },
+  "googlePlay": {
+    "track": "internal",
+    "commitAccepted": true,
+    "versionCodeVerified": 29,
+    "trackStatus": "completed",
+    "lifecycleAvailability": "unconfirmed: Google returns Listing releases quota exceeded",
+    "publicationRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44012781932",
+    "inspectionRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44013034780",
+    "testersModified": false
+  },
+  "production": {
+    "status": "blocked",
+    "attempted": false,
+    "storeValidationHttpCode": 403,
+    "storeValidationStatus": "PERMISSION_DENIED",
+    "storeValidationMessage": "The caller does not have permission",
+    "storeRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44012289867",
+    "storeEditDeleted": true,
+    "existingScreenshotsAndOrderPreserved": true,
+    "requiredFollowup": "Resolve the existing Play Console service-account/account restriction on validating the listing edit. The API did not identify a more specific cause; do not replace keys or guess further permission grants."
+  }
+}

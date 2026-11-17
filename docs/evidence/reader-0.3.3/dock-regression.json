@@ -1,0 +1,3819 @@
+{
+  "status": "passed",
+  "snapshots": [
+    {
+      "name": "dock-initial-text",
+      "capturedAt": "2026-11-17T03:39:39.576218+00:00",
+      "hierarchy": "dock-initial-text.xml",
+      "mediaSessionEvidence": "dock-initial-text-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "status": "Reading status: Ready",
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1473,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1452
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    },
+    {
+      "name": "dock-pdf-selected",
+      "capturedAt": "2026-11-17T03:39:44.261858+00:00",
+      "hierarchy": "dock-pdf-selected.xml",
+      "mediaSessionEvidence": "dock-pdf-selected-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "status": "Reading status: Ready",
+      "metricsVisible": false,
+      "selected": {
+        "text": false,
+        "pdf": true
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1473,
+          1048,
+          1836
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    },
+    {
+      "name": "dock-metrics-shown",
+      "capturedAt": "2026-11-17T03:40:06.826036+00:00",
+      "hierarchy": "dock-metrics-shown.xml",
+      "mediaSessionEvidence": "dock-metrics-shown-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "status": "Reading status: Ready",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Waiting for audio",
+        "0 ms ready"
+      ]
+    },
+    {
+      "name": "dock-relaunched-shown",
+      "capturedAt": "2026-11-17T03:40:27.363735+00:00",
+      "hierarchy": "dock-relaunched-shown.xml",
+      "mediaSessionEvidence": "dock-relaunched-shown-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "status": "Reading status: Ready",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Waiting for audio",
+        "0 ms ready"
+      ]
+    },
+    {
+      "name": "dock-metrics-hidden",
+      "capturedAt": "2026-11-17T03:40:46.931805+00:00",
+      "hierarchy": "dock-metrics-hidden.xml",
+      "mediaSessionEvidence": "dock-metrics-hidden-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "status": "Reading status: Ready",
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1473,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1452
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    },
+    {
+      "name": "dock-relaunched-hidden",
+      "capturedAt": "2026-11-17T03:41:07.345710+00:00",
+      "hierarchy": "dock-relaunched-hidden.xml",
+      "mediaSessionEvidence": "dock-relaunched-hidden-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "status": "Reading status: Ready",
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1473,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1452
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": []
+    },
+    {
+      "name": "dock-before-preparation",
+      "capturedAt": "2026-11-17T03:41:27.046312+00:00",
+      "hierarchy": "dock-before-preparation.xml",
+      "mediaSessionEvidence": "dock-before-preparation-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "status": "Reading status: Ready",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Waiting for audio",
+        "0 ms ready"
+      ]
+    },
+    {
+      "name": "dock-preparation-007",
+      "capturedAt": "2026-11-17T03:41:47.838111+00:00",
+      "hierarchy": "dock-preparation-007.xml",
+      "mediaSessionEvidence": "dock-preparation-007-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Waiting for audio",
+        "0 ms ready"
+      ]
+    },
+    {
+      "name": "dock-preparation-008",
+      "capturedAt": "2026-11-17T03:41:56.110217+00:00",
+      "hierarchy": "dock-preparation-008.xml",
+      "mediaSessionEvidence": "dock-preparation-008-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Waiting for audio",
+        "0 ms ready"
+      ]
+    },
+    {
+      "name": "dock-preparation-009",
+      "capturedAt": "2026-11-17T03:42:02.520706+00:00",
+      "hierarchy": "dock-preparation-009.xml",
+      "mediaSessionEvidence": "dock-preparation-009-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Waiting for audio",
+        "0 ms ready"
+      ]
+    },
+    {
+      "name": "dock-preparation-010",
+      "capturedAt": "2026-11-17T03:42:08.587611+00:00",
+      "hierarchy": "dock-preparation-010.xml",
+      "mediaSessionEvidence": "dock-preparation-010-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Waiting for audio",
+        "0 ms ready"
+      ]
+    },
+    {
+      "name": "dock-preparation-011",
+      "capturedAt": "2026-11-17T03:42:14.552950+00:00",
+      "hierarchy": "dock-preparation-011.xml",
+      "mediaSessionEvidence": "dock-preparation-011-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Waiting for audio",
+        "0 ms ready"
+      ]
+    },
+    {
+      "name": "dock-preparation-012",
+      "capturedAt": "2026-11-17T03:42:20.648157+00:00",
+      "hierarchy": "dock-preparation-012.xml",
+      "mediaSessionEvidence": "dock-preparation-012-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "153 chars/min",
+        "0 ms ready \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-013",
+      "capturedAt": "2026-11-17T03:42:26.531499+00:00",
+      "hierarchy": "dock-preparation-013.xml",
+      "mediaSessionEvidence": "dock-preparation-013-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "177 chars/min",
+        "0 ms ready \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-014",
+      "capturedAt": "2026-11-17T03:42:32.252105+00:00",
+      "hierarchy": "dock-preparation-014.xml",
+      "mediaSessionEvidence": "dock-preparation-014-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "177 chars/min",
+        "0 ms ready \u00b7 0.1\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-015",
+      "capturedAt": "2026-11-17T03:42:38.153791+00:00",
+      "hierarchy": "dock-preparation-015.xml",
+      "mediaSessionEvidence": "dock-preparation-015-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "208 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-016",
+      "capturedAt": "2026-11-17T03:42:43.827761+00:00",
+      "hierarchy": "dock-preparation-016.xml",
+      "mediaSessionEvidence": "dock-preparation-016-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "208 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-017",
+      "capturedAt": "2026-11-17T03:42:49.400038+00:00",
+      "hierarchy": "dock-preparation-017.xml",
+      "mediaSessionEvidence": "dock-preparation-017-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "208 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-018",
+      "capturedAt": "2026-11-17T03:42:55.283152+00:00",
+      "hierarchy": "dock-preparation-018.xml",
+      "mediaSessionEvidence": "dock-preparation-018-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "248 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-019",
+      "capturedAt": "2026-11-17T03:43:00.886117+00:00",
+      "hierarchy": "dock-preparation-019.xml",
+      "mediaSessionEvidence": "dock-preparation-019-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "248 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-020",
+      "capturedAt": "2026-11-17T03:43:06.555477+00:00",
+      "hierarchy": "dock-preparation-020.xml",
+      "mediaSessionEvidence": "dock-preparation-020-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "261 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-021",
+      "capturedAt": "2026-11-17T03:43:12.456073+00:00",
+      "hierarchy": "dock-preparation-021.xml",
+      "mediaSessionEvidence": "dock-preparation-021-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "261 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-022",
+      "capturedAt": "2026-11-17T03:43:18.425745+00:00",
+      "hierarchy": "dock-preparation-022.xml",
+      "mediaSessionEvidence": "dock-preparation-022-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "261 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-023",
+      "capturedAt": "2026-11-17T03:43:24.051233+00:00",
+      "hierarchy": "dock-preparation-023.xml",
+      "mediaSessionEvidence": "dock-preparation-023-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "278 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-024",
+      "capturedAt": "2026-11-17T03:43:29.899004+00:00",
+      "hierarchy": "dock-preparation-024.xml",
+      "mediaSessionEvidence": "dock-preparation-024-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "278 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-025",
+      "capturedAt": "2026-11-17T03:43:35.810198+00:00",
+      "hierarchy": "dock-preparation-025.xml",
+      "mediaSessionEvidence": "dock-preparation-025-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "278 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-026",
+      "capturedAt": "2026-11-17T03:43:41.779270+00:00",
+      "hierarchy": "dock-preparation-026.xml",
+      "mediaSessionEvidence": "dock-preparation-026-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "288 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-027",
+      "capturedAt": "2026-11-17T03:43:47.717679+00:00",
+      "hierarchy": "dock-preparation-027.xml",
+      "mediaSessionEvidence": "dock-preparation-027-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "288 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-028",
+      "capturedAt": "2026-11-17T03:43:53.791306+00:00",
+      "hierarchy": "dock-preparation-028.xml",
+      "mediaSessionEvidence": "dock-preparation-028-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "295 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-029",
+      "capturedAt": "2026-11-17T03:43:59.693597+00:00",
+      "hierarchy": "dock-preparation-029.xml",
+      "mediaSessionEvidence": "dock-preparation-029-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "292 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-030",
+      "capturedAt": "2026-11-17T03:44:05.704895+00:00",
+      "hierarchy": "dock-preparation-030.xml",
+      "mediaSessionEvidence": "dock-preparation-030-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "292 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-031",
+      "capturedAt": "2026-11-17T03:44:11.632998+00:00",
+      "hierarchy": "dock-preparation-031.xml",
+      "mediaSessionEvidence": "dock-preparation-031-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "290 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-032",
+      "capturedAt": "2026-11-17T03:44:17.656049+00:00",
+      "hierarchy": "dock-preparation-032.xml",
+      "mediaSessionEvidence": "dock-preparation-032-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "290 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-033",
+      "capturedAt": "2026-11-17T03:44:23.898786+00:00",
+      "hierarchy": "dock-preparation-033.xml",
+      "mediaSessionEvidence": "dock-preparation-033-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "290 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-034",
+      "capturedAt": "2026-11-17T03:44:31.308102+00:00",
+      "hierarchy": "dock-preparation-034.xml",
+      "mediaSessionEvidence": "dock-preparation-034-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing pages\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "295 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening"
+      ]
+    },
+    {
+      "name": "dock-preparation-035",
+      "capturedAt": "2026-11-17T03:44:35.475268+00:00",
+      "hierarchy": "dock-preparation-035.xml",
+      "mediaSessionEvidence": "dock-preparation-035-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "status": "Reading status: Pages 1\u20131 ready \u00b7 press Play to read",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "297 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening",
+        "Pages 1\u20131 ready \u00b7 press Play to read"
+      ]
+    },
+    {
+      "name": "dock-playback-before-shown",
+      "capturedAt": "2026-11-17T03:44:54.216353+00:00",
+      "hierarchy": "dock-playback-before-shown.xml",
+      "mediaSessionEvidence": "dock-playback-before-shown-media-session.txt",
+      "mediaState": 0,
+      "primaryLabel": "Play",
+      "status": "Reading status: Pages 1\u20131 ready \u00b7 press Play to read",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "297 chars/min",
+        "0 ms ready \u00b7 0.2\u00d7 listening",
+        "Pages 1\u20131 ready \u00b7 press Play to read"
+      ]
+    },
+    {
+      "name": "dock-playback-shown-037",
+      "capturedAt": "2026-11-17T03:45:01.554727+00:00",
+      "hierarchy": "dock-playback-shown-037.xml",
+      "mediaSessionEvidence": "dock-playback-shown-037-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Cancel preparation",
+      "status": "Reading status: Preparing audio\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Saved audio",
+        "17.7 s ready"
+      ]
+    },
+    {
+      "name": "dock-playback-shown-038",
+      "capturedAt": "2026-11-17T03:45:04.627546+00:00",
+      "hierarchy": "dock-playback-shown-038.xml",
+      "mediaSessionEvidence": "dock-playback-shown-038-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Pause",
+      "status": "Reading status: Listening",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Saved audio",
+        "32.1 s ready"
+      ]
+    },
+    {
+      "name": "dock-playback-shown-039",
+      "capturedAt": "2026-11-17T03:45:10.622355+00:00",
+      "hierarchy": "dock-playback-shown-039.xml",
+      "mediaSessionEvidence": "dock-playback-shown-039-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Pause",
+      "status": "Reading status: Preparing audio\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Saved audio",
+        "27.0 s ready"
+      ]
+    },
+    {
+      "name": "dock-playback-shown-040",
+      "capturedAt": "2026-11-17T03:45:14.636036+00:00",
+      "hierarchy": "dock-playback-shown-040.xml",
+      "mediaSessionEvidence": "dock-playback-shown-040-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Pause",
+      "status": "Reading status: Preparing audio\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "Performance \u00b7 Saved audio",
+        "23.3 s ready"
+      ]
+    },
+    {
+      "name": "dock-paused-shown",
+      "capturedAt": "2026-11-17T03:45:22.068690+00:00",
+      "hierarchy": "dock-paused-shown.xml",
+      "mediaSessionEvidence": "dock-paused-shown-media-session.txt",
+      "mediaState": 2,
+      "primaryLabel": "Play",
+      "status": "Reading status: Preparing audio\u2026",
+      "metricsVisible": true,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1323,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1302
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "There is no hurry to reach the end. Good reading leaves space for criosity. T\u01b0n the page when you are ready, and take the next idea with you.",
+        "Performance \u00b7 Saved audio",
+        "20.4 s ready"
+      ]
+    },
+    {
+      "name": "dock-playback-before-hidden",
+      "capturedAt": "2026-11-17T03:45:54.030372+00:00",
+      "hierarchy": "dock-playback-before-hidden.xml",
+      "mediaSessionEvidence": "dock-playback-before-hidden-media-session.txt",
+      "mediaState": 2,
+      "primaryLabel": "Play",
+      "status": "Reading status: Preparing audio\u2026",
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1473,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1452
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "There is no hurry to reach the end. Good reading leaves space for criosity. T\u01b0n the page when you are ready, and take the next idea with you."
+      ]
+    },
+    {
+      "name": "dock-playback-hidden-043",
+      "capturedAt": "2026-11-17T03:46:04.723265+00:00",
+      "hierarchy": "dock-playback-hidden-043.xml",
+      "mediaSessionEvidence": "dock-playback-hidden-043-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Pause",
+      "status": "Reading status: Preparing audio\u2026",
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1473,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1452
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "There is no hurry to reach the end. Good reading leaves space for criosity. T\u01b0n the page when you are ready, and take the next idea with you."
+      ]
+    },
+    {
+      "name": "dock-playback-hidden-044",
+      "capturedAt": "2026-11-17T03:46:10.321660+00:00",
+      "hierarchy": "dock-playback-hidden-044.xml",
+      "mediaSessionEvidence": "dock-playback-hidden-044-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Pause",
+      "status": "Reading status: Preparing audio\u2026",
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1473,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1452
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "There is no hurry to reach the end. Good reading leaves space for criosity. T\u01b0n the page when you are ready, and take the next idea with you."
+      ]
+    },
+    {
+      "name": "dock-playback-hidden-045",
+      "capturedAt": "2026-11-17T03:46:13.999564+00:00",
+      "hierarchy": "dock-playback-hidden-045.xml",
+      "mediaSessionEvidence": "dock-playback-hidden-045-media-session.txt",
+      "mediaState": 3,
+      "primaryLabel": "Pause",
+      "status": "Reading status: Preparing audio\u2026",
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1473,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1452
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "There is no hurry to reach the end. Good reading leaves space for criosity. T\u01b0n the page when you are ready, and take the next idea with you."
+      ]
+    },
+    {
+      "name": "dock-paused-hidden",
+      "capturedAt": "2026-11-17T03:46:21.137192+00:00",
+      "hierarchy": "dock-paused-hidden.xml",
+      "mediaSessionEvidence": "dock-paused-hidden-media-session.txt",
+      "mediaState": 2,
+      "primaryLabel": "Play",
+      "status": "Reading status: Preparing audio\u2026",
+      "metricsVisible": false,
+      "selected": {
+        "text": true,
+        "pdf": false
+      },
+      "bounds": {
+        "primary": [
+          464,
+          1665,
+          616,
+          1817
+        ],
+        "textMode": [
+          72,
+          1523,
+          303,
+          1649
+        ],
+        "pdfMode": [
+          308,
+          1523,
+          539,
+          1649
+        ],
+        "expand": [
+          853,
+          1678,
+          979,
+          1804
+        ],
+        "previous": [
+          301,
+          1678,
+          427,
+          1804
+        ],
+        "next": [
+          653,
+          1678,
+          779,
+          1804
+        ],
+        "speed": [
+          64,
+          1678,
+          264,
+          1804
+        ],
+        "status": [
+          568,
+          1523,
+          1016,
+          1649
+        ],
+        "dock": [
+          32,
+          1473,
+          1048,
+          1836
+        ],
+        "readingViewport": [
+          0,
+          210,
+          1080,
+          1452
+        ]
+      },
+      "dockMeasurement": "exported control container",
+      "visibleMetricText": [
+        "There is no hurry to reach the end. Good reading leaves space for criosity. T\u01b0n the page when you are ready, and take the next idea with you."
+      ]
+    }
+  ],
+  "persistence": {
+    "shown": {
+      "verified": true,
+      "snapshot": "dock-relaunched-shown"
+    },
+    "hidden": {
+      "verified": true,
+      "snapshot": "dock-relaunched-hidden"
+    }
+  },
+  "scope": "Real Android emulator UI, normal Quick settings and actual on-device speech",
+  "limitations": [
+    "Bounds checks do not establish absence of every rendering flicker.",
+    "Explicitly changing performance visibility may resize the card.",
+    "Emulator capture is not a physical-phone or Play-installed ARM64 test."
+  ],
+  "preparingSamples": 28,
+  "preparationBoundsStable": true,
+  "playbackBoundsStable-shown": {
+    "verified": true,
+    "playingSamples": 3
+  },
+  "playbackBoundsStable-hidden": {
+    "verified": true,
+    "playingSamples": 3
+  },
+  "finishedAt": "2026-11-17T03:46:23.140269+00:00"
+}

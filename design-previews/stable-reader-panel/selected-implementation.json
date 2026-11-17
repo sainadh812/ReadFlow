@@ -1,7 +1,7 @@
 {
   "selectedOption": "B",
   "referenceImage": "B-floating-card-v3.png",
-  "status": "Implemented locally; release build, lint and automated tests passed",
+  "status": "Implemented and published to GitHub as0.3.3; Google Play internal track accepted code29. Production remains blocked by Play listing validation permission denial.",
   "behavior": [
     "Opaque inset floating card reserves page space instead of covering reading content.",
     "Inset icon-and-label Text/PDF selector, medium circular primary control, speed and up-arrow.",
@@ -20,6 +20,7 @@
     "app/src/main/java/app/readflow/ui/ReaderTransportRow.kt"
   ],
   "testFile": "app/src/testDebug/java/app/readflow/ui/ReaderFloatingDockTest.kt",
-  "validationScope": "Compose layout, actions, source unit tests, Android lint and local release build. Native on-device flicker verification and store publication are separate.",
-  "verification": "implementation-verification.json"
+  "validationScope": "Compose layout/action tests, source unit tests, lint, signed artifact verification, and real Android emulator preparation/playback/toggle-persistence checks. No physical-phone test.",
+  "verification": "implementation-verification.json",
+  "releaseEvidence": "../../docs/evidence/reader-0.3.3/release-summary.json"
 }
