@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Promote the exact approved Read Assist 0.3.3 bundle to production.
+"""Promote the exact approved Read Assist 0.3.4 bundle to production.
 
 This changes only the production track. It never uploads another bundle,
 rebuilds the app, submits policy answers, or changes other tracks or testers.
@@ -26,11 +26,11 @@ from publish_store_media import (
 DEFAULT_REPORT = Path("build/play-production-publication/report.json")
 DEFAULT_LISTING = Path(__file__).resolve().parents[1] / "store-assets/listing/en-US.json"
 RELEASE_NOTES = (
-    "Read and listen with steady floating controls, redesigned Text/PDF buttons, and an option "
-    "to show or hide speech performance info. Your choice is saved. Adjust voice, speed, brightness "
-    "and warm light from the reader panel. Includes book-style page turns, word highlighting, "
-    "an English dictionary and three themes. Speech and document processing run on your device; "
-    "some features require downloadable packs."
+    "Read with a smaller, steady floating panel. Loading stays inside Play, with no moving bar "
+    "or Ready/Preparing row. Use the small Tt icon beside skip-forward to switch text and original "
+    "views, and show or hide performance info. Includes voice and lighting controls, book-style "
+    "page turns, word highlighting, an English dictionary and three themes. Speech and document "
+    "processing run on your device; some features require downloadable packs."
 )
 
 LIFECYCLE_STATES = {

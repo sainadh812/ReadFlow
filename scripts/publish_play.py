@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inspect or publish the approved 0.3.3 bundle to Google Play Internal testing.
+"""Inspect or publish the approved 0.3.4 bundle to Google Play Internal testing.
 
 Credentials are consumed from the Actions secret in memory. This script never
 changes testers, another track, signing settings, or the approved artifact.
@@ -16,20 +16,21 @@ import sys
 from datetime import datetime, timezone
 
 PACKAGE = "app.readflow"
-VERSION_CODE = 29
-VERSION_NAME = "0.3.3"
+VERSION_CODE = 30
+VERSION_NAME = "0.3.4"
 EXPECTED_PROJECT = "read-assist-fbd21"
 EXPECTED_EMAIL = "play-publisher@read-assist-fbd21.iam.gserviceaccount.com"
-AAB_BYTES = 72443659  # Independently verified signed build 44010845339.
-AAB_SHA256 = "736564d30e2426b78fb9652f9cf2d0a3f7aa07d0985e8be763ebdc45a6f02dea"
-AAB_URL = "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.3-play-candidate/Read-Assist-0.3.3-upload-signed.aab"
-DEFAULT_REPORT = Path("build/play-upload-0.3.3/report.json")
+AAB_BYTES = 72436935  # Independently verified signed build 44097812814.
+AAB_SHA256 = "7371bdf73cd8dc91e05f2889c481ec896c3b80995ba925a1037f2f5b768ef41c"
+AAB_URL = "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.4-play-candidate/Read-Assist-0.3.4-upload-signed.aab"
+DEFAULT_REPORT = Path("build/play-upload-0.3.4/report.json")
 API_ROOT = "https://androidpublisher.googleapis.com"
 APP_PATH = f"/androidpublisher/v3/applications/{PACKAGE}"
 RELEASE_NOTES = (
-    "A steadier reading experience: floating playback controls keep their position while audio is prepared. "
-    "Switch between Text and PDF with the redesigned buttons. Show or hide speech performance info "
-    "from Quick controls; your choice is saved. Tap the reading status for detailed preparation progress."
+    "More space for reading with a smaller floating panel. Removed the Ready/Preparing row and "
+    "moving progress bar; loading stays inside the main playback button. A small Tt icon beside "
+    "skip-forward switches between text and the original page. Performance info remains optional "
+    "and your show/hide choice is saved. Controls keep their position during audio preparation."
 )
 
 _SECRETS: list[str] = []
@@ -195,20 +196,20 @@ def verify_aab(path: Path) -> str:
     validate_artifact_pin(AAB_SHA256, AAB_BYTES)
     path = Path(path)
     if path.stat().st_size != AAB_BYTES:
-        raise PublishError("AAB size does not match the approved 0.3.3 artifact.")
+        raise PublishError("AAB size does not match the approved 0.3.4 artifact.")
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     if digest.hexdigest() != AAB_SHA256:
-        raise PublishError("AAB SHA256 does not match the approved 0.3.3 artifact.")
+        raise PublishError("AAB SHA256 does not match the approved 0.3.4 artifact.")
     return digest.hexdigest()
 
 
 def download_aab(directory: Path) -> Path:
     validate_artifact_pin(AAB_SHA256, AAB_BYTES)
     import requests
-    path = directory / "Read-Assist-0.3.3-upload-signed.aab"
+    path = directory / "Read-Assist-0.3.4-upload-signed.aab"
     directory.mkdir(parents=True, exist_ok=True)
     with requests.Session() as session:
         session.trust_env = False
