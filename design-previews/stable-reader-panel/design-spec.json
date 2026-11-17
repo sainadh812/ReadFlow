@@ -1,0 +1,77 @@
+{
+  "task": "Stable reader bottom panel design previews",
+  "status": "Design only; awaiting user choice; no app source changes",
+  "generator": "Built-in image_gen",
+  "reference": "build/store-media/combined-capture/playback-prepared-page.png",
+  "options": [
+    {
+      "id": "A",
+      "name": "Steady dock",
+      "image": "A-steady-dock.png",
+      "behavior": "Full-width dock with permanently reserved single-line status. Status changes in place.",
+      "tradeoff": "Most familiar; uses space for a status line.",
+      "recommended": true
+    },
+    {
+      "id": "B",
+      "name": "Floating card",
+      "image": "B-floating-card.png",
+      "behavior": "Anchored inset card with two rows. Permanent thin loading rail and a fixed-width status beside Text/PDF.",
+      "tradeoff": "More compact; header status has less horizontal space."
+    },
+    {
+      "id": "C",
+      "name": "Quiet toolbar",
+      "image": "C-quiet-toolbar.png",
+      "behavior": "Utility row above three transport controls. Fixed-footprint loading ring around play; detailed status in expanded settings.",
+      "tradeoff": "Least status text; loading state less explicit."
+    }
+  ],
+  "preservedControls": [
+    "Text/PDF",
+    "Playback speed",
+    "Previous",
+    "Medium Play/Pause",
+    "Next",
+    "Up-chevron",
+    "Swipe-up settings"
+  ],
+  "implementationConstraints": [
+    "Choose dock dimensions from screen size and accessibility font scale, independently of audio state.",
+    "Preserve the reading viewport and control positions across ready, preparing, playing, buffering, and error states.",
+    "Remove dynamic prepare-ahead banners from the collapsed reader layout; retain details and cancellation in expanded settings.",
+    "Render loading feedback inside reserved space; never animate dock height or translate the reader during audio preparation.",
+    "Keep status single-line with overflow handling where present.",
+    "Initial preparing state may disable play; background preparation must not disable Pause or other currently valid controls.",
+    "Preserve sentence and word highlighting and existing red sentence failure behavior.",
+    "Keep the existing controls approximately 58dp for primary and at least 48dp touch targets."
+  ],
+  "codeEvidence": [
+    {
+      "file": "app/src/main/java/app/readflow/ui/ReadFlowUi.kt",
+      "line": 451,
+      "finding": "Conditional status row adds at least 48dp below playback controls."
+    },
+    {
+      "file": "app/src/main/java/app/readflow/ui/ReadFlowUi.kt",
+      "line": 247,
+      "finding": "Weighted reader page shares parent column with dock, so dock-height changes alter viewport."
+    },
+    {
+      "file": "app/src/main/java/app/readflow/ui/ReadFlowUi.kt",
+      "line": 280,
+      "finding": "Prepare-ahead card above dock also has conditional content."
+    },
+    {
+      "file": "app/src/main/java/app/readflow/ui/ReaderTransportRow.kt",
+      "line": 35,
+      "finding": "Existing transport cells and primary control already reserve size."
+    }
+  ],
+  "validationAfterApproval": [
+    "Measure viewport and dock bounds through repeated preparation and buffering transitions in Text and PDF modes.",
+    "Check primary control behavior during initial loading versus background preparation while playing.",
+    "Check narrow screens, enlarged text, navigation insets, expanded settings and preserved controls."
+  ],
+  "limitations": "Static generated previews illustrate layout intention. Actual flicker has not been reproduced or fixed in this design task."
+}

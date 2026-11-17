@@ -1,0 +1,31 @@
+{
+  "revision": 2,
+  "status": "Design previews only; awaiting selection",
+  "request": "Redesign Text/PDF buttons in all three stable bottom-panel concepts.",
+  "generation": "Built-in image_gen; prompts-v2.txt",
+  "options": [
+    {
+      "id": "A",
+      "image": "A-steady-dock-v2.png",
+      "modeSelector": "Two separate equal-size icon-and-label buttons; active filled, inactive outlined."
+    },
+    {
+      "id": "B",
+      "image": "B-floating-card-v2.png",
+      "modeSelector": "Compact rectangular inset switch with a bordered selected tile."
+    },
+    {
+      "id": "C",
+      "image": "C-quiet-toolbar-v2.png",
+      "modeSelector": "Flat icon-and-label tabs with an underline for the selected mode."
+    }
+  ],
+  "inheritedPlan": "design-spec.json",
+  "constraints": [
+    "Preserve stable viewport and dock geometry during all audio states.",
+    "Both Text and PDF remain visible and usable.",
+    "Minimum 48dp touch targets during implementation; fixed label metrics.",
+    "Preserve speed, previous, medium play/pause, next and expand controls."
+  ],
+  "verification": "Visually reviewed all generated images; app code unchanged."
+}

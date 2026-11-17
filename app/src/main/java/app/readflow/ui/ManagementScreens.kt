@@ -153,7 +153,7 @@ import java.util.Locale
             item { SettingsDestination(Icons.Default.RecordVoiceOver, "Voice models", "Choose a voice and manage downloaded models") { vm.navigate("voices") } }
             item {
                 SettingsCard("Performance", Icons.Default.Speed) {
-                    SettingsSwitch("Show reading metrics", "Speech speed, prepared audio and buffering gaps while you read.", prefs.showPerformance) {
+                    SettingsSwitch("Show performance info", "Speech speed, prepared audio and buffering gaps while you read.", prefs.showPerformance) {
                         vm.update(prefs.copy(showPerformance = it))
                     }
                     Text("Speech processing effort", style = MaterialTheme.typography.bodyMedium)

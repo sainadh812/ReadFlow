@@ -1,0 +1,69 @@
+{
+  "revision": 3,
+  "status": "Design only; awaiting user selection; no app code changes",
+  "request": "Keep the original performance information alongside the revised Text/PDF controls.",
+  "generation": "Built-in image_gen; prompts-v3.txt",
+  "previews": [
+    {
+      "option": "A",
+      "image": "A-steady-dock-v3.png"
+    },
+    {
+      "option": "B",
+      "image": "B-floating-card-v3.png"
+    },
+    {
+      "option": "C",
+      "image": "C-quiet-toolbar-v3.png"
+    }
+  ],
+  "inheritedPlans": [
+    "design-spec.json",
+    "design-spec-v2.json"
+  ],
+  "performance": {
+    "visibleCompactMetrics": [
+      {
+        "field": "synthesisCharactersPerMinute",
+        "label": "chars/min",
+        "meaning": "Fresh speech-generation character rate"
+      },
+      {
+        "field": "bufferedListeningMs",
+        "label": "s ready",
+        "meaning": "Prepared listening buffer at current playback speed"
+      },
+      {
+        "field": "throughputHeadroom(prefs.speed)",
+        "label": "× listening",
+        "meaning": "Preparation throughput relative to current listening speed"
+      }
+    ],
+    "source": "app/src/main/java/app/readflow/ui/PerformancePanel.kt:25",
+    "availability": "Show existing measurements when available, including during preparation. Use existing waiting/saved-audio placeholders only when no fresh measurement exists.",
+    "layout": "Two permanent single-line slots with stable dimensions for numeric values and placeholders. Audio-state changes never insert or remove this section.",
+    "controls": "Preserve tap-to-details and intentional hide control, existing showPerformance preference and default.",
+    "detailsPreserved": [
+      "Speech model",
+      "Speech preparation",
+      "Listening buffer",
+      "Ready audio chunks",
+      "Buffering gaps",
+      "Mean speech generation",
+      "Mean word timing",
+      "Recent cached chunks",
+      "Text extraction measurements"
+    ],
+    "updates": "Use existing sampled data; update values in place without width/height animation. Do not treat cached audio as fresh measurements.",
+    "previewNumbers": "Illustrative only: 1,240 chars/min; 34.0 s ready; 2.4× listening."
+  },
+  "implementationNotes": [
+    "Updated requirement overrides prior suggestions that all performance information should be moved out of the collapsed reader.",
+    "Preserve performance summary above mode controls in all three options.",
+    "Detailed preparation progress may still live in expanded controls; retain visible compact performance metrics.",
+    "Keep medium primary control and at least 48dp touch targets; do not shrink text to fit the status.",
+    "Render cached, unavailable, loading, error and measured states within the same geometry.",
+    "If the user explicitly hides metrics, maintain their reading position during that intentional layout change."
+  ],
+  "verification": "All three images visually reviewed for metrics, redesigned mode buttons and equal Ready/Preparing layout. Runtime flicker fix has not been implemented or tested."
+}

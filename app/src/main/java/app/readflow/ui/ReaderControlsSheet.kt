@@ -89,6 +89,13 @@ import kotlinx.coroutines.launch
                     contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
+                    item(key = "quick-performance") {
+                        ReaderControlCard(null, Icons.Default.Insights, compact = true) {
+                            SettingsSwitch("Show performance info", "Speech generation speed and prepared audio in the floating card.", prefs.showPerformance) {
+                                vm.update(prefs.copy(showPerformance = it))
+                            }
+                        }
+                    }
                     item(key = "quick-light") { ReaderLightingControl(lighting) }
                     item(key = "quick-effort") { ReaderEffortControl(vm, prefs) }
                     item(key = "quick-recognition") { ReaderRecognitionDetail(vm, prefs) }
@@ -117,18 +124,13 @@ import kotlinx.coroutines.launch
                 item { ReaderPerformanceControls(vm, prefs) }
                 item { ReaderAudioTuning(vm, prefs) }
             }
-            feedback?.let { message ->
-                Surface(color = MaterialTheme.colorScheme.secondaryContainer) {
-                    Text(message, Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)
-                        .semantics { liveRegion = LiveRegionMode.Polite }, style = MaterialTheme.typography.bodySmall)
-                }
-            }
-            if ((state.error != null || state.preparing || state.fillingBuffer || state.blockedSentence != null) &&
-                (state.error ?: state.status) != feedback) {
-                Text(state.error ?: state.status, Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 6.dp),
-                    style = MaterialTheme.typography.bodySmall, maxLines = 2, overflow = TextOverflow.Ellipsis,
-                    color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
-            }
+            // Reserve both lines so progress/feedback cannot move the sheet's transport controls.
+            val sheetStatus = state.error ?: feedback ?: if (state.preparing || state.fillingBuffer || state.blockedSentence != null)
+                state.status else ""
+            Text(sheetStatus, Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 6.dp)
+                .semantics { if (feedback != null || state.error != null) liveRegion = LiveRegionMode.Polite },
+                style = MaterialTheme.typography.bodySmall, minLines = 2, maxLines = 2, overflow = TextOverflow.Ellipsis,
+                color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
             HorizontalDivider()
             ReaderTransportRow(vm, state, notifications, prefs.speed,
                 changeSpeed = { advanced = false; revealSpeed = true }, expanded = true, toggleControls = dismiss)
@@ -428,7 +430,7 @@ import kotlinx.coroutines.launch
     ReaderControlCard("Performance", Icons.Default.Insights) {
         Text("More speech processing effort may prepare audio faster and use more battery; voice quality stays the same. Changing effort or voice pauses playback while your page stays open.",
             style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        SettingsSwitch("Show reading metrics", "Show speech preparation and audio buffer beside the page.", prefs.showPerformance) {
+        SettingsSwitch("Show performance info", "Speech generation speed and prepared audio in the floating card.", prefs.showPerformance) {
             vm.update(prefs.copy(showPerformance = it))
         }
         SettingsSwitch("Keep CPU workers active", "May reduce short waits, with higher battery use. Off suits longer reading.", prefs.allowSpinning) {
@@ -475,6 +477,6 @@ import kotlinx.coroutines.launch
     }
 }
 
-private const val READER_SPEED_ITEM_INDEX = 4
+private const val READER_SPEED_ITEM_INDEX = 5
 private fun readerSpeedLabel(value: Float): String = String.format(Locale.US, "%.2f", value).trimEnd('0').trimEnd('.') + "×"
 private fun readerMegabytes(value: Long): String = String.format(Locale.US, "%.1f MB", value / 1_000_000.0)

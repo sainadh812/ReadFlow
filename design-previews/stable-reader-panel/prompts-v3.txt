@@ -1,0 +1,59 @@
+OPTION A — PERFORMANCE RESTORED
+Use case: precise-object-edit / ui-mockup.
+Input image 1 is the EDIT TARGET: an approved-in-progress Read Assist reader bottom panel concept with two phones, Ready and Preparing audio.
+Primary request: Restore the app's existing compact PERFORMANCE INFORMATION to this design while preserving the redesigned Text/PDF buttons and all playback controls. User specifically wants these metrics visible beside the reading page.
+Output: a polished landscape 1536x1152 comparison board. Extend both phone frames DOWNWARD by approximately 90px to make room for the new fixed-height performance strip, and extend the board correspondingly. Keep phone widths, top positions, page typography, exact paragraph text, line breaks and reading page positions unchanged. Shift the existing dock controls downward equally inside both extended phones so the performance area fits above the mode selector. The two states MUST have identical geometry: page viewport ends at the same height, permanent performance row occupies the same size, mode and playback controls have matching positions. No text clipping, no overlaps, no shrinking the controls or paragraph.
+Preserve warm cream, forest teal, dark ink palette. Preserve the main title identifying the option, the external Ready / Preparing audio labels, the back arrow/document title/Page 1 of 3/Aa/menu, and every Text/PDF, speed, previous, play, next, expand control in the input. Text remains selected in BOTH phones. Preserve each option's unique mode selector and loading approach exactly.
+Add a restrained performance row approximately 56dp high, two lines of text with a small speedometer icon on the left. On far right reserve a right-chevron for opening performance details and a small X to hide metrics, side by side with comfortable separation. Values and placeholders must fit without wrapping, and occupy the SAME two lines in both states.
+Exact left phone performance text:
+Line 1: "1,240 chars/min"
+Line 2: "34.0 s ready · 2.4× listening"
+Exact right phone performance text:
+Line 1: "Performance · Waiting for audio"
+Line 2: "No audio measured yet"
+Use a crisp readable UI sans font, line 1 medium weight, line 2 subtly smaller. Numbers are illustrative, not actual benchmarks.
+Replace external subtitle with "Performance stays visible as audio prepares."
+Replace bottom external caption with "Design preview · Sample values · Fixed panel height"
+Do not add charts, fake accuracy percentages, CPU or memory metrics, unrelated settings, extra status banners, or any metric beyond the specified existing fields. This is a careful design revision, not a new visual identity.
+Keep title "A · Steady dock".
+Integrate the two-line performance row at the TOP of the full-width fixed footer, immediately above the two separate Text and PDF rectangular icon buttons. Give only this metric strip a subtle pale-sage background, inset 12dp horizontally, modest 10dp radius; add comfortable breathing space before mode buttons. Preserve the independent filled Text and outlined PDF buttons and their gap. Preserve the five-control playback row and the reserved bottom status ("Ready to listen" / "Preparing audio…"). Extend full footer and phones as needed equally for both states; maintain unchanged sizes of existing controls.
+
+OPTION B — PERFORMANCE RESTORED
+Use case: precise-object-edit / ui-mockup.
+Input image 1 is the EDIT TARGET: an approved-in-progress Read Assist reader bottom panel concept with two phones, Ready and Preparing audio.
+Primary request: Restore the app's existing compact PERFORMANCE INFORMATION to this design while preserving the redesigned Text/PDF buttons and all playback controls. User specifically wants these metrics visible beside the reading page.
+Output: a polished landscape 1536x1152 comparison board. Extend both phone frames DOWNWARD by approximately 90px to make room for the new fixed-height performance strip, and extend the board correspondingly. Keep phone widths, top positions, page typography, exact paragraph text, line breaks and reading page positions unchanged. Shift the existing dock controls downward equally inside both extended phones so the performance area fits above the mode selector. The two states MUST have identical geometry: page viewport ends at the same height, permanent performance row occupies the same size, mode and playback controls have matching positions. No text clipping, no overlaps, no shrinking the controls or paragraph.
+Preserve warm cream, forest teal, dark ink palette. Preserve the main title identifying the option, the external Ready / Preparing audio labels, the back arrow/document title/Page 1 of 3/Aa/menu, and every Text/PDF, speed, previous, play, next, expand control in the input. Text remains selected in BOTH phones. Preserve each option's unique mode selector and loading approach exactly.
+Add a restrained performance row approximately 56dp high, two lines of text with a small speedometer icon on the left. On far right reserve a right-chevron for opening performance details and a small X to hide metrics, side by side with comfortable separation. Values and placeholders must fit without wrapping, and occupy the SAME two lines in both states.
+Exact left phone performance text:
+Line 1: "1,240 chars/min"
+Line 2: "34.0 s ready · 2.4× listening"
+Exact right phone performance text:
+Line 1: "Performance · Waiting for audio"
+Line 2: "No audio measured yet"
+Use a crisp readable UI sans font, line 1 medium weight, line 2 subtly smaller. Numbers are illustrative, not actual benchmarks.
+Replace external subtitle with "Performance stays visible as audio prepares."
+Replace bottom external caption with "Design preview · Sample values · Fixed panel height"
+Do not add charts, fake accuracy percentages, CPU or memory metrics, unrelated settings, extra status banners, or any metric beyond the specified existing fields. This is a careful design revision, not a new visual identity.
+Keep title "B · Floating card".
+Add the two-line performance row as a new TOP section INSIDE the existing anchored rounded floating card, below its permanent thin loading rail. Add a subtle horizontal divider beneath performance. The existing inset Text/PDF switch plus Ready/Preparing status occupies the next row, followed by the same five playback controls. Extend the card DOWNWARD along with both phones; keep its top edge at the same reading-page boundary, fixed side insets, opaque white fill and subtle shadow. Preserve the rectangular inset mode switch (selected Text seated white tile with teal outline) exactly. Both states have identically sized card sections and bounds.
+
+OPTION C — PERFORMANCE RESTORED
+Use case: precise-object-edit / ui-mockup.
+Input image 1 is the EDIT TARGET: an approved-in-progress Read Assist reader bottom panel concept with two phones, Ready and Preparing audio.
+Primary request: Restore the app's existing compact PERFORMANCE INFORMATION to this design while preserving the redesigned Text/PDF buttons and all playback controls. User specifically wants these metrics visible beside the reading page.
+Output: a polished landscape 1536x1152 comparison board. Extend both phone frames DOWNWARD by approximately 90px to make room for the new fixed-height performance strip, and extend the board correspondingly. Keep phone widths, top positions, page typography, exact paragraph text, line breaks and reading page positions unchanged. Shift the existing dock controls downward equally inside both extended phones so the performance area fits above the mode selector. The two states MUST have identical geometry: page viewport ends at the same height, permanent performance row occupies the same size, mode and playback controls have matching positions. No text clipping, no overlaps, no shrinking the controls or paragraph.
+Preserve warm cream, forest teal, dark ink palette. Preserve the main title identifying the option, the external Ready / Preparing audio labels, the back arrow/document title/Page 1 of 3/Aa/menu, and every Text/PDF, speed, previous, play, next, expand control in the input. Text remains selected in BOTH phones. Preserve each option's unique mode selector and loading approach exactly.
+Add a restrained performance row approximately 56dp high, two lines of text with a small speedometer icon on the left. On far right reserve a right-chevron for opening performance details and a small X to hide metrics, side by side with comfortable separation. Values and placeholders must fit without wrapping, and occupy the SAME two lines in both states.
+Exact left phone performance text:
+Line 1: "1,240 chars/min"
+Line 2: "34.0 s ready · 2.4× listening"
+Exact right phone performance text:
+Line 1: "Performance · Waiting for audio"
+Line 2: "No audio measured yet"
+Use a crisp readable UI sans font, line 1 medium weight, line 2 subtly smaller. Numbers are illustrative, not actual benchmarks.
+Replace external subtitle with "Performance stays visible as audio prepares."
+Replace bottom external caption with "Design preview · Sample values · Fixed panel height"
+Do not add charts, fake accuracy percentages, CPU or memory metrics, unrelated settings, extra status banners, or any metric beyond the specified existing fields. This is a careful design revision, not a new visual identity.
+Keep title "C · Quiet toolbar".
+Place the two-line performance row as a permanent flat section at the TOP of the minimal full-width footer, directly above the Text/PDF utility tabs. It should blend into warm paper, separated by a delicate horizontal rule from the utility row; no rounded performance card and no heavy background. Preserve the flat Text and PDF icon tabs with teal underline under Text, speed 1× and up-chevron at the right of this row. Preserve previous/play/next and fixed loading ring below. There is still no extra loading/status banner below transport; only the newly restored performance strip above the utility row. Keep stable geometry in both states.

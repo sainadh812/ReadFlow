@@ -29,27 +29,12 @@ import kotlinx.coroutines.flow.sample
     var expanded by remember { mutableStateOf(false) }
     val usingSavedAudio = summary.recentCacheHits > 0 && summary.synthesisCharactersPerMinute == null
     val noFreshMeasurement = if (usingSavedAudio) "Saved audio · no fresh measurement" else "Waiting for a generated sample"
-    Surface(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
-        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = .65f), shape = RoundedCornerShape(16.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Row(Modifier.weight(1f).heightIn(min = 56.dp).clickable(onClickLabel = "Performance details") { expanded = true }
-                .padding(start = 12.dp, top = 6.dp, bottom = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Speed, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary)
-                Spacer(Modifier.width(10.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(summary.synthesisCharactersPerMinute?.let { "${metricNumber(it, 0)} chars/min" }
-                        ?: if (usingSavedAudio) "Performance · Saved audio" else "Performance · Waiting for audio",
-                        style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                    val buffer = summary.bufferedListeningMs?.let { "${metricSeconds(it)} ready" } ?: "No audio measured yet"
-                    val headroom = summary.throughputHeadroom(prefs.speed)?.let { " · ${metricNumber(it)}× listening" }.orEmpty()
-                    Text(buffer + headroom, style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                }
-                Icon(Icons.Default.ChevronRight, null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            Tool(Icons.Default.Close, "Hide performance metrics") { vm.update(prefs.copy(showPerformance = false)) }
-        }
-    }
+    val generation = summary.synthesisCharactersPerMinute?.let { "${metricNumber(it, 0)} chars/min" }
+        ?: if (usingSavedAudio) "Performance · Saved audio" else "Performance · Waiting for audio"
+    val buffer = summary.bufferedListeningMs?.let { "${metricSeconds(it)} ready" } ?: "No audio measured yet"
+    val headroom = summary.throughputHeadroom(prefs.speed)?.let { " · ${metricNumber(it)}× listening" }.orEmpty()
+    PerformanceSummary(generation, buffer + headroom, showDetails = { expanded = true },
+        hide = { vm.update(prefs.copy(showPerformance = false)) })
     if (expanded) AlertDialog(onDismissRequest = { expanded = false }, title = { Text("Reading performance") }, text = {
         Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text("Measured on this phone. Speech rates use completed, freshly generated audio; cached audio is excluded.",
@@ -90,6 +75,26 @@ import kotlinx.coroutines.flow.sample
         }
     }, confirmButton = { TextButton(onClick = { expanded = false }) { Text("Done") } },
         dismissButton = { TextButton(onClick = { expanded = false; vm.navigate("benchmark") }) { Text("Phone testbench") } })
+}
+
+/** Two reserved text lines: a fresh measurement, cached result and waiting state measure equally. */
+@Composable internal fun PerformanceSummary(generation: String, buffer: String, showDetails: () -> Unit,
+    hide: () -> Unit, modifier: Modifier = Modifier) {
+    Row(modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.weight(1f).heightIn(min = 56.dp).clickable(onClickLabel = "Performance details", onClick = showDetails)
+            .padding(start = 12.dp, top = 6.dp, bottom = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Default.Speed, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary)
+            Spacer(Modifier.width(10.dp))
+            Column(Modifier.weight(1f)) {
+                Text(generation, style = MaterialTheme.typography.labelMedium, minLines = 1, maxLines = 1,
+                    softWrap = false, overflow = TextOverflow.Ellipsis)
+                Text(buffer, style = MaterialTheme.typography.labelSmall, minLines = 1, maxLines = 1,
+                    softWrap = false, color = MaterialTheme.colorScheme.onSurfaceVariant, overflow = TextOverflow.Ellipsis)
+            }
+            Icon(Icons.Default.ChevronRight, null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Tool(Icons.Default.Close, "Hide performance metrics", hide)
+    }
 }
 
 @Composable internal fun MetricDetail(label: String, value: String) {

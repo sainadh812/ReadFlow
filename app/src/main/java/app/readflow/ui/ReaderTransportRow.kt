@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -17,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import app.readflow.playback.ReaderPlayback
 import java.util.Locale
 
-/** Identical transport geometry in the dock and sheet; five cells keep Play centered. */
+/** Identical transport geometry in the dock and sheet; the medium Play control stays centered. */
 @Composable internal fun ReaderTransportRow(
     vm: ReaderViewModel,
     state: ReaderPlayback,
@@ -30,6 +31,30 @@ import java.util.Locale
 ) {
     val selectedWord = state.page?.words?.firstOrNull { it.id == state.selectedWordId }
     val selected = selectedWord != null && !state.wantsToPlay && !state.preparing
+    ReaderTransportControls(state, speed, changeSpeed, expanded, toggleControls,
+        onPrevious = { vm.app.playback.sentence(-1) },
+        onPrimary = {
+            if (!state.wantsToPlay && !state.preparing) notifications()
+            if (selected) vm.app.playback.start(wordId = selectedWord?.id) else vm.app.playback.toggle()
+        },
+        onNext = {
+            if (state.blockedSentence != null) { notifications(); vm.app.playback.skipBlockedSentence() }
+            else vm.app.playback.sentence(1)
+        }, modifier = modifier)
+}
+
+@Composable internal fun ReaderTransportControls(
+    state: ReaderPlayback,
+    speed: Float,
+    changeSpeed: () -> Unit,
+    expanded: Boolean,
+    toggleControls: () -> Unit,
+    onPrevious: () -> Unit,
+    onPrimary: () -> Unit,
+    onNext: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val selected = state.page?.words?.any { it.id == state.selectedWordId } == true && !state.wantsToPlay && !state.preparing
     val preparing = state.fillingBuffer || (state.preparing && state.currentChunk == null)
     val readable = state.page?.words?.isNotEmpty() == true
     Row(modifier.fillMaxWidth().heightIn(min = 64.dp).padding(horizontal = 12.dp, vertical = 3.dp),
@@ -38,16 +63,13 @@ import java.util.Locale
             ReaderTransportSpeed(speed, changeSpeed)
         }
         Box(Modifier.weight(1f).heightIn(min = 58.dp), contentAlignment = Alignment.Center) {
-            IconButton(onClick = { vm.app.playback.sentence(-1) }, enabled = readable, modifier = Modifier.size(48.dp)) {
+            IconButton(onClick = onPrevious, enabled = readable, modifier = Modifier.size(48.dp)) {
                 Icon(Icons.Default.SkipPrevious, "Previous sentence", Modifier.size(28.dp))
             }
         }
-        Box(Modifier.weight(1f).heightIn(min = 58.dp), contentAlignment = Alignment.Center) {
-            FilledIconButton(onClick = {
-                if (!state.wantsToPlay && !state.preparing) notifications()
-                if (selected) vm.app.playback.start(wordId = selectedWord?.id) else vm.app.playback.toggle()
-            }, enabled = readable || state.preparing || state.wantsToPlay,
-                modifier = Modifier.size(58.dp).semantics {
+        Box(Modifier.width(58.dp).heightIn(min = 58.dp), contentAlignment = Alignment.Center) {
+            FilledIconButton(onClick = onPrimary, enabled = readable || state.preparing || state.wantsToPlay,
+                modifier = Modifier.size(58.dp).testTag("reader-primary-action").semantics {
                     contentDescription = when {
                         preparing -> "Cancel preparation"
                         state.wantsToPlay -> "Pause"
@@ -67,10 +89,7 @@ import java.util.Locale
             }
         }
         Box(Modifier.weight(1f).heightIn(min = 58.dp), contentAlignment = Alignment.Center) {
-            IconButton(onClick = {
-                if (state.blockedSentence != null) { notifications(); vm.app.playback.skipBlockedSentence() }
-                else vm.app.playback.sentence(1)
-            }, enabled = readable || state.blockedSentence != null, modifier = Modifier.size(48.dp)) {
+            IconButton(onClick = onNext, enabled = readable || state.blockedSentence != null, modifier = Modifier.size(48.dp)) {
                 Icon(Icons.Default.SkipNext, if (state.blockedSentence != null) "Skip blocked sentence" else "Next sentence", Modifier.size(28.dp))
             }
         }

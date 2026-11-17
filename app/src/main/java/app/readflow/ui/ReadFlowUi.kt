@@ -5,14 +5,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.MenuBook
@@ -26,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.contentDescription
@@ -277,21 +274,8 @@ import java.util.Locale
                 Icon(Icons.Default.MyLocation, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text("Follow reading")
             }
         }
-        if (!pageOnly) state.prepareAheadProgress?.let { progress ->
-            Surface(color = MaterialTheme.colorScheme.secondaryContainer, modifier = Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(horizontal = 16.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(progress.status, style = MaterialTheme.typography.bodyMedium)
-                    if (progress.running) LinearProgressIndicator(progress = { progress.completedPages.toFloat() / progress.totalPages }, modifier = Modifier.fillMaxWidth())
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("${progress.completedPages}/${progress.totalPages} pages · ${formatTime(progress.audioMs)} audio ready",
-                            Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
-                        if (progress.running) TextButton(onClick = { vm.app.playback.stop() }) { Text("Cancel") }
-                    }
-                }
-            }
-        }
-        if (!pageOnly && prefs.showPerformance) PerformancePanel(vm, prefs)
-        if (!pageOnly) PlaybackPanel(vm, state, requestNotifications, prefs.speed, { speeds = true }, status,
+        if (!pageOnly) PlaybackPanel(vm, state, prefs, requestNotifications, { speeds = true }, status,
+            recognizing = refreshingText || ocrProgress != null,
             originalLabel = if (hasOriginal) { if (state.document?.mime == "application/pdf") "PDF" else "Image" } else null,
             original = original, changeView = ::showOriginalPage,
             showDetails = { details = true },
@@ -327,6 +311,14 @@ import java.util.Locale
         ReaderBrightnessEffect(lighting.settings)
         Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(status, color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface)
+            state.prepareAheadProgress?.let { progress ->
+                Text(progress.status)
+                Text("${progress.completedPages}/${progress.totalPages} pages · ${formatTime(progress.audioMs)} audio ready")
+                if (progress.running) {
+                    LinearProgressIndicator(progress = { progress.completedPages.toFloat() / progress.totalPages.coerceAtLeast(1) }, modifier = Modifier.fillMaxWidth())
+                    TextButton(onClick = { vm.app.playback.stop() }) { Text("Cancel preparation") }
+                }
+            }
             if (state.bufferedListeningMs > 0) {
                 Text("Prepared audio: ${formatTime(state.bufferedListeningMs)} at your current speed")
                 Text("${state.bufferedSentences} complete ${if (state.bufferedSentences == 1) "sentence" else "sentences"} ahead")
@@ -433,71 +425,30 @@ import java.util.Locale
     }
 }
 
-@Composable private fun PlaybackPanel(vm: ReaderViewModel, state: ReaderPlayback, notifications: () -> Unit,
-    speed: Float, changeSpeed: () -> Unit, status: String,
+@Composable private fun PlaybackPanel(vm: ReaderViewModel, state: ReaderPlayback, prefs: Preferences, notifications: () -> Unit,
+    changeSpeed: () -> Unit, status: String, recognizing: Boolean,
     originalLabel: String?, original: Boolean, changeView: (Boolean) -> Unit,
     showDetails: () -> Unit, showControls: () -> Unit) {
-    val openControls by rememberUpdatedState(showControls)
+    val progress = state.prepareAheadProgress
     val playbackStatus = when {
-        state.error != null && (state.playing || state.wantsToPlay) -> "Issue ahead · Tap for details"
-        state.error != null -> "Reading stopped · Tap for details"
+        state.error != null && (state.playing || state.wantsToPlay) -> "Issue ahead"
+        state.error != null -> "Reading stopped"
+        state.blockedSentence != null -> "Sentence needs attention"
         status != state.status -> status
-        state.fillingBuffer && state.bufferedSentences < state.bufferTargetSentences -> "Preparing audio · ${state.bufferedSentences} of ${state.bufferTargetSentences} ahead"
-        state.fillingBuffer -> "Preparing audio · ${formatTime(state.bufferedListeningMs)} ready"
-        state.preparing -> "Preparing audio…"
-        else -> status
+        progress?.running == true -> "Preparing pages…"
+        state.fillingBuffer || state.preparing -> "Preparing audio…"
+        state.playing || state.wantsToPlay -> "Listening"
+        progress != null -> progress.status
+        else -> "Ready"
     }
-    // Keep the normal dock compact, while retaining actionable progress and recovery.
-    val showStatus = state.error != null || state.blockedSentence != null || state.preparing ||
-        state.fillingBuffer || status != state.status
-    Surface(modifier = Modifier.pointerInput(Unit) {
-        var travel = 0f
-        var opened = false
-        detectVerticalDragGestures(onDragStart = { travel = 0f; opened = false }, onVerticalDrag = { change, amount ->
-            travel += amount
-            if (!opened && travel < -28.dp.toPx()) { opened = true; openControls() }
-            change.consume()
-        })
-    }, color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp), tonalElevation = 1.dp, shadowElevation = 6.dp) {
-        Column(Modifier.fillMaxWidth()) {
-            originalLabel?.let { label ->
-                ReaderViewSelector(label, original, changeView)
-            }
-            ReaderTransportRow(vm, state, notifications, speed, changeSpeed,
-                expanded = false, toggleControls = showControls)
-            if (showStatus) Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable(onClickLabel = "Reading details", onClick = showDetails).padding(horizontal = 20.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                Icon(when {
-                    state.error != null -> Icons.Default.ErrorOutline
-                    else -> Icons.Default.Headphones
-                }, null, Modifier.size(14.dp), tint = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
-                Spacer(Modifier.width(6.dp))
-                Text(playbackStatus, style = MaterialTheme.typography.labelMedium,
-                    color = if (state.error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable private fun ReaderViewSelector(originalLabel: String, original: Boolean, changeView: (Boolean) -> Unit) {
-    val width = (192.dp * LocalDensity.current.fontScale.coerceAtLeast(1f)).coerceAtMost(320.dp)
-    Box(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp), contentAlignment = Alignment.Center) {
-        SingleChoiceSegmentedButtonRow(Modifier.widthIn(max = width).fillMaxWidth()) {
-            listOf("Text", originalLabel).forEachIndexed { index, label ->
-                SegmentedButton(selected = original == (index == 1), onClick = { changeView(index == 1) },
-                    shape = SegmentedButtonDefaults.itemShape(index, 2),
-                    colors = SegmentedButtonDefaults.colors(
-                        activeContainerColor = MaterialTheme.colorScheme.primary,
-                        activeContentColor = MaterialTheme.colorScheme.onPrimary),
-                    icon = {},
-                    modifier = Modifier.weight(1f).heightIn(min = 48.dp).semantics {
-                        contentDescription = if (index == 0) "Text view" else "$originalLabel view"
-                    }) {
-                    Text(label, maxLines = 1)
-                }
-            }
-        }
+    ReaderFloatingDock(status = playbackStatus, busy = state.preparing || state.fillingBuffer || progress?.running == true || recognizing,
+        hasIssue = state.error != null || state.blockedSentence != null,
+        originalLabel = originalLabel, original = original, changeView = changeView,
+        showDetails = showDetails, showControls = showControls,
+        progress = progress?.takeIf { it.running }?.let { it.completedPages.toFloat() / it.totalPages.coerceAtLeast(1) },
+        performance = if (prefs.showPerformance) { { PerformancePanel(vm, prefs) } } else null) {
+        ReaderTransportRow(vm, state, notifications, prefs.speed, changeSpeed,
+            expanded = false, toggleControls = showControls)
     }
 }
 

@@ -1,0 +1,42 @@
+{
+  "status": "passed",
+  "command": "./gradlew :app:testDebugUnitTest :app:testReleaseUnitTest :app:lintRelease :app:assembleRelease --console=plain --no-daemon",
+  "log": "build/floating-dock-final-checks.log",
+  "tests": {
+    "testDebugUnitTest": {
+      "tests": 469,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "testReleaseUnitTest": {
+      "tests": 462,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "layoutTests": [
+    "narrowPortraitKeepsPageAndControlsStillDuringPreparationAndErrors",
+    "largeAccessibilityTextKeepsPageAndControlsStillDuringPreparationAndErrors",
+    "textOnlyDocumentsKeepTheStatusHeaderAndTransportStill",
+    "explicitlyHidingMetricsKeepsTransportAnchoredAndSubsequentAudioStatesStable",
+    "viewSelectorAndStatusKeepTheirActionsWhenAudioStateChanges",
+    "landscapeKeepsPageAndControlsStillDuringPreparationAndErrors",
+    "metricsRetainTheirDetailsAndHideActions",
+    "portraitKeepsPageAndControlsStillDuringPreparationAndErrors"
+  ],
+  "lint": {
+    "Warning": 38
+  },
+  "artifact": {
+    "path": "app/build/outputs/apk/release/app-release-unsigned.apk",
+    "bytes": 131448127,
+    "sha256": "1dca19f18a25dda6007996cd9b0102eea2e132f1a9468f5045a2878ac2d2be45",
+    "signing": "unsigned local verification build; not distributed"
+  },
+  "limits": [
+    "No physical-device test performed.",
+    "No new GitHub release or Play Store upload performed."
+  ]
+}

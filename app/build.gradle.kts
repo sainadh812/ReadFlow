@@ -113,8 +113,8 @@ android {
         applicationId = "app.readflow"
         minSdk = 35
         targetSdk = 36
-        versionCode = 28
-        versionName = "0.3.2"
+        versionCode = 29
+        versionName = "0.3.3"
         buildConfigField("String", "PRIVACY_POLICY_URL", "\"$privacyPolicyUrl\"")
         buildConfigField("boolean", "FIREBASE_CONFIGURED", firebaseConfigured.toString())
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -164,7 +164,10 @@ android {
         // Upstream's static AAR still bundles a dynamic ORT for 32-bit x86, which we do not support.
         jniLibs.excludes += setOf("**/x86/**", "**/armeabi-v7a/**")
     }
-    testOptions { unitTests.isReturnDefaultValues = true }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+        unitTests.isIncludeAndroidResources = true
+    }
     adbOptions { timeOutInMs = 120_000 }
     lint { abortOnError = true }
 }
@@ -201,6 +204,9 @@ dependencies {
     debugImplementation(files("libs/sherpa-onnx-static-link-onnxruntime-1.13.8.aar"))
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+    add("testDebugImplementation", "org.robolectric:robolectric:4.17")
+    add("testDebugImplementation", "androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
 }
