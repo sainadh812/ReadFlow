@@ -5,7 +5,8 @@ cd "$(dirname "$0")/.."
 case "${CAPTURE_SECTIONS:-all}" in
   all) demo_capture_sections='library,controls,dictionary,themes,playback,reader' ;;
   playback) demo_capture_sections='playback' ;;
-  *) printf '%s\n' 'CAPTURE_SECTIONS must be all or playback.' >&2; exit 2 ;;
+  dock) demo_capture_sections='dock' ;;
+  *) printf '%s\n' 'CAPTURE_SECTIONS must be all, playback or dock.' >&2; exit 2 ;;
 esac
 demo_dir="$PWD/build/store-media/capture"
 mkdir -p "$demo_dir"

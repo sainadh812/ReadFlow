@@ -547,6 +547,211 @@ class Capture:
             self.screenshot("13-theme-chooser")
             self.tap("Library")
 
+    def dock_snapshot(self, name):
+        """Measure real accessibility geometry; retain the unmodified hierarchy."""
+        root = self.dump()
+        parents = {child: parent for parent in root.iter() for child in parent}
+
+        def ancestors(node):
+            result = [node]
+            while result[-1] in parents:
+                result.append(parents[result[-1]])
+            return result
+
+        def control(label, contains=False):
+            node = self.find(label, contains=contains, root=root)
+            if node is None:
+                raise CaptureError(f"Floating dock control is missing: {label}")
+            # Icons can expose smaller bounds than their actual touch target.
+            return next((item for item in ancestors(node) if item.get("clickable") == "true"), node)
+
+        primary_label = next((label for label in ("Cancel preparation", "Pause", "Play", "Read from selected word")
+                              if self.find(label, root=root) is not None), None)
+        if primary_label is None:
+            raise CaptureError("Floating dock has no primary playback control.")
+        controls = {"primary": control(primary_label), "textMode": control("Text view"),
+                    "pdfMode": control("PDF view"), "expand": control("Open reader controls"),
+                    "previous": control("Previous sentence"), "next": control("Next sentence"),
+                    "speed": control("Playback speed,", contains=True),
+                    "status": control("Reading status:", contains=True)}
+        metrics = self.find("Hide performance metrics", root=root)
+        measured = list(controls.values()) + ([metrics] if metrics is not None else [])
+        ancestor_sets = [set(ancestors(node)) for node in measured]
+        container = next(node for node in ancestors(measured[0]) if all(node in items for items in ancestor_sets))
+        container_bounds = self.bounds(container)
+        exported_card = (container_bounds[3] - container_bounds[1] < self.height * .5
+                         and container_bounds[2] - container_bounds[0] > self.width * .6)
+        boxes = [self.bounds(node) for node in measured]
+        envelope = [min(box[0] for box in boxes), min(box[1] for box in boxes),
+                    max(box[2] for box in boxes), max(box[3] for box in boxes)]
+        # Some Compose versions flatten layout-only ancestors. Do not label a
+        # control envelope as the rendered card's exact outside border.
+        geometry = {key: self.bounds(node) for key, node in controls.items()}
+        geometry["dock"] = container_bounds if exported_card else envelope
+        viewport_candidates = [self.bounds(node) for node in root.iter("node")
+                               if node.get("scrollable") == "true"
+                               and self.bounds(node)[3] <= envelope[1]
+                               and self.bounds(node)[2] - self.bounds(node)[0] > self.width * .6]
+        if viewport_candidates:
+            geometry["readingViewport"] = max(viewport_candidates, key=lambda box: (box[2]-box[0])*(box[3]-box[1]))
+        selected = {}
+        for key, label in (("text", "Text view"), ("pdf", "PDF view")):
+            node = self.find(label, root=root)
+            selected[key] = any(item.get("selected") == "true" or item.get("checked") == "true"
+                                for item in ancestors(node))
+        hierarchy = name + ".xml"
+        (self.output / hierarchy).write_text(self.last_xml)
+        media_file = name + "-media-session.txt"
+        media = self.shell("dumpsys", "media_session")
+        (self.output / media_file).write_text(media)
+        status_node = self.find("Reading status:", contains=True, root=root)
+        snapshot = {"name": name, "capturedAt": self.now(), "hierarchy": hierarchy,
+                    "mediaSessionEvidence": media_file, "mediaState": self.media_state(media),
+                    "primaryLabel": primary_label, "status": status_node.get("content-desc"),
+                    "metricsVisible": metrics is not None, "selected": selected, "bounds": geometry,
+                    "dockMeasurement": "exported control container" if exported_card else "accessible control envelope",
+                    "visibleMetricText": [node.get("text") for node in root.iter("node")
+                                          if any(value in node.get("text", "") for value in
+                                                 ("chars/min", "× listening", "Performance ·", "ready", "No audio measured"))]}
+        self.report["dockRegression"]["snapshots"].append(snapshot)
+        self.save()
+        return snapshot
+
+    @staticmethod
+    def assert_dock_stable(baseline, sample):
+        if sample["metricsVisible"] != baseline["metricsVisible"]:
+            raise CaptureError("Performance visibility changed without a user toggle.")
+        if sample["dockMeasurement"] != baseline["dockMeasurement"]:
+            raise CaptureError("Dock hierarchy geometry changed during playback; inspect the saved XML.")
+        changed = {key: {"before": bounds, "after": sample["bounds"].get(key)}
+                   for key, bounds in baseline["bounds"].items() if sample["bounds"].get(key) != bounds}
+        if changed:
+            raise CaptureError("Floating dock or reader moved during audio state changes: " + json.dumps(changed))
+
+    def dock_performance(self, enabled, name):
+        """Use the shipped Quick setting, and verify the real Switch state."""
+        self.tap("Open reader controls")
+        self.tap("Quick")
+        switch = self.wait("Show performance info")
+        if switch.get("checkable") != "true":
+            raise CaptureError("Performance setting did not expose a checkable Switch.")
+        if (switch.get("checked") == "true") != enabled:
+            self.tap_observed(switch, "Show performance info")
+        switch = self.wait("Show performance info")
+        if (switch.get("checked") == "true") != enabled:
+            raise CaptureError("Quick performance toggle did not retain the requested state.")
+        self.screenshot(name + "-quick-setting")
+        self.tap("Close reader controls")
+        snapshot = self.dock_snapshot(name)
+        if snapshot["metricsVisible"] != enabled:
+            raise CaptureError("Floating card metrics disagree with the Quick setting.")
+        self.screenshot(name, hierarchy=False)
+        return snapshot
+
+    def dock(self):
+        evidence = {"status": "started", "snapshots": [], "persistence": {},
+                    "scope": "Real Android emulator UI, normal Quick settings and actual on-device speech",
+                    "limitations": ["Bounds checks do not establish absence of every rendering flicker.",
+                                    "Explicitly changing performance visibility may resize the card.",
+                                    "Emulator capture is not a physical-phone or Play-installed ARM64 test."]}
+        self.report["dockRegression"] = evidence
+        try:
+            self.recover_reader()
+            self.first_page()
+            self.tap("Text view")
+            self.wait("Play")
+            initial = self.dock_snapshot("dock-initial-text")
+            if initial["selected"] != {"text": True, "pdf": False}:
+                raise CaptureError("Text view did not expose its selected state.")
+            self.tap("PDF view")
+            pdf = self.dock_snapshot("dock-pdf-selected")
+            if pdf["selected"] != {"text": False, "pdf": True}:
+                raise CaptureError("PDF view did not expose its selected state.")
+            for key in ("primary", "textMode", "pdfMode", "expand"):
+                if initial["bounds"][key] != pdf["bounds"][key]:
+                    raise CaptureError("Text/PDF switching moved a fixed dock control: " + key)
+            self.screenshot("dock-pdf-selected", hierarchy=False)
+            self.tap("Text view")
+            for enabled, label in ((True, "shown"), (False, "hidden")):
+                self.dock_performance(enabled, "dock-metrics-" + label)
+                # Force-stop tests persisted preferences, not rememberSaveable state.
+                self.recover_reader()
+                self.tap("Text view")
+                persisted = self.dock_snapshot("dock-relaunched-" + label)
+                if persisted["metricsVisible"] != enabled:
+                    raise CaptureError("Performance visibility was not persisted after relaunch.")
+                evidence["persistence"][label] = {"verified": True, "snapshot": persisted["name"]}
+                self.screenshot(persisted["name"], hierarchy=False)
+            baseline = self.dock_performance(True, "dock-before-preparation")
+            self.first_page()
+            # Preparing one whole page gives an authentic preparation transition
+            # and enough speech to measure playback without racing a short heading.
+            self.tap("Reader menu")
+            self.tap("Prepare pages before listening")
+            self.tap("Last page", contains=True)
+            self.shell("input", "keyevent", "KEYCODE_MOVE_END")
+            for _ in range(5):
+                self.shell("input", "keyevent", "KEYCODE_DEL")
+            self.shell("input", "text", "1")
+            self.tap("Prepare")
+            deadline = time.monotonic() + 900
+            preparing = 0
+            while time.monotonic() < deadline:
+                sample = self.dock_snapshot(f"dock-preparation-{len(evidence['snapshots']):03d}")
+                self.assert_dock_stable(baseline, sample)
+                if sample["primaryLabel"] == "Cancel preparation" or "Preparing" in sample["status"]:
+                    preparing += 1
+                    if preparing == 1:
+                        self.screenshot("dock-preparing-audio", hierarchy=False)
+                if "Pages 1–1 ready · press Play to read" in sample["status"] and sample["primaryLabel"] == "Play":
+                    break
+                if any(label in sample["status"] for label in ("Reading stopped", "Sentence needs attention")):
+                    raise CaptureError("Actual speech preparation failed; see the reading status evidence.")
+                time.sleep(2)
+            else:
+                raise CaptureError("Page preparation did not finish within 15 minutes.")
+            evidence["preparingSamples"] = preparing
+            evidence["preparationBoundsStable"] = preparing > 0
+            if preparing == 0:
+                evidence["limitations"].append("Preparation finished before a hierarchy sample; preparation geometry was not observed.")
+            self.screenshot("dock-audio-ready", hierarchy=False)
+            # Check fixed geometry both with changing metrics and with metrics hidden.
+            for show_metrics, label in ((True, "shown"), (False, "hidden")):
+                baseline = self.dock_performance(show_metrics, "dock-playback-before-" + label)
+                self.tap("Play")
+                deadline = time.monotonic() + 150
+                playing = 0
+                while time.monotonic() < deadline:
+                    sample = self.dock_snapshot(f"dock-playback-{label}-{len(evidence['snapshots']):03d}")
+                    self.assert_dock_stable(baseline, sample)
+                    if sample["mediaState"] == 3 and sample["primaryLabel"] == "Pause":
+                        playing += 1
+                        if playing == 1:
+                            self.screenshot("dock-listening-" + label, hierarchy=False)
+                        if playing >= 3:
+                            break
+                    if any(value in sample["status"] for value in ("Reading stopped", "Sentence needs attention")):
+                        raise CaptureError("Actual playback failed during dock validation.")
+                    time.sleep(.5)
+                else:
+                    raise CaptureError("Actual PLAYING and three stable dock samples were not observed.")
+                self.shell("input", "keyevent", "KEYCODE_MEDIA_PAUSE")
+                self.wait("Play", timeout=30)
+                paused = self.dock_snapshot("dock-paused-" + label)
+                self.assert_dock_stable(baseline, paused)
+                if paused["mediaState"] != 2:
+                    raise CaptureError("Actual media session did not confirm PAUSED after the dock test.")
+                evidence["playbackBoundsStable-" + label] = {"verified": True, "playingSamples": playing}
+                self.screenshot("dock-paused-" + label, hierarchy=False)
+            evidence["status"] = "passed"
+        except Exception as error:
+            evidence.update(status="failed", error=str(error))
+            raise
+        finally:
+            evidence["finishedAt"] = self.now()
+            (self.output / "dock-regression.json").write_text(json.dumps(evidence, indent=2) + "\n")
+            self.save()
+
     def playback(self):
         self.configure_recording_audio()
         self.recover_reader()
@@ -649,7 +854,7 @@ class Capture:
     def capture(self, sections):
         self.report["sectionsRequested"] = sections
         actions = {"library": self.library, "reader": self.reader, "controls": self.controls,
-                   "dictionary": self.dictionary, "themes": self.themes, "playback": self.playback}
+                   "dictionary": self.dictionary, "themes": self.themes, "playback": self.playback, "dock": self.dock}
         for name in sections:
             print(f"Capturing {name}…", flush=True)
             try:
@@ -691,7 +896,7 @@ def main():
             capture.seed(args.models, args.dictionary)
         if args.stage in ("capture", "all"):
             sections = args.sections.split(",")
-            if not set(sections) <= {"library", "reader", "controls", "dictionary", "themes", "playback"}:
+            if not set(sections) <= {"library", "reader", "controls", "dictionary", "themes", "playback", "dock"}:
                 raise CaptureError("Unknown capture section")
             capture.capture(sections)
         capture.report["status"] = "partial" if capture.report["errors"] else "complete"

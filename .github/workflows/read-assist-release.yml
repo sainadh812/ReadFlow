@@ -35,6 +35,7 @@ on:
         options:
           - all
           - playback
+          - dock
 
 # Play access is restricted to the explicit API operations below. No repository
 # writes, OIDC, pull-request or fork execution.
