@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Promote the exact verified Read Assist 0.3.6 bundle to production.
+"""Promote the exact verified Read Assist 0.3.7 bundle to production.
 
 This changes only the production track. It never uploads another bundle,
 rebuilds the app, submits policy answers, or changes other tracks or testers.

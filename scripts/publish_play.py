@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inspect or publish the verified 0.3.6 bundle to Google Play Internal testing.
+"""Inspect or publish the verified 0.3.7 bundle to Google Play Internal testing.
 
 Credentials are consumed from the Actions secret in memory. This script never
 changes testers, another track, signing settings, or the approved artifact.
@@ -16,19 +16,18 @@ import sys
 from datetime import datetime, timezone
 
 PACKAGE = "app.readflow"
-VERSION_CODE = 32
-VERSION_NAME = "0.3.6"
+VERSION_CODE = 33
+VERSION_NAME = "0.3.7"
 EXPECTED_PROJECT = "read-assist-fbd21"
 EXPECTED_EMAIL = "play-publisher@read-assist-fbd21.iam.gserviceaccount.com"
-AAB_BYTES = 72431898  # Independently verified signed build 44876273082.
-AAB_SHA256 = "a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c"
-AAB_URL = "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.6-play-candidate/Read-Assist-0.3.6-upload-signed.aab"
-DEFAULT_REPORT = Path("build/play-upload-0.3.6/report.json")
+AAB_BYTES = 72431645  # Independently verified signed build 44896366138.
+AAB_SHA256 = "b91c19bc1fecb0dc9f056521414f2c40bb4f910ff1bcacfcda43ab9c532573f1"
+AAB_URL = "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.7-play-candidate/Read-Assist-0.3.7-upload-signed.aab"
+DEFAULT_REPORT = Path("build/play-upload-0.3.7/report.json")
 API_ROOT = "https://androidpublisher.googleapis.com"
 APP_PATH = f"/androidpublisher/v3/applications/{PACKAGE}"
 RELEASE_NOTES = (
-    "Clarified the in-app privacy information. Read Assist has no payment or tipping flow, "
-    "and all reading features remain free."
+    "Updated privacy information to match the current app. All reading features remain free."
 )
 
 _SECRETS: list[str] = []

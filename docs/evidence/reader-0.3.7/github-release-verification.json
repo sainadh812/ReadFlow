@@ -1,0 +1,24 @@
+{
+  "verifiedAt": "2026-11-21T11:02:57.554798+00:00",
+  "releaseUrl": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.7-play-candidate",
+  "tag": "v0.3.7-play-candidate",
+  "sourceCommit": "ea1757a887e2c688ff54c9c63ed87dc0ee6d7abb",
+  "prerelease": true,
+  "draft": false,
+  "assets": [
+    {
+      "file": "Read-Assist-0.3.7-upload-signed.apk",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.7-play-candidate/Read-Assist-0.3.7-upload-signed.apk",
+      "sha256": "71ac345d468d4e49ff5fdda7c6e1ee349db4ede167247750318cd57a72e7575a",
+      "bytes": 131434447,
+      "serverDigestMatched": true
+    },
+    {
+      "file": "Read-Assist-0.3.7-upload-signed.aab",
+      "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.7-play-candidate/Read-Assist-0.3.7-upload-signed.aab",
+      "sha256": "b91c19bc1fecb0dc9f056521414f2c40bb4f910ff1bcacfcda43ab9c532573f1",
+      "bytes": 72431645,
+      "serverDigestMatched": true
+    }
+  ]
+}

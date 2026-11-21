@@ -1,0 +1,121 @@
+{
+  "recordedAt": "2026-11-21T10:50:15.872256+00:00",
+  "package": "app.readflow",
+  "enforcementReference": "4989388494721813173",
+  "source": "Owner pasted guidance and confirmed it is Google\u2019s reply to the ticket filed at approximately 13:19 IST",
+  "replyEmailInspectedByWorkspace": false,
+  "caseId": null,
+  "receivingTeam": null,
+  "formalAppealRegistrationConfirmed": false,
+  "guidance": [
+    "Explicitly select My app does not provide any financial features and Save; do not merely leave feature boxes unchecked.",
+    "Verify Health, Government apps, and Data safety declarations remain accurate.",
+    "Check every active track, deactivate older tip/payment artifacts, and release a new incremented bundle (example code 33).",
+    "Use Publishing overview Send for review so declarations and new release are evaluated together.",
+    "Submit a formal appeal via Policy status or Appeal troubleshooter if needed for enforcement 4989388494721813173."
+  ],
+  "previousDeclarationAudit": "console-audit-1252-reported.json",
+  "previousDeclarationFinding": "Owner-reported saved Financial form explicitly selected no financial features; Health and Government were negative and no Data safety Financial info types were selected. Exact declaration payload evaluated by Google remains unknown.",
+  "freshApiInspection": {
+    "report": "store-inspection-before-code33-44896100415.json",
+    "finishedAt": "2026-11-21T10:48:59.561812+00:00",
+    "alpha": {
+      "versionCodes": [
+        32
+      ],
+      "lifecycle": "NOT_APPROVED"
+    },
+    "internal": {
+      "versionCodes": [
+        32
+      ],
+      "lifecycle": "PUBLISHED"
+    },
+    "beta": {
+      "versionCodes": []
+    },
+    "production": {
+      "versionCodes": []
+    },
+    "olderTipBuildReferencedByAnyCurrentTrack": false,
+    "historicalUploadedBundles": [
+      28,
+      29,
+      30,
+      31,
+      32
+    ],
+    "historicalBundlesDoNotEstablishActiveDistribution": true,
+    "committed": false,
+    "inspectionEditDeleted": true
+  },
+  "responsePlan": {
+    "versionName": "0.3.7",
+    "versionCode": 33,
+    "purpose": "Follow Google\u2019s case-specific request for an incremented release; a version bump is not an established fix for account classification.",
+    "appLogicChanged": false,
+    "privacyChanged": true,
+    "sourceCommit": "ea1757a887e2c688ff54c9c63ed87dc0ee6d7abb",
+    "buildRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44896366138",
+    "buildStatusAtRecord": "passed",
+    "consoleActionsPending": [
+      "Reconfirm and Save explicit no-financial declaration if Save is available; if already saved and unchanged, record that state without toggling a false answer.",
+      "Check Health, Government, and Data safety against current app/SDK behavior.",
+      "After verified code 33 is uploaded, verify release and declaration changes together in Publishing overview and Send for review.",
+      "Retain the existing Google case; request confirmation of formal appeal registration rather than assume or duplicate."
+    ],
+    "previousFailedBuild": {
+      "run": "44896149814",
+      "failedAt": "2026-11-21T10:50:05Z",
+      "message": "Live policy differs from the finalized local HTML.",
+      "signingOrBuildStarted": false,
+      "playUploadPerformed": false
+    },
+    "signedArtifactVerification": "../reader-0.3.7/signed-artifact-verification.json",
+    "aabSha256": "b91c19bc1fecb0dc9f056521414f2c40bb4f910ff1bcacfcda43ab9c532573f1",
+    "playUploadStatus": "pending"
+  },
+  "sources": {
+    "financialDeclaration": "https://support.google.com/googleplay/android-developer/answer/13849271?hl=en",
+    "publishingOverview": "https://support.google.com/googleplay/android-developer/answer/9859654?hl=en",
+    "apiReviewFlag": "https://developers.google.com/android-publisher/api-ref/rest/v3/edits/commit"
+  },
+  "livePrivacyChange": {
+    "detectedAt": "2026-11-21T10:51:25.259491+00:00",
+    "ghPagesCommit": "33b19860036a9c1a5826fe55b27572dc59c4605e",
+    "committedAt": "2026-11-21T07:20:00Z",
+    "commitMessage": "Remove all payment references from Read Assist privacy policy",
+    "performedByThisWorkspace": false,
+    "sha256": "be7e86dd7d080a4c1534a363d586c5789c3800bcaeb46dc4d198dcfef3ac20e3",
+    "changes": [
+      "Intro reduced to All reading features are free.",
+      "Records from past contributions section removed."
+    ],
+    "otherPolicyContentChanged": false,
+    "exactRejectionCauseEstablished": false,
+    "pendingOwnerFact": null,
+    "resolution": "Adopt the existing live HTML without republishing; remove obsolete historical contribution text from embedded notice based on owner confirmation. SDK, support, retention/deletion and free reading disclosures otherwise preserved."
+  },
+  "ownerConfirmation": {
+    "reportedAt": "2026-11-21T10:52:31.893308+00:00",
+    "exactAnswer": "No tips were received and no records are held",
+    "contributionsReceived": false,
+    "relatedRecordsHeld": false
+  },
+  "dataSafetyAssessment": {
+    "basedOn": "Owner-reported 12:52 Console audit and current app source/official SDK disclosures; no live Console read by this workspace.",
+    "fourSelectedTypes": "No clearly incorrect selection or optional/required flag established among Crash logs, Diagnostics, Other app performance data, and Device or other IDs.",
+    "financialInfoSelected": false,
+    "doNotBlanketClearDataCollection": true,
+    "sharingClassification": "Existing Shared flags may be broader than the service-provider rules require; no change recommended without checking actual provider arrangements and integrations.",
+    "supportEmailImplementation": "Local user-written description and optional technical details are previewed, then passed to a separate email app through ACTION_SENDTO mailto. Read Assist does not obtain the sender account/email or transmit the report over its own network connection.",
+    "supportEmailConclusion": "No mandatory additional personal-email/message selection established solely from this handoff. Keep support correspondence and retention in the privacy policy. Published guidance does not expressly settle the originating-app collection boundary for developer-addressed email sent through another app.",
+    "organizationRequirementTriggerEstablished": false,
+    "sources": [
+      "https://developers.google.com/ml-kit/android-data-disclosure",
+      "https://firebase.google.com/docs/android/play-data-disclosure#crashlytics",
+      "https://support.google.com/googleplay/android-developer/answer/10787469?hl=en",
+      "https://developer.android.com/guide/components/intents-common#Email"
+    ]
+  }
+}
