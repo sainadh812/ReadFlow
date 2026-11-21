@@ -1,5 +1,5 @@
 {
-  "verifiedAtUtc": "2026-11-15T13:36:54.147158+00:00",
+  "verifiedAtUtc": "2026-11-21T06:23:14.434365+00:00",
   "url": "https://sainadh812.github.io/ReadFlow/privacy.html",
   "finalUrl": "https://sainadh812.github.io/ReadFlow/privacy.html",
   "httpStatus": 200,
@@ -7,23 +7,31 @@
   "authenticatedRequest": false,
   "matchesLocalSource": true,
   "source": "site/privacy.html",
-  "sha256": "0bd9eb1e31a99fefb8da580b98ae9f4c8ceafbd4d99fbac7f610f56df01d197a",
-  "effectiveDate": "2026-11-15",
+  "sha256": "079f67e9be93b73fa1c4256cd5850073415b8817495b777a637513a42b894e9f",
+  "effectiveDate": "2026-11-21",
   "developerDisplayName": "Oh My Pi",
   "privacyAndSupportContact": "xperimenting.ai@gmail.com",
   "pagesBranch": "gh-pages",
-  "pagesCommit": "81d3be27c4f42abe9101feeff043f54398b5eea3",
+  "pagesCommit": "91a57d528da4002b569bcb9700019575b3e961e0",
   "pagesBuildStatus": "built",
   "httpsEnforced": true,
   "physicalDeviceCheck": false,
+  "pagesBuildCreatedAtUtc": "2026-11-21T06:22:42Z",
+  "pagesBuildUpdatedAtUtc": "2026-11-21T06:23:03Z",
   "notes": [
-    "The 15 November revision adds dictionary download, offline lookup, removal and user-opened source/license links.",
-    "Developer/contact, diagnostics consent and retention disclosures remain unchanged."
+    "Clarifies current no-payment functionality near the beginning; removes obsolete payment-handoff mechanics.",
+    "Retains historical record types, purposes, retention/deletion and provider responsibility. SDK/support disclosures unchanged.",
+    "The embedded notice source is aligned for a future build; signed version 0.3.5/code 31 artifacts are unchanged.",
+    "No declaration changes, Play resubmission or appeal submission occurred in this policy clarification.",
+    "No evidence establishes that privacy wording caused the organization-account rejection."
   ],
-  "pagesBuildCreatedAtUtc": "2026-11-15T13:32:54Z",
-  "pagesBuildUpdatedAtUtc": "2026-11-15T13:33:13Z",
+  "earlier21NovemberPolicy": {
+    "sha256": "08618009473d0daec36b1dfbffbcd95b3840be7d727a61b1e673f7845a190235",
+    "evidence": "../play-review-2026-11-21/third-rejection-reported.json",
+    "description": "Live policy audited before this wording clarification; historical audit remains unchanged."
+  },
   "previousPublication": {
-    "verifiedAtUtc": "2026-10-27T12:29:59.654656+00:00",
+    "verifiedAtUtc": "2026-11-15T13:36:54.147158+00:00",
     "url": "https://sainadh812.github.io/ReadFlow/privacy.html",
     "finalUrl": "https://sainadh812.github.io/ReadFlow/privacy.html",
     "httpStatus": 200,
@@ -31,27 +39,23 @@
     "authenticatedRequest": false,
     "matchesLocalSource": true,
     "source": "site/privacy.html",
-    "sha256": "cf51f940459aa7ceb246790508aefe5637c5a7c09f6ecff65a5edd94de01f32f",
-    "effectiveDate": "2026-10-27",
+    "sha256": "0bd9eb1e31a99fefb8da580b98ae9f4c8ceafbd4d99fbac7f610f56df01d197a",
+    "effectiveDate": "2026-11-15",
     "developerDisplayName": "Oh My Pi",
     "privacyAndSupportContact": "xperimenting.ai@gmail.com",
     "pagesBranch": "gh-pages",
-    "pagesCommit": "b4aea432664121f5bf82504cd165738f57e982c0",
+    "pagesCommit": "81d3be27c4f42abe9101feeff043f54398b5eea3",
     "pagesBuildStatus": "built",
     "httpsEnforced": true,
     "physicalDeviceCheck": false,
     "notes": [
-      "Owner supplied developer/contact and approved report/payment retention.",
-      "No personal profile email is included in the public policy.",
-      "Script checks do not certify legal compliance or Play approval.",
-      "The 27 October revision adds optional Crashlytics, reporting controls/retention and manual support email.",
-      "Firebase project setup, configured-build delivery testing, native symbol upload and Play publication remain pending."
+      "The 15 November revision adds dictionary download, offline lookup, removal and user-opened source/license links.",
+      "Developer/contact, diagnostics consent and retention disclosures remain unchanged."
     ],
-    "pagesBuildId": 1318678057,
-    "pagesBuildCreatedAtUtc": "2026-10-27T12:27:45Z",
-    "pagesBuildUpdatedAtUtc": "2026-10-27T12:28:17Z",
+    "pagesBuildCreatedAtUtc": "2026-11-15T13:32:54Z",
+    "pagesBuildUpdatedAtUtc": "2026-11-15T13:33:13Z",
     "previousPublication": {
-      "verifiedAtUtc": "2026-10-26T17:32:20.013353+00:00",
+      "verifiedAtUtc": "2026-10-27T12:29:59.654656+00:00",
       "url": "https://sainadh812.github.io/ReadFlow/privacy.html",
       "finalUrl": "https://sainadh812.github.io/ReadFlow/privacy.html",
       "httpStatus": 200,
@@ -59,20 +63,49 @@
       "authenticatedRequest": false,
       "matchesLocalSource": true,
       "source": "site/privacy.html",
-      "sha256": "48483d2dc25a971765d77c553cfeb6b242c47c7bb6851dfd4a28bee2a1fbc1d1",
-      "effectiveDate": "2026-10-26",
+      "sha256": "cf51f940459aa7ceb246790508aefe5637c5a7c09f6ecff65a5edd94de01f32f",
+      "effectiveDate": "2026-10-27",
       "developerDisplayName": "Oh My Pi",
       "privacyAndSupportContact": "xperimenting.ai@gmail.com",
       "pagesBranch": "gh-pages",
-      "pagesCommit": "2e3aa9c1092dc20d1bc72adc1b45d0aa8b6e9a93",
+      "pagesCommit": "b4aea432664121f5bf82504cd165738f57e982c0",
       "pagesBuildStatus": "built",
       "httpsEnforced": true,
       "physicalDeviceCheck": false,
       "notes": [
         "Owner supplied developer/contact and approved report/payment retention.",
         "No personal profile email is included in the public policy.",
-        "Script checks do not certify legal compliance or Play approval."
-      ]
+        "Script checks do not certify legal compliance or Play approval.",
+        "The 27 October revision adds optional Crashlytics, reporting controls/retention and manual support email.",
+        "Firebase project setup, configured-build delivery testing, native symbol upload and Play publication remain pending."
+      ],
+      "pagesBuildId": 1318678057,
+      "pagesBuildCreatedAtUtc": "2026-10-27T12:27:45Z",
+      "pagesBuildUpdatedAtUtc": "2026-10-27T12:28:17Z",
+      "previousPublication": {
+        "verifiedAtUtc": "2026-10-26T17:32:20.013353+00:00",
+        "url": "https://sainadh812.github.io/ReadFlow/privacy.html",
+        "finalUrl": "https://sainadh812.github.io/ReadFlow/privacy.html",
+        "httpStatus": 200,
+        "contentType": "text/html",
+        "authenticatedRequest": false,
+        "matchesLocalSource": true,
+        "source": "site/privacy.html",
+        "sha256": "48483d2dc25a971765d77c553cfeb6b242c47c7bb6851dfd4a28bee2a1fbc1d1",
+        "effectiveDate": "2026-10-26",
+        "developerDisplayName": "Oh My Pi",
+        "privacyAndSupportContact": "xperimenting.ai@gmail.com",
+        "pagesBranch": "gh-pages",
+        "pagesCommit": "2e3aa9c1092dc20d1bc72adc1b45d0aa8b6e9a93",
+        "pagesBuildStatus": "built",
+        "httpsEnforced": true,
+        "physicalDeviceCheck": false,
+        "notes": [
+          "Owner supplied developer/contact and approved report/payment retention.",
+          "No personal profile email is included in the public policy.",
+          "Script checks do not certify legal compliance or Play approval."
+        ]
+      }
     }
   }
 }

@@ -1,6 +1,8 @@
 # Publishing the Read Assist privacy policy
 
-Status: **15 November 2026 revision published and verified.** The [public URL](https://sainadh812.github.io/ReadFlow/privacy.html) returns HTTP 200 and exactly matches the current [source](../site/privacy.html). The revision adds the optional dictionary download, offline lookup, removal and source/license links. See [publication evidence](evidence/privacy-policy/publication.json), including the preserved October revisions.
+Status: **21 November 2026 clarification published and verified.** The [public URL](https://sainadh812.github.io/ReadFlow/privacy.html) returns HTTP 200 and exactly matches the current [source](../site/privacy.html). The clarification moves the current app's free, payment-free status near the top and replaces obsolete payment-handoff mechanics with a shorter historical-record disclosure. Record types, purposes, retention/deletion and provider responsibility remain covered. SDK and support disclosures are unchanged. See [publication evidence](evidence/privacy-policy/publication.json), including earlier publication records.
+
+The matching in-app notice source is prepared for the next build. **The already signed 0.3.5/code 31 APK/AAB still contain the earlier notice; no new build or Play submission was made for this clarification.** Both versions state that contributions were removed in 0.3.5. There is no evidence that privacy wording caused the repeated account-type rejection. Submitted Console declarations and the reviewed version remain separate checks in the [publishing handoff](PLAY_STORE_HANDOFF.md).
 
 The developer remains **Oh My Pi**, with **xperimenting.ai@gmail.com** for privacy, support and deletion requests. Support correspondence/reports received by the developer are deleted within 90 days after resolution; payment records remain only as needed for accounting/legal requirements. Firebase's separate crash/identifier retention is stated explicitly. Version 0.2.5/code 21 retains the default URL first added in 0.2.4; 0.2.3 artifacts lack that link.
 
@@ -32,7 +34,7 @@ After GitHub's Pages deployment finishes:
 python3 scripts/verify_privacy_page.py --url https://sainadh812.github.io/ReadFlow/privacy.html
 ```
 
-This performs an unauthenticated HTTPS GET and checks HTTP 200, HTML content type, the complete page and an exact byte match with the finalized source. **Current verification passed:** effective 15 November 2026, `gh-pages` commit `81d3be27c4f42abe9101feeff043f54398b5eea3`, SHA-256 `0bd9eb1e31a99fefb8da580b98ae9f4c8ceafbd4d99fbac7f610f56df01d197a`. Pages reported `built` at `2026-11-15T13:33:13Z`; the evidence JSON records the exact-byte check time. The 27 October publication is retained under `previousPublication`.
+This performs an unauthenticated HTTPS GET and checks HTTP 200, HTML content type, the complete page and an exact byte match with the finalized source. **Current verification passed at 2026-11-21T06:23:14Z:** effective 21 November 2026, `gh-pages` commit `91a57d528da4002b569bcb9700019575b3e961e0`, SHA-256 `079f67e9be93b73fa1c4256cd5850073415b8817495b777a637513a42b894e9f`. Pages reported `built`. The earlier 21 November policy hash is linked in the evidence; the 15 November and October publication records are preserved under `previousPublication`.
 
 The previous 26 October page was verified at commit `2e3aa9c1092dc20d1bc72adc1b45d0aa8b6e9a93`, SHA-256 `48483d2dc25a971765d77c553cfeb6b242c47c7bb6851dfd4a28bee2a1fbc1d1`; its record is preserved under `previousPublication`. Also open the current URL in a signed-out browser on the phone. Repeat and record verification after future changes; a deployment request alone is not evidence that the URL works.
 

@@ -1,0 +1,125 @@
+{
+  "recordedAt": "2026-11-21T06:11:18.731315+00:00",
+  "package": "app.readflow",
+  "source": "Owner message in conversation on 2026-11-21 relaying the third Google Play rejection email and identifying the submitted release as 0.3.5",
+  "directConsoleInspectionByThisAgent": false,
+  "directInboxInspectionByThisAgent": false,
+  "rejectionTimeline": [
+    {
+      "receivedLocal": "2026-11-21T10:08:00+05:30",
+      "sourceRecord": "console-declarations-reported.json"
+    },
+    {
+      "receivedLocal": "2026-11-21T10:39:00+05:30",
+      "sourceRecord": "second-rejection-reported.json"
+    },
+    {
+      "receivedLocal": "2026-11-21T11:34:00+05:30",
+      "source": "Owner-pasted third rejection email in this conversation"
+    }
+  ],
+  "thirdRejection": {
+    "receivedLocal": "2026-11-21T11:34:00+05:30",
+    "receivedUtc": "2026-11-21T06:04:00+00:00",
+    "policy": "Play Console Requirements",
+    "area": "Developer Account",
+    "status": "Rejected",
+    "sameWordingAsEarlierReported": true,
+    "specificAppFeatureIdentified": false,
+    "reportedVersionName": "0.3.5",
+    "expectedVersionCode": 31,
+    "versionBasis": "Owner identifies 0.3.5 as the latest rejected submission; supplied email text does not name a version code",
+    "exactReviewedArtifactIndependentlyConfirmed": false
+  },
+  "declarations": {
+    "provenance": "Owner reports relaying Console inspection and a subsequent financial-declaration correction; not independently read from current submitted state",
+    "reportedStoreCategory": "App / Productivity",
+    "reportedFinancialCorrection": {
+      "deselected": "Mobile payments and digital wallets",
+      "selected": "My app doesn\u2019t provide any financial features",
+      "reportedAppliedBeforeSecondRejection": true
+    },
+    "reportedHealthApps": "My app does not have any health features",
+    "reportedGovernmentApps": "No",
+    "reportedVpnDeclarationPresent": false,
+    "latestSubmittedDeclarationVerification": "pending",
+    "submittedDataSafetySummary": "not_retrieved",
+    "dataSafetyConfirmedAsCause": false
+  },
+  "artifactAudit": {
+    "versionName": "0.3.5",
+    "versionCode": 31,
+    "sourceCommit": "93313b50e828df306e9ab68f7aff9c95d8fe63b8",
+    "releaseUrl": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.5-play-candidate",
+    "aab": {
+      "bytes": 72432002,
+      "sha256": "62838f37c8bcc9e1bd687931b879a3e9d97d1f02025bdfc91e727fe6cfcc8db5",
+      "zipEntriesScanned": 1105,
+      "dexFilesScanned": 4
+    },
+    "apk": {
+      "bytes": 131434859,
+      "sha256": "47221a2f019ef020a93eae512e9a944b318d01ed60a907a66061d5e51f662050",
+      "zipEntriesScanned": 1092,
+      "dexFilesScanned": 4
+    },
+    "recomputedHashesMatchReleaseAssetDigestsAndChecksums": true,
+    "aabMatchesGoogleUploadResponse": true,
+    "packageAndVersionConfirmedFromPackagedManifests": true,
+    "apkSignatureVerified": true,
+    "aabSignatureVerified": true,
+    "tipClassesRecipientAndUpiUriAbsent": true,
+    "paymentUiAndLinksAbsent": true,
+    "billingPermissionAndIntegrationAbsent": true,
+    "vpnComponentAbsent": true,
+    "remainingFinancialKeywordContexts": [
+      "Unused Compose Material icon definitions",
+      "Encryption APIs and URL-domain patterns",
+      "Third-party license acknowledgments",
+      "Synthetic financial-text OCR benchmark fixtures"
+    ],
+    "physicalDeviceTestPerformed": false,
+    "limits": "Static source and signed-artifact inspection establishes the contents of these files, not Google\u2019s internal classification or the exact artifact reviewed for the third rejection"
+  },
+  "historicalUploadEvidence": {
+    "report": "../reader-0.3.5/play-publication.json",
+    "localReport": "build/release-0.3.5/play-final/report.json",
+    "finishedAt": "2026-11-21T05:46:59.102617+00:00",
+    "versionCode": 31,
+    "committed": true,
+    "alphaLifecycleAtThatTime": "RELEASE_LIFECYCLE_STATE_NOT_SENT_FOR_REVIEW",
+    "internalLifecycleAtThatTime": "RELEASE_LIFECYCLE_STATE_PUBLISHED",
+    "predatesThirdRejection": true,
+    "establishesThirdReviewedArtifact": false
+  },
+  "privacyAudit": {
+    "publicUrl": "https://sainadh812.github.io/ReadFlow/privacy.html",
+    "httpStatus": 200,
+    "checkedAt": "2026-11-21T06:10:45+00:00",
+    "currentFlowDisclosure": "Read Assist removed optional contributions in version 0.3.5. The current app has no payment or tipping flow. All reading features are free.",
+    "historicalRecordsDisclosureRetained": true,
+    "activePaymentLinkOrRecipientPresent": false,
+    "packagedPolicyAlsoContainsHistoricalRecordsDisclosure": true,
+    "privacyWordingConfirmedAsRejectionCause": false
+  },
+  "assessment": {
+    "specificOrganizationRequirementTrigger": "unknown",
+    "tipImplementationStillPresentInVerified035Artifacts": false,
+    "historicalPaymentPrivacyDisclosureStillPresent": true,
+    "staleClassificationConfirmed": false,
+    "requiresOrganizationAccountConfirmed": false,
+    "nextEvidence": [
+      "Current submitted financial, health, government and Data safety summaries",
+      "Review record identifying the version code considered for the 11:34 rejection",
+      "Google identification of the exact feature, declaration, category or account requirement"
+    ]
+  },
+  "appealDraft": "account-classification-appeal.txt",
+  "executionThisAudit": {
+    "appealSubmitted": false,
+    "additionalResubmission": false,
+    "appCodeChanged": false,
+    "accountChanged": false,
+    "declarationsChanged": false
+  }
+}
