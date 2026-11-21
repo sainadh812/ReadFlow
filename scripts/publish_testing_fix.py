@@ -151,6 +151,22 @@ def cleanup(api: API, edit_id: str, report: dict, key: str) -> None:
         report[key + "CleanupError"] = safe_error(error)
 
 
+def observe(report: dict, phase: str, operation):
+    """Keep a bounded, credential-free record of the operation that failed."""
+    event = {"phase": phase, "status": "started"}
+    report.setdefault("phaseEvents", []).append(event)
+    report["phase"] = phase
+    try:
+        result = operation()
+    except Exception as error:
+        event.update(status="failed", error=safe_error(error))
+        report["failedPhase"] = phase
+        raise
+    event["status"] = "completed"
+    report["lastCompletedPhase"] = phase
+    return result
+
+
 def review_flag_required(error: ApiError) -> bool:
     return error.http_code == 400 and bool(re.search(
         r"changes cannot be sent for review automatically", error.message, re.I
@@ -186,19 +202,19 @@ def execute(report: dict, directory: Path, validate_only: bool = False) -> None:
     if shared.AAB_URL != expected_url:
         raise PublishError("The approved artifact URL does not match the 0.3.5 release.")
     shared.validate_artifact_pin(shared.AAB_SHA256, shared.AAB_BYTES)
-    artifact = shared.download_aab(directory)
+    artifact = observe(report, "download_verified_artifact", lambda: shared.download_aab(directory))
     report["artifactVerified"] = True
-    api = API(authenticate())
-    edit_id = api.create_edit()
+    api = API(observe(report, "authenticate", authenticate))
+    edit_id = observe(report, "create_edit", api.create_edit)
     report.update(editId=edit_id, editMayBePending=True)
     commit_unknown = False
     committed = False
     try:
-        tracks, bundles = api.read_state(edit_id)
+        tracks, bundles = observe(report, "read_before_tracks_and_bundles", lambda: api.read_state(edit_id))
         target = validate_state(tracks, bundles)
-        lifecycles = api.lifecycles(tracks)
+        lifecycles = observe(report, "read_before_lifecycles", lambda: api.lifecycles(tracks))
         before_states = lifecycle_states(lifecycles, tracks, block_review=False)
-        metadata = read_metadata(api, edit_id)
+        metadata = observe(report, "read_before_store_metadata", lambda: read_metadata(api, edit_id))
         report["before"] = {"tracks": tracks, "bundles": bundles, "lifecycles": lifecycles, **metadata}
         indexed = normalized_tracks(tracks)
         if target and all(indexed[name]["releases"][0]["versionCodes"] == [str(VERSION_CODE)] for name in TARGETS):
@@ -209,11 +225,11 @@ def execute(report: dict, directory: Path, validate_only: bool = False) -> None:
         if target is None:
             report["uploadAttempted"] = True
             try:
-                target = api.upload(edit_id, artifact)
+                target = observe(report, "upload_bundle", lambda: api.upload(edit_id, artifact))
             except ApiError as error:
                 report["uploadError"] = safe_error(error)
                 # The request may have succeeded. Inspect once; never upload twice.
-                now_tracks, now_bundles = api.read_state(edit_id)
+                now_tracks, now_bundles = observe(report, "reconcile_upload", lambda: api.read_state(edit_id))
                 if normalized_tracks(now_tracks) != indexed:
                     raise PublishError("Track state changed while reconciling the upload.") from None
                 target = validate_state(now_tracks, now_bundles)
@@ -231,36 +247,61 @@ def execute(report: dict, directory: Path, validate_only: bool = False) -> None:
             release = expected[name]["releases"][0]
             release.update(name=f"Read Assist {VERSION_NAME}", versionCodes=[str(VERSION_CODE)], status="completed",
                            releaseNotes=[{"language": "en-US", "text": RELEASE_NOTES}])
-            api.request("PUT", prefix + "/tracks/" + name, json=expected[name])
-        staged_tracks, staged_bundles = api.read_state(edit_id)
+            observe(report, "update_track_" + name,
+                    lambda: api.request("PUT", prefix + "/tracks/" + name, json=expected[name]))
+        staged_tracks, staged_bundles = observe(report, "read_staged_tracks_and_bundles", lambda: api.read_state(edit_id))
         validate_state(staged_tracks, staged_bundles)
-        if normalized_tracks(staged_tracks) != expected or read_metadata(api, edit_id) != metadata:
+        staged_metadata = observe(report, "read_staged_store_metadata", lambda: read_metadata(api, edit_id))
+        if normalized_tracks(staged_tracks) != expected or staged_metadata != metadata:
             raise PublishError("Staged tracks or store metadata differ from the requested edit; refusing to commit.")
-        api.request("POST", prefix + ":validate")
-        report["validated"] = True
+        report["validated"] = False
+        try:
+            observe(report, "validate_edit", lambda: api.request("POST", prefix + ":validate"))
+        except ApiError as error:
+            if not review_flag_required(error):
+                raise
+            # edits.validate exposes no changesNotSentForReview query parameter.
+            # For this exact rejection, commit performs validation with Google's
+            # explicitly requested manual-review flag; no other error is bypassed.
+            # https://developers.google.com/android-publisher/api-ref/rest/v3/edits/validate
+            # https://developers.google.com/android-publisher/api-ref/rest/v3/edits/commit
+            # https://developers.google.com/android-publisher/edits
+            report["automaticReviewRestriction"] = safe_error(error)
+            report["reviewRestrictionPhase"] = "validate_edit"
+            report["changesNotSentForReview"] = True
+            report["manualReviewRequired"] = True
+        else:
+            report["validated"] = True
         if validate_only:
-            report["status"] = "validated_not_committed"
+            report["status"] = "validated_not_committed" if report["validated"] else "validation_blocked_manual_review"
             return
-        lifecycle_states(api.lifecycles(tracks), tracks, block_review=True)
+        lifecycle_states(observe(report, "check_review_before_commit", lambda: api.lifecycles(tracks)),
+                         tracks, block_review=True)
         params = {"changesInReviewBehavior": "ERROR_IF_IN_REVIEW"}
+        if report.get("changesNotSentForReview"):
+            params["changesNotSentForReview"] = True
         for attempt in range(2):
             try:
-                report["commit"] = api.request("POST", prefix + ":commit", params=params.copy())
+                report["commit"] = observe(report, "commit_edit",
+                                           lambda: api.request("POST", prefix + ":commit", params=params.copy()))
                 committed = True
                 report.update(commitAccepted=True, committed=True, editMayBePending=False)
                 break
             except Exception as error:
-                if isinstance(error, ApiError) and attempt == 0 and review_flag_required(error):
+                if (isinstance(error, ApiError) and attempt == 0 and not params.get("changesNotSentForReview")
+                        and review_flag_required(error)):
                     report["automaticReviewRestriction"] = safe_error(error)
+                    report["reviewRestrictionPhase"] = "commit_edit"
                     params["changesNotSentForReview"] = True
                     report["changesNotSentForReview"] = True
+                    report["manualReviewRequired"] = True
                     continue
                 if isinstance(error, ApiError) and not ambiguous(error):
                     raise
                 commit_unknown = True
                 report["commitAmbiguous"] = safe_error(error)
                 report["committed"] = None
-                current = api.lifecycles(tracks)
+                current = observe(report, "reconcile_commit_lifecycles", lambda: api.lifecycles(tracks))
                 report["commitReconciliationLifecycle"] = current
                 observed = lifecycle_states(current, tracks, block_review=False)
                 # Opening another edit could invalidate the uncertain original.
@@ -274,12 +315,12 @@ def execute(report: dict, directory: Path, validate_only: bool = False) -> None:
                 commit_unknown = False
                 report.update(commitReconciled=True, committed=True, editMayBePending=False)
                 break
-        fresh_id = api.create_edit()
+        fresh_id = observe(report, "create_verification_edit", api.create_edit)
         report["verificationEditId"] = fresh_id
         try:
-            after_tracks, after_bundles = api.read_state(fresh_id)
-            after_metadata = read_metadata(api, fresh_id)
-            after_lifecycles = api.lifecycles(after_tracks)
+            after_tracks, after_bundles = observe(report, "read_after_tracks_and_bundles", lambda: api.read_state(fresh_id))
+            after_metadata = observe(report, "read_after_store_metadata", lambda: read_metadata(api, fresh_id))
+            after_lifecycles = observe(report, "read_after_lifecycles", lambda: api.lifecycles(after_tracks))
             report["after"] = {"tracks": after_tracks, "bundles": after_bundles,
                                "lifecycles": after_lifecycles, **after_metadata}
             final = validate_state(after_tracks, after_bundles)
@@ -330,7 +371,7 @@ def main() -> int:
     report = run(args.report, args.validate_only)
     print(json.dumps({"status": report["status"], "report": str(args.report),
                       "trackStatuses": report.get("trackStatuses"), "error": report.get("error")}))
-    return 1 if report["status"] in {"failed", "commit_outcome_unknown", "not_approved"} else 0
+    return 1 if report["status"] in {"failed", "commit_outcome_unknown", "not_approved", "validation_blocked_manual_review"} else 0
 
 
 if __name__ == "__main__":

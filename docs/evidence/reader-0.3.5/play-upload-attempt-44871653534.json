@@ -1,0 +1,150 @@
+{
+  "action": "publish_testing_fix",
+  "package": "app.readflow",
+  "versionName": "0.3.5",
+  "versionCode": 31,
+  "tracks": [
+    "alpha",
+    "internal"
+  ],
+  "aabSha256": "62838f37c8bcc9e1bd687931b879a3e9d97d1f02025bdfc91e727fe6cfcc8db5",
+  "aabBytes": 72432002,
+  "status": "failed",
+  "committed": false,
+  "testersModified": false,
+  "declarationsModified": false,
+  "startedAt": "2026-11-21T05:36:26.918848+00:00",
+  "artifactVerified": true,
+  "editId": "17941169712848551657",
+  "editMayBePending": false,
+  "before": {
+    "tracks": [
+      {
+        "track": "production"
+      },
+      {
+        "track": "beta"
+      },
+      {
+        "track": "alpha",
+        "releases": [
+          {
+            "name": "0.3.4",
+            "versionCodes": [
+              "30"
+            ],
+            "releaseNotes": [
+              {
+                "language": "en-US",
+                "text": "More space for reading with a smaller floating panel. Removed the Ready/Preparing row and moving progress bar; loading stays inside the main playback button. A small Tt icon beside skip-forward switches between text and the original page. Performance info remains optional and your show/hide choice is saved. Controls keep their position during audio preparation."
+              }
+            ],
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "track": "internal",
+        "releases": [
+          {
+            "name": "Read Assist 0.3.4",
+            "versionCodes": [
+              "30"
+            ],
+            "releaseNotes": [
+              {
+                "language": "en-US",
+                "text": "More space for reading with a smaller floating panel. Removed the Ready/Preparing row and moving progress bar; loading stays inside the main playback button. A small Tt icon beside skip-forward switches between text and the original page. Performance info remains optional and your show/hide choice is saved. Controls keep their position during audio preparation."
+              }
+            ],
+            "status": "completed"
+          }
+        ]
+      }
+    ],
+    "bundles": [
+      {
+        "versionCode": 22,
+        "sha1": "4fa7f856758bfda9ed47036bc93f8c6da4fe958c",
+        "sha256": "e222bcf1610e211093836918a7a30960c692bb43c6d4de12d23fe6b3a0579727"
+      },
+      {
+        "versionCode": 27,
+        "sha1": "62c9d07d0e483828a0d6b215ddaea79b00ed5b75",
+        "sha256": "a247863362aec730e6c50ebe85a403de8cb572821276077d38a3c0b2f8e7e1f6"
+      },
+      {
+        "versionCode": 28,
+        "sha1": "3aebc9f6f71bee7ba7ca70512fb67361e3db6fbc",
+        "sha256": "809f7fc41c0662c085abc313dc88269e4be1c1c416ff983405bcbc670461f12b"
+      },
+      {
+        "versionCode": 29,
+        "sha1": "a353bfbda402b12306e35b531abcde7f90241cd5",
+        "sha256": "736564d30e2426b78fb9652f9cf2d0a3f7aa07d0985e8be763ebdc45a6f02dea"
+      },
+      {
+        "versionCode": 30,
+        "sha1": "1adcfdd8dac2975ba3d5966f32afd82cef301bef",
+        "sha256": "7371bdf73cd8dc91e05f2889c481ec896c3b80995ba925a1037f2f5b768ef41c"
+      }
+    ],
+    "lifecycles": {
+      "alpha": {
+        "releases": [
+          {
+            "releaseName": "0.3.4",
+            "activeArtifacts": [
+              {
+                "versionCode": 30
+              }
+            ],
+            "releaseLifecycleState": "RELEASE_LIFECYCLE_STATE_NOT_APPROVED",
+            "track": "alpha"
+          }
+        ]
+      },
+      "beta": {},
+      "internal": {
+        "releases": [
+          {
+            "releaseName": "Read Assist 0.3.4",
+            "activeArtifacts": [
+              {
+                "versionCode": 30
+              }
+            ],
+            "releaseLifecycleState": "RELEASE_LIFECYCLE_STATE_PUBLISHED",
+            "track": "internal"
+          }
+        ]
+      },
+      "production": {}
+    },
+    "details": {
+      "defaultLanguage": "en-US",
+      "contactEmail": "xperimenting.ai@gmail.com"
+    },
+    "listings": {
+      "en-US": {
+        "language": "en-US",
+        "title": "Read Assist",
+        "fullDescription": "Read Assist turns your documents into audio you can listen to anywhere. Open a document or scan a page, and Read Assist reads it aloud with natural on-device voices. Text recognition and speech are processed entirely on your device, so your documents never leave your phone. No account, no ads, and it works offline. Free to download with all features free.",
+        "shortDescription": "Read documents aloud \u2014 scan, OCR and listen, fully on-device."
+      }
+    }
+  },
+  "uploadAttempted": true,
+  "uploadedBundle": {
+    "versionCode": 31,
+    "sha1": "d13923f1f07f63e8175fc623c8e04e97ed31798a",
+    "sha256": "62838f37c8bcc9e1bd687931b879a3e9d97d1f02025bdfc91e727fe6cfcc8db5"
+  },
+  "editDeleted": true,
+  "error": {
+    "httpCode": 400,
+    "status": "INVALID_ARGUMENT",
+    "message": "Changes cannot be sent for review automatically. Please set the query parameter changesNotSentForReview to true. Once committed, the changes in this edit can be sent for review from the Google Play Console UI."
+  },
+  "finishedAt": "2026-11-21T05:37:35.119838+00:00"
+}

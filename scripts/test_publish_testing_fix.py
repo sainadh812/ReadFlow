@@ -8,6 +8,12 @@ from unittest.mock import patch
 import publish_testing_fix as publisher
 from publish_play import ApiError, PublishError
 
+REVIEW_RESTRICTION = (
+    "Changes cannot be sent for review automatically. Please set the query parameter "
+    "changesNotSentForReview to true. Once committed, the changes in this edit can be sent "
+    "for review from the Google Play Console UI."
+)
+
 
 def release(code=30):
     return {"name": f"Read Assist test {code}", "versionCodes": [str(code)], "status": "completed",
@@ -32,6 +38,8 @@ class FakeAPI:
         self.upload_error_applies = True
         self.upload_hash = "a" * 64
         self.validate_error = None
+        self.put_error_track = None
+        self.review_after_validation = False
         self.in_review = False
         self.lifecycle_unavailable = False
         self.mutate_other_after_commit = False
@@ -99,10 +107,14 @@ class FakeAPI:
             return {"listings": copy.deepcopy(self.listings)}
         if method == "PUT" and "/tracks/" in path:
             name = path.rsplit("/", 1)[1]
+            if name == self.put_error_track:
+                raise ApiError(400, "INVALID_ARGUMENT", REVIEW_RESTRICTION)
             state = self.edits[edit_id]["tracks"]
             state[:] = [copy.deepcopy(kwargs["json"]) if t["track"] == name else t for t in state]
             return copy.deepcopy(kwargs["json"])
         if path.endswith(":validate"):
+            if self.review_after_validation:
+                self.in_review = True
             if self.validate_error:
                 raise self.validate_error
             return {}
@@ -302,6 +314,109 @@ class TwoTrackPublishingTests(unittest.TestCase):
         self.assertEqual(report["status"], "failed", report)
         self.assertTrue(report["editDeleted"])
         self.assertEqual(self.commits(api), [])
+
+    def test_validation_review_restriction_commits_once_with_manual_review_flag(self):
+        api = FakeAPI()
+        api.validate_error = ApiError(400, "INVALID_ARGUMENT", REVIEW_RESTRICTION)
+        report = self.run_publish(api)
+        self.assertEqual(report["status"], "not_sent_for_review", report)
+        self.assertFalse(report["validated"])
+        self.assertTrue(report["manualReviewRequired"])
+        self.assertFalse(report["reviewConfirmed"])
+        self.assertTrue(report["committed"])
+        self.assertEqual(report["reviewRestrictionPhase"], "validate_edit")
+        self.assertEqual(report["failedPhase"], "validate_edit")
+        self.assertEqual(len(self.commits(api)), 1)
+        self.assertEqual(self.commits(api)[0][2]["params"], {
+            "changesInReviewBehavior": "ERROR_IF_IN_REVIEW", "changesNotSentForReview": True,
+        })
+        validations = [call for call in api.calls if call[1].endswith(":validate")]
+        self.assertEqual(len(validations), 1)
+        self.assertEqual(validations[0][2], {})
+        failure = next(event for event in report["phaseEvents"] if event["phase"] == "validate_edit")
+        self.assertEqual(failure["status"], "failed")
+        self.assertEqual(failure["error"]["httpCode"], 400)
+        self.assertTrue(report["otherTracksUnchanged"])
+        self.assertTrue(report["storeMetadataUnchanged"])
+
+    def test_validate_only_review_restriction_is_not_reported_as_validated(self):
+        api = FakeAPI()
+        api.validate_error = ApiError(400, "INVALID_ARGUMENT", REVIEW_RESTRICTION)
+        report = self.run_publish(api, validate_only=True)
+        self.assertEqual(report["status"], "validation_blocked_manual_review", report)
+        self.assertFalse(report["validated"])
+        self.assertFalse(report["committed"])
+        self.assertTrue(report["editDeleted"])
+        self.assertEqual(self.commits(api), [])
+
+    def test_same_review_restriction_on_track_put_is_fatal_without_commit(self):
+        for track in publisher.TARGETS:
+            with self.subTest(track=track):
+                api = FakeAPI()
+                api.put_error_track = track
+                report = self.run_publish(api)
+                self.assertEqual(report["status"], "failed", report)
+                self.assertEqual(report["failedPhase"], "update_track_" + track)
+                self.assertNotIn("changesNotSentForReview", report)
+                self.assertTrue(report["editDeleted"])
+                self.assertEqual(self.commits(api), [])
+                self.assertFalse(any(call[1].endswith(":validate") for call in api.calls))
+
+    def test_unrelated_or_ambiguous_validation_errors_never_commit(self):
+        errors = [
+            ApiError(400, "INVALID_ARGUMENT", "Some other validation failed"),
+            ApiError(400, "INVALID_ARGUMENT", "Unknown changesNotSentForReview parameter"),
+            ApiError(400, "INVALID_ARGUMENT", "Changes cannot be sent for review automatically"),
+            ApiError(403, "PERMISSION_DENIED", REVIEW_RESTRICTION),
+            ApiError(500, "INTERNAL", REVIEW_RESTRICTION),
+            ApiError(0, "TRANSPORT_ERROR", "Outcome unknown"),
+        ]
+        for error in errors:
+            with self.subTest(error=str(error)):
+                api = FakeAPI()
+                api.validate_error = error
+                report = self.run_publish(api)
+                self.assertEqual(report["status"], "failed", report)
+                self.assertFalse(report["validated"])
+                self.assertEqual(report["failedPhase"], "validate_edit")
+                self.assertNotIn("changesNotSentForReview", report)
+                self.assertTrue(report["editDeleted"])
+                self.assertEqual(self.commits(api), [])
+
+    def test_restricted_validation_does_not_bypass_a_new_review(self):
+        api = FakeAPI()
+        api.validate_error = ApiError(400, "INVALID_ARGUMENT", REVIEW_RESTRICTION)
+        api.review_after_validation = True
+        report = self.run_publish(api)
+        self.assertEqual(report["status"], "failed", report)
+        self.assertIn("changes in review", report["error"]["message"])
+        self.assertTrue(report["editDeleted"])
+        self.assertEqual(self.commits(api), [])
+
+    def test_restricted_validation_then_definite_commit_error_is_not_retried(self):
+        for error in (ApiError(400, "INVALID_ARGUMENT", REVIEW_RESTRICTION),
+                      ApiError(403, "PERMISSION_DENIED", "Not permitted")):
+            with self.subTest(error=str(error)):
+                api = FakeAPI()
+                api.validate_error = ApiError(400, "INVALID_ARGUMENT", REVIEW_RESTRICTION)
+                api.commit_errors = [error]
+                report = self.run_publish(api)
+                self.assertEqual(report["status"], "failed", report)
+                self.assertEqual(report["failedPhase"], "commit_edit")
+                self.assertTrue(report["editDeleted"])
+                self.assertEqual(len(self.commits(api)), 1)
+
+    def test_restricted_validation_then_ambiguous_commit_reconciles_without_retry(self):
+        api = FakeAPI()
+        api.validate_error = ApiError(400, "INVALID_ARGUMENT", REVIEW_RESTRICTION)
+        api.commit_errors = [ApiError(0, "TRANSPORT_ERROR", "Outcome unknown")]
+        api.ambiguous_commits_apply = True
+        report = self.run_publish(api)
+        self.assertEqual(report["status"], "not_sent_for_review", report)
+        self.assertTrue(report["commitReconciled"])
+        self.assertFalse(report["reviewConfirmed"])
+        self.assertFalse(report["validated"])
+        self.assertEqual(len(self.commits(api)), 1)
 
     def test_definite_commit_rejection_is_not_retried(self):
         api = FakeAPI()
