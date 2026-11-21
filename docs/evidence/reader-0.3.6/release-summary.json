@@ -1,0 +1,84 @@
+{
+  "recordedAt": "2026-11-21T06:52:21.028427+00:00",
+  "versionName": "0.3.6",
+  "versionCode": 32,
+  "package": "app.readflow",
+  "sourceCommit": "27ae8d749abd83b44fade7cbb6a14add85660456",
+  "implementation": "Clarified the embedded privacy notice to match the public policy; current free/no-payment functionality near the introduction and shorter historical-record disclosure.",
+  "github": {
+    "status": "published",
+    "releaseUrl": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.6-play-candidate",
+    "apkUrl": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.6-play-candidate/Read-Assist-0.3.6-upload-signed.apk",
+    "publishedAssetDigestsVerified": true,
+    "apk": {
+      "file": "Read-Assist-0.3.6-upload-signed.apk",
+      "sha256": "f007b4af6dae24fb96315cfe8c8ed0db593d14c942b8ed50aa668ab63b84d466",
+      "bytes": 131434707
+    },
+    "aab": {
+      "file": "Read-Assist-0.3.6-upload-signed.aab",
+      "sha256": "a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c",
+      "bytes": 72431898
+    }
+  },
+  "validation": {
+    "debugTests": {
+      "suites": 58,
+      "tests": 478,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "releaseTests": {
+      "suites": 58,
+      "tests": 471,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3
+    },
+    "lintErrors": 0,
+    "lintWarnings": 40,
+    "tipCodeAndRecipientAbsentFromApkAndAab": true,
+    "playBillingNotBundled": true,
+    "nativeSymbolsUploaded": true,
+    "physicalDeviceTestPerformed": false,
+    "embeddedPrivacyMatchesCurrentSource": true,
+    "privacySourceSha256": "eae7c4616edaf3259f1d5156574833c522761e33e638f39f36d36b71b910544b"
+  },
+  "googlePlay": {
+    "run": "https://github.com/sainadh812/ReadFlow/actions/runs/44877369623",
+    "committed": true,
+    "verifiedByFreshPostCommitReadback": true,
+    "bundleSha256": "a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c",
+    "finishedAt": "2026-11-21T06:51:03.748894+00:00",
+    "internal": {
+      "versionCode": 32,
+      "status": "published"
+    },
+    "alpha": {
+      "versionCode": 32,
+      "status": "not_sent_for_review"
+    },
+    "production": {
+      "status": "no_release",
+      "modified": false
+    },
+    "testersModified": false,
+    "declarationsModified": false,
+    "storeMetadataModified": false,
+    "reviewConfirmed": false,
+    "approvalConfirmed": false,
+    "requiredConsoleAction": "Read Assist \u2192 Publishing overview \u2192 Send for review; confirm the pending release is 0.3.6/code32. No rebuild or re-upload is needed.",
+    "automaticReviewRestriction": {
+      "httpCode": 400,
+      "status": "INVALID_ARGUMENT",
+      "message": "Changes cannot be sent for review automatically. Please set the query parameter changesNotSentForReview to true. Once committed, the changes in this edit can be sent for review from the Google Play Console UI."
+    }
+  },
+  "privacy": {
+    "url": "https://sainadh812.github.io/ReadFlow/privacy.html",
+    "published": true,
+    "sha256": "079f67e9be93b73fa1c4256cd5850073415b8817495b777a637513a42b894e9f"
+  },
+  "notes": "Google accepted the upload but requires review submission through the Console UI. The cause of the earlier organization-account rejection remains unconfirmed; saved Data safety answers have not been inspected."
+}
