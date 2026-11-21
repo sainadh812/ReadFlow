@@ -1,0 +1,7 @@
+Please review reference 4989388494721813173, Read Assist (app.readflow), 0.3.6/code 32, rejected 21 November 2026 at 12:58:55 IST under Play Console Requirements / Developer Account.
+
+This free Productivity reader offers OCR, speech and a dictionary. Tips were removed in code 31; verified code 32 contains no tip/payment flow, Play Billing or VPN component. Privacy notices clarify removal and historical records. Health/Government declarations show no such features; Data safety selects no financial information.
+
+At 12:52 IST the saved Financial form selected no financial features, all feature boxes unchecked, with no unsaved changes. The overview still showed old payments/wallets. “Declaration updated” did not reveal submitted answers. We do not assert a backend defect.
+
+Please reconcile records, identify the exact feature, declaration values or account requirement evaluated, and manually reconsider or provide specific corrective guidance.

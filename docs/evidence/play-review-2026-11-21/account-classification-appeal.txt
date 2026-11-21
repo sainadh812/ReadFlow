@@ -1,27 +1,19 @@
-DRAFT — NOT SUBMITTED
-Last confirmed checkpoint: code 32 was IN_REVIEW on 21 November 2026 at 12:54 IST. A 13:00 IST API recheck was quota-limited after the owner suspected another rejection. The newest email was then identified as 12:45:57 IST, matching the fourth rejection and predating the confirmed 12:54 review state; no later rejection has been established. Preserve the submission while establishing the current decision. This draft is available if the account-type enforcement persists; reconcile it with the latest decision/reference before submission.
+DRAFT — READY TO SUBMIT; NOT SUBMITTED
 
-Please manually review the Play Console Requirements / Developer Account classification for Read Assist (app.readflow). The account owner reports four rejection notices on 21 November 2026 at 10:08, 10:39, 11:34 and 12:45:57 IST, all citing an organization-account requirement without identifying a specific feature or declaration value.
+BEGIN APPEAL BODY
 
-Read Assist is a general document reader with local OCR, text-to-speech, word highlighting and an English dictionary. Version 0.3.5/code 31 removed the optional developer-tip flow. The current 0.3.6/code 32 APK and AAB were independently verified to contain no tipping code, recipient, payment link, Play Billing integration or VPN component. All reading features remain free. Its updated embedded and public privacy notices explain the removal while retaining accurate historical-record disclosures.
+Please manually review enforcement reference 4989388494721813173 for Read Assist (app.readflow), version 0.3.6/version code 32. The latest rejection email, dated 21 November 2026 at 12:58:55 IST, cites Play Console Requirements / Developer Account and says the selected category or declared features require an organization account. The owner's fresh Console inspection at 13:10–13:11 IST confirmed alpha “Rejected / Release not approved”; Internal testing 0.3.6 remains live. This follows four earlier notices that day citing the same account requirement.
 
-The account owner's read-only Console audit at 12:52 IST found:
-- Store category: App / Productivity; no selected tags.
-- Saved Financial features form: “My app doesn't provide any financial features” selected, all feature boxes unchecked and disabled, no unsaved changes.
-- The App content overview still displays “Mobile payments and digital wallets,” dated 16 November.
-- Publishing overview records “Financial features declaration updated.” This entry names the declaration, without showing the exact submitted answers.
-- Data safety selects only Crash logs, Diagnostics, Other app performance data, and Device or other IDs. Financial info has zero selected types. The UPI verification badge is an unclaimed option.
-- Health apps: no health features. Government apps: not a government app. The declared foreground service is media playback, not VPN.
+Read Assist is a free general document reader offering local OCR, text-to-speech, word highlighting and an English dictionary. Optional developer tipping was removed in version 0.3.5/code 31. The current code 32 signed APK and AAB were independently verified to contain no tipping code, payment recipient/link, Play Billing integration or VPN component. Its embedded and public privacy notices clarify the removal while accurately disclosing the handling of historical records.
 
-Please reconcile the saved Financial form with its older overview summary and identify the declaration values considered in the enforcement. We do not assert that the summary mismatch caused the decision.
+The owner's read-only Console audit at 12:52 IST found the saved Financial features form selected “My app doesn't provide any financial features,” with every feature box unchecked and no unsaved changes. However, the App content overview still displayed “Mobile payments and digital wallets,” dated 16 November. Publishing overview recorded “Financial features declaration updated”; that row did not show the exact submitted answers. We report this discrepancy without asserting that it caused the rejection or reflects a backend defect.
 
-At 12:48 IST, the Play API reported alpha code 32 NOT_APPROVED. Console showed it In review at 12:52, and a new read-only API check at 12:54 independently confirmed IN_REVIEW for the same exact bundle. We have not established why the state changed or linked these records to an enforcement reference. Please clarify the affected review and whether any account-classification requirement remains unresolved.
+The saved category is App / Productivity. Health and Government declarations indicate no such features; the foreground service is media playback. Data safety selects no financial information.
 
-Verified code 32 AAB SHA-256:
-a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c
+Please manually reconsider the current app's classification and identify the exact artifact, declaration values and feature or account requirement evaluated. If organization registration remains required, please explain the specific applicable requirement and corrective action.
 
-Latest API evidence: https://github.com/sainadh812/ReadFlow/actions/runs/44880100018
-Artifact evidence: https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.6-play-candidate
-Current policy: https://sainadh812.github.io/ReadFlow/privacy.html
+Verified AAB SHA-256: a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c
+Artifacts: https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.6-play-candidate
+Privacy: https://sainadh812.github.io/ReadFlow/privacy.html
 
-Please identify the exact feature, declaration or account requirement requiring organization registration and manually reconsider the classification against the current functionality. If a requirement remains unmet, please provide specific corrective guidance.
+END APPEAL BODY

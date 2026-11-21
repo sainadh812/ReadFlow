@@ -1,0 +1,72 @@
+{
+  "recordedAt": "2026-11-21T07:42:55.121495+00:00",
+  "package": "app.readflow",
+  "source": "Owner relayed Muse read-only Play Console and Gmail audit at13:10-13:11IST on21November2026",
+  "directConsoleInspectionByThisAgent": false,
+  "directInboxInspectionByThisAgent": false,
+  "rejection": {
+    "ordinalReportedByOwner": 5,
+    "receivedLocal": "2026-11-21T12:58:55+05:30",
+    "receivedUtc": "2026-11-21T07:28:55+00:00",
+    "senderReported": "Google Play Support",
+    "policy": "Play Console Requirements",
+    "area": "Developer Account",
+    "finding": "Some types of apps can only be distributed by organizations. You have selected an app category or declared your app offers certain features that require you to submit your app using an organization account.",
+    "sameWordingAsPrevious": true,
+    "specificFeatureIdentified": false,
+    "enforcementDate": "2026-11-21",
+    "enforcementReference": "4989388494721813173",
+    "issuesShownCount": 1,
+    "newerEmailReported": false
+  },
+  "consoleObservation": {
+    "checkedFrom": "2026-11-21T13:10:00+05:30",
+    "checkedThrough": "2026-11-21T13:11:00+05:30",
+    "alphaVersionCode": 32,
+    "alphaVersionName": "0.3.6",
+    "status": "Rejected",
+    "releaseText": "Release not approved",
+    "displayedReleaseLastUpdated": "2026-11-21T12:20:00+05:30",
+    "rollout": "Full rollout",
+    "countries": 178,
+    "internalVersionName": "0.3.6",
+    "internalLiveForTestersReported": true,
+    "appealExistsReported": false,
+    "appealCaseId": null,
+    "appealCheckLocations": [
+      "Policy status",
+      "issue page",
+      "email",
+      "notifications"
+    ],
+    "nothingChangedOrFiledDuringAudit": true
+  },
+  "priorEvidence": {
+    "declarationAudit": "console-audit-1252-reported.json",
+    "lastSuccessfulApiRead": "store-inspection-in-review-44880100018.json",
+    "apiReviewStateAt1254": "RELEASE_LIFECYCLE_STATE_IN_REVIEW",
+    "latestQuotaLimitedRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44881193650",
+    "latestQuotaLimitedAt": "2026-11-21T13:09:04.932022+05:30",
+    "latestQuotaLimitedReport": "store-inspection-quota-limited-44881193650.json",
+    "artifactVerification": "../reader-0.3.6/signed-artifact-verification.json",
+    "aabSha256": "a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c"
+  },
+  "assessment": {
+    "laterRejectionEstablishedByOwnerReport": true,
+    "currentStatusBasis": "Fresh owner-relayed Console inspection; latest API lifecycle calls were quota-limited",
+    "specificOrganizationRequirementTrigger": "unknown",
+    "financialOverviewMismatchConfirmedByOwnerReport": true,
+    "mismatchConfirmedAsRejectionCause": false,
+    "exactSubmittedFinancialValuesEvaluatedByGoogle": "unknown",
+    "nextStep": "Submit one manual classification appeal for reference4989388494721813173 through the existing signed-in Console/email route, using corrected declaration and code32 evidence; record acknowledgement and caseID."
+  },
+  "appealDraft": "account-classification-appeal.txt",
+  "shortAppealDraft": "account-classification-appeal-short.txt",
+  "actionsThisWorkspace": {
+    "appChanged": false,
+    "policyChanged": false,
+    "declarationsChanged": false,
+    "resubmitted": false,
+    "appealSubmitted": false
+  }
+}
