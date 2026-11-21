@@ -1,0 +1,60 @@
+{
+  "recordedAt": "2026-11-21T07:21:09+00:00",
+  "package": "app.readflow",
+  "source": "Owner confirmation in conversation: fourth rejection at 12:45 IST with the same wording as the previous Play Console Requirements / Developer Account notices",
+  "directConsoleInspectionByThisAgent": false,
+  "directInboxInspectionByThisAgent": false,
+  "fourthRejection": {
+    "receivedLocal": "2026-11-21T12:45:00+05:30",
+    "receivedUtc": "2026-11-21T07:15:00+00:00",
+    "policy": "Play Console Requirements",
+    "area": "Developer Account",
+    "status": "Rejected",
+    "sameWordingAsEarlierReported": true,
+    "specificAppFeatureIdentified": false,
+    "enforcementReference": null,
+    "reasonProvenance": "Owner report; API does not return the enforcement explanation"
+  },
+  "independentPlayInspection": {
+    "run": "https://github.com/sainadh812/ReadFlow/actions/runs/44879582610",
+    "report": "store-inspection-fourth-rejection-44879582610.json",
+    "finishedAt": "2026-11-21T07:18:05.794880+00:00",
+    "readOnly": true,
+    "inspectionEditDeleted": true,
+    "alphaVersionName": "Read Assist 0.3.6",
+    "alphaVersionCode": 32,
+    "alphaLifecycle": "RELEASE_LIFECYCLE_STATE_NOT_APPROVED",
+    "bundleSha256": "a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c",
+    "matchesIndependentlyVerified036Bundle": true,
+    "internalTrackVersionCodes": [32],
+    "internalLifecycleCurrentlyAvailable": false,
+    "internalAndBetaLifecycleError": "HTTP 403 PERMISSION_DENIED: Listing releases quota exceeded.",
+    "internalLastKnownPublishedAt": "2026-11-21T06:51:03.748894+00:00",
+    "productionReleaseCount": 0,
+    "betaReleaseCount": 0,
+    "limits": "Confirms the current alpha code 32 release is not approved and its uploaded bundle hash; does not associate an enforcement reference with the email or expose saved declarations"
+  },
+  "artifactEvidence": "../reader-0.3.6/signed-artifact-verification.json",
+  "privacyPublicationEvidence": "../privacy-policy/publication.json",
+  "declarations": {
+    "financialCorrectionPreviouslyOwnerReported": true,
+    "correctedFinancialAnswerIndependentlyVerifiedInCode32Submission": false,
+    "savedDataSafetySummary": "not_retrieved",
+    "allSavedAppContentAnswers": "not_retrieved"
+  },
+  "assessment": {
+    "specificClassificationTrigger": "unknown",
+    "privacyWordingConfirmedAsCause": false,
+    "dataSafetyConfirmedAsCause": false,
+    "nextStep": "Inspect all saved App content answers and submission state in Console; correct demonstrated mismatches or request manual classification review with the verified code 32 evidence"
+  },
+  "appealDraft": "account-classification-appeal.txt",
+  "actionsThisInspection": {
+    "appChanged": false,
+    "policyChanged": false,
+    "declarationsChanged": false,
+    "newBundleUploaded": false,
+    "resubmitted": false,
+    "appealSubmitted": false
+  }
+}

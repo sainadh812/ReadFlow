@@ -1,6 +1,6 @@
 DRAFT — NOT SUBMITTED
 
-Please manually review the Play Console Requirements / Developer Account classification for Read Assist (app.readflow). The account owner reports three rejection emails on 21 November 2026 at 10:08, 10:39 and 11:34 IST, all citing the same organization-account requirement without identifying the specific feature or declaration.
+Please manually review the Play Console Requirements / Developer Account classification for Read Assist (app.readflow). The account owner reports four rejection emails on 21 November 2026 at 10:08, 10:39, 11:34 and 12:45 IST, all citing the same organization-account requirement without identifying the specific feature or declaration.
 
 Read Assist is a general document reader with local OCR, text-to-speech, word highlighting and an English dictionary. The owner's Console checks report App / Productivity, no health features, Government apps: No, and no VPN declaration. Source and packaged-manifest inspection found no VPN implementation or financial-service functionality.
 
@@ -9,10 +9,15 @@ After the first rejection, the owner reports deselecting “Mobile payments and 
 Version 0.3.5, version code 31, removes the optional creator-tip Settings entry, payment-launch code, recipient ID and payment links. Its signed APK and AAB were independently inspected and contain no tipping implementation or Play Billing integration. Google’s upload response records this code 31 AAB SHA-256:
 62838f37c8bcc9e1bd687931b879a3e9d97d1f02025bdfc91e727fe6cfcc8db5
 
-That API evidence confirms the uploaded artifact but predates the 11:34 rejection. The owner reports that this latest rejection followed submission of 0.3.5; the exact artifact reviewed still needs confirmation against the review record.
+That API evidence confirms the uploaded artifact but predates the 11:34 rejection. The owner reports that the third rejection at 11:34 IST followed submission of 0.3.5; the exact artifact reviewed for that earlier rejection still needs confirmation against the review record.
 
 Earlier versions offered optional support for one fixed developer recipient through an external payment app, without unlocking features. The current live privacy policy states that this flow was removed in 0.3.5 and retains a disclosure about records from past contributions. It contains no active payment link or recipient ID.
 
-Version 0.3.6, version code 32, now embeds the clarified current privacy policy: detailed obsolete payment-flow descriptions are removed, while historical-record handling remains disclosed. Both signed artifacts were verified. Google accepted the code 32 upload on 21 November at 06:51 UTC: Internal testing is published and alpha closed testing is staged. The API explicitly requires the final “Send for review” action in Play Console; no code 32 review outcome is claimed.
+Version 0.3.6, version code 32, embeds the clarified current privacy policy: detailed obsolete payment-flow descriptions are removed, while historical-record handling remains disclosed. Both signed artifacts were verified, including the absence of tipping code. After the owner-reported 12:45 IST rejection, a read-only Play API inspection at 12:48 IST independently confirmed alpha code 32 is NOT_APPROVED. The uploaded bundle matches the verified AAB SHA-256:
+a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c
+
+Inspection evidence: https://github.com/sainadh812/ReadFlow/actions/runs/44879582610
+Artifact evidence: https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.6-play-candidate
+Current policy: https://sainadh812.github.io/ReadFlow/privacy.html
 
 Please identify the exact feature, declaration, category or account requirement triggering organization registration, confirm the reviewed version code, and manually reconsider the app's classification against the corrected functionality. If a specific requirement remains unmet, please provide precise corrective guidance. We are not asserting that a stale classification, privacy wording or any particular declaration caused these repeated decisions.
