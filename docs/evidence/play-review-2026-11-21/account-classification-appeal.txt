@@ -1,5 +1,5 @@
 DRAFT — NOT SUBMITTED
-Current checkpoint: code 32 is IN_REVIEW as of 21 November 2026, 12:54 IST. Preserve that active review. This draft is available if the account-type enforcement persists; reconcile it with the latest decision/reference before submission.
+Last confirmed checkpoint: code 32 was IN_REVIEW on 21 November 2026 at 12:54 IST. A 13:00 IST API recheck was quota-limited after the owner suspected another rejection; no new notice or reason has been received. Preserve the submission while establishing the current decision. This draft is available if the account-type enforcement persists; reconcile it with the latest decision/reference before submission.
 
 Please manually review the Play Console Requirements / Developer Account classification for Read Assist (app.readflow). The account owner reports four rejection notices on 21 November 2026 at 10:08, 10:39, 11:34 and 12:45 IST, all citing an organization-account requirement without identifying a specific feature or declaration value.
 

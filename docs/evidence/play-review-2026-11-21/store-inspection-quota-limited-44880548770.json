@@ -1,0 +1,118 @@
+{
+  "action": "inspect",
+  "package": "app.readflow",
+  "versionName": "0.3.6",
+  "versionCode": 32,
+  "track": "internal",
+  "aabSha256": "a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c",
+  "aabBytes": 72431898,
+  "status": "inspected",
+  "testersModified": false,
+  "startedAt": "2026-11-21T07:30:36.578494+00:00",
+  "inspectionEditId": "15678797005718858948",
+  "inspection": {
+    "tracks": [
+      {
+        "track": "production"
+      },
+      {
+        "track": "beta"
+      },
+      {
+        "track": "alpha",
+        "releases": [
+          {
+            "name": "Read Assist 0.3.6",
+            "versionCodes": [
+              "32"
+            ],
+            "releaseNotes": [
+              {
+                "language": "en-US",
+                "text": "Clarified the in-app privacy information. Read Assist has no payment or tipping flow, and all reading features remain free."
+              }
+            ],
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "track": "internal",
+        "releases": [
+          {
+            "name": "Read Assist 0.3.6",
+            "versionCodes": [
+              "32"
+            ],
+            "releaseNotes": [
+              {
+                "language": "en-US",
+                "text": "Clarified the in-app privacy information. Read Assist has no payment or tipping flow, and all reading features remain free."
+              }
+            ],
+            "status": "completed"
+          }
+        ]
+      }
+    ],
+    "bundles": [
+      {
+        "versionCode": 28,
+        "sha1": "3aebc9f6f71bee7ba7ca70512fb67361e3db6fbc",
+        "sha256": "809f7fc41c0662c085abc313dc88269e4be1c1c416ff983405bcbc670461f12b"
+      },
+      {
+        "versionCode": 29,
+        "sha1": "a353bfbda402b12306e35b531abcde7f90241cd5",
+        "sha256": "736564d30e2426b78fb9652f9cf2d0a3f7aa07d0985e8be763ebdc45a6f02dea"
+      },
+      {
+        "versionCode": 30,
+        "sha1": "1adcfdd8dac2975ba3d5966f32afd82cef301bef",
+        "sha256": "7371bdf73cd8dc91e05f2889c481ec896c3b80995ba925a1037f2f5b768ef41c"
+      },
+      {
+        "versionCode": 31,
+        "sha1": "d13923f1f07f63e8175fc623c8e04e97ed31798a",
+        "sha256": "62838f37c8bcc9e1bd687931b879a3e9d97d1f02025bdfc91e727fe6cfcc8db5"
+      },
+      {
+        "versionCode": 32,
+        "sha1": "b56007598c1d59eaa7a0f2f0711e2f627c0fff35",
+        "sha256": "a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c"
+      }
+    ],
+    "lifecycles": {
+      "alpha": {
+        "unavailable": {
+          "httpCode": 403,
+          "status": "PERMISSION_DENIED",
+          "message": "Listing releases quota exceeded."
+        }
+      },
+      "beta": {
+        "unavailable": {
+          "httpCode": 403,
+          "status": "PERMISSION_DENIED",
+          "message": "Listing releases quota exceeded."
+        }
+      },
+      "internal": {
+        "unavailable": {
+          "httpCode": 403,
+          "status": "PERMISSION_DENIED",
+          "message": "Listing releases quota exceeded."
+        }
+      },
+      "production": {
+        "unavailable": {
+          "httpCode": 403,
+          "status": "PERMISSION_DENIED",
+          "message": "Listing releases quota exceeded."
+        }
+      }
+    }
+  },
+  "inspectionEditDeleted": true,
+  "finishedAt": "2026-11-21T07:30:38.234141+00:00"
+}

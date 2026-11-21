@@ -1,0 +1,38 @@
+{
+  "recordedAt": "2026-11-21T07:31:31.901262+00:00",
+  "package": "app.readflow",
+  "trigger": "Owner suspects a new rejection; no new email, timestamp, enforcement reference or issue details supplied yet",
+  "ownerConfirmedNewRejection": false,
+  "inspectionRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44880548770",
+  "finishedAt": "2026-11-21T07:30:38.234141+00:00",
+  "finishedLocal": "2026-11-21T13:00:38.234141+05:30",
+  "rawReport": "store-inspection-quota-limited-44880548770.json",
+  "rawReportSha256": "fec3f711e0f29eae44913df09469c1682f290c6b2259f8430074161052e34445",
+  "readOnly": true,
+  "inspectionEditDeleted": true,
+  "currentReviewStatus": "unknown",
+  "currentReviewStatusUnavailableReason": {
+    "httpCode": 403,
+    "status": "PERMISSION_DENIED",
+    "message": "Listing releases quota exceeded."
+  },
+  "lastConfirmedReviewStatus": {
+    "at": "2026-11-21T12:54:41.448666+05:30",
+    "versionCode": 32,
+    "lifecycle": "RELEASE_LIFECYCLE_STATE_IN_REVIEW",
+    "report": "store-inspection-in-review-44880100018.json"
+  },
+  "bundle32Sha256": "a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c",
+  "limits": "Successful inspection workflow does not imply lifecycle read success. The quota error is not review rejection, approval, or evidence of an app policy issue.",
+  "newRejectionReason": "not_received",
+  "newRejectionCountEstablished": false,
+  "nextEvidence": "Newest rejection email Issue found / Issue details, receipt time and enforcement reference, or current Console Policy status and release detail",
+  "actions": {
+    "appChanged": false,
+    "policyChanged": false,
+    "declarationsChanged": false,
+    "uploaded": false,
+    "resubmitted": false,
+    "appealSubmitted": false
+  }
+}
