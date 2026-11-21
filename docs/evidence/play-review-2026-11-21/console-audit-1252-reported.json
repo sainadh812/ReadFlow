@@ -1,0 +1,346 @@
+{
+  "recordedAt": "2026-11-21T07:25:53.089778+00:00",
+  "package": "app.readflow",
+  "source": "Full read-only Console audit relayed by the owner in conversation; no direct Console or inbox access by this workspace",
+  "ownerAuditAt": "2026-11-21T12:52:00+05:30",
+  "ownerReportsNoChangesOrSubmissionDuringAudit": true,
+  "directConsoleInspectionByThisAgent": false,
+  "appContent": [
+    {
+      "name": "Financial features",
+      "lastEdited": "2026-11-16",
+      "reportedStatus": "In review",
+      "reportedSummary": "Overview: Mobile payments and digital wallets; detailed saved form: My app does not provide any financial features; all feature boxes unchecked and disabled"
+    },
+    {
+      "name": "Foreground service permissions",
+      "lastEdited": "2026-11-16",
+      "reportedStatus": "In review",
+      "reportedSummary": "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+    },
+    {
+      "name": "Advertising ID",
+      "lastEdited": "2026-11-05",
+      "reportedStatus": "In review",
+      "reportedSummary": "App does not use advertising ID"
+    },
+    {
+      "name": "Data safety",
+      "lastEdited": "2026-11-05",
+      "reportedStatus": "In review",
+      "reportedSummary": "Overview: 2 data types collected or shared; deletion supported through privacy URL; encrypted in transit"
+    },
+    {
+      "name": "Target audience and content",
+      "lastEdited": "2026-11-05",
+      "reportedStatus": "In review",
+      "reportedSummary": "13-15, 16-17, 18 and over"
+    },
+    {
+      "name": "Content ratings",
+      "lastEdited": "2026-11-05",
+      "reportedStatus": "In review",
+      "reportedSummary": "ClassInd: All ages; ESRB: Everyone; PEGI: 3; USK: All ages; IARC Generic: 3+; Google Play Russia: 3+; Google Play South Korea: 3+"
+    },
+    {
+      "name": "Sign in details",
+      "lastEdited": "2026-11-05",
+      "reportedStatus": "In review",
+      "reportedSummary": "All functionality is available without special access"
+    },
+    {
+      "name": "Health apps",
+      "lastEdited": "2026-11-05",
+      "reportedStatus": "In review",
+      "reportedSummary": "App does not have any health features"
+    },
+    {
+      "name": "Government apps",
+      "lastEdited": "2026-11-05",
+      "reportedStatus": "In review",
+      "reportedSummary": "App is not a government app"
+    },
+    {
+      "name": "Ads",
+      "lastEdited": "2026-11-05",
+      "reportedStatus": "In review",
+      "reportedSummary": "App does not contain ads"
+    },
+    {
+      "name": "Privacy policy",
+      "lastEdited": "2026-11-05",
+      "reportedStatus": "In review",
+      "reportedSummary": "https://sainadh812.github.io/ReadFlow/privacy.html"
+    },
+    {
+      "name": "App-level trader status and Terms of Service",
+      "lastEdited": "2026-11-05",
+      "reportedStatus": "In review",
+      "reportedSummary": "Trader status applies to this app"
+    }
+  ],
+  "financialFeatures": {
+    "savedNoFinancialFeaturesSelected": true,
+    "allFeatureOptionsUncheckedAndDisabled": [
+      "Mobile payments and digital wallets",
+      "Personal loan direct lender",
+      "Loan facilitator",
+      "Payday loans",
+      "Banking",
+      "Line of credit",
+      "Earned wage advances",
+      "Microfinance banking",
+      "Money transfer and wire services",
+      "Rewards/points/frequent flier miles",
+      "Buy now pay later",
+      "Cryptocurrency wallet",
+      "Cryptocurrency exchange",
+      "Tokenized digital asset (NFT) sales/trading/awards",
+      "Stock trading and portfolio management",
+      "Crowdfunding and chit funds",
+      "Prediction markets",
+      "Credit monitoring and reporting",
+      "Financial advice",
+      "Insurance",
+      "Other"
+    ],
+    "unsavedChangesReported": false,
+    "overviewSummary": "Mobile payments and digital wallets",
+    "overviewLastEdited": "2026-11-16",
+    "ownerExplanation": "Overview row shows last reviewed version rather than current saved answers",
+    "overviewExplanationIndependentlyConfirmed": false,
+    "publishingOverviewEntry": "App content: 'Financial features' declaration updated",
+    "ownerReportsCorrectionIncludedInCode32Review": true,
+    "evidenceLimit": "Detailed form establishes saved answers; submitted overview names a declaration update but does not expose its exact selected answers or the values used for the earlier enforcement"
+  },
+  "dataSafety": {
+    "collectionOrSharing": true,
+    "allCollectedDataEncryptedInTransit": true,
+    "accountCreation": false,
+    "outsideAccountLogin": false,
+    "deletionRequestsSupported": true,
+    "deletionUrl": "https://sainadh812.github.io/ReadFlow/privacy.html",
+    "independentSecurityReviewClaimed": false,
+    "upiPaymentsVerifiedBadgeAppliedFor": false,
+    "upiBadgeObservation": "Shown only as an available badge option, not claimed",
+    "selectedLeafTypesCount": 4,
+    "selectedGroups": [
+      "App info and performance",
+      "Device or other IDs"
+    ],
+    "unselectedGroups": {
+      "Financial info": "0/4",
+      "Location": "0/2",
+      "Personal info": "0/9",
+      "Health and fitness": "0/2",
+      "Messages": "0/3",
+      "Photos and videos": "0/2",
+      "Audio files": "0/3",
+      "Files and docs": "0/1",
+      "Calendar": "0/1",
+      "Contacts": "0/1",
+      "App activity": "0/5",
+      "Web browsing": "0/1"
+    },
+    "handling": [
+      {
+        "type": "Crash logs",
+        "status": "Completed",
+        "collected": true,
+        "shared": true,
+        "ephemeral": false,
+        "optional": true,
+        "collectionPurposes": [
+          "Analytics"
+        ],
+        "sharingPurposes": [
+          "Analytics"
+        ]
+      },
+      {
+        "type": "Diagnostics",
+        "status": "Completed",
+        "collected": true,
+        "shared": true,
+        "ephemeral": false,
+        "optional": false,
+        "collectionPurposes": [
+          "Analytics"
+        ],
+        "sharingPurposes": [
+          "Analytics"
+        ]
+      },
+      {
+        "type": "Other app performance data",
+        "status": "Completed",
+        "collected": true,
+        "shared": true,
+        "ephemeral": false,
+        "optional": false,
+        "collectionPurposes": [
+          "Analytics"
+        ],
+        "sharingPurposes": [
+          "Analytics"
+        ]
+      },
+      {
+        "type": "Device or other IDs",
+        "status": "Completed",
+        "collected": true,
+        "shared": true,
+        "ephemeral": false,
+        "optional": false,
+        "collectionPurposes": [
+          "App functionality",
+          "Analytics"
+        ],
+        "sharingPurposes": [
+          "App functionality",
+          "Analytics"
+        ]
+      }
+    ],
+    "preview": {
+      "collectedTypes": [
+        "Crash logs",
+        "Diagnostics",
+        "Other app performance data",
+        "Device or other IDs"
+      ],
+      "sharedTypes": [
+        "Crash logs",
+        "Diagnostics",
+        "Other app performance data",
+        "Device or other IDs"
+      ],
+      "deletion": "Request deletion of certain developer-collected app data",
+      "security": "Data is encrypted in transit",
+      "privacyPolicy": "https://sainadh812.github.io/ReadFlow/privacy.html"
+    },
+    "exportedCsvReceived": false
+  },
+  "storeSettings": {
+    "type": "App",
+    "category": "Productivity",
+    "selectedTags": [],
+    "suggestedTag": "Productivity"
+  },
+  "publishingOverview": {
+    "reportedStatus": "In review",
+    "releaseName": "Read Assist 0.3.6",
+    "versionCode": 32,
+    "rollout": "Full rollout",
+    "displayedReleaseTime": "2026-11-21T12:20:00+05:30",
+    "countryCount": "178 of 178",
+    "changesInReview": [
+      {
+        "item": "Closed testing - Alpha",
+        "change": "Read Assist 0.3.6 - Start full rollout"
+      },
+      {
+        "item": "Countries / regions",
+        "change": "Add 177 countries / regions: Albania, Algeria, and 175 more"
+      },
+      {
+        "item": "Countries / regions",
+        "change": "Add rest of world"
+      },
+      {
+        "item": "Countries / regions",
+        "change": "Unsync from production"
+      },
+      {
+        "item": "Track status",
+        "change": "Resume track"
+      },
+      {
+        "item": "Testers",
+        "change": "Set testers to be managed by Google Groups: testers-community@googlegroups.com"
+      },
+      {
+        "item": "Store listings",
+        "change": "English (United States) en-US Default store listing; add language, app name Read Assist and other required information"
+      },
+      {
+        "item": "Content Rating",
+        "change": "Submit new questionnaire"
+      },
+      {
+        "item": "Target audience and content",
+        "change": "Update information: age 13 and older"
+      },
+      {
+        "item": "Privacy policy",
+        "change": "Set URL https://sainadh812.github.io/ReadFlow/privacy.html"
+      },
+      {
+        "item": "Ads declaration",
+        "change": "Update ads declaration"
+      },
+      {
+        "item": "Data safety",
+        "change": "Complete questionnaire"
+      },
+      {
+        "item": "Health apps",
+        "change": "Complete declaration"
+      },
+      {
+        "item": "Trader status",
+        "change": "Complete app-level declaration"
+      },
+      {
+        "item": "Store settings: App category",
+        "change": "Select Productivity app"
+      }
+    ],
+    "whatYouHaveToldUs": [
+      "Sign in details instructions: All functionality available without special access",
+      "Advertising ID declaration updated",
+      "Government apps declaration updated",
+      "Financial features declaration updated",
+      "Foreground services declaration updated"
+    ],
+    "enforcementReference": null,
+    "submissionAfter1245Established": false
+  },
+  "independentApiRecheck": {
+    "run": "https://github.com/sainadh812/ReadFlow/actions/runs/44880100018",
+    "report": "store-inspection-in-review-44880100018.json",
+    "rawReportSha256": "2594ab186e77e7001f978c21f3353d30d2962ba1644c070089eaa0446f776ef8",
+    "finishedAt": "2026-11-21T07:24:41.448666+00:00",
+    "finishedLocal": "2026-11-21T12:54:41.448666+05:30",
+    "alphaLifecycle": "RELEASE_LIFECYCLE_STATE_IN_REVIEW",
+    "versionCode": 32,
+    "aabSha256": "a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c",
+    "matchesVerified036Bundle": true,
+    "inspectionEditDeleted": true,
+    "otherLifecycleReads": "Internal, beta and production returned Listing releases quota exceeded; track entries still show only code32 on internal and no production/beta releases",
+    "priorAlphaObservation": {
+      "at": "2026-11-21T07:18:05.794880+00:00",
+      "lifecycle": "RELEASE_LIFECYCLE_STATE_NOT_APPROVED",
+      "report": "store-inspection-fourth-rejection-44879582610.json"
+    },
+    "explanationForStateTransition": "unknown",
+    "approvalConfirmed": false
+  },
+  "assessment": {
+    "financialDataSafetySelectionSuspectSupported": false,
+    "currentOrganizationOnlyTriggerEstablished": false,
+    "financialOverviewMismatchCauseEstablished": false,
+    "privacyWordingConfirmedAsCause": false,
+    "dataSafetyOverallComplianceCertified": false,
+    "nextStep": "Preserve active code32 review. Keep evidence and appeal draft ready if the same account classification enforcement persists; request the exact submitted declaration/value and requirement Google evaluated.",
+    "separateDataSafetyConsiderations": "Sharing flags depend on service-provider rules and actual SDK use; support-email completeness is separate. No blanket no-data declaration or speculative change is justified by this enforcement."
+  },
+  "actionsThisAudit": {
+    "appChanged": false,
+    "policyChanged": false,
+    "declarationsChanged": false,
+    "uploaded": false,
+    "resubmitted": false,
+    "appealSubmitted": false
+  }
+}
