@@ -1,0 +1,58 @@
+{
+  "recordedAt": "2026-11-21T07:34:23.846084+00:00",
+  "package": "app.readflow",
+  "source": "Owner relayed the newest Google Play Support email timestamp and exact Issue found / Issue details in conversation",
+  "directInboxInspectionByThisAgent": false,
+  "receivedLocal": "2026-11-21T12:45:57+05:30",
+  "receivedUtc": "2026-11-21T07:15:57+00:00",
+  "policy": "Play Console Requirements",
+  "area": "Developer Account",
+  "issueText": "Some types of apps can only be distributed by organizations. You have selected an app category or declared your app offers certain features that require you to submit your app using an organization account.",
+  "enforcementReference": null,
+  "relationshipToPriorEvidence": {
+    "matchesPreviouslyReportedFourthRejection": true,
+    "priorRecord": "fourth-rejection-reported.json",
+    "timestampRefinement": "Previously reported to minute precision as12:45IST; now reported as12:45:57IST",
+    "fifthRejectionEstablished": false,
+    "rejectionAfter1254Established": false
+  },
+  "timeline": [
+    {
+      "at": "2026-11-21T12:45:57+05:30",
+      "observation": "Owner-reported fourth rejection email with the same account-type wording"
+    },
+    {
+      "at": "2026-11-21T12:48:05.794880+05:30",
+      "observation": "Independent API: alpha code32 NOT_APPROVED",
+      "report": "store-inspection-fourth-rejection-44879582610.json"
+    },
+    {
+      "at": "2026-11-21T12:52:00+05:30",
+      "observation": "Owner-reported Console: code32 In review",
+      "report": "console-audit-1252-reported.json"
+    },
+    {
+      "at": "2026-11-21T12:54:41.448666+05:30",
+      "observation": "Independent API: alpha code32 IN_REVIEW",
+      "report": "store-inspection-in-review-44880100018.json"
+    },
+    {
+      "at": "2026-11-21T13:00:38.234141+05:30",
+      "observation": "Independent API: review lifecycle unavailable due to quota",
+      "report": "status-recheck-1300-quota-limited.json"
+    }
+  ],
+  "currentReviewStatus": "unverified",
+  "lastConfirmedReviewStatus": "IN_REVIEW at12:54:41IST",
+  "approvalConfirmed": false,
+  "reasonForPriorStateTransition": "unknown",
+  "nextStep": "Preserve the code32 submission. Await a subsequent review decision or obtain a later Console/status observation; use the prepared classification appeal if the same enforcement persists.",
+  "actionsThisClarification": {
+    "appChanged": false,
+    "policyChanged": false,
+    "declarationsChanged": false,
+    "apiRecheckPerformed": false,
+    "resubmitted": false,
+    "appealSubmitted": false
+  }
+}
