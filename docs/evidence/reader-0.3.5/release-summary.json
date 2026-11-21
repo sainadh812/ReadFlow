@@ -1,0 +1,76 @@
+{
+  "recordedAt": "2026-11-21T05:47:33.303482+00:00",
+  "versionName": "0.3.5",
+  "versionCode": 31,
+  "package": "app.readflow",
+  "sourceCommit": "93313b50e828df306e9ab68f7aff9c95d8fe63b8",
+  "implementation": "Removed creator tipping, payment dialog, UPI handoff and copy-recipient action. Playback opens voice setup when required speech or alignment packs are missing.",
+  "github": {
+    "status": "published",
+    "releaseUrl": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.5-play-candidate",
+    "apkUrl": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.5-play-candidate/Read-Assist-0.3.5-upload-signed.apk",
+    "publishedAssetDigestsVerified": true,
+    "apk": {
+      "file": "Read-Assist-0.3.5-upload-signed.apk",
+      "sha256": "47221a2f019ef020a93eae512e9a944b318d01ed60a907a66061d5e51f662050",
+      "bytes": 131434859
+    },
+    "aab": {
+      "file": "Read-Assist-0.3.5-upload-signed.aab",
+      "sha256": "62838f37c8bcc9e1bd687931b879a3e9d97d1f02025bdfc91e727fe6cfcc8db5",
+      "bytes": 72432002
+    }
+  },
+  "validation": {
+    "debugTests": {
+      "suites": 58,
+      "tests": 478,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "releaseTests": {
+      "suites": 58,
+      "tests": 471,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3
+    },
+    "lintErrors": 0,
+    "lintWarnings": 40,
+    "tipCodeAndRecipientAbsentFromApkAndAab": true,
+    "playBillingNotBundled": true,
+    "nativeSymbolsUploaded": true,
+    "physicalDeviceTestPerformed": false
+  },
+  "googlePlay": {
+    "run": "https://github.com/sainadh812/ReadFlow/actions/runs/44872360802",
+    "committed": true,
+    "verifiedByFreshPostCommitReadback": true,
+    "bundleSha256": "62838f37c8bcc9e1bd687931b879a3e9d97d1f02025bdfc91e727fe6cfcc8db5",
+    "internal": {
+      "versionCode": 31,
+      "status": "published"
+    },
+    "alpha": {
+      "versionCode": 31,
+      "status": "not_sent_for_review"
+    },
+    "production": {
+      "status": "no_release",
+      "modified": false
+    },
+    "testersModified": false,
+    "declarationsModified": false,
+    "storeMetadataModified": false,
+    "reviewConfirmed": false,
+    "approvalConfirmed": false,
+    "requiredConsoleAction": "Read Assist \u2192 Publishing overview \u2192 Send for review; verify code 31 and the corrected no-financial-features declaration before submission."
+  },
+  "privacy": {
+    "url": "https://sainadh812.github.io/ReadFlow/privacy.html",
+    "published": true,
+    "sha256": "08618009473d0daec36b1dfbffbcd95b3840be7d727a61b1e673f7845a190235"
+  },
+  "notes": "Build reports are immutable build-time evidence. This summary and play-publication.json record subsequent GitHub and Google Play publication. Google has not confirmed that tipping caused the prior account-type rejection."
+}
