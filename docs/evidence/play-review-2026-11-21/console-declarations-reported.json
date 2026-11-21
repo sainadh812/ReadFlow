@@ -1,0 +1,73 @@
+{
+  "recordedAt": "2026-11-21T04:59:39.841711+00:00",
+  "package": "app.readflow",
+  "source": "Owner message relaying Muse view-only Play Console inspection on 2026-11-21",
+  "directlyInspectedByThisAgent": false,
+  "consoleChangesMadeDuringReportedInspection": false,
+  "rejectionNotice": {
+    "sender": "Google Play Support",
+    "subject": "Action Required: Your app is not compliant with Google Play Policies (Read Assist)",
+    "receivedLocal": "2026-11-21T10:08:00+05:30",
+    "policy": "Play Console Requirements",
+    "area": "Developer Account",
+    "appStatus": "Rejected",
+    "policyStatusEnforcedDate": "2026-11-21",
+    "reason": "Selected app category or declared features require an organization developer account.",
+    "specificCheckboxNamedInNotice": false
+  },
+  "savedAnswers": {
+    "store": {
+      "appOrGame": "App",
+      "category": "Productivity",
+      "tags": []
+    },
+    "financialFeatures": {
+      "lastEdited": "2026-11-16",
+      "selected": [
+        "Mobile payments and digital wallets"
+      ],
+      "selectedGroup": "Payments and transfers",
+      "allOtherFinancialFeaturesUnchecked": true,
+      "noFinancialFeaturesOption": "My app doesn’t provide any financial features",
+      "noFinancialFeaturesSelected": false
+    },
+    "healthApps": {
+      "lastEdited": "2026-11-05",
+      "answer": "My app does not have any health features",
+      "selectedFeatures": [],
+      "uncheckedFeatureCount": 18
+    },
+    "governmentApps": {
+      "lastEdited": "2026-11-05",
+      "answer": "No"
+    },
+    "vpn": {
+      "declarationPresent": false
+    }
+  },
+  "assessment": {
+    "likelyTrigger": "Mobile payments and digital wallets",
+    "basis": "Only positive declaration among the organization-only feature classes named in the rejection notice; audited app is a document reader with an optional fixed-recipient creator tip.",
+    "certainty": "Strongly supported inference from owner-reported saved answers and notice, not an explicit Google checkbox-specific finding.",
+    "recommendedCorrection": {
+      "uncheck": [
+        "Mobile payments and digital wallets"
+      ],
+      "select": "My app doesn’t provide any financial features",
+      "preserve": [
+        "Productivity",
+        "No health features",
+        "Government No",
+        "No VPN declaration",
+        "Accurate Data safety and media-playback foreground-service disclosures"
+      ],
+      "rationale": "No wallet, stored balance, arbitrary-recipient transfers, banking, investments or transaction backend. Optional support opens an external payment app for one fixed creator; disclose that behavior if classification is questioned.",
+      "limit": "Google guidance does not explicitly classify this exact external UPI creator-tip flow; Play Billing creator-tip guidance is not a blanket financial-declaration or account-type exemption."
+    }
+  },
+  "execution": {
+    "declarationCorrectionApplied": false,
+    "resubmitted": false,
+    "appealSubmitted": false
+  }
+}

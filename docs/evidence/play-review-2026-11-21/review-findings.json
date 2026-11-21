@@ -25,9 +25,13 @@
       "apps approved to use VpnService",
       "government apps"
     ],
-    "specificTriggerIdentified": false,
+    "specificTriggerIdentified": true,
     "separateFromEarlier403": true,
-    "playbackOrLayoutIssueCited": false
+    "playbackOrLayoutIssueCited": false,
+    "likelyTrigger": "Mobile payments and digital wallets selected in Financial features",
+    "triggerEvidence": "console-declarations-reported.json",
+    "triggerCertainty": "Strongly supported inference from owner-relayed Muse Console inspection; Google notice did not name the checkbox.",
+    "specificCheckboxConfirmedByGoogle": false
   },
   "independentFindings": [
     {
@@ -48,7 +52,7 @@
     },
     {
       "id": "outdated-reviewer-instructions",
-      "status": "corrected_in_working_tree",
+      "status": "corrected_in_repository_handoff",
       "confirmedGoogleRejectionReason": false,
       "problem": "Operational handoffs still contain older version codes and Text/PDF switch instructions.",
       "remediation": "Use code30 and small Tt toggle instructions, explicitly record rejected closed-track lifecycle."
@@ -59,12 +63,12 @@
     "modelDownloadEndpoints": "Agent checked all eight required Kokoro/alignment asset HEAD responses: HTTP200 with expected lengths. No fresh full download claimed.",
     "requiredSpeechDownloadBytes": 446539377,
     "submittedDataSafetyAnswers": "not_retrieved",
-    "submittedForegroundServiceDeclaration": "not_retrieved"
+    "submittedForegroundServiceDeclaration": "not_retrieved",
+    "savedClassificationDeclarations": "Owner relayed Muse view-only Console inspection: Productivity, only mobile payments/digital wallets selected, no health features, Government No, no VPN declaration."
   },
   "nextRequiredEvidence": [
-    "Current saved store category",
-    "Every selected Financial features checkbox",
-    "Saved Health apps and Government apps answers; any VPN declaration"
+    "Saved Financial features summary after correction: no financial features selected, mobile payments/digital wallets unchecked",
+    "Publishing overview submission time and actual review state for corrected declaration and alpha code 30"
   ],
   "resubmitted": false,
   "sources": {
@@ -76,14 +80,14 @@
     "healthDeclaration": "https://support.google.com/googleplay/android-developer/answer/14738291?hl=en",
     "creatorTipBilling": "https://support.google.com/googleplay/android-developer/answer/10281818?hl=en"
   },
-  "remainingUnknowns": "Exact saved store category and Financial features, Health apps, Government apps and any VPN declarations. The email identifies the account/type mismatch but not the triggering selection. Publishing API readback does not expose these selections; requested them from owner/Muse.",
+  "remainingUnknowns": "Whether Console correction and resubmission succeed, and whether Google accepts the general-reader classification with the disclosed fixed-recipient creator-tip flow. No correction or review resubmission has yet been performed.",
   "resolutionPlan": [
-    "Inspect saved Console category and declarations against actual code 30 features. Desired category from owner is Productivity; current saved category remains unverified.",
-    "Correct declarations only where inaccurate. Source supports no health feature and no VPN implementation; government affiliation must reflect actual owner/publisher facts.",
-    "Review Financial features selections in detail: optional support opens an external UPI app for one fixed creator recipient. It does not implement banking, lending, investment, wallet balances, arbitrary-recipient transfers or a transaction backend. Do not confuse this form with Data safety financial-data categories or infer a declaration exemption solely from Billing creator-tip guidance.",
-    "If accurate selections still trigger this rejection, use a factual appeal explaining the actual reading and optional-tip functionality and ask which category/feature requires an organization. Do not claim that Google has already accepted this interpretation.",
-    "If the app actually offers an organization-only service, use the genuine organization/verification or remove that service throughout the distributed app before changing declarations. No account transfer or feature removal performed.",
-    "Only submit corrected declarations/release once the reported classification issue is resolved; a playback patch alone does not resolve it."
+    "In existing app.readflow, change Financial features from Mobile payments and digital wallets to My app doesn’t provide any financial features, based on audited reader/creator-support behavior. Save and verify the summary. If current form instructions explicitly include this exact tip flow, seek clarification rather than contradict them.",
+    "Preserve Productivity, no health features, Government No, absence of VPN declaration, and accurate Data safety/privacy/foreground-service answers.",
+    "Inspect Publishing overview pending changes and send corrected declaration plus existing rejected alpha 0.3.4/code 30 for review. No new bundle, production promotion, key change or account transfer is needed for this declaration-only correction.",
+    "Record saved answer, submission time and actual review state. In review is not approval or public availability.",
+    "If correction/resubmission is blocked or Google retains the classification, use the conditional appeal in PLAY_STORE_HANDOFF.md, disclosing the exact external UPI creator-tip flow and any correction actually saved.",
+    "Keep the separate source playback fix and prepared listing correction distinguished from this submitted code 30 bundle and declaration correction."
   ],
   "sourceFeatureAudit": {
     "readerFeatures": [
@@ -98,11 +102,13 @@
     "governmentServiceFunctionalityFound": false,
     "financialServiceImplementationFound": false,
     "optionalCreatorTip": "One fixed UPI recipient in external payment app; no in-app wallet, balance, transaction callbacks/storage, variable recipient, features or entitlements granted.",
-    "limits": "Code review cannot establish saved Console selections, publisher affiliation, payment-recipient identity or Google policy classification of the tip."
+    "limits": "Code review cannot establish publisher affiliation, payment-recipient identity or Google policy classification of the tip. Saved declarations are now owner-reported from Muse Console inspection, not directly API-retrieved."
   },
-  "status": "awaiting_saved_declarations_for_policy_correction",
+  "status": "financial_declaration_correction_prepared_awaiting_console_execution",
   "declarationsChanged": false,
   "accountChanged": false,
   "appealSubmitted": false,
-  "validation": "validation.json"
+  "validation": "validation.json",
+  "updatedAt": "2026-11-21T04:59:39.841711+00:00",
+  "reportedConsoleEvidence": "console-declarations-reported.json"
 }
