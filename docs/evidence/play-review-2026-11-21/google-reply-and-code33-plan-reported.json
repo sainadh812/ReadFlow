@@ -73,7 +73,16 @@
     },
     "signedArtifactVerification": "../reader-0.3.7/signed-artifact-verification.json",
     "aabSha256": "b91c19bc1fecb0dc9f056521414f2c40bb4f910ff1bcacfcda43ab9c532573f1",
-    "playUploadStatus": "pending"
+    "playUploadStatus": "committed_not_sent_for_review",
+    "playPublicationReport": "../reader-0.3.7/play-publication.json",
+    "alphaVersionCodes": [
+      33
+    ],
+    "internalVersionCodes": [
+      33
+    ],
+    "otherTracksEmpty": true,
+    "lifecycleAvailabilityUnconfirmed": true
   },
   "sources": {
     "financialDeclaration": "https://support.google.com/googleplay/android-developer/answer/13849271?hl=en",

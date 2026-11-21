@@ -1,12 +1,14 @@
 # Read Assist 0.3.7: Console resubmission handoff
 
-**Signed build verified. Google Play upload and review submission are pending.**
+**Code 33 is built, verified, published on GitHub, and committed to alpha/Internal testing. Review submission is still required in Console.** Fresh readback at **11:04:33 UTC / 16:34:33 IST on 21 November 2026** confirms both tracks include only code 33 and the exact verified AAB hash; beta/production are empty. Google returned the explicit manual-review requirement. Lifecycle reads were quota-limited, so Internal tester availability is unconfirmed; no approval is claimed.
+
+[Download APK](https://github.com/sainadh812/ReadFlow/releases/download/v0.3.7-play-candidate/Read-Assist-0.3.7-upload-signed.apk) · [GitHub release](https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.7-play-candidate) · [Play upload evidence](evidence/reader-0.3.7/play-publication.json). No further build or bundle upload is needed.
 
 Google's reply for enforcement **4989388494721813173** asks for the explicit no-financial-features declaration to be saved, all active tracks to contain compliant artifacts, and a new incremented release to be submitted with the declarations.
 
 Version **0.3.7 / code 33** updates the embedded privacy notice to match the live policy. The owner confirmed that no tips were ever received and no related records are held, so obsolete historical-contribution text was removed. App logic, free reading features, SDK behavior and support/deletion disclosures are unchanged. This is the requested resubmission procedure, not a confirmed resolution of the account-classification issue.
 
-## Muse: complete these Console steps after the upload is verified
+## Muse: complete these Console steps
 
 1. Open **Read Assist → Policy and programs → App content → Financial features**. Confirm **My app doesn't provide any financial features** is explicitly selected. Use **Save**, not Save as draft, when available; reopen and capture the saved answer. If already saved and Save is disabled, record that fact without temporarily entering a false answer.
 2. Confirm the store category is **Productivity**, **Health: no health features**, and **Government apps: No**. Check Data safety against the current app and SDKs. The previous audit selected no Financial info. Preserve accurate SDK disclosures; do not set global no-data-collection. Crash logs are optional; ML Kit's separate diagnostics, performance and installation identifiers are not controlled by that switch.

@@ -1,0 +1,130 @@
+{
+  "recordedAt": "2026-11-21T11:05:25.184383+00:00",
+  "package": "app.readflow",
+  "versionName": "0.3.7",
+  "versionCode": 33,
+  "sourceCommit": "ea1757a887e2c688ff54c9c63ed87dc0ee6d7abb",
+  "implementation": "Incremented version and corrected embedded privacy notice based on owner confirmation that no contributions were received or related records held; no app logic/SDK changes.",
+  "ownerConfirmation": "No tips were received and no records are held",
+  "github": {
+    "status": "published_prerelease",
+    "releaseUrl": "https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.7-play-candidate",
+    "assets": [
+      {
+        "file": "Read-Assist-0.3.7-upload-signed.apk",
+        "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.7-play-candidate/Read-Assist-0.3.7-upload-signed.apk",
+        "sha256": "71ac345d468d4e49ff5fdda7c6e1ee349db4ede167247750318cd57a72e7575a",
+        "bytes": 131434447,
+        "serverDigestMatched": true
+      },
+      {
+        "file": "Read-Assist-0.3.7-upload-signed.aab",
+        "url": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.7-play-candidate/Read-Assist-0.3.7-upload-signed.aab",
+        "sha256": "b91c19bc1fecb0dc9f056521414f2c40bb4f910ff1bcacfcda43ab9c532573f1",
+        "bytes": 72431645,
+        "serverDigestMatched": true
+      }
+    ]
+  },
+  "validation": {
+    "status": "passed",
+    "verifiedAt": "2026-11-21T11:01:58.730589+00:00",
+    "versionName": "0.3.7",
+    "versionCode": 33,
+    "package": "app.readflow",
+    "sourceCommit": "ea1757a887e2c688ff54c9c63ed87dc0ee6d7abb",
+    "githubRunId": 44896366138,
+    "githubRunUrl": "https://github.com/sainadh812/ReadFlow/actions/runs/44896366138",
+    "filesVerified": 83,
+    "allStagedFilesCoveredByChecksums": true,
+    "apk": {
+      "file": "Read-Assist-0.3.7-upload-signed.apk",
+      "sha256": "71ac345d468d4e49ff5fdda7c6e1ee349db4ede167247750318cd57a72e7575a",
+      "bytes": 131434447
+    },
+    "aab": {
+      "file": "Read-Assist-0.3.7-upload-signed.aab",
+      "sha256": "b91c19bc1fecb0dc9f056521414f2c40bb4f910ff1bcacfcda43ab9c532573f1",
+      "bytes": 72431645
+    },
+    "certificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+    "apkSignatureVerified": true,
+    "aabSignatureVerified": true,
+    "aabStrictSignatureExitCode": 4,
+    "bundleValidation": "passed",
+    "apk16KbAlignment": "passed",
+    "tipCodeAndRecipientAbsentFromApkAndAab": true,
+    "playBillingNotBundled": true,
+    "debugTests": {
+      "suites": 58,
+      "tests": 478,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "releaseTests": {
+      "suites": 58,
+      "tests": 471,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 3
+    },
+    "lintErrors": 0,
+    "lintWarnings": 40,
+    "nativeSymbolsUploaded": true,
+    "physicalDeviceTestPerformed": false,
+    "embeddedPrivacyMatchesCurrentSource": true,
+    "onlyPackagedAssetChangeFromCode32": "privacy-information.txt",
+    "onlyMainAndReleaseSourceChangeFromCode32": "app/src/main/assets/privacy-information.txt",
+    "vpnServiceAbsent": true,
+    "privacySourceSha256": "91e2b8b5d8ee9396c3ef1f2efb223afdb0564287af3886fb04174da5d3908b13",
+    "signingNote": "Upload-key-signed APK; Play App Signing uses a separate app-signing certificate."
+  },
+  "googlePlay": {
+    "run": "https://github.com/sainadh812/ReadFlow/actions/runs/44897214635",
+    "committed": true,
+    "verifiedByFreshPostCommitReadback": true,
+    "bundleSha256": "b91c19bc1fecb0dc9f056521414f2c40bb4f910ff1bcacfcda43ab9c532573f1",
+    "finishedAt": "2026-11-21T11:04:33.112557+00:00",
+    "alphaVersionCodes": [
+      33
+    ],
+    "internalVersionCodes": [
+      33
+    ],
+    "betaVersionCodes": [],
+    "productionVersionCodes": [],
+    "trackLifecycleStatuses": {
+      "alpha": "availability_unconfirmed",
+      "internal": "availability_unconfirmed"
+    },
+    "liveTesterAvailabilityConfirmed": false,
+    "lifecycleObservation": "quota_limited",
+    "reviewConfirmed": false,
+    "approvalConfirmed": false,
+    "changesNotSentForReview": true,
+    "requiredConsoleAction": "Reconfirm saved App content answers and use Publishing overview Send for review for the corrected declarations and code33 together; record Submission activity ID.",
+    "automaticReviewRestriction": {
+      "httpCode": 400,
+      "status": "INVALID_ARGUMENT",
+      "message": "Changes cannot be sent for review automatically. Please set the query parameter changesNotSentForReview to true. Once committed, the changes in this edit can be sent for review from the Google Play Console UI."
+    },
+    "testersModified": false,
+    "declarationsModified": false,
+    "storeMetadataModified": false,
+    "otherTracksUnchanged": true
+  },
+  "privacy": {
+    "url": "https://sainadh812.github.io/ReadFlow/privacy.html",
+    "matchesSource": true,
+    "sha256": "be7e86dd7d080a4c1534a363d586c5789c3800bcaeb46dc4d198dcfef3ac20e3",
+    "rewrittenByThisWorkspace": false
+  },
+  "case": {
+    "enforcementReference": "4989388494721813173",
+    "caseId": null,
+    "formalAppealRegistrationConfirmed": false,
+    "newAppealSubmitted": false
+  },
+  "notes": "Completed track configuration proves the committed version selection, not review approval or tester availability. Post-commit lifecycle reads were quota-limited; no retry loop was used."
+}
