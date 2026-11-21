@@ -1,0 +1,46 @@
+{
+  "recordedAt": "2026-11-21T05:16:59.238066+00:00",
+  "package": "app.readflow",
+  "versionName": "0.3.4",
+  "versionCode": 30,
+  "source": "Owner report in conversation on 2026-11-21; owner relayed new rejection email and confirmed correction/resubmission",
+  "directConsoleInspectionByThisAgent": false,
+  "firstRejectionLocal": "2026-11-21T10:08:00+05:30",
+  "financialCorrection": {
+    "reportedApplied": true,
+    "deselected": "Mobile payments and digital wallets",
+    "selected": "My app doesn’t provide any financial features",
+    "savedSummaryScreenshotAvailableLocally": false
+  },
+  "resubmission": {
+    "reportedPerformed": true,
+    "approximateLocalTime": "2026-11-21T10:32:00+05:30",
+    "timeBasis": "Derived from owner statement that10:39 rejection followed seven minutes after resubmission; exact Console timestamp not supplied"
+  },
+  "secondRejection": {
+    "receivedLocal": "2026-11-21T10:39:00+05:30",
+    "policy": "Play Console Requirements",
+    "area": "Developer Account",
+    "status": "Rejected",
+    "sameWordingAsFirst": true,
+    "specificAppFeatureIdentified": false
+  },
+  "interpretation": {
+    "declarationOnlyCorrectionResolvedIssue": false,
+    "upiTipConfirmedAsCause": false,
+    "reviewAutomationOrClassifierStateKnown": false,
+    "outstandingClassificationCause": "Unknown; requires Google feature/account-specific explanation"
+  },
+  "latestApiInspection": {
+    "run": "https://github.com/sainadh812/ReadFlow/actions/runs/44869681936",
+    "report": "store-inspection-recheck-44869681936.json",
+    "tracksLifecyclesBundlesDetailsListingsMatchPreviousInspection": true
+  },
+  "currentUserDirection": "Research how other Android apps implement tipping and propose an approach Read Assist can adopt before further appeal or app changes.",
+  "executionByThisAgent": {
+    "additionalResubmission": false,
+    "appealSubmitted": false,
+    "appCodeChanged": false,
+    "accountChanged": false
+  }
+}

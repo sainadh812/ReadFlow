@@ -25,13 +25,16 @@
       "apps approved to use VpnService",
       "government apps"
     ],
-    "specificTriggerIdentified": true,
+    "specificTriggerIdentified": false,
     "separateFromEarlier403": true,
     "playbackOrLayoutIssueCited": false,
-    "likelyTrigger": "Mobile payments and digital wallets selected in Financial features",
-    "triggerEvidence": "console-declarations-reported.json",
-    "triggerCertainty": "Strongly supported inference from owner-relayed Muse Console inspection; Google notice did not name the checkbox.",
-    "specificCheckboxConfirmedByGoogle": false
+    "triggerEvidence": [
+      "console-declarations-reported.json",
+      "second-rejection-reported.json"
+    ],
+    "triggerCertainty": "Initial financial-checkbox hypothesis did not resolve rejection after owner-reported correction and resubmission. Current specific cause is unknown; UPI tip is not confirmed as cause.",
+    "specificCheckboxConfirmedByGoogle": false,
+    "previousLikelyTrigger": "Mobile payments and digital wallets selected in Financial features"
   },
   "independentFindings": [
     {
@@ -64,13 +67,14 @@
     "requiredSpeechDownloadBytes": 446539377,
     "submittedDataSafetyAnswers": "not_retrieved",
     "submittedForegroundServiceDeclaration": "not_retrieved",
-    "savedClassificationDeclarations": "Owner relayed Muse view-only Console inspection: Productivity, only mobile payments/digital wallets selected, no health features, Government No, no VPN declaration."
+    "savedClassificationDeclarations": "Original Muse inspection recorded Productivity/financial payments selection/no health/GovernmentNo/noVPN. Owner subsequently confirmed financial correction to no financial features and repeat same-policy rejection."
   },
   "nextRequiredEvidence": [
-    "Saved Financial features summary after correction: no financial features selected, mobile payments/digital wallets unchecked",
-    "Publishing overview submission time and actual review state for corrected declaration and alpha code 30"
+    "Any additional detail from owner’s current Policy status inspection",
+    "Saved corrected Financial features summary and exact submission reference for any future appeal",
+    "Google identification of the specific feature or account requirement if classification remains unresolved"
   ],
-  "resubmitted": false,
+  "resubmitted": true,
   "sources": {
     "policyStatus": "https://support.google.com/googleplay/android-developer/answer/9842754",
     "releaseLifecycle": "https://developers.google.com/android-publisher/api-ref/rest/v3/applications.tracks.releases",
@@ -80,14 +84,13 @@
     "healthDeclaration": "https://support.google.com/googleplay/android-developer/answer/14738291?hl=en",
     "creatorTipBilling": "https://support.google.com/googleplay/android-developer/answer/10281818?hl=en"
   },
-  "remainingUnknowns": "Whether Console correction and resubmission succeed, and whether Google accepts the general-reader classification with the disclosed fixed-recipient creator-tip flow. No correction or review resubmission has yet been performed.",
+  "remainingUnknowns": "Google’s specific feature/account classification rationale after the reported correction. User requests research into other apps’ tipping implementations before choosing next changes. Merchant setup and product catalog for any Play Billing implementation have not been checked.",
   "resolutionPlan": [
-    "In existing app.readflow, change Financial features from Mobile payments and digital wallets to My app doesn’t provide any financial features, based on audited reader/creator-support behavior. Save and verify the summary. If current form instructions explicitly include this exact tip flow, seek clarification rather than contradict them.",
-    "Preserve Productivity, no health features, Government No, absence of VPN declaration, and accurate Data safety/privacy/foreground-service answers.",
-    "Inspect Publishing overview pending changes and send corrected declaration plus existing rejected alpha 0.3.4/code 30 for review. No new bundle, production promotion, key change or account transfer is needed for this declaration-only correction.",
-    "Record saved answer, submission time and actual review state. In review is not approval or public availability.",
-    "If correction/resubmission is blocked or Google retains the classification, use the conditional appeal in PLAY_STORE_HANDOFF.md, disclosing the exact external UPI creator-tip flow and any correction actually saved.",
-    "Keep the separate source playback fix and prepared listing correction distinguished from this submitted code 30 bundle and declaration correction."
+    "Research real primary-source Android support/tipping implementations and official Payments/account-type rules; distinguish implementation examples from verified approval.",
+    "Recommend a support approach that preserves free reading features, explains billing and merchant setup, and does not promise it resolves the account-type rejection.",
+    "Keep prepared factual appeal available; do not submit it or repeat unchanged release submissions during this research.",
+    "If a code change is chosen, use a new version code, verify actual purchase and cancellation/pending flows as applicable, update accurate disclosures, and replace affected active bundles across tracks.",
+    "Use the latest rejection route for classification clarification if needed; disclose actual support behavior and retain accurate owner/account facts."
   ],
   "sourceFeatureAudit": {
     "readerFeatures": [
@@ -104,11 +107,16 @@
     "optionalCreatorTip": "One fixed UPI recipient in external payment app; no in-app wallet, balance, transaction callbacks/storage, variable recipient, features or entitlements granted.",
     "limits": "Code review cannot establish publisher affiliation, payment-recipient identity or Google policy classification of the tip. Saved declarations are now owner-reported from Muse Console inspection, not directly API-retrieved."
   },
-  "status": "financial_declaration_correction_prepared_awaiting_console_execution",
-  "declarationsChanged": false,
+  "status": "repeat_rejection_after_reported_correction_researching_support_options",
+  "declarationsChanged": true,
   "accountChanged": false,
   "appealSubmitted": false,
   "validation": "validation.json",
-  "updatedAt": "2026-11-21T04:59:39.841711+00:00",
-  "reportedConsoleEvidence": "console-declarations-reported.json"
+  "updatedAt": "2026-11-21T05:16:59.238066+00:00",
+  "reportedConsoleEvidence": "console-declarations-reported.json",
+  "latestInspectionRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44869681936",
+  "latestInspectionReport": "store-inspection-recheck-44869681936.json",
+  "externalActionProvenance": "Declaration change and approximately10:32IST resubmission performed outside this workspace, as reported by owner; not directly API-verifiable.",
+  "secondRejectionEvidence": "second-rejection-reported.json",
+  "appealDraft": "account-classification-appeal.txt"
 }

@@ -1,0 +1,9 @@
+Please review the Play Console Requirements / Developer Account rejection for Read Assist (app.readflow), version 0.3.4, version code 30, on alpha closed testing.
+
+After the first rejection on 21 November 2026 at 10:08 IST, we changed Financial features by deselecting “Mobile payments and digital wallets” and selecting “My app doesn’t provide any financial features.” We resubmitted at approximately 10:32 IST. At 10:39 IST, we received another rejection citing the same account-type requirement without identifying a specific feature.
+
+Read Assist is a general document reader with local OCR, text-to-speech, word highlighting and an English dictionary. Its category is App / Productivity. Health apps is declared as no health features, Government apps as No, and the app has no VPN implementation.
+
+We explicitly disclose the optional Settings → Buy me a coffee feature. It opens an external UPI app with the single fixed developer recipient readassist@ybl, a user-chosen INR amount and a support note; alternatively, it copies that recipient ID. Read Assist has no user wallet, stored balance, arbitrary-recipient transfer service, transaction backend, payment callback or payment-status verification. Authorization and payment status are handled by the external payment app. Tips unlock no content, features, perks or priority support. We are not treating the Play Billing creator-tip exception as an exemption from account-type requirements.
+
+Please review the corrected declaration against this actual functionality and identify the specific feature, declaration, category or account requirement that still requires organization registration. In particular, please clarify whether this exact fixed-recipient creator-support flow is being classified as a financial service. We request reconsideration if the classification is mistaken, or precise corrective guidance if an organization account or app change is required.
