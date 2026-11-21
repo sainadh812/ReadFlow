@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inspect or publish the approved 0.3.4 bundle to Google Play Internal testing.
+"""Inspect or publish the verified 0.3.5 bundle to Google Play Internal testing.
 
 Credentials are consumed from the Actions secret in memory. This script never
 changes testers, another track, signing settings, or the approved artifact.
@@ -16,21 +16,19 @@ import sys
 from datetime import datetime, timezone
 
 PACKAGE = "app.readflow"
-VERSION_CODE = 30
-VERSION_NAME = "0.3.4"
+VERSION_CODE = 31
+VERSION_NAME = "0.3.5"
 EXPECTED_PROJECT = "read-assist-fbd21"
 EXPECTED_EMAIL = "play-publisher@read-assist-fbd21.iam.gserviceaccount.com"
-AAB_BYTES = 72436935  # Independently verified signed build 44097812814.
-AAB_SHA256 = "7371bdf73cd8dc91e05f2889c481ec896c3b80995ba925a1037f2f5b768ef41c"
-AAB_URL = "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.4-play-candidate/Read-Assist-0.3.4-upload-signed.aab"
-DEFAULT_REPORT = Path("build/play-upload-0.3.4/report.json")
+AAB_BYTES = 72432002  # Independently verified signed build 44870861932.
+AAB_SHA256 = "62838f37c8bcc9e1bd687931b879a3e9d97d1f02025bdfc91e727fe6cfcc8db5"
+AAB_URL = "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.5-play-candidate/Read-Assist-0.3.5-upload-signed.aab"
+DEFAULT_REPORT = Path("build/play-upload-0.3.5/report.json")
 API_ROOT = "https://androidpublisher.googleapis.com"
 APP_PATH = f"/androidpublisher/v3/applications/{PACKAGE}"
 RELEASE_NOTES = (
-    "More space for reading with a smaller floating panel. Removed the Ready/Preparing row and "
-    "moving progress bar; loading stays inside the main playback button. A small Tt icon beside "
-    "skip-forward switches between text and the original page. Performance info remains optional "
-    "and your show/hide choice is saved. Controls keep their position during audio preparation."
+    "Removed the optional tipping button and all payment links. Reading features remain free. "
+    "Play now opens voice setup when required speech or word-alignment files are missing."
 )
 
 _SECRETS: list[str] = []
