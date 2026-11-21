@@ -1,60 +1,88 @@
 # Read Assist publishing handoff for Muse Spark
 
-**Latest release — 15 November 2026:** Read Assist **0.3.1 / versionCode 27** is published on **Internal testing**, confirmed by Google's release lifecycle after commit. See [the current release handoff](PLAY_UPLOAD_0.3.1.md) and [publication evidence](evidence/reader-0.3.1/play-publication.json). [Join the internal test](https://play.google.com/apps/testing/app.readflow) using an eligible tester account. Production and tester membership were unchanged. The older candidate and Console details below are historical context.
+**Current review state — 21 November 2026:** Read Assist **0.3.4 / versionCode 30**, package `app.readflow`, is **not approved on the alpha closed-testing track**. A fresh read-only [Play inspection](evidence/play-review-2026-11-21/store-inspection.json), [run 44867437967](https://github.com/sainadh812/ReadFlow/actions/runs/44867437967) reports `RELEASE_LIFECYCLE_STATE_NOT_APPROVED` for alpha, while Internal testing remains `RELEASE_LIFECYCLE_STATE_PUBLISHED`. Production and beta contain no releases. The owner has now supplied Google’s rejection notice: **Play Console Requirements → Developer Account**. Google says the selected app category or declared features require an **organization developer account**. The notice lists financial services, health/medical or human-subjects research apps, approved VPN apps and government apps as relevant classes. It does not identify which saved selection triggered this app’s classification; those Console answers remain to be retrieved.
 
-**FREE DISTRIBUTION FIRST. Updated 2026-10-31.** All existing features remain free. Paid tiers, INR 10 / USD 0.99 prices, quotas and coupons are deferred. Optional **Buy me a coffee** support to `readassist@ybl` grants no benefit. Package `app.readflow` and repository `sainadh812/ReadFlow` remain unchanged; work from branch `fix/reader-playback-and-pdf-space`.
+This is the current operational handoff. Older version-specific handoffs and the dated material below remain historical records, not instructions to upload codes 22, 27 or 28. A track entry with `status: completed` does not override its `NOT_APPROVED` review lifecycle. The earlier API listing-validation HTTP 403 is a separate event, not the reason supplied for this review rejection.
 
-The current candidate is **Read Assist 0.2.6, versionCode 22**, Android 15+ ARM64, target API 36. Normalization `english-6` fixes numeric sentence endings with attached reference numbers, including `2019.)71`. Reporting settings distinguish saved consent, active reporting and local SDK submission outcomes; failed synchronous submissions allow a later occurrence to retry within the hourly limit. Optional Crashlytics remains off by default, and the previewed support-email flow remains available. **The configured build passed in run 41183292058 using the existing Firebase configuration and upload key. Code 22 has not been uploaded to Play. Phone playback and remote report delivery remain unverified for this candidate.** Historical 0.2.5 artifacts and Console evidence remain separate below.
+## Current artifact and preserved setup
 
-Public developer display name: **Oh My Pi**. Support/privacy contact: **xperimenting.ai@gmail.com**. Policy URL: **https://sainadh812.github.io/ReadFlow/privacy.html**. The **27 October 2026 policy revision is live and verified** with HTTP 200 and exact matching bytes; it covers optional Crashlytics and manual support email. Check [publication status](PRIVACY_PUBLICATION.md), [Data safety worksheet](PRIVACY_AND_STORE_DRAFT.md), [free distribution plan](FREE_DISTRIBUTION_PLAN.md) and [license re-audit](PLAY_REAUDIT_2026-10-26.md).
+| Item | Verified value |
+| --- | --- |
+| App / version | Read Assist, `app.readflow`, **0.3.4 / code 30** |
+| AAB | `Read-Assist-0.3.4-upload-signed.aab`, **72,436,935 bytes** |
+| SHA-256 | `7371bdf73cd8dc91e05f2889c481ec896c3b80995ba925a1037f2f5b768ef41c` |
+| Source / release | `ffb5e0b4a34a28149c13c9d1c570d6f4d4a894f4`; [GitHub release](https://github.com/sainadh812/ReadFlow/releases/tag/v0.3.4-play-candidate) |
+| Build verification | [0.3.4 release summary](evidence/reader-0.3.4/release-summary.json); [signed artifact verification](evidence/reader-0.3.4/signed-artifact-verification.json) |
+| Existing Play app | [Read Assist in Play Console](https://play.google.com/console/u/0/developers/9173169759090733636/app/4975999632955979701), app ID `4975999632955979701` |
+| Device support | Android 15/API 35 or later, ARM64; target API 36 |
+| Developer / support | Oh My Pi; `xperimenting.ai@gmail.com` |
+| Privacy policy | `https://sainadh812.github.io/ReadFlow/privacy.html` |
 
-## Current Play Console state — owner-reported
+The 21 November inspection found the same code 30 AAB hash already on Play. Preserve that artifact and the existing upload key, Play App Signing, free pricing and tester lists. Use the existing GitHub Actions secret `READFLOW_PLAY_SERVICE_ACCOUNT_JSON`; do not export or replace it to investigate a policy rejection. Changes to app code would need a new verified build and version code; a listing or declaration correction does not by itself require rebuilding the app.
 
-The owner relayed Muse Spark's successful draft upload on 27 October 2026.
-This workspace has not independently accessed Play Console. The existing free
-Read Assist app is now **app.readflow**, Play app ID **4975999632955979701**.
-Version **0.2.5/code 21** was accepted and is already used; preserve its existing
-release/library entry instead of creating another app or uploading code 21 again.
-The release is **Draft**, Internal testing **Inactive**; nothing was rolled out.
-Google-managed Play App Signing is configured. Preserve it and automatic protection.
+## Resolve the confirmed account-type rejection
 
-[Existing draft](https://play.google.com/console/u/0/developers/9173169759090733636/app/4975999632955979701/tracks/4701509931226024011/releases/1/prepare) ·
-[Internal testing](https://play.google.com/console/u/0/developers/9173169759090733636/app/4975999632955979701/tracks/internal-testing).
-No upload errors were reported; release notes are missing. Play's attached native
-debug symbols do not establish a Firebase Crashlytics symbol upload.
-See the [reported Console evidence](evidence/play-store-0.2.5-configured/play-console-draft-reported.json).
+The rejection is about **developer-account eligibility for the app’s selected category or declared features**. The existing API validation denial, outdated screenshots and missing-model playback defect are separate findings. Fixing playback or uploading another APK does not resolve this account-type policy by itself. Google’s [account-type requirements](https://support.google.com/googleplay/android-developer/answer/13634885?hl=en) explain the affected service classes.
 
-The new **0.2.6/code 22 candidate has not been uploaded**. For the next authorized
-upload, use its verified AAB in this existing app with the existing upload key and
-Play App Signing. Do not roll it out automatically. Release notes, the owner's
-explicitly confirmed Google Play tester account and internal-test availability
-remain to be completed. Do not infer the tester account
-from the public support address or put tester email addresses in this public repo.
-Keep public production release and its remaining policy, license and device gates
-separate from this limited test. Do not treat internal-test acceptance as policy
-approval or verified crash delivery.
+Retrieve the saved **app category**, **Financial features**, **Health apps**, **Government apps** answers, any **VPN declaration**, and **developer account type** from the existing Console app. Preserve a record of the current answers before changing them. The API inspection does not expose these saved answers, and the rejection notice does not establish that a specific one is wrong.
 
-## Prompt for the publishing agent
+| Item | Correct treatment for this app |
+| --- | --- |
+| App category | The owner requested **Productivity**. Compare the saved category and change an incorrect category to Productivity, which describes this general document reader. Category changes alone do not override actual regulated features. |
+| Health apps | Source supports **no health features**: no diagnosis, treatment, health tracking, medical service, human-subjects research or Health Connect integration. Reading fonts and lighting are reading preferences. Correct any saved health-feature selection that inaccurately describes these controls. |
+| VPN | The reviewed manifest/source contains **no VPN implementation or `VpnService`**. Its foreground service is media playback. An inaccurate VPN declaration should be corrected; do not confuse a media foreground service with a VPN service. |
+| Government apps | The app implements no government-service feature. Any question about development by or affiliation with a government agency requires the owner’s actual fact; the source cannot establish that affiliation. Do not infer government status from documents a user might import. |
+| Financial features | Inspect the **exact saved selections** against the implemented optional creator tip described below. Do not select wallet, money-transfer or other financial services merely because a Data safety worksheet discusses financial information. Equally, do not replace all answers with “No” solely to pass review. |
+| Developer account | If the app actually provides a service requiring an organization account, complete Google’s organization-account verification using real organization details. If accurate declarations and actual behavior support a general reader instead, request review of that classification with the factual explanation below. Do not invent an organization, D-U-N-S number or qualification. |
 
-Copy the quoted prompt into Muse Spark. This [current handoff](https://github.com/sainadh812/ReadFlow/blob/fix/reader-playback-and-pdf-space/docs/PLAY_STORE_HANDOFF.md) supersedes release attachments and earlier paid/free-Pro prompts.
+### Creator support: three separate policy questions
 
-> You are Muse Spark, the publishing assistant for **Read Assist** (double “s”), package `app.readflow`, repository `sainadh812/ReadFlow`. Work from the current `fix/reader-playback-and-pdf-space` branch and this handoff. The candidate is **0.2.6/code 22**, built from `25944d402312adf69e44f5e3d6f5b42a2e6b179f` in run **41183292058**, artifact **13036231224**. It has not been uploaded to Play. Record its exact evidence; never transfer test results from an older artifact. Use **Oh My Pi** as the approved public developer display name and **xperimenting.ai@gmail.com** for public support/privacy contact. Preserve existing app data and model identities.
->
-> Use the **existing** Firebase Spark project **Read Assist**, ID `read-assist-fbd21`, Android package `app.readflow`, Firebase app ID `1:831366793321:android:573b80e46b55eb65103af8`. Muse Spark reports project creation, Spark/no-cost plan, Analytics disabled and the client JSON downloaded. Do not create another project or regenerate the upload key. Four upload-signing secrets are already stored in `sainadh812/ReadFlow`; the public certificate/fingerprint are in `docs/evidence/play-store-upload/`. The config is already stored as **`READASSIT_FIREBASE_CONFIG_BASE64`** (earlier spelling), and the workflow accepts it as a fallback for **`READASSIST_FIREBASE_CONFIG_BASE64`**. No repeat transfer is needed. Run 41183292058 validated the stored config and built the signed 0.2.6 candidate. Do not repeat setup or rebuild merely to obtain these files. Do not paste its contents in chat, commit it, overwrite the signing secrets, create a service-account key, enable Analytics or upgrade to Blaze. See `docs/GITHUB_RELEASE_BUILD.md` for the manual workflow and verification steps.
->
-> Reporting is **off by default** and Firebase initializes only at startup with valid configuration and saved consent. Full enable/disable takes effect on the next app launch; our handled-error reports stop immediately on opt-out, while queued work may finish and stored reports may send after re-enabling. Test fresh install/off, consent/on/restart, opt-out/restart and re-enable with pending reports. Verify real sanitized nonfatal, Java fatal, ANR where practical and native-crash delivery in the correct Firebase project after restarting the test app. Use a dedicated test installation and development-only test triggers; do not crash the owner's reading session or expose forced-crash controls in production. Upload matching native symbols for the exact release, follow `docs/NATIVE_CRASH_SYMBOLS.md`, and document any remaining vendor-library or Go unwinding/symbolication limits. A build pass or a visible switch does not prove delivery. Unconfigured review builds cannot send Crashlytics reports and are not this feature's production-ready package.
->
-> Configure a **free download with all existing features available**, no subscriptions, quotas, coupon campaign or paid products. The optional coffee feature opens an external UPI app or copies `readassist@ybl`; it does not unlock perks, track transactions or verify success. Confirm the owner registered this address and verify the bank-resolved recipient before shipping. Check the direct creator-tip conditions; do not invent merchant details, claim worldwide card payments/tax-deductible donations, make a transfer, or require payment for reviewers.
->
-> Use **https://sainadh812.github.io/ReadFlow/privacy.html** for the public policy. The current `site/privacy.html` revision was published and verified on 27 October 2026; recheck the live URL against the final source using `docs/PRIVACY_PUBLICATION.md` before distribution. The source covers optional Crashlytics identifiers/crash logs/diagnostics, automatic/native runtime-data limitations, manually sent support email, ML Kit, model hosts, local exports and external UPI. Do not say “no data collected” because inference is local. Use `docs/PRIVACY_AND_STORE_DRAFT.md` to complete Data safety from the final artifact: optional Firebase crash logs, diagnostics and device/other IDs, plus any applicable session/performance categories; account for manual email/content the user chooses to send, ML Kit and payment-provider handling. No Google Analytics or app user ID is added. Developer support correspondence/reports are deleted within 90 days after resolution; Firebase's separate retention and payment-record rules are described in the policy. Production GitHub upload/token entry is unavailable; do not ask customers for GitHub credentials.
->
-> Audit licensing again for the exact final signed AAB, including newly added Firebase/transport dependencies and native binaries. Use `docs/PLAY_REAUDIT_2026-10-26.md` as the baseline, not blanket clearance. Preserve notices, font licenses, MPL sources/offers and the eSpeak/Sherpa-free release. Check model/runtime inventories and hashes; do not change serialized model IDs casually. Record unresolved findings for technical review.
->
-> Reuse the existing Play app **4975999632955979701**, upload key and Google-managed Play App Signing. Code 21 is already accepted in its historical draft. For a subsequently authorized upload, use the exact **Read-Assist-0.2.6-upload-signed.aab**, code **22**, SHA-256 **e222bcf1610e211093836918a7a30960c692bb43c6d4de12d23fe6b3a0579727**. Do not upload code 21 again, create another app/key, or roll out code 22 automatically. If Console already contains code 22 when you begin, stop to reconcile that state instead of blindly re-uploading or rebuilding. Keep configuration, keys and passwords outside Git/chat. This candidate passed 372 release tests with three fixture skips, lint, and CI packaging checks; complete its remaining exact-artifact review, Firebase symbol upload and real-device checks. Repeat final checks after configuration or signing changes. Prior unsigned AABs and prototype-signed APKs are review artifacts, not production uploads.
->
-> Complete developer/account verification, approved application terms, audience/territories, content rating, app access, Data safety and media-playback foreground-service declarations from verified facts. Use real final-app screenshots and a service-use video. Test model setup, retained documents on updates, OCR/speech/offline reading, sustained playback, swipes, themes/fonts, notification controls, privacy/deletion, the email preview/no-email-app fallback, diagnostics consent and UPI cancellation/no-handler behavior on the S25 Ultra and a 16 KB environment. Complete applicable internal/closed testing. Do not publish with required checks or owner facts unresolved. Report final version, commit, AAB hash, certificate fingerprint, Firebase app/project identifiers (not secrets), delivery/symbol evidence and actual track/tester URL. Claim publication only when Console confirms it.
+**Implemented behavior:** Settings → Buy me a coffee offers a voluntary tip to the single fixed developer recipient `readassist@ybl`. The app passes that recipient, an INR amount and a support note to an external UPI app, or copies the public recipient ID. It provides no user wallet, stored balance, arbitrary-recipient transfers, banking, loans, trading, payment callback or transaction backend. The external payment app handles authorization and payment status. Tips unlock no content, features, usage, badges or priority support. The configured ID alone does not verify the recipient’s identity or provider arrangements.
 
-## Firebase setup and release checks
+1. **Financial features declaration** classifies financial functionality offered by the app. Review its actual saved selections against the behavior above and Google’s [financial-feature categories](https://support.google.com/googleplay/android-developer/answer/13849271?hl=en). The available guidance does not establish a blanket exemption for this exact UPI handoff; disclose it accurately if requesting clarification or appealing the classification.
+2. **Data safety** describes information collected or shared. A financial-data assessment about recipient-visible payment information is not an instruction to declare a wallet or money-transfer service. Preserve accurate data disclosures, including ML Kit telemetry and optional Crashlytics; this account-type rejection does not justify declaring no collection. See [the current data-flow review](PRODUCTION_READINESS_0.3.1.md#privacy-and-data-safety-facts-for-the-current-submission).
+3. **Play Billing** has a [direct creator-tip exception](https://support.google.com/googleplay/android-developer/answer/10281818?hl=en) subject to its actual conditions, including the entire contribution reaching the creator and no digital benefit in return. That exception addresses billing; it does not automatically exempt an app from the Financial features declaration or organization-account requirements.
+
+Correct inaccurate declarations first. If Google still classifies the accurately disclosed tip or other actual functionality as a qualifying financial service, obtain that clarification and resolve the real requirement through eligible organization verification or an explicitly chosen feature change. Do not conceal a shipped feature in the declaration. No declaration change, account conversion, appeal or resubmission has been performed by this handoff.
+
+### Conditional appeal draft — not submitted
+
+Use this draft only after checking the saved declarations against the actual app and correcting inaccuracies. Include the verified saved category/declaration values and Google’s rejection reference when submitting. Do not claim an answer was changed or approved unless Console confirms it.
+
+> Please review the developer-account classification for Read Assist (app.readflow), version 0.3.4/code 30, rejected under Play Console Requirements → Developer Account. Read Assist is a general document reader with local OCR, text-to-speech and an English dictionary; Productivity is the intended category. It does not implement medical/research, VPN or government-service features. It includes an optional developer tip: the user can open an external UPI app with the single fixed developer recipient and an INR amount. Read Assist provides no wallet, balance, arbitrary-recipient transfers, financial advice or transaction backend, and the tip unlocks no benefit. We disclose this handoff explicitly and do not rely on the Billing tip exception as an account-type exemption. Please identify the category or declared feature that requires an organization account, or reconsider the classification against the verified app behavior and saved declarations supplied with this request.
+
+## Separate product and listing corrections
+
+These findings improve accuracy and usability but are **not established causes of the account-type rejection**:
+
+- The 21 November API read still returns older listing copy claiming documents “never leave your phone” and unqualified offline operation. Local report exports can include reading material, and speech/alignment setup requires downloads. The prepared [en-US listing](../store-assets/listing/en-US.json) accurately describes on-device processing and required setup; it is **not yet the saved Play copy**. Importing scanned-page images is supported; do not imply an in-app camera scanner.
+- Current store screenshots and the public demo were captured on code 28, and the demo page’s APK button still links to 0.3.2. Refresh affected materials using real captures of the submitted build and preserve provenance; do not relabel old captures.
+- The independent missing-model playback fix routes the user to voice setup. Its [validation](evidence/play-review-2026-11-21/validation.json) passed 481 unit tests, including 12 setup-action tests and 8 dock tests, with zero lint errors. No fresh-install Android UI test was performed. Shipping it requires a new verified build/version code. It is not a remedy for the account-type rejection.
+
+No login, invitation, subscription or payment is required to review reading features. All existing features remain free and there are no ads. After the actual account/declaration issue is resolved and any chosen app changes are verified, submit through the applicable track and record review submission, approval and public availability separately. Internal publication is not approval of the rejected alpha release.
+
+## Reviewer instructions for 0.3.4
+
+Use Android 15+ on an ARM64 device. Initial speech and dictionary setup needs internet and storage; the downloads are not bundled into the APK.
+
+1. Open the Library and tap **Try a sample** to open **A quiet space for thought**. Text reading is immediately available.
+2. Open **Voices** (screen title **Voice models**). Download the offered **Kokoro** and **alignment** packs and wait until both say **Installed**. The combined downloads are about **447 MB**; installation needs additional storage. Choose a voice, return to the sample and tap **Play**. The primary button's circle indicates audio preparation; no separate Ready/Preparing row or horizontal loading bar is shown.
+3. Import a reviewer-owned multi-page PDF to review original-page rendering. Tap the small **Tt icon immediately after skip-next and before the up arrow** to toggle text/original view. There are no separate Text and PDF buttons. The icon appears only for documents with an original PDF/image. Swipe right-to-left to advance a page.
+4. Tap the up arrow or swipe upward from the bottom controls for speed, voice, recognition, brightness and warm light. Performance information has a saved show/hide setting. The compact dock keeps its transport controls in place during audio preparation.
+5. Long press a recognized word or open the reader menu → **Dictionary**. Download its pack once (about **97 MB** compressed, **281 MB** installed), then look up an English word. Closing the dictionary leaves narration paused until the user resumes.
+6. Open **Settings → App theme** for the three library themes. **Privacy and licenses** contains local notices and the public policy. Crash reporting and creator support are optional.
+
+## Reviewer video and current evidence limits
+
+The existing [continuous foreground-service demonstration](https://sainadh812.github.io/ReadFlow/media/Read-Assist-0.3.2-foreground-service.mp4) remains reachable and shows actual **Play → Home → continuing narration → notification Pause**. Its original capture is from **0.3.2**, with emulator/build provenance in the [video report](evidence/reader-0.3.2/demo-video/video-build-report.json). It is evidence of that unchanged media-playback flow, not a video of the new compact controls or a physical ARM64 phone. If Google's notice requests different or current-version evidence, capture that exact flow on the corrected build. The marketing film is separate from this continuous proof.
+
+The public privacy page returned HTTP 200 on 21 November and matches `site/privacy.html` exactly (SHA-256 `0bd9eb1e31a99fefb8da580b98ae9f4c8ceafbd4d99fbac7f610f56df01d197a`). Both the foreground-service and product-demo MP4s returned HTTP 200 with their recorded hashes. No broken privacy or demonstration link was found. This does not establish which URL or declaration Muse actually submitted.
+
+## Historical records
+
+The following dated build/configuration notes are retained for provenance. Their old pending states and artifact-selection instructions do not describe the current release or authorize uploading an older bundle.
+
+## Historical 0.2.6 configuration and release checks — 31 October 2026
 
 Muse Spark reports that the owner Firebase project and client configuration exist in its workspace. The file is absent from this coding workspace, but the repository secret `READASSIT_FIREBASE_CONFIG_BASE64` exists. The workflow accepts that earlier spelling; its value passed the configured build, and the final APK resources match the approved identifiers. The new upload key and four signing secrets are already stored in GitHub. Ordinary review builds without the config remain usable, with automatic reporting unavailable. Publication builds using `-PplayPublication=true` require a valid owner-supplied `app/google-services.json`, secure signing and the policy URL. The app's Gradle check accepts the exact `app.readflow` client and rejects source-set overrides. It does not verify project ownership, Console enablement or delivery.
 
@@ -68,7 +96,7 @@ Keep the exact build outputs and GNU build IDs. The Misaki build now retains GNU
 
 The consent/network flow requires device tests. A local SDK submission count is not proof of report persistence or server delivery. Record the 0.2.6 artifact's own device, delivery and Console evidence when those checks complete.
 
-## Current configured, upload-signed candidate
+## Historical 0.2.6 configured, upload-signed candidate
 
 [Verified build](https://github.com/sainadh812/ReadFlow/actions/runs/41183292058) · [download APK/AAB and reports](https://github.com/sainadh812/ReadFlow/actions/runs/41183292058/artifacts/13036231224) (14-day artifact retention) · [published 0.2.6 prerelease](https://github.com/sainadh812/ReadFlow/releases/tag/v0.2.6-play-candidate).
 Version **0.2.6/code 22**, source `25944d402312adf69e44f5e3d6f5b42a2e6b179f`.

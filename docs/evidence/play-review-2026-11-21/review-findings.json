@@ -1,0 +1,108 @@
+{
+  "recordedAt": "2026-11-21T04:44:54.960181+00:00",
+  "package": "app.readflow",
+  "versionName": "0.3.4",
+  "versionCode": 30,
+  "inspectionRun": "https://github.com/sainadh812/ReadFlow/actions/runs/44867437967",
+  "readOnly": true,
+  "inspectionEditDeleted": true,
+  "confirmed": {
+    "closedTestingTrack": "alpha",
+    "closedTestingLifecycle": "RELEASE_LIFECYCLE_STATE_NOT_APPROVED",
+    "internalLifecycle": "RELEASE_LIFECYCLE_STATE_PUBLISHED",
+    "productionReleases": [],
+    "submittedBundleMatchesVerified034Build": true,
+    "bundleSha256": "7371bdf73cd8dc91e05f2889c481ec896c3b80995ba925a1037f2f5b768ef41c"
+  },
+  "rejectionReason": {
+    "source": "Google rejection email pasted by the owner in this conversation on 2026-11-21",
+    "policy": "Play Console Requirements",
+    "area": "Developer Account",
+    "finding": "Selected app category or declared features require distribution using an organization developer account.",
+    "listedAppTypes": [
+      "financial products and services",
+      "health apps, including medical and human subjects research",
+      "apps approved to use VpnService",
+      "government apps"
+    ],
+    "specificTriggerIdentified": false,
+    "separateFromEarlier403": true,
+    "playbackOrLayoutIssueCited": false
+  },
+  "independentFindings": [
+    {
+      "id": "reader-missing-packs",
+      "status": "source_fix_validated_not_released",
+      "confirmedGoogleRejectionReason": false,
+      "problem": "Fresh sample opens without voice packs. Reader Play bypasses library setup routing, so absent models fail in coordinator while explanation is hidden behind Reading details or the controls sheet.",
+      "remediation": "Route reader Play, selected-word start, sentence start, blocked restart and Prepare to existing voice setup if selected voice or alignment pack is missing. Preserve primary pause/cancel, end-of-document stop and compact layout.",
+      "verification": "481 debug unit tests passed, including 12 speech action tests and 8 dock layout tests; lint zero errors. No fresh-install Android UI or physical-phone verification during this turn.",
+      "policyRelevance": "Independent usability correction; not a remedy for the organization-account requirement in the supplied notice."
+    },
+    {
+      "id": "unqualified-store-copy",
+      "status": "corrected_copy_prepared_not_published",
+      "confirmedGoogleRejectionReason": false,
+      "problem": "Saved listing says works offline without initial model-download requirement, and uses the absolute documents never leave your phone despite user-directed export/support flows.",
+      "remediation": "Prepared listing describes on-device processing, explicit initial speech/alignment setup, optional packs and internet-dependent imports/links."
+    },
+    {
+      "id": "outdated-reviewer-instructions",
+      "status": "corrected_in_working_tree",
+      "confirmedGoogleRejectionReason": false,
+      "problem": "Operational handoffs still contain older version codes and Text/PDF switch instructions.",
+      "remediation": "Use code30 and small Tt toggle instructions, explicitly record rejected closed-track lifecycle."
+    }
+  ],
+  "checks": {
+    "publicPrivacyAndDemoLinks": "Audited reachable and matching previously published content.",
+    "modelDownloadEndpoints": "Agent checked all eight required Kokoro/alignment asset HEAD responses: HTTP200 with expected lengths. No fresh full download claimed.",
+    "requiredSpeechDownloadBytes": 446539377,
+    "submittedDataSafetyAnswers": "not_retrieved",
+    "submittedForegroundServiceDeclaration": "not_retrieved"
+  },
+  "nextRequiredEvidence": [
+    "Current saved store category",
+    "Every selected Financial features checkbox",
+    "Saved Health apps and Government apps answers; any VPN declaration"
+  ],
+  "resubmitted": false,
+  "sources": {
+    "policyStatus": "https://support.google.com/googleplay/android-developer/answer/9842754",
+    "releaseLifecycle": "https://developers.google.com/android-publisher/api-ref/rest/v3/applications.tracks.releases",
+    "mlKitDisclosure": "https://developers.google.com/ml-kit/android-data-disclosure",
+    "consoleRequirements": "https://support.google.com/googleplay/android-developer/answer/18265346?hl=en",
+    "financialDeclaration": "https://support.google.com/googleplay/android-developer/answer/13849271?hl=en",
+    "healthDeclaration": "https://support.google.com/googleplay/android-developer/answer/14738291?hl=en",
+    "creatorTipBilling": "https://support.google.com/googleplay/android-developer/answer/10281818?hl=en"
+  },
+  "remainingUnknowns": "Exact saved store category and Financial features, Health apps, Government apps and any VPN declarations. The email identifies the account/type mismatch but not the triggering selection. Publishing API readback does not expose these selections; requested them from owner/Muse.",
+  "resolutionPlan": [
+    "Inspect saved Console category and declarations against actual code 30 features. Desired category from owner is Productivity; current saved category remains unverified.",
+    "Correct declarations only where inaccurate. Source supports no health feature and no VPN implementation; government affiliation must reflect actual owner/publisher facts.",
+    "Review Financial features selections in detail: optional support opens an external UPI app for one fixed creator recipient. It does not implement banking, lending, investment, wallet balances, arbitrary-recipient transfers or a transaction backend. Do not confuse this form with Data safety financial-data categories or infer a declaration exemption solely from Billing creator-tip guidance.",
+    "If accurate selections still trigger this rejection, use a factual appeal explaining the actual reading and optional-tip functionality and ask which category/feature requires an organization. Do not claim that Google has already accepted this interpretation.",
+    "If the app actually offers an organization-only service, use the genuine organization/verification or remove that service throughout the distributed app before changing declarations. No account transfer or feature removal performed.",
+    "Only submit corrected declarations/release once the reported classification issue is resolved; a playback patch alone does not resolve it."
+  ],
+  "sourceFeatureAudit": {
+    "readerFeatures": [
+      "PDF/image/web imports",
+      "local OCR and speech",
+      "word alignment",
+      "English dictionary",
+      "themes and reading lighting"
+    ],
+    "healthTreatmentDiagnosisOrResearchFound": false,
+    "vpnServiceFound": false,
+    "governmentServiceFunctionalityFound": false,
+    "financialServiceImplementationFound": false,
+    "optionalCreatorTip": "One fixed UPI recipient in external payment app; no in-app wallet, balance, transaction callbacks/storage, variable recipient, features or entitlements granted.",
+    "limits": "Code review cannot establish saved Console selections, publisher affiliation, payment-recipient identity or Google policy classification of the tip."
+  },
+  "status": "awaiting_saved_declarations_for_policy_correction",
+  "declarationsChanged": false,
+  "accountChanged": false,
+  "appealSubmitted": false,
+  "validation": "validation.json"
+}

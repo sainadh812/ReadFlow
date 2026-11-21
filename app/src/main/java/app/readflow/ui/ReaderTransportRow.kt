@@ -31,18 +31,11 @@ import java.util.Locale
     toggleOriginal: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val selectedWord = state.page?.words?.firstOrNull { it.id == state.selectedWordId }
-    val selected = selectedWord != null && !state.wantsToPlay && !state.preparing
     ReaderTransportControls(state, speed, changeSpeed, expanded, toggleControls,
-        onPrevious = { vm.app.playback.sentence(-1) },
-        onPrimary = {
-            if (!state.wantsToPlay && !state.preparing) notifications()
-            if (selected) vm.app.playback.start(wordId = selectedWord?.id) else vm.app.playback.toggle()
-        },
-        onNext = {
-            if (state.blockedSentence != null) { notifications(); vm.app.playback.skipBlockedSentence() }
-            else vm.app.playback.sentence(1)
-        }, original = original, toggleOriginal = toggleOriginal, modifier = modifier)
+        onPrevious = { vm.moveReaderSentence(-1, notifications) },
+        onPrimary = { vm.toggleReaderPlayback(notifications) },
+        onNext = { vm.moveReaderSentence(1, notifications) },
+        original = original, toggleOriginal = toggleOriginal, modifier = modifier)
 }
 
 @Composable internal fun ReaderTransportControls(

@@ -198,7 +198,7 @@ import java.util.Locale
                             DropdownMenuItem(text = { Text("Cancel text recognition") }, onClick = { vm.cancelOcr(); menu = false }, leadingIcon = { Icon(Icons.Default.Close, null) })
                         }
                         if (selected != null && !state.wantsToPlay) {
-                            DropdownMenuItem(text = { Text("Read from selected word") }, onClick = { menu = false; requestNotifications(); vm.app.playback.start(wordId = selected.id) }, leadingIcon = { Icon(Icons.Default.PlayArrow, null) })
+                            DropdownMenuItem(text = { Text("Read from selected word") }, onClick = { menu = false; vm.readSelectedWord(selected.id, requestNotifications) }, leadingIcon = { Icon(Icons.Default.PlayArrow, null) })
                             DropdownMenuItem(text = { Text("Copy selected word") }, onClick = { clipboard.setText(AnnotatedString(selected.text)); menu = false }, leadingIcon = { Icon(Icons.Default.ContentCopy, null) })
                             DropdownMenuItem(text = { Text("Bookmark selected word") }, onClick = { vm.bookmark(selected); menu = false }, leadingIcon = { Icon(Icons.Default.BookmarkAdd, null) })
                         }
@@ -302,7 +302,7 @@ import java.util.Locale
                     style = MaterialTheme.typography.bodySmall)
                 if (prefs.ocrEngine == "teleocr") Text("New TeleOCR pages can take several minutes each.", style = MaterialTheme.typography.bodySmall)
             }
-        }, confirmButton = { TextButton(onClick = { end?.let { preparePages = false; vm.app.playback.prepareAhead(it - 1) } }, enabled = end != null) { Text("Prepare") } },
+        }, confirmButton = { TextButton(onClick = { end?.let { preparePages = false; vm.prepareReaderPages(it - 1) } }, enabled = end != null) { Text("Prepare") } },
             dismissButton = { TextButton(onClick = { preparePages = false }) { Text("Cancel") } })
     }
     if (details) AlertDialog(onDismissRequest = { details = false }, title = { Text("Reading details") }, text = {
@@ -325,7 +325,7 @@ import java.util.Locale
             if (state.durationMs > 0) Text("Audio: ${formatTime(state.positionMs)} / ${formatTime(state.durationMs)}")
             page?.warnings?.forEach { Text(it) }
             if (state.error != null) TextButton(onClick = { details = false; vm.showIssues() }) { Text("Open issue logs") }
-            if (state.blockedSentence != null) TextButton(onClick = { details = false; requestNotifications(); vm.app.playback.skipBlockedSentence() }) { Text("Skip sentence") }
+            if (state.blockedSentence != null) TextButton(onClick = { details = false; vm.skipBlockedReaderSentence(requestNotifications) }) { Text("Skip sentence") }
         }
     }, confirmButton = { TextButton(onClick = { details = false }) { Text("Close") } })
     if (speeds) AlertDialog(onDismissRequest = { speeds = false }, title = { Text("Playback speed") }, text = {

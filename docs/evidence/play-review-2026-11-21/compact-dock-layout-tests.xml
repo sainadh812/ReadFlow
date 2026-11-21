@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="app.readflow.ui.ReaderFloatingDockTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-21T04:50:09" hostname="chipyard-ip-200gb" time="11.217">
+  <properties/>
+  <testcase name="narrowPortraitKeepsPageAndControlsStillDuringPreparationAndErrors" classname="app.readflow.ui.ReaderFloatingDockTest" time="9.085"/>
+  <testcase name="largeAccessibilityTextKeepsPageAndControlsStillDuringPreparationAndErrors" classname="app.readflow.ui.ReaderFloatingDockTest" time="0.402"/>
+  <testcase name="textOnlyDocumentsOmitTheViewToggleAndKeepTransportStill" classname="app.readflow.ui.ReaderFloatingDockTest" time="0.351"/>
+  <testcase name="explicitlyHidingMetricsKeepsTransportAnchoredAndSubsequentAudioStatesStable" classname="app.readflow.ui.ReaderFloatingDockTest" time="0.297"/>
+  <testcase name="landscapeKeepsPageAndControlsStillDuringPreparationAndErrors" classname="app.readflow.ui.ReaderFloatingDockTest" time="0.246"/>
+  <testcase name="metricsRetainTheirDetailsAndHideActions" classname="app.readflow.ui.ReaderFloatingDockTest" time="0.239"/>
+  <testcase name="portraitKeepsPageAndControlsStillDuringPreparationAndErrors" classname="app.readflow.ui.ReaderFloatingDockTest" time="0.229"/>
+  <testcase name="smallTextToggleSwitchesBothWaysBesideNextWithoutPdfOrTextLabels" classname="app.readflow.ui.ReaderFloatingDockTest" time="0.368"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[[Robolectric] WARN: Android SDK 36 requires Java 21 (have Java 17). Tests won't be run on SDK 36 unless explicitly requested.
+[Robolectric] WARN: Android SDK 37 requires Java 21 (have Java 17). Tests won't be run on SDK 37 unless explicitly requested.
+]]></system-err>
+</testsuite>

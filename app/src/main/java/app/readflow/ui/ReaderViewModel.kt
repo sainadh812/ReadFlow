@@ -49,6 +49,10 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     private val navigation = ReaderNavigation()
     val screen = navigation.screen
     val message = MutableStateFlow<String?>(null)
+    private val speechActions = ReaderSpeechActions(app.models::installed) {
+        message.value = "Download the voice model and Word alignment in Voices before listening"
+        navigate("voices")
+    }
     val importing = MutableStateFlow(false)
     val refreshingText = MutableStateFlow(false)
     val issueReports = app.issues.reports
@@ -125,6 +129,27 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
     private fun benchmarkBlocksWork(): Boolean = app.benchmarks.busy.value.also {
         if (it) message.value = "Finish or cancel the phone benchmark first"
     }
+    fun toggleReaderPlayback(notifications: () -> Unit) {
+        speechActions.primary(playback.value, preferences.value.model, notifications,
+            toggle = app.playback::toggle, startSelected = { app.playback.start(wordId = it) })
+    }
+    fun moveReaderSentence(direction: Int, notifications: () -> Unit) {
+        speechActions.sentence(playback.value, preferences.value.model, direction, notifications,
+            move = app.playback::sentence, skipBlocked = app.playback::skipBlockedSentence)
+    }
+    fun skipBlockedReaderSentence(notifications: () -> Unit) {
+        speechActions.skipBlocked(playback.value, preferences.value.model, notifications,
+            skip = app.playback::skipBlockedSentence)
+    }
+    fun readSelectedWord(wordId: String, notifications: () -> Unit) {
+        if (benchmarkBlocksWork() || !speechActions.ready(preferences.value.model)) return
+        notifications()
+        app.playback.start(wordId = wordId)
+    }
+    fun prepareReaderPages(endPageInclusive: Int) {
+        if (benchmarkBlocksWork() || !speechActions.ready(preferences.value.model)) return
+        app.playback.prepareAhead(endPageInclusive)
+    }
     fun open(document: DocumentEntity) {
         beginOpen(document, listen = false)
     }
@@ -149,14 +174,8 @@ class ReaderViewModel(application: Application) : AndroidViewModel(application) 
                 val manual = app.documents.dao.manualPosition(document.id)
                 if (listen) {
                     val prefs = app.preferences.values.first()
-                    if (!app.models.installed(prefs.model) || !app.models.installed("alignment")) {
-                        ensureActive()
-                        if (request == openRequest) {
-                            message.value = "Download a voice model and alignment model before listening"
-                            navigateNow("voices")
-                        }
-                        return@launch
-                    }
+                    ensureActive()
+                    if (request != openRequest || !speechActions.ready(prefs.model)) return@launch
                 }
                 ensureActive()
                 if (request != openRequest || app.documents.dao.document(document.id) == null) return@launch

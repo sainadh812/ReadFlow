@@ -1,0 +1,31 @@
+{
+  "recordedAt": "2026-11-21T04:52:45.791527+00:00",
+  "baseCommit": "a2fe87d97ef30258e3dcdee84e2e70ff040e0775",
+  "command": "./gradlew :app:testDebugUnitTest :app:lintDebug --console=plain --no-daemon",
+  "result": "BUILD SUCCESSFUL",
+  "duration": "3m 23s",
+  "unitTests": {
+    "suites": 59,
+    "tests": 481,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "targetedSetupTests": 12,
+  "compactDockTests": 8,
+  "lint": {
+    "Warning": 40
+  },
+  "sourceFilesSha256": {
+    "app/src/main/java/app/readflow/ui/ReaderSpeechActions.kt": "74c46c3db9aa3343e51db60bab93d8103993baffceb2b4b95b8091ca73751d49",
+    "app/src/main/java/app/readflow/ui/ReaderViewModel.kt": "7f291fbf1a4ab7a9f40b10ba2cb99be1b534f7111b0b0ba2492c1274beadbd94",
+    "app/src/main/java/app/readflow/ui/ReaderTransportRow.kt": "01f94c7cbbb000da1c3d1a44d0bb557339bbd5b230845f4a0b7ae170d9dd85ea",
+    "app/src/main/java/app/readflow/ui/ReadFlowUi.kt": "1f0d438331296e0e94c7a7baef05d7f57d44a80ae2f6caafa3973d54e76a120b",
+    "app/src/test/java/app/readflow/ui/ReaderSpeechActionsTest.kt": "6b239bd81eb47b65c4eb87217a70b682a3f5bb32a162d23152cf7b56345237f8"
+  },
+  "freshInstallAndroidUiTestPerformed": false,
+  "physicalDeviceTestPerformed": false,
+  "releaseBuiltOrPublished": false,
+  "scope": "Independent usability fix for missing-model speech starts. This does not resolve the Play Console account-type rejection.",
+  "log": "build/play-review-fixes-validation.log"
+}

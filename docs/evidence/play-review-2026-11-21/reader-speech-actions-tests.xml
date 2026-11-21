@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="app.readflow.ui.ReaderSpeechActionsTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-11-21T04:50:21" hostname="chipyard-ip-200gb" time="0.016">
+  <properties/>
+  <testcase name="sentenceButtonsCannotStartWithoutEitherRequiredPack" classname="app.readflow.ui.ReaderSpeechActionsTest" time="0.006"/>
+  <testcase name="freshInstallSelectedWordAlsoRoutesToSetup" classname="app.readflow.ui.ReaderSpeechActionsTest" time="0.002"/>
+  <testcase name="installedModelsRequestPermissionThenUseNormalPlayback" classname="app.readflow.ui.ReaderSpeechActionsTest" time="0.0"/>
+  <testcase name="readinessUsesTheSelectedModelForOtherSpeechActions" classname="app.readflow.ui.ReaderSpeechActionsTest" time="0.001"/>
+  <testcase name="blockedSentenceRestartRequiresBothModelsBeforePermission" classname="app.readflow.ui.ReaderSpeechActionsTest" time="0.001"/>
+  <testcase name="missingVoiceRoutesToSetupWithoutPermissionOrPlayback" classname="app.readflow.ui.ReaderSpeechActionsTest" time="0.001"/>
+  <testcase name="staleSelectionUsesNormalPlayback" classname="app.readflow.ui.ReaderSpeechActionsTest" time="0.001"/>
+  <testcase name="finalBlockedSentenceStopsWithoutModelsOrPermission" classname="app.readflow.ui.ReaderSpeechActionsTest" time="0.001"/>
+  <testcase name="installedModelsKeepTheSelectedWord" classname="app.readflow.ui.ReaderSpeechActionsTest" time="0.0"/>
+  <testcase name="pauseAndCancelNeverCheckModelsOrRequestPermission" classname="app.readflow.ui.ReaderSpeechActionsTest" time="0.001"/>
+  <testcase name="missingAlignmentRoutesToSetupWithoutPermissionOrPlayback" classname="app.readflow.ui.ReaderSpeechActionsTest" time="0.001"/>
+  <testcase name="installedSentenceNavigationKeepsDirectionAndExistingPermissionBehavior" classname="app.readflow.ui.ReaderSpeechActionsTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
