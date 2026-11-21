@@ -2,7 +2,7 @@ Privacy information
 
 Read Assist reads documents you choose on this device. Imported text, images, PDF pages, generated speech, reading progress and settings are stored in app storage. Speech synthesis and document recognition run locally. Read Assist has no advertising SDK or Google Analytics SDK.
 
-All reading features are free. The current app has no payment or tipping flow. Optional contributions were removed in Read Assist 0.3.5.
+All reading features are free.
 
 Network access
 Downloading voice, alignment and optional OCR models contacts the model hosts named in their download information, including Hugging Face and GitHub. These hosts receive connection information such as your IP address. Importing a webpage contacts the website you choose. Your documents are not sent to these hosts for recognition or speech generation.
@@ -27,10 +27,5 @@ Developer-received support correspondence and reports are deleted within 90 days
 
 Your controls
 Delete a document from the library to remove its local content, associated audio and issue reports. Delete other reports in Issue logs and models in their download screens. Clear app storage or uninstall Read Assist to erase its remaining local data. Android backup of app data is disabled. Files you exported outside the app must be deleted separately. No Read Assist account is required.
-
-Records from past contributions
-For contributions made through versions before 0.3.5, the developer may hold records supplied by the payment provider, including the amount, date, reference and payer details. These are used only to answer related questions and meet accounting or legal obligations, and retained only as long as needed for those purposes.
-
-For questions or deletion requests, contact xperimenting.ai@gmail.com. Updating or uninstalling the app does not erase records already held by the developer or payment providers. Providers manage their own records under their privacy policies.
 
 Read only material you are authorized to use. Recognized text, pronunciations and table reading order can contain errors.
