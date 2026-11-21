@@ -1,0 +1,12 @@
+DRAFT — NOT SENT
+Use as a reply within the existing request once its confirmation email/case becomes available. This is not a new appeal submission. Add the original screenshots through a supported attachment mechanism and record whether the upload succeeds; the text below does not claim they were received.
+
+BEGIN FOLLOW-UP BODY
+
+Please confirm whether my request, submitted on 21 November 2026 at approximately 13:19 IST, is registered as an appeal of enforcement 4989388494721813173 for Read Assist (app.readflow), version 0.3.6/code 32.
+
+I used the latest rejection email's “Submit an appeal” link and received “Ticket submitted.” The Console shows “Case ID pending.” A help panel subsequently advised filing a formal appeal through Policy status, but that page offered no appeal button. Please confirm the receiving team and whether this request is with the policy appeals team. If necessary, please route this same request appropriately or provide the exact appeal route for this enforcement.
+
+The initial attachment upload failed. I have screenshots of the corrected Financial features form, the conflicting overview summary, and the 12:58:55 IST rejection. Please let me know how to add these to this existing case if email attachments are not supported.
+
+END FOLLOW-UP BODY

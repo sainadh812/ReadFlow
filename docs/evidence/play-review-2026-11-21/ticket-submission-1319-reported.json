@@ -1,0 +1,71 @@
+{
+  "recordedAt": "2026-11-21T07:55:00.198939+00:00",
+  "package": "app.readflow",
+  "versionName": "0.3.6",
+  "versionCode": 32,
+  "enforcementReference": "4989388494721813173",
+  "source": "Owner report of Muse submitting the short appeal text once through the newest rejection email link",
+  "directSubmissionByThisWorkspace": false,
+  "directConfirmationEmailInspection": false,
+  "submission": {
+    "reportedLocal": "2026-11-21T13:19:00+05:30",
+    "timePrecision": "approximate minute",
+    "reportedUtc": "2026-11-21T07:49:00+00:00",
+    "countReported": 1,
+    "routeOrigin": "Newest rejection email Submit an appeal link",
+    "finalFormTitle": null,
+    "finalFormUrl": null,
+    "textUsedReported": "Short appeal text",
+    "preparedShortText": "account-classification-appeal-short.txt",
+    "preparedShortTextSha256": "514925501aacf2a9cdc8bb90cca87dca7eadaf98da2dd0c83e5a41467150cfad",
+    "exactSubmittedPayloadIndependentlyRetrieved": false,
+    "acknowledgement": "Ticket submitted. We'll respond via email within 2 business days. Some tickets may require more time",
+    "caseId": null,
+    "caseIdDisplay": "Case ID pending",
+    "emailConfirmationReceived": false,
+    "formalAppealRegistrationConfirmed": false,
+    "acknowledgementEstablishesApproval": false
+  },
+  "attachments": {
+    "uploadOptionExistedReported": true,
+    "uploadSucceededReported": false,
+    "uploadedAttachmentsConfirmed": [],
+    "ownerReportsSavedEvidence": [
+      "Corrected Financial features form",
+      "Conflicting Financial features overview summary",
+      "12:58 rejection"
+    ],
+    "newScreenshotsReceivedInThisWorkspace": false,
+    "localAttachmentInspection": "Only older reader UI images from15/17November were present; no new Console screenshots found",
+    "nextAction": "Muse should retain originals and add them to the existing case when the case email or supported attachment mechanism is available"
+  },
+  "routingCaveat": {
+    "ownerReportedHelpPanel": "Support cannot manually overturn review decisions; file a formal appeal via Policy status",
+    "policyStatusAppealButtonAvailableReported": false,
+    "formalAppealRouteStatus": "unverified",
+    "wrongRouteEstablished": false,
+    "assessment": "The enforcement-email route is supported by official guidance. A generic receipt or help panel does not establish the receiving team or appeal registration; verify within the existing request."
+  },
+  "nextSteps": [
+    "Obtain submitted form title and final URL domain/path without authentication/query tokens if available",
+    "Inspect the existing request confirmation email, subject, case ID and routing; check spam if needed",
+    "Reply in that case to confirm appeal registration for this enforcement and add the failed evidence uploads through a supported channel",
+    "If Google confirms a general-support route, request the exact appeal route or transfer and reference the existing request when following its instructions"
+  ],
+  "sources": {
+    "developerSupport": "https://support.google.com/googleplay/android-developer/answer/10357403?hl=en",
+    "appealInstructions": "https://support.google.com/googleplay/android-developer/answer/9899142?hl=en",
+    "policyStatus": "https://support.google.com/googleplay/android-developer/answer/9842754?hl=en",
+    "oneAppealPerEnforcement": "https://support.google.com/googleplay/android-developer/answer/2477981?hl=en"
+  },
+  "followupDraft": "ticket-routing-followup.txt",
+  "actionsThisWorkspace": {
+    "ticketSubmitted": false,
+    "followupSent": false,
+    "attachmentsSent": false,
+    "newTicketCreated": false,
+    "appChanged": false,
+    "policyChanged": false,
+    "resubmitted": false
+  }
+}
