@@ -98,12 +98,17 @@ def validate_state(tracks: list[dict], bundles: list[dict]) -> dict | None:
     return target
 
 
-def lifecycle_states(lifecycles: dict, tracks: list[dict], *, block_review: bool) -> dict[str, set[str]]:
+def lifecycle_states(lifecycles: dict, tracks: list[dict], *, block_review: bool,
+                     allow_quota_deferred: bool = False) -> dict[str, set[str]]:
     states = {name: set() for name in TARGETS}
     if not isinstance(lifecycles, dict):
         raise PublishError("Release lifecycle inspection was unavailable.")
     for name in normalized_tracks(tracks):
         value = lifecycles.get(name)
+        if allow_quota_deferred and isinstance(value, dict) and (
+            value == {"deferredDueToQuota": True} or lifecycle_quota_error(value.get("unavailable"))
+        ):
+            continue
         if not isinstance(value, dict) or "unavailable" in value:
             raise PublishError("Release lifecycle inspection was unavailable; no review will be overwritten.")
         releases = value.get("releases", [])
@@ -173,12 +178,42 @@ def review_flag_required(error: ApiError) -> bool:
     )) and bool(re.search(r"changesNotSentForReview\s+to\s+true", error.message, re.I))
 
 
+def lifecycle_quota_error(error: object) -> bool:
+    return isinstance(error, dict) and (
+        error.get("httpCode") == 403 and error.get("status") == "PERMISSION_DENIED"
+        and error.get("message") == "Listing releases quota exceeded."
+    )
+
+
+def read_lifecycles(api: API, tracks: list[dict], report: dict) -> dict:
+    """Stop GETs after the exact listing quota error; commit retains its server guard."""
+    result = {}
+    for name in sorted(normalized_tracks(tracks)):
+        if report.get("lifecycleQuotaExceeded"):
+            result[name] = {"deferredDueToQuota": True}
+            continue
+        try:
+            result[name] = api.request("GET", f"{shared.APP_PATH}/tracks/{name}/releases")
+        except ApiError as error:
+            diagnostic = safe_error(error)
+            result[name] = {"unavailable": diagnostic}
+            if lifecycle_quota_error(diagnostic):
+                report["lifecycleQuotaExceeded"] = True
+                report["lifecycleQuotaError"] = diagnostic
+                report["lifecycleObservation"] = "deferred_due_to_listing_quota"
+    return result
+
+
 def ambiguous(error: ApiError) -> bool:
     return error.http_code == 0 or error.http_code >= 500 or error.status == "INVALID_RESPONSE"
 
 
 def record_status(report: dict, lifecycles: dict, tracks: list[dict]) -> None:
-    states = lifecycle_states(lifecycles, tracks, block_review=False)
+    states = lifecycle_states(lifecycles, tracks, block_review=False,
+                              allow_quota_deferred=report.get("lifecycleQuotaExceeded", False))
+    if report.get("lifecycleQuotaExceeded"):
+        # Never reuse a partial or pre-commit observation as availability proof.
+        states = {name: set() for name in TARGETS}
     per_track = {}
     for name in TARGETS:
         per_track[name] = (next(iter(states[name])).removeprefix(STATE_PREFIX).lower()
@@ -212,16 +247,19 @@ def execute(report: dict, directory: Path, validate_only: bool = False) -> None:
     try:
         tracks, bundles = observe(report, "read_before_tracks_and_bundles", lambda: api.read_state(edit_id))
         target = validate_state(tracks, bundles)
-        lifecycles = observe(report, "read_before_lifecycles", lambda: api.lifecycles(tracks))
-        before_states = lifecycle_states(lifecycles, tracks, block_review=False)
+        lifecycles = observe(report, "read_before_lifecycles", lambda: read_lifecycles(api, tracks, report))
+        report["before"] = {"tracks": tracks, "bundles": bundles, "lifecycles": lifecycles}
+        before_states = lifecycle_states(lifecycles, tracks, block_review=False,
+                                         allow_quota_deferred=report.get("lifecycleQuotaExceeded", False))
         metadata = observe(report, "read_before_store_metadata", lambda: read_metadata(api, edit_id))
-        report["before"] = {"tracks": tracks, "bundles": bundles, "lifecycles": lifecycles, **metadata}
+        report["before"].update(metadata)
         indexed = normalized_tracks(tracks)
         if target and all(indexed[name]["releases"][0]["versionCodes"] == [str(VERSION_CODE)] for name in TARGETS):
             report.update(alreadyCommitted=True, verifiedVersionCode=VERSION_CODE, verifiedSha256=shared.AAB_SHA256)
             record_status(report, lifecycles, tracks)
             return
-        lifecycle_states(lifecycles, tracks, block_review=True)
+        lifecycle_states(lifecycles, tracks, block_review=True,
+                         allow_quota_deferred=report.get("lifecycleQuotaExceeded", False))
         if target is None:
             report["uploadAttempted"] = True
             try:
@@ -275,11 +313,12 @@ def execute(report: dict, directory: Path, validate_only: bool = False) -> None:
         if validate_only:
             report["status"] = "validated_not_committed" if report["validated"] else "validation_blocked_manual_review"
             return
-        lifecycle_states(observe(report, "check_review_before_commit", lambda: api.lifecycles(tracks)),
-                         tracks, block_review=True)
+        lifecycle_states(observe(report, "check_review_before_commit", lambda: read_lifecycles(api, tracks, report)),
+                         tracks, block_review=True,
+                         allow_quota_deferred=report.get("lifecycleQuotaExceeded", False))
         params = {"changesInReviewBehavior": "ERROR_IF_IN_REVIEW"}
         if report.get("changesNotSentForReview"):
-            params["changesNotSentForReview"] = True
+            params["changesNotSentForReview"] = "true"
         for attempt in range(2):
             try:
                 report["commit"] = observe(report, "commit_edit",
@@ -292,7 +331,7 @@ def execute(report: dict, directory: Path, validate_only: bool = False) -> None:
                         and review_flag_required(error)):
                     report["automaticReviewRestriction"] = safe_error(error)
                     report["reviewRestrictionPhase"] = "commit_edit"
-                    params["changesNotSentForReview"] = True
+                    params["changesNotSentForReview"] = "true"
                     report["changesNotSentForReview"] = True
                     report["manualReviewRequired"] = True
                     continue
@@ -301,13 +340,16 @@ def execute(report: dict, directory: Path, validate_only: bool = False) -> None:
                 commit_unknown = True
                 report["commitAmbiguous"] = safe_error(error)
                 report["committed"] = None
-                current = observe(report, "reconcile_commit_lifecycles", lambda: api.lifecycles(tracks))
+                current = observe(report, "reconcile_commit_lifecycles", lambda: read_lifecycles(api, tracks, report))
                 report["commitReconciliationLifecycle"] = current
-                observed = lifecycle_states(current, tracks, block_review=False)
+                observed = lifecycle_states(current, tracks, block_review=False,
+                                            allow_quota_deferred=report.get("lifecycleQuotaExceeded", False))
                 # Opening another edit could invalidate the uncertain original.
                 # Only do so when non-edit endpoints prove both target releases.
-                definite = all(len(observed[name]) == 1 and STATE_PREFIX + "DRAFT" not in observed[name]
-                               for name in TARGETS)
+                definite = not report.get("lifecycleQuotaExceeded") and all(
+                    len(observed[name]) == 1 and STATE_PREFIX + "DRAFT" not in observed[name]
+                    for name in TARGETS
+                )
                 changed = any(observed[name] != before_states[name] for name in TARGETS)
                 if not definite or not changed:
                     raise PublishError("Commit outcome remains unknown; edit retained and commit was not retried.") from None
@@ -320,7 +362,7 @@ def execute(report: dict, directory: Path, validate_only: bool = False) -> None:
         try:
             after_tracks, after_bundles = observe(report, "read_after_tracks_and_bundles", lambda: api.read_state(fresh_id))
             after_metadata = observe(report, "read_after_store_metadata", lambda: read_metadata(api, fresh_id))
-            after_lifecycles = observe(report, "read_after_lifecycles", lambda: api.lifecycles(after_tracks))
+            after_lifecycles = observe(report, "read_after_lifecycles", lambda: read_lifecycles(api, after_tracks, report))
             report["after"] = {"tracks": after_tracks, "bundles": after_bundles,
                                "lifecycles": after_lifecycles, **after_metadata}
             final = validate_state(after_tracks, after_bundles)

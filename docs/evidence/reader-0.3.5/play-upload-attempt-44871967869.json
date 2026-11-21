@@ -1,0 +1,50 @@
+{
+  "action": "publish_testing_fix",
+  "package": "app.readflow",
+  "versionName": "0.3.5",
+  "versionCode": 31,
+  "tracks": [
+    "alpha",
+    "internal"
+  ],
+  "aabSha256": "62838f37c8bcc9e1bd687931b879a3e9d97d1f02025bdfc91e727fe6cfcc8db5",
+  "aabBytes": 72432002,
+  "status": "failed",
+  "committed": false,
+  "testersModified": false,
+  "declarationsModified": false,
+  "startedAt": "2026-11-21T05:40:49.631951+00:00",
+  "phaseEvents": [
+    {
+      "phase": "download_verified_artifact",
+      "status": "completed"
+    },
+    {
+      "phase": "authenticate",
+      "status": "completed"
+    },
+    {
+      "phase": "create_edit",
+      "status": "completed"
+    },
+    {
+      "phase": "read_before_tracks_and_bundles",
+      "status": "completed"
+    },
+    {
+      "phase": "read_before_lifecycles",
+      "status": "completed"
+    }
+  ],
+  "phase": "read_before_lifecycles",
+  "lastCompletedPhase": "read_before_lifecycles",
+  "artifactVerified": true,
+  "editId": "05086859180613171453",
+  "editMayBePending": false,
+  "editDeleted": true,
+  "error": {
+    "status": "VALIDATION_FAILED",
+    "message": "Release lifecycle inspection was unavailable; no review will be overwritten."
+  },
+  "finishedAt": "2026-11-21T05:40:51.812208+00:00"
+}

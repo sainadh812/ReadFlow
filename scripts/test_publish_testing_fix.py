@@ -42,6 +42,10 @@ class FakeAPI:
         self.review_after_validation = False
         self.in_review = False
         self.lifecycle_unavailable = False
+        self.lifecycle_read_count = 0
+        self.lifecycle_error_at_read = None
+        self.lifecycle_error = None
+        self.lifecycle_overrides = {}
         self.mutate_other_after_commit = False
         self.mutate_listing_after_commit = False
         self.corrupt_bundle_after_commit = False
@@ -86,7 +90,9 @@ class FakeAPI:
                 releases = [{"releaseLifecycleState": publisher.STATE_PREFIX + "IN_REVIEW", "activeArtifacts": []}]
             result[name] = {"releases": releases}
         if self.lifecycle_unavailable:
-            result["beta"] = {"unavailable": {"status": "PERMISSION_DENIED"}}
+            result["beta"] = {"unavailable": {"httpCode": 403, "status": "PERMISSION_DENIED",
+                                               "message": "The caller does not have permission"}}
+        result.update(self.lifecycle_overrides)
         return copy.deepcopy(result)
 
     def upload(self, edit_id, artifact):
@@ -100,6 +106,16 @@ class FakeAPI:
 
     def request(self, method, path, **kwargs):
         self.calls.append((method, path, copy.deepcopy(kwargs)))
+        if method == "GET" and "/edits/" not in path and path.endswith("/releases"):
+            self.lifecycle_read_count += 1
+            if self.lifecycle_read_count == self.lifecycle_error_at_read:
+                raise self.lifecycle_error
+            name = path.split("/tracks/")[1].split("/")[0]
+            value = self.lifecycles([])[name]
+            if "unavailable" in value:
+                error = value["unavailable"]
+                raise ApiError(error["httpCode"], error["status"], error["message"])
+            return value
         edit_id = path.split("/edits/")[1].split("/")[0].split(":")[0]
         if method == "GET" and path.endswith("/details"):
             return copy.deepcopy(self.details)
@@ -124,7 +140,7 @@ class FakeAPI:
                 self.tracks = copy.deepcopy(self.edits[edit_id]["tracks"])
                 self.bundles = copy.deepcopy(self.edits[edit_id]["bundles"])
                 self.committed = True
-                self.not_sent_for_review = kwargs.get("params", {}).get("changesNotSentForReview", False)
+                self.not_sent_for_review = kwargs.get("params", {}).get("changesNotSentForReview") == "true"
                 if self.mutate_other_after_commit:
                     self.tracks[0]["releases"] = [release(29)]
                 if self.mutate_listing_after_commit:
@@ -229,6 +245,183 @@ class TwoTrackPublishingTests(unittest.TestCase):
                 self.assertEqual(self.uploads(api), [])
                 self.assertFalse(any(call[0] == "PUT" for call in api.calls))
 
+    def test_unavailable_lifecycle_error_is_retained_before_guard_aborts(self):
+        api = FakeAPI()
+        api.lifecycle_unavailable = True
+        report = self.run_publish(api)
+        self.assertEqual(report["status"], "failed", report)
+        self.assertEqual(report["before"]["tracks"], api.tracks)
+        self.assertEqual(report["before"]["bundles"], api.bundles)
+        self.assertEqual(report["before"]["lifecycles"]["beta"]["unavailable"], {
+            "httpCode": 403, "status": "PERMISSION_DENIED",
+            "message": "The caller does not have permission",
+        })
+        self.assertNotIn("details", report["before"])
+        self.assertTrue(report["editDeleted"])
+        self.assertEqual(self.uploads(api), [])
+        self.assertFalse(any(call[0] == "PUT" for call in api.calls))
+        self.assertEqual(self.commits(api), [])
+
+    def quota_at(self, api, read_number=1):
+        api.lifecycle_error_at_read = read_number
+        api.lifecycle_error = ApiError(403, "PERMISSION_DENIED", "Listing releases quota exceeded.")
+
+    def test_exact_lifecycle_quota_saves_with_server_review_guard_and_unknown_availability(self):
+        api = FakeAPI()
+        self.quota_at(api)
+        api.validate_error = ApiError(400, "INVALID_ARGUMENT", REVIEW_RESTRICTION)
+        report = self.run_publish(api)
+        self.assertEqual(report["status"], "not_sent_for_review", report)
+        self.assertTrue(report["committed"])
+        self.assertTrue(report["lifecycleQuotaExceeded"])
+        self.assertEqual(report["before"]["lifecycles"]["alpha"]["unavailable"], {
+            "httpCode": 403, "status": "PERMISSION_DENIED", "message": "Listing releases quota exceeded.",
+        })
+        self.assertEqual(report["trackStatuses"], {
+            "alpha": "availability_unconfirmed", "internal": "availability_unconfirmed",
+        })
+        self.assertFalse(report["reviewConfirmed"])
+        self.assertTrue(report["manualReviewRequired"])
+        self.assertEqual(api.lifecycle_read_count, 1)
+        self.assertEqual(len(self.commits(api)), 1)
+        self.assertEqual(self.commits(api)[0][2]["params"], {
+            "changesInReviewBehavior": "ERROR_IF_IN_REVIEW", "changesNotSentForReview": "true",
+        })
+        self.assertEqual(report["verifiedVersionCode"], 31)
+        self.assertEqual(report["verifiedSha256"], "a" * 64)
+        self.assertTrue(report["otherTracksUnchanged"])
+        self.assertTrue(report["storeMetadataUnchanged"])
+        self.assertTrue(all(value == {"deferredDueToQuota": True} for value in report["after"]["lifecycles"].values()))
+
+    def test_quota_alone_does_not_add_manual_review_flag_or_claim_availability(self):
+        api = FakeAPI()
+        self.quota_at(api)
+        report = self.run_publish(api)
+        self.assertEqual(report["status"], "committed_availability_unconfirmed", report)
+        self.assertTrue(report["committed"])
+        self.assertNotIn("changesNotSentForReview", report)
+        self.assertNotIn("manualReviewRequired", report)
+        self.assertEqual(self.commits(api)[0][2]["params"], {"changesInReviewBehavior": "ERROR_IF_IN_REVIEW"})
+        self.assertFalse(report["reviewConfirmed"])
+        self.assertEqual(report["trackStatuses"], {
+            "alpha": "availability_unconfirmed", "internal": "availability_unconfirmed",
+        })
+        self.assertEqual(api.lifecycle_read_count, 1)
+
+    def test_nearby_quota_or_permission_errors_are_not_treated_as_known_quota(self):
+        for code, status, message in (
+            (403, "PERMISSION_DENIED", "The caller does not have permission"),
+            (403, "PERMISSION_DENIED", "Listing releases quota exceeded"),
+            (403, "PERMISSION_DENIED", "Some other quota exceeded."),
+            (429, "RESOURCE_EXHAUSTED", "Listing releases quota exceeded."),
+            (503, "UNAVAILABLE", "Listing releases quota exceeded."),
+        ):
+            with self.subTest(code=code, status=status, message=message):
+                api = FakeAPI()
+                api.lifecycle_error_at_read = 1
+                api.lifecycle_error = ApiError(code, status, message)
+                report = self.run_publish(api)
+                self.assertEqual(report["status"], "failed", report)
+                self.assertNotIn("lifecycleQuotaExceeded", report)
+                self.assertEqual(self.uploads(api), [])
+                self.assertEqual(self.commits(api), [])
+                self.assertTrue(report["editDeleted"])
+
+    def test_late_precommit_quota_stops_reads_and_still_uses_both_commit_guards(self):
+        api = FakeAPI()
+        self.quota_at(api, len(api.tracks) + 1)
+        api.validate_error = ApiError(400, "INVALID_ARGUMENT", REVIEW_RESTRICTION)
+        report = self.run_publish(api)
+        self.assertEqual(report["status"], "not_sent_for_review", report)
+        self.assertEqual(api.lifecycle_read_count, len(api.tracks) + 1)
+        self.assertEqual(self.commits(api)[0][2]["params"], {
+            "changesInReviewBehavior": "ERROR_IF_IN_REVIEW", "changesNotSentForReview": "true",
+        })
+        self.assertFalse(report["reviewConfirmed"])
+
+    def test_partial_quota_does_not_hide_an_observed_in_review_release(self):
+        api = FakeAPI()
+        api.lifecycle_overrides["alpha"] = {"releases": [{
+            "releaseLifecycleState": publisher.STATE_PREFIX + "IN_REVIEW",
+            "activeArtifacts": [{"versionCode": 30}],
+        }]}
+        self.quota_at(api, 2)
+        report = self.run_publish(api)
+        self.assertEqual(report["status"], "failed", report)
+        self.assertIn("changes in review", report["error"]["message"])
+        self.assertEqual(api.lifecycle_read_count, 2)
+        self.assertEqual(self.uploads(api), [])
+        self.assertEqual(self.commits(api), [])
+
+    def test_observed_generic_permission_error_remains_fatal_alongside_quota(self):
+        api = FakeAPI()
+        api.lifecycle_overrides["alpha"] = {"unavailable": {
+            "httpCode": 403, "status": "PERMISSION_DENIED", "message": "The caller does not have permission",
+        }}
+        self.quota_at(api, 2)
+        report = self.run_publish(api)
+        self.assertEqual(report["status"], "failed", report)
+        self.assertTrue(report["lifecycleQuotaExceeded"])
+        self.assertEqual(self.uploads(api), [])
+        self.assertEqual(self.commits(api), [])
+
+    def test_quota_does_not_bypass_server_in_review_rejection(self):
+        api = FakeAPI()
+        self.quota_at(api)
+        api.commit_errors = [ApiError(400, "FAILED_PRECONDITION", "You already have changes in review.")]
+        report = self.run_publish(api)
+        self.assertEqual(report["status"], "failed", report)
+        self.assertFalse(report["committed"])
+        self.assertEqual(len(self.commits(api)), 1)
+        self.assertEqual(api.lifecycle_read_count, 1)
+        self.assertTrue(report["editDeleted"])
+
+    def test_initial_quota_keeps_ambiguous_commit_unknown_without_fresh_edit(self):
+        for applied in (False, True):
+            with self.subTest(applied=applied):
+                api = FakeAPI()
+                self.quota_at(api)
+                api.commit_errors = [ApiError(0, "TRANSPORT_ERROR", "Outcome unknown")]
+                api.ambiguous_commits_apply = applied
+                report = self.run_publish(api)
+                self.assertEqual(report["status"], "commit_outcome_unknown", report)
+                self.assertIsNone(report["committed"])
+                self.assertTrue(report["editMayBePending"])
+                self.assertEqual(api.lifecycle_read_count, 1)
+                self.assertEqual(len(self.commits(api)), 1)
+                self.assertEqual(sum(call[0] == "CREATE" for call in api.calls), 1)
+                self.assertFalse(any(call[0] == "DELETE" for call in api.calls))
+
+    def test_quota_during_commit_reconciliation_never_uses_partial_proof(self):
+        for offset in (1, 5):
+            with self.subTest(offset=offset):
+                api = FakeAPI()
+                read_number = 2 * len(api.tracks) + offset
+                self.quota_at(api, read_number)
+                api.commit_errors = [ApiError(0, "TRANSPORT_ERROR", "Outcome unknown")]
+                api.ambiguous_commits_apply = True
+                report = self.run_publish(api)
+                self.assertEqual(report["status"], "commit_outcome_unknown", report)
+                self.assertIsNone(report["committed"])
+                self.assertEqual(api.lifecycle_read_count, read_number)
+                self.assertEqual(len(self.commits(api)), 1)
+                self.assertEqual(sum(call[0] == "CREATE" for call in api.calls), 1)
+                self.assertFalse(any(call[0] == "DELETE" for call in api.calls))
+
+    def test_quota_during_postcommit_verification_does_not_claim_availability(self):
+        api = FakeAPI()
+        read_number = 2 * len(api.tracks) + 2
+        self.quota_at(api, read_number)
+        report = self.run_publish(api)
+        self.assertEqual(report["status"], "committed_availability_unconfirmed", report)
+        self.assertTrue(report["committed"])
+        self.assertEqual(report["verifiedVersionCode"], 31)
+        self.assertFalse(report["reviewConfirmed"])
+        self.assertEqual(report["trackStatuses"], {
+            "alpha": "availability_unconfirmed", "internal": "availability_unconfirmed",
+        })
+        self.assertEqual(api.lifecycle_read_count, read_number)
+
     def test_unexpected_target_shape_and_rollout_are_not_replaced(self):
         for modification in ("missing", "empty", "multiple", "draft", "inProgress", "halted", "fraction", "country", "extra_code", "older"):
             with self.subTest(modification=modification):
@@ -328,7 +521,7 @@ class TwoTrackPublishingTests(unittest.TestCase):
         self.assertEqual(report["failedPhase"], "validate_edit")
         self.assertEqual(len(self.commits(api)), 1)
         self.assertEqual(self.commits(api)[0][2]["params"], {
-            "changesInReviewBehavior": "ERROR_IF_IN_REVIEW", "changesNotSentForReview": True,
+            "changesInReviewBehavior": "ERROR_IF_IN_REVIEW", "changesNotSentForReview": "true",
         })
         validations = [call for call in api.calls if call[1].endswith(":validate")]
         self.assertEqual(len(validations), 1)
@@ -436,7 +629,7 @@ class TwoTrackPublishingTests(unittest.TestCase):
         self.assertFalse(report["reviewConfirmed"])
         self.assertEqual(len(self.commits(api)), 2)
         self.assertEqual(self.commits(api)[1][2]["params"], {
-            "changesInReviewBehavior": "ERROR_IF_IN_REVIEW", "changesNotSentForReview": True,
+            "changesInReviewBehavior": "ERROR_IF_IN_REVIEW", "changesNotSentForReview": "true",
         })
 
     def test_arbitrary_error_mentioning_review_flag_does_not_permit_retry(self):
