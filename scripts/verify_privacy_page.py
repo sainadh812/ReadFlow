@@ -38,6 +38,11 @@ def verify(data):
     for required in ("Read Assist", "Privacy Policy", "app.readflow", "Google ML Kit", "GitHub Pages"):
         if required not in visible:
             raise ValueError(f"Missing policy information: {required}")
+    if "The current app has no payment or tipping flow." not in visible:
+        raise ValueError("The policy must describe the current app without a payment or tipping flow.")
+    for retired in ("readassist@ybl", "buy me a coffee", "upi://pay"):
+        if retired in source.lower():
+            raise ValueError("Remove the retired tip recipient, promotion or payment link from the current policy.")
     emails = [attrs.get("href", "")[7:] for tag, attrs in page.attributes
               if tag == "a" and attrs.get("href", "").startswith("mailto:")]
     if not emails or any(not re.fullmatch(r"[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+", email)

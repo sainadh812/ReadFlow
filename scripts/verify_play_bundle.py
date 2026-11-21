@@ -44,9 +44,13 @@ def main():
     application = manifest.find("application")
     sdk = manifest.find("uses-sdk")
     assert manifest.attrib["package"] == "app.readflow"
+    tip_free_release = int(manifest.attrib[android + "versionCode"]) >= 31
     assert application.attrib.get(android + "debuggable", "false") == "false"
     assert int(sdk.attrib[android + "targetSdkVersion"]) >= 36
     assert manifest.find("queries") is None, "Unexpected external TTS package queries"
+    if tip_free_release:
+        assert not any(item.attrib.get(android + "name") == "com.android.vending.BILLING"
+                       for item in manifest.findall("uses-permission")), "Unexpected billing permission"
     providers = [item.attrib.get(android + "name", "") for item in application.findall("provider")]
     assert "com.google.firebase.provider.FirebaseInitProvider" not in providers, "Firebase must not initialize before consent"
     metadata = {item.attrib.get(android + "name"): item.attrib.get(android + "value")
@@ -69,7 +73,12 @@ def main():
                                   "loadAlignments": elf_load_alignments(data)})
         for name in names:
             if name.startswith("base/dex/") and name.endswith(".dex"):
-                assert b"Lcom/k2fsa/sherpa/onnx/OfflineTts;" not in archive.read(name), "Sherpa JNI classes packaged"
+                dex = archive.read(name)
+                assert b"Lcom/k2fsa/sherpa/onnx/OfflineTts;" not in dex, "Sherpa JNI classes packaged"
+                if tip_free_release:
+                    for marker in (b"SupportTipDialog", b"SupportTipDetails", b"readassist@ybl",
+                                   b"Buy me a coffee", b"Copy UPI ID", b"upi://pay"):
+                        assert marker not in dex, f"Removed tipping code still packaged: {marker.decode()}"
         packs = json.loads(archive.read("base/assets/model-manifests.json"))
         assert {pack["id"] for pack in packs} == {"kokoro", "alignment"}
         kokoro = next(pack for pack in packs if pack["id"] == "kokoro")
@@ -77,9 +86,15 @@ def main():
         paths = [item["path"] for pack in packs for item in pack["files"] + pack.get("extras", [])]
         assert not any("espeak" in path.lower() for path in paths)
         assert "base/assets/privacy-information.txt" in names
+        if tip_free_release:
+            privacy = archive.read("base/assets/privacy-information.txt")
+            assert b"readassist@ybl" not in privacy and b"Buy me a coffee" not in privacy
         assert "base/assets/licenses/dependencies/resolved-runtime.json" in names
         dependencies = json.loads(archive.read("base/assets/licenses/dependencies/resolved-runtime.json"))
         assert not any("sherpa" in item["coordinate"].lower() for item in dependencies)
+        if tip_free_release:
+            assert not any(item["coordinate"].startswith("com.android.billingclient:")
+                           for item in dependencies), "Unexpected billing dependency"
         assert not any(item["coordinate"].startswith(("com.google.firebase:firebase-analytics:",
             "com.google.firebase:firebase-perf:", "com.google.android.gms:play-services-measurement:"))
             for item in dependencies), "Unexpected Analytics/performance collection dependency"
@@ -100,6 +115,9 @@ def main():
         "firebaseAnalyticsNotBundled": True,
         "licenseAuditStillRequired": True, "deviceTestsPerformed": False,
     }
+    if tip_free_release:
+        report["creatorTipCodeAndRecipientAbsent"] = True
+        report["playBillingNotBundled"] = True
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
