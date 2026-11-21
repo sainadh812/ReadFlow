@@ -13,4 +13,6 @@ That API evidence confirms the uploaded artifact but predates the 11:34 rejectio
 
 Earlier versions offered optional support for one fixed developer recipient through an external payment app, without unlocking features. The current live privacy policy states that this flow was removed in 0.3.5 and retains a disclosure about records from past contributions. It contains no active payment link or recipient ID.
 
+Version 0.3.6, version code 32, is being built to embed the clarified current privacy policy: detailed obsolete payment-flow descriptions are removed, while historical-record handling remains disclosed. Its signed build and publication are pending; no review outcome is claimed for code 32.
+
 Please identify the exact feature, declaration, category or account requirement triggering organization registration, confirm the reviewed version code, and manually reconsider the app's classification against the corrected functionality. If a specific requirement remains unmet, please provide precise corrective guidance. We are not asserting that a stale classification, privacy wording or any particular declaration caused these repeated decisions.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Replace code 30 with the pinned 0.3.5 policy fix on alpha and internal only.
+"""Replace code 31 with the pinned 0.3.6 policy fix on alpha and internal only.
 
 One edit owns both track changes. No production, listing, tester, account, or
 declaration writes are made. --validate-only stages and validates the edit
@@ -20,13 +20,13 @@ import publish_play as shared
 from publish_play import API, ApiError, PublishError, authenticate, safe_error
 
 TARGETS = ("alpha", "internal")
-VERSION_CODE = 31
-VERSION_NAME = "0.3.5"
-PREVIOUS_CODE = 30
-DEFAULT_REPORT = Path("build/play-testing-fix-0.3.5/report.json")
+VERSION_CODE = 32
+VERSION_NAME = "0.3.6"
+PREVIOUS_CODE = 31
+DEFAULT_REPORT = Path("build/play-testing-fix-0.3.6/report.json")
 RELEASE_NOTES = (
-    "Removed the optional tipping button and all payment links. Reading features remain free. "
-    "Play now opens voice setup when required speech or word-alignment files are missing."
+    "Clarified the in-app privacy information. Read Assist has no payment or tipping flow, "
+    "and all reading features remain free."
 )
 STATE_PREFIX = "RELEASE_LIFECYCLE_STATE_"
 KNOWN_STATES = {
@@ -91,10 +91,10 @@ def validate_state(tracks: list[dict], bundles: list[dict]) -> dict | None:
             raise PublishError("A newer bundle already exists; existing work was preserved.")
         if code == VERSION_CODE:
             if bundle.get("sha256", "").lower() != shared.AAB_SHA256:
-                raise PublishError("Existing version 31 has a different SHA256; no upload will be attempted.")
+                raise PublishError("Existing version 32 has a different SHA256; no upload will be attempted.")
             target = bundle
     if target is None and any(indexed[name]["releases"][0]["versionCodes"] == [str(VERSION_CODE)] for name in TARGETS):
-        raise PublishError("A target track references code 31 without a verifiable bundle hash.")
+        raise PublishError("A target track references code 32 without a verifiable bundle hash.")
     return target
 
 
@@ -232,10 +232,10 @@ def execute(report: dict, directory: Path, validate_only: bool = False) -> None:
     if shared.PACKAGE != "app.readflow" or shared.APP_PATH != "/androidpublisher/v3/applications/app.readflow":
         raise PublishError("The publishing package does not match Read Assist.")
     if shared.VERSION_CODE != VERSION_CODE or shared.VERSION_NAME != VERSION_NAME:
-        raise PublishError("Shared publishing pins must identify Read Assist 0.3.5/code 31 before this command can run.")
-    expected_url = "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.5-play-candidate/Read-Assist-0.3.5-upload-signed.aab"
+        raise PublishError("Shared publishing pins must identify Read Assist 0.3.6/code 32 before this command can run.")
+    expected_url = "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.6-play-candidate/Read-Assist-0.3.6-upload-signed.aab"
     if shared.AAB_URL != expected_url:
-        raise PublishError("The approved artifact URL does not match the 0.3.5 release.")
+        raise PublishError("The approved artifact URL does not match the 0.3.6 release.")
     shared.validate_artifact_pin(shared.AAB_SHA256, shared.AAB_BYTES)
     artifact = observe(report, "download_verified_artifact", lambda: shared.download_aab(directory))
     report["artifactVerified"] = True
@@ -275,7 +275,7 @@ def execute(report: dict, directory: Path, validate_only: bool = False) -> None:
                     raise error
                 report["uploadReconciled"] = True
             if version(target.get("versionCode")) != VERSION_CODE or target.get("sha256", "").lower() != shared.AAB_SHA256:
-                raise PublishError("Uploaded bundle identity does not match the pinned 0.3.5 artifact.")
+                raise PublishError("Uploaded bundle identity does not match the pinned 0.3.6 artifact.")
             report["uploadedBundle"] = target
         else:
             report["reusedBundle"] = target

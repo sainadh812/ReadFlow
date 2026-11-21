@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "verifiedAt": "2026-11-21T06:48:19.326777+00:00",
+  "versionName": "0.3.6",
+  "versionCode": 32,
+  "package": "app.readflow",
+  "sourceCommit": "27ae8d749abd83b44fade7cbb6a14add85660456",
+  "githubRunId": 44876273082,
+  "githubRunUrl": "https://github.com/sainadh812/ReadFlow/actions/runs/44876273082",
+  "filesVerified": 83,
+  "allStagedFilesCoveredByChecksums": true,
+  "apk": {
+    "file": "Read-Assist-0.3.6-upload-signed.apk",
+    "sha256": "f007b4af6dae24fb96315cfe8c8ed0db593d14c942b8ed50aa668ab63b84d466",
+    "bytes": 131434707
+  },
+  "aab": {
+    "file": "Read-Assist-0.3.6-upload-signed.aab",
+    "sha256": "a71bbef201e4697079ca98d6d5962a1dd5164a0c46980583eb9ade794e1ffd1c",
+    "bytes": 72431898
+  },
+  "certificateSha256": "b8e3cdfd71bc98427f17921e5b2c0e97a8543cc90a78b066afae7bfab6fb29a2",
+  "apkSignatureVerified": true,
+  "aabSignatureVerified": true,
+  "aabStrictSignatureExitCode": 4,
+  "bundleValidation": "passed",
+  "apk16KbAlignment": "passed",
+  "tipCodeAndRecipientAbsentFromApkAndAab": true,
+  "playBillingNotBundled": true,
+  "debugTests": {
+    "suites": 58,
+    "tests": 478,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 1
+  },
+  "releaseTests": {
+    "suites": 58,
+    "tests": 471,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 3
+  },
+  "lintErrors": 0,
+  "lintWarnings": 40,
+  "nativeSymbolsUploaded": true,
+  "physicalDeviceTestPerformed": false,
+  "embeddedPrivacyMatchesCurrentSource": true,
+  "privacySourceSha256": "eae7c4616edaf3259f1d5156574833c522761e33e638f39f36d36b71b910544b",
+  "signingNote": "Upload-key-signed APK; Play App Signing uses a separate app-signing certificate."
+}

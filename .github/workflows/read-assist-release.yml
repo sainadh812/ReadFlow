@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       operation:
-        description: Build, record app media, inspect Play, or publish the verified 0.3.5 release
+        description: Build, record app media, inspect Play, or publish the verified 0.3.6 release
         type: choice
         required: true
         default: build
@@ -221,7 +221,7 @@ jobs:
           python3 -m unittest discover -s scripts -p 'test_inspect_play_store.py'
           python3 scripts/inspect_play_store.py
 
-      - name: Publish the verified 0.3.5 bundle to Internal testing
+      - name: Publish the verified 0.3.6 bundle to Internal testing
         if: inputs.operation == 'publish_play'
         env:
           READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
@@ -251,7 +251,7 @@ jobs:
           python3 -m unittest discover -s scripts -p 'test_promote_play_production.py'
           python3 scripts/promote_play_production.py --assets store-assets/release-0.3.2 --validate-only
 
-      - name: Promote the verified 0.3.5 bundle to production
+      - name: Promote the verified 0.3.6 bundle to production
         if: inputs.operation == 'publish_production'
         env:
           READFLOW_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.READFLOW_PLAY_SERVICE_ACCOUNT_JSON }}
@@ -260,21 +260,21 @@ jobs:
           python3 scripts/promote_play_production.py --assets store-assets/release-0.3.2
 
       - name: Upload the sanitized Google Play report only
-        if: always() && hashFiles('build/play-upload-0.3.5/report.json') != ''
+        if: always() && hashFiles('build/play-upload-0.3.6/report.json') != ''
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: Read-Assist-Play-${{ inputs.operation }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: build/play-upload-0.3.5/report.json
+          path: build/play-upload-0.3.6/report.json
           if-no-files-found: error
           retention-days: 15
           include-hidden-files: false
 
       - name: Upload the sanitized testing replacement report
-        if: always() && hashFiles('build/play-testing-fix-0.3.5/report.json') != ''
+        if: always() && hashFiles('build/play-testing-fix-0.3.6/report.json') != ''
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: Read-Assist-Testing-Fix-${{ github.run_id }}-${{ github.run_attempt }}
-          path: build/play-testing-fix-0.3.5/report.json
+          path: build/play-testing-fix-0.3.6/report.json
           if-no-files-found: error
           retention-days: 15
           include-hidden-files: false

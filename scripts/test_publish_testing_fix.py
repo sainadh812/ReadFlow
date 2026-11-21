@@ -15,7 +15,7 @@ REVIEW_RESTRICTION = (
 )
 
 
-def release(code=30):
+def release(code=31):
     return {"name": f"Read Assist test {code}", "versionCodes": [str(code)], "status": "completed",
             "releaseNotes": [{"language": "en-US", "text": "Previous release"}]}
 
@@ -26,7 +26,7 @@ class FakeAPI:
                        {"track": "alpha", "releases": [release()]},
                        {"track": "internal", "releases": [release()]},
                        {"track": "closed-extra", "releases": [release(29)]}]
-        self.bundles = [{"versionCode": 30, "sha256": "b" * 64}]
+        self.bundles = [{"versionCode": 31, "sha256": "b" * 64}]
         self.details = {"defaultLanguage": "en-US", "contactEmail": "owner@example.com"}
         self.listings = [{"language": "en-US", "title": "Read Assist", "fullDescription": "Unchanged description"}]
         self.edits = {}
@@ -64,7 +64,7 @@ class FakeAPI:
         self.calls.append(("READ", edit_id, {}))
         state = copy.deepcopy(self.edits[edit_id])
         if self.mutate_staged and any(
-            "31" in r.get("versionCodes", []) for t in state["tracks"] for r in t.get("releases", [])
+            "32" in r.get("versionCodes", []) for t in state["tracks"] for r in t.get("releases", [])
         ):
             state["tracks"][0]["releases"] = [release(29)]
         return state["tracks"], state["bundles"]
@@ -97,7 +97,7 @@ class FakeAPI:
 
     def upload(self, edit_id, artifact):
         self.calls.append(("UPLOAD", edit_id, {}))
-        bundle = {"versionCode": 31, "sha256": self.upload_hash}
+        bundle = {"versionCode": 32, "sha256": self.upload_hash}
         if self.upload_error is None or self.upload_error_applies:
             self.edits[edit_id]["bundles"].append(bundle)
         if self.upload_error:
@@ -156,8 +156,8 @@ class FakeAPI:
 class TwoTrackPublishingTests(unittest.TestCase):
     def run_publish(self, api, *, validate_only=False, pins=None, download_error=None):
         constants = {
-            "VERSION_CODE": 31, "VERSION_NAME": "0.3.5", "AAB_SHA256": "a" * 64, "AAB_BYTES": 1234,
-            "AAB_URL": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.5-play-candidate/Read-Assist-0.3.5-upload-signed.aab",
+            "VERSION_CODE": 32, "VERSION_NAME": "0.3.6", "AAB_SHA256": "a" * 64, "AAB_BYTES": 1234,
+            "AAB_URL": "https://github.com/sainadh812/ReadFlow/releases/download/v0.3.6-play-candidate/Read-Assist-0.3.6-upload-signed.aab",
         }
         constants.update(pins or {})
         with tempfile.TemporaryDirectory() as directory, patch.multiple(publisher.shared, **constants), \
@@ -191,7 +191,7 @@ class TwoTrackPublishingTests(unittest.TestCase):
         puts = [call for call in api.calls if call[0] == "PUT"]
         self.assertEqual([call[1] for call in puts], [publisher.shared.APP_PATH + "/edits/1/tracks/alpha",
                                                    publisher.shared.APP_PATH + "/edits/1/tracks/internal"])
-        self.assertTrue(all(call[2]["json"]["releases"][0]["versionCodes"] == ["31"] for call in puts))
+        self.assertTrue(all(call[2]["json"]["releases"][0]["versionCodes"] == ["32"] for call in puts))
         self.assertEqual(len(self.uploads(api)), 1)
         self.assertEqual(len(self.commits(api)), 1)
         self.assertEqual(self.commits(api)[0][2]["params"], {"changesInReviewBehavior": "ERROR_IF_IN_REVIEW"})
@@ -205,10 +205,10 @@ class TwoTrackPublishingTests(unittest.TestCase):
         self.assertTrue(report["editDeleted"])
         self.assertFalse(report["committed"])
         self.assertEqual(self.commits(api), [])
-        self.assertTrue(all(t["releases"][0]["versionCodes"] == ["30"] for t in api.tracks if t["track"] in publisher.TARGETS))
+        self.assertTrue(all(t["releases"][0]["versionCodes"] == ["31"] for t in api.tracks if t["track"] in publisher.TARGETS))
 
     def test_unverified_identity_or_artifact_pin_stops_before_authentication(self):
-        for pin in ({"VERSION_CODE": 30}, {"VERSION_NAME": "0.3.4"}, {"AAB_URL": "https://example.com/a.aab"},
+        for pin in ({"VERSION_CODE": 31}, {"VERSION_NAME": "0.3.5"}, {"AAB_URL": "https://example.com/a.aab"},
                     {"AAB_SHA256": "UNVERIFIED"}, {"AAB_BYTES": 0}, {"PACKAGE": "another.app"}):
             with self.subTest(pin=pin):
                 report = self.run_publish(FakeAPI(), pins=pin)
@@ -226,9 +226,9 @@ class TwoTrackPublishingTests(unittest.TestCase):
             with self.subTest(location=location):
                 api = FakeAPI()
                 if location == "bundle":
-                    api.bundles.append({"versionCode": 32, "sha256": "c" * 64})
+                    api.bundles.append({"versionCode": 33, "sha256": "c" * 64})
                 else:
-                    next(t for t in api.tracks if t["track"] == location)["releases"] = [release(32)]
+                    next(t for t in api.tracks if t["track"] == location)["releases"] = [release(33)]
                 report = self.run_publish(api)
                 self.assertEqual(report["status"], "failed", report)
                 self.assertTrue(report["editDeleted"])
@@ -287,7 +287,7 @@ class TwoTrackPublishingTests(unittest.TestCase):
         self.assertEqual(self.commits(api)[0][2]["params"], {
             "changesInReviewBehavior": "ERROR_IF_IN_REVIEW", "changesNotSentForReview": "true",
         })
-        self.assertEqual(report["verifiedVersionCode"], 31)
+        self.assertEqual(report["verifiedVersionCode"], 32)
         self.assertEqual(report["verifiedSha256"], "a" * 64)
         self.assertTrue(report["otherTracksUnchanged"])
         self.assertTrue(report["storeMetadataUnchanged"])
@@ -343,7 +343,7 @@ class TwoTrackPublishingTests(unittest.TestCase):
         api = FakeAPI()
         api.lifecycle_overrides["alpha"] = {"releases": [{
             "releaseLifecycleState": publisher.STATE_PREFIX + "IN_REVIEW",
-            "activeArtifacts": [{"versionCode": 30}],
+            "activeArtifacts": [{"versionCode": 31}],
         }]}
         self.quota_at(api, 2)
         report = self.run_publish(api)
@@ -415,7 +415,7 @@ class TwoTrackPublishingTests(unittest.TestCase):
         report = self.run_publish(api)
         self.assertEqual(report["status"], "committed_availability_unconfirmed", report)
         self.assertTrue(report["committed"])
-        self.assertEqual(report["verifiedVersionCode"], 31)
+        self.assertEqual(report["verifiedVersionCode"], 32)
         self.assertFalse(report["reviewConfirmed"])
         self.assertEqual(report["trackStatuses"], {
             "alpha": "availability_unconfirmed", "internal": "availability_unconfirmed",
@@ -450,7 +450,7 @@ class TwoTrackPublishingTests(unittest.TestCase):
 
     def test_existing_matching_bundle_is_reused_without_upload(self):
         api = FakeAPI()
-        api.bundles.append({"versionCode": 31, "sha256": "a" * 64})
+        api.bundles.append({"versionCode": 32, "sha256": "a" * 64})
         report = self.run_publish(api)
         self.assertEqual(report["status"], "in_review", report)
         self.assertIn("reusedBundle", report)
@@ -460,7 +460,7 @@ class TwoTrackPublishingTests(unittest.TestCase):
         for sha in ("c" * 64, ""):
             with self.subTest(sha=sha):
                 api = FakeAPI()
-                api.bundles.append({"versionCode": 31, "sha256": sha})
+                api.bundles.append({"versionCode": 32, "sha256": sha})
                 report = self.run_publish(api)
                 self.assertEqual(report["status"], "failed", report)
                 self.assertEqual(self.uploads(api), [])
@@ -646,7 +646,7 @@ class TwoTrackPublishingTests(unittest.TestCase):
         report = self.run_publish(api)
         self.assertEqual(report["status"], "in_review", report)
         self.assertTrue(report["commitReconciled"])
-        self.assertEqual(report["verifiedVersionCode"], 31)
+        self.assertEqual(report["verifiedVersionCode"], 32)
         self.assertEqual(len(self.commits(api)), 1)
         self.assertEqual(len(self.uploads(api)), 1)
 
@@ -685,10 +685,10 @@ class TwoTrackPublishingTests(unittest.TestCase):
 
     def test_both_tracks_already_target_is_idempotent_without_mutations(self):
         api = FakeAPI()
-        api.bundles.append({"versionCode": 31, "sha256": "a" * 64})
+        api.bundles.append({"versionCode": 32, "sha256": "a" * 64})
         for track in api.tracks:
             if track["track"] in publisher.TARGETS:
-                track["releases"] = [release(31)]
+                track["releases"] = [release(32)]
         report = self.run_publish(api)
         self.assertEqual(report["status"], "not_approved", report)
         self.assertTrue(report["alreadyCommitted"])
@@ -699,10 +699,10 @@ class TwoTrackPublishingTests(unittest.TestCase):
 
     def test_already_committed_target_in_review_is_observed_without_mutations(self):
         api = FakeAPI()
-        api.bundles.append({"versionCode": 31, "sha256": "a" * 64})
+        api.bundles.append({"versionCode": 32, "sha256": "a" * 64})
         for track in api.tracks:
             if track["track"] in publisher.TARGETS:
-                track["releases"] = [release(31)]
+                track["releases"] = [release(32)]
         api.committed = True
         report = self.run_publish(api)
         self.assertEqual(report["status"], "in_review", report)
